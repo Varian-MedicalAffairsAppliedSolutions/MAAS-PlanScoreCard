@@ -1,0 +1,79 @@
+﻿<UserControl x:Class="PlanScoreCard.Views.NavigationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PlanScoreCard.Views"
+             xmlns:converters="clr-namespace:PlanScoreCard.Converters"
+             xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:BoolVisibilityConverter x:Key="localVisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel>
+            <TextBlock Text="Plan Selection for Scoring" FontWeight="Bold" FontSize="18" HorizontalAlignment="Center"/>
+            <Grid>
+                <ComboBox ItemsSource="{Binding Plans}"
+                               Margin="40,5,0,0" Width="250" Height="20" HorizontalAlignment="Left">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding bSelected, Mode=TwoWay}" Content="{Binding DisplayTxt}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBlock Text="{Binding SelectedPlanDisplay}" Margin="40,5,0,0" Width="200" Height="20" HorizontalAlignment="Left"/>
+            </Grid>
+        </StackPanel>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Content="Create/Edit" Command="{Binding GenerateScorecardCommand}" Background="Blue"
+                    Width="150" Margin="0,5,0,5" Foreground="White"/>
+            <Button Content="Import ScoreCard" Command="{Binding ImportScorecardCommand}" Background="Blue"
+                        Grid.Row="1" Width="150"
+                        Visibility="{Binding bLocalTemplate, Converter={StaticResource localVisibilityConverter}}"/>
+            <Button Content="Import PK Scorecard" Command="{Binding ImportPKScorecardCommand}" Background="Blue"
+                    Grid.Row ="1" Width="150"
+                        Visibility="{Binding bPKTemplate, Converter={StaticResource localVisibilityConverter}}"/>
+            <Button Content="Import ePR Scorecard" Command="{Binding ImportEPRScorecardCommand}" Background="Blue"
+                    Grid.Row ="1" Width="150"
+                    Visibility="{Binding bePRTemplate, Converter={StaticResource localVisibilityConverter}}"/>
+            <Button Grid.Row="1" Grid.Column="1" Command="{Binding SetButtonVisibilityCommand}" Width="30" Background="Blue">
+                <icons:FontAwesome Kind="CaretDownSolid"/>
+            </Button>
+            <Grid Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" Height="150"
+                  Visibility="{Binding bTemplateOption, Converter={StaticResource localVisibilityConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Select Template Type" Margin="35,0,0,0" Foreground="White"/>
+                <ListView ItemsSource="{Binding TemplateOptions}" SelectedItem="{Binding SelectedTemplateOption}"
+                          Grid.Row="1" Background="DarkBlue">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Label Content="{Binding}" Width="150" Foreground="White"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

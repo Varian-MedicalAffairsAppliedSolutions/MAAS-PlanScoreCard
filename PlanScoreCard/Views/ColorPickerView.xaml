@@ -1,0 +1,171 @@
+﻿<metro:MetroWindow x:Class="PlanScoreCard.Views.ColorPickerView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PlanScoreCard.Views"
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d"
+        Title="Color Picker" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.ColumnSpan="4" FontWeight="Bold" FontSize="14" Foreground="White" Text="Select Color for this metric point"/>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="1" Grid.ColumnSpan="2">
+            <Button Background="#00000000" Content="Transparent (no color)" FontWeight="Bold" Width="200" Height="30"
+                    Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <TextBlock Text="Label:" FontWeight="Bold" Foreground="White" FontSize="14" Grid.Column="2"/>
+        <TextBox Text="{Binding ColorLabel}" FontWeight="Bold" Grid.Column="3" Grid.ColumnSpan="2"/>
+        <!--#region Red-->
+
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="2">
+            <Button Background="#FF0000" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="3">
+            <Button Background="#990000" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="4">
+            <Button Background="#CC0000" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="5">
+            <Button Background="#FF3333" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="6">
+            <Button Background="#FF6666" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <!--#endregion Red-->
+        <!--#region Orange-->
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="2" Grid.Column="1">
+            <Button Background="#FF9900" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="3" Grid.Column="1">
+            <Button Background="#995C00" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="4" Grid.Column="1">
+            <Button Background="#CC7A00" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="5" Grid.Column="1">
+            <Button Background="#FFAD33" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="6" Grid.Column="1">
+            <Button Background="#FFC266" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <!--#endregion Orange-->
+        <!--#region Yellow-->
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="2" Grid.Column="2">
+            <Button Background="#FFFF00" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="3" Grid.Column="2">
+            <Button Background="#999900" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="4" Grid.Column="2">
+            <Button Background="#CCCC00" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="5" Grid.Column="2">
+            <Button Background="#FFFF33" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="6" Grid.Column="2">
+            <Button Background="#FFFF66" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <!--#endregion Yellow-->
+        <!--#region Green-->
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="2" Grid.Column="3">
+            <Button Background="#00FF00" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="3" Grid.Column="3">
+            <Button Background="#009900" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="4" Grid.Column="3">
+            <Button Background="#99CC00" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="5" Grid.Column="3">
+            <Button Background="#33FF33" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="6" Grid.Column="3">
+            <Button Background="#66FF66" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <!--#endregion Green-->
+        <!--#region Blue-->
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="2" Grid.Column="4">
+            <Button Background="#0000FF" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="3" Grid.Column="4">
+            <Button Background="#000099" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="4" Grid.Column="4">
+            <Button Background="#0000CC" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="5" Grid.Column="4">
+            <Button Background="#3333FF" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="6" Grid.Column="4">
+            <Button Background="#6666FF" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <!--#endregion Blue-->
+        <!--#region Violet-->
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="2" Grid.Column="5">
+            <Button Background="#7F00FF" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="3" Grid.Column="5">
+            <Button Background="#4D0099" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="4" Grid.Column="5">
+            <Button Background="#6600CC" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="5" Grid.Column="5">
+            <Button Background="#9933FF" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <Border BorderBrush="White" BorderThickness="1" Grid.Row="6" Grid.Column="5">
+            <Button Background="#B366FF" Foreground="White" Width="100" Height="30"
+                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
+        </Border>
+        <!--#endregion Violet-->
+        <Button Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="2" Content="Cancel" Margin="5" Command="{Binding CancelColorCommand}"/>
+    </Grid>
+</metro:MetroWindow>

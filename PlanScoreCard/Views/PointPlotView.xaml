@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="PlanScoreCard.Views.PointPlotView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PlanScoreCard.Views"
+             xmlns:oxy="http://oxyplot.org/wpf"
+             xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:converters="clr-namespace:PlanScoreCard.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:DoubleDecimalConverter x:Key="localDoubleConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Grid.Row="1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Width="350">
+            <TextBlock Foreground="White" Text="Added Point (X, Score)"/>
+            <Button Command="{Binding AddPointCommand}" Content="Add Score Point" Background="Blue"/>
+            <ScrollViewer Height="380" Margin="5">
+                <ItemsControl ItemsSource="{Binding ScoreMetric.ScorePoints}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding PointId}" Foreground="White"/>
+                                <TextBox Text="{Binding PointX, UpdateSourceTrigger=PropertyChanged,StringFormat=\{0:n\},Converter={StaticResource localDoubleConverter}}" Width="50"/>
+                                <TextBox Text="{Binding Score,UpdateSourceTrigger=PropertyChanged,StringFormat=\{0:n\},Converter={StaticResource localDoubleConverter}}" Width="50"/>
+                                <StackPanel>
+                                    <Button Command="{Binding PointUpCommand}" Content="{icons:FontAwesome Kind=SortUpSolid}" Width="50"/>
+                                    <Button Command="{Binding PointDownCommand}" Content="{icons:FontAwesome Kind=SortDownSolid}" Width="50"/>
+                                </StackPanel>
+                                <Button Command="{Binding DeletePointCommand}" Content="{icons:FontAwesome Kind=TrashAltSolid}" Width="50"/>
+                                <CheckBox Content="Variation" Foreground="White" FontWeight="Bold" 
+                                          IsEnabled="{Binding bMidMetric}" IsChecked="{Binding bMetricChecked}"/>
+                                <Button Command="{Binding LaunchColorPickerCommand}" Width="40" Height="40" Background="{Binding BackGroundBrush}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <Button Content="Reorder Metrics" Command="{Binding ReOrderMetricsCommand}"/>
+        </StackPanel>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <oxy:PlotView Model="{Binding ScoreMetricPlotModel}" Background="DarkGray" Height="400"/>
+            <!--<local:PlotLevelView Grid.Row="1"/>-->
+        </Grid>
+    </Grid>
+</UserControl>

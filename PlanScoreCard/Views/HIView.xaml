@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="PlanScoreCard.Views.HIView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PlanScoreCard.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <StackPanel Orientation="Horizontal">
+            <StackPanel>
+                <Border BorderThickness="0,0,0,1" BorderBrush="White" Margin="5">
+                    <StackPanel Orientation="Horizontal" Margin="5">
+                        <TextBlock Text="D" FontWeight="Bold" Foreground="White" Margin="5"/>
+                        <TextBox Width="50" Text="{Binding HI_HiValue}"/>
+                        <TextBlock Text=" - D" FontWeight="Bold" Foreground="White" Margin="5"/>
+                        <TextBox Width="50" Text="{Binding HI_LowValue}"/>
+                    </StackPanel>
+                </Border>
+                <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
+                    <TextBlock Foreground="White" Margin="5">
+                    <Run Text="D" Foreground="White" FontWeight="Bold"/>
+                    <Run Text="p" Foreground="White" FontWeight="Bold"/>
+                    </TextBlock>
+                    <TextBox Width="50" Text="{Binding TargetValue}"/>
+                    <ComboBox ItemsSource="{Binding DoseUnits}" SelectedItem="{Binding SelectedDoseUnit}" Margin="5" Width="70"/>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+    </Grid>
+</UserControl>
