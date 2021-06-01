@@ -36,11 +36,6 @@
                     <TextBlock Text="{Binding TemplateStructureId}" Foreground="White" Margin="2"/>
                 </StackPanel>
                 <TextBlock Text="{Binding MetricTxt}" Foreground="White" Margin="5" Grid.Column="2" FontSize="14"/>
-
-                <!--<Button Command="{Binding ExpandMetricDetailsCommand}" Content="{icons:FontAwesome Kind=ChevronDownSolid}"
-                    HorizontalAlignment="Right" Grid.Column="2" Visibility="{Binding BContracted, Converter={StaticResource localVisibilityConverter}}" Margin="5"/>
-                    <Button Command="{Binding ContractMetricDetailsCommand}" Content="{icons:FontAwesome Kind=ChevronUpSolid}"
-                    HorizontalAlignment="Right" Grid.Column="2" Visibility="{Binding BExpanded, Converter={StaticResource localVisibilityConverter}}" Margin="5"/>-->
                 <StackPanel Orientation="Horizontal" Grid.Column="4">
                     <StackPanel>
                         <Button Command="{Binding MetricUpCommand}" Content="{icons:FontAwesome Kind=CaretUpSolid}"/>

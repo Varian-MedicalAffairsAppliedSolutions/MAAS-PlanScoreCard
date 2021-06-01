@@ -414,12 +414,12 @@ namespace PlanScoreCard.ViewModels
 
         private void SetPlotProperties(MetricTypeEnum metricType)
         {
-            ScoreMetricPlotModel.Title = PlanScorePlottingServices.GetPlotTitle(metricType,_doseAtVolumeViewModel,_volumeAtDoseViewModel);// $"Score for Dose at {doseAtVolumeViewModel.Volume}{doseAtVolumeViewModel.SelectedVolumeUnit}";
+            ScoreMetricPlotModel.Title = PlanScorePlottingServices.GetPlotTitle(metricType, _doseAtVolumeViewModel, _volumeAtDoseViewModel);// $"Score for Dose at {doseAtVolumeViewModel.Volume}{doseAtVolumeViewModel.SelectedVolumeUnit}";
             ScoreMetricPlotModel.LegendPlacement = LegendPlacement.Outside;
             ScoreMetricPlotModel.LegendPosition = LegendPosition.RightTop;
             ScoreMetricPlotModel.Axes.Add(new LinearAxis
             {
-                Title = PlanScorePlottingServices.GetPlotXAxisTitle(metricType,_doseAtVolumeViewModel,_volumeAtDoseViewModel,_doseValueViewModel),// $"Dose [{doseAtVolumeViewModel.SelectedDoseUnit}]",
+                Title = PlanScorePlottingServices.GetPlotXAxisTitle(metricType, _doseAtVolumeViewModel, _volumeAtDoseViewModel, _doseValueViewModel),// $"Dose [{doseAtVolumeViewModel.SelectedDoseUnit}]",
                 Position = AxisPosition.Bottom,
             });
             ScoreMetricPlotModel.Axes.Add(new LinearAxis
@@ -428,7 +428,7 @@ namespace PlanScoreCard.ViewModels
                 Position = AxisPosition.Left
             });
         }
-      
+
 
         private void OnAddMetricPoint()
         {
@@ -593,11 +593,14 @@ namespace PlanScoreCard.ViewModels
             int point_count = 0;
             foreach (var tpoint in tempPoints.ScorePoints.OrderBy(x => x.PointX))
             {
-                ScoreMetric.ScorePoints.Add(new ScorePointModel(MetricId, point_count, _eventAggregator));
-                ScoreMetric.ScorePoints.Last().PointX = tpoint.PointX;
-                ScoreMetric.ScorePoints.Last().Score = tpoint.Score;
-                ScoreMetric.ScorePoints.Last().bMidMetric = tpoint.bMidMetric;
-                ScoreMetric.ScorePoints.Last().bMetricChecked = tpoint.bMetricChecked;
+                var scorepoint = new ScorePointModel(MetricId, point_count, _eventAggregator);
+                //ScoreMetric.ScorePoints.Add(new ScorePointModel(MetricId, point_count, _eventAggregator));
+                scorepoint.bMidMetric = tpoint.bMidMetric;
+                scorepoint.bMetricChecked = tpoint.bMetricChecked;
+                scorepoint.Colors = tpoint.Colors;
+                scorepoint.PointX = tpoint.PointX;
+                scorepoint.Score = tpoint.Score;
+                ScoreMetric.ScorePoints.Add(scorepoint);
                 point_count++;
             }
         }

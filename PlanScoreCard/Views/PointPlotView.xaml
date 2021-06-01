@@ -43,7 +43,7 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
-            <Button Content="Reorder Metrics" Command="{Binding ReOrderMetricsCommand}"/>
+            <Button Content="Reorder Metrics" Command="{Binding ReOrderMetricsCommand}" Visibility="Hidden"/>
         </StackPanel>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
