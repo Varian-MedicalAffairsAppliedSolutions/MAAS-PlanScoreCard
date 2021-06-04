@@ -35,7 +35,7 @@ namespace PlanScoreCard
                     if (e.Args.Count()>0 && !String.IsNullOrWhiteSpace(e.Args.First()))
                     {
                        
-                        _patientId = e.Args.First().Split(';').First();
+                        _patientId = e.Args.First().Split(';').First().TrimStart('\"');
                     }
                     else
                     {
@@ -46,11 +46,11 @@ namespace PlanScoreCard
                     }
                     if (e.Args.First().Split(';').Count() > 1)
                     {
-                        _courseId = e.Args.First().Split(';').ElementAt(1);
+                        _courseId = e.Args.First().Split(';').ElementAt(1).TrimEnd('\"');
                     }
                     if (e.Args.First().Split(';').Count() > 2)
                     {
-                        _planId = e.Args.First().Split(';').ElementAt(2);
+                        _planId = e.Args.First().Split(';').ElementAt(2).TrimEnd('\"');
                     }
                     if(String.IsNullOrWhiteSpace(_patientId) || String.IsNullOrWhiteSpace(_courseId))
                     {
