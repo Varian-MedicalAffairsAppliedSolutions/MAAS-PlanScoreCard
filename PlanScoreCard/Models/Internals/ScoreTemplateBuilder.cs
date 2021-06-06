@@ -157,16 +157,22 @@ namespace PlanScoreCard.Models.Internals
             int scorePointId = 0;
             foreach (var scorepoint in template.ScorePoints)
             {
+                //var smetric = new ScorePointModel(score_newId, scorePointId, eventAggregator);
                 scoreMetricVM.ScoreMetric.ScorePoints.Add(new ScorePointModel(score_newId, scorePointId, eventAggregator));
                 scoreMetricVM.ScoreMetric.ScorePoints.Last().PointX = scorepoint.PointX;
                 scoreMetricVM.ScoreMetric.ScorePoints.Last().Score = scorepoint.Score;
                 scoreMetricVM.ScoreMetric.ScorePoints.Last().bMetricChecked = scorepoint.Variation;
                 if (scorepoint.Colors.Count() > 2)
                 {
-                    PlanScoreColorModel scoreColor = new PlanScoreColorModel(scorepoint.Colors, scorepoint.Label);
-                    scoreMetricVM.ScoreMetric.ScorePoints.Last().BackGroundBrush = scoreColor.PlanScoreBackgroundColor;
-                    scoreMetricVM.ScoreMetric.ScorePoints.Last().Colors = scoreColor;
+                    //PlanScoreColorModel scoreColor =
+                    //scoreMetricVM.ScoreMetric.ScorePoints.Last().BackGroundBrush = scoreColor.PlanScoreBackgroundColor;
+                    scoreMetricVM.ScoreMetric.ScorePoints.Last().Colors = new PlanScoreColorModel(new List<double>{
+                     scorepoint.Colors.First(),
+                     scorepoint.Colors.ElementAt(1),
+                     scorepoint.Colors.ElementAt(2) }
+                    , scorepoint.Label);
                 }
+                //scoreMetricVM.ScoreMetric.ScorePoints.Add(smetric);
                 scorePointId++;
             }
         }

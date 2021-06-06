@@ -69,15 +69,22 @@ namespace PlanScoreCard.Models
                 _eventAggregator.GetEvent<VariationCheckedEvent>().Publish(new Tuple<int, int>(MetricId, PointId));
             }
         }
-        private System.Windows.Media.Brush _backGroundBrush;
+        //private System.Windows.Media.Brush _backGroundBrush;
 
-        public System.Windows.Media.Brush BackGroundBrush
+        //public System.Windows.Media.Brush BackGroundBrush
+        //{
+        //    get { return _backGroundBrush; }
+        //    set { SetProperty(ref _backGroundBrush, value); }
+        //}
+        private PlanScoreColorModel _colors;
+
+        public PlanScoreColorModel Colors
         {
-            get { return _backGroundBrush; }
-            set { SetProperty(ref _backGroundBrush, value); }
+            get { return _colors; }
+            set { SetProperty(ref _colors, value); }
         }
 
-        public PlanScoreColorModel Colors { get; set; }
+        //public PlanScoreColorModel Colors { get; set; }
 
         public DelegateCommand DeletePointCommand { get; private set; }
         public DelegateCommand PointUpCommand { get; private set; }
@@ -102,7 +109,7 @@ namespace PlanScoreCard.Models
         {
             if (MetricId == obj.Item1 && PointId == obj.Item2)
             {
-                BackGroundBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(obj.Item4));
+                //BackGroundBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(obj.Item4));
                 if (obj.Item4.Contains("#00000000"))
                 {
                     Colors = new PlanScoreColorModel(new List<double> { Convert.ToByte(obj.Item4.Substring(3,2),16),

@@ -74,16 +74,24 @@
                             <Border BorderBrush="Blue" BorderThickness="0 0 0 1">
                                 <TextBlock Text="{Binding MetricId, Converter={StaticResource localMetricIdConverter}}" Foreground="White" HorizontalAlignment="Center" Margin="5"/>
                             </Border>
-                            <Border BorderBrush="Blue" BorderThickness="0 0 0 1" Grid.Column="1">
-                                <TextBlock Foreground="White" HorizontalAlignment="Center" Margin="5" TextWrapping="Wrap">
+                            <Border BorderBrush="Blue" BorderThickness="0 0 0 1" Grid.Column="1" Grid.ColumnSpan="2">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                    <TextBlock Foreground="White" HorizontalAlignment="Center" Margin="0,5,0,0" TextWrapping="Wrap">
                                     <Run Text="{Binding StructureId}"/>
                                     <LineBreak/>
                                     <Run Text="{Binding StructureComment}" FontSize="8"/>
-                                </TextBlock>
-                            </Border>
-                            <Border BorderBrush="Blue" BorderThickness="0 0 0 1" Grid.Column="2">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding MetricText}" Foreground="White" HorizontalAlignment="Center" Margin="5"/>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding MetricText}" Foreground="White" HorizontalAlignment="Center" Margin="0,5,0,0" Grid.Column="1"/>
+
+                                <StackPanel Grid.ColumnSpan="2" Grid.Row="1">
                                     <Grid>
                                         <ItemsControl ItemsSource="{Binding Colors}">
                                             <ItemsControl.ItemsPanel>
@@ -93,7 +101,8 @@
                                             </ItemsControl.ItemsPanel>
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
-                                                    <Border Background="{Binding PlanScoreBackgroundColor}"  BorderBrush="Black" BorderThickness="1" Width="60" Height="35">
+                                                    <Border Background="{Binding PlanScoreBackgroundColor}"  BorderBrush="Black" BorderThickness="1" 
+                                                            Width="{Binding RelativeSource={RelativeSource AncestorType=StackPanel}, Path=DataContext.BlockWidth}" Height="25">
                                                         <TextBlock Text="{Binding ColorLabel}" TextWrapping="Wrap" FontSize="10" FontWeight="Bold"/>
                                                     </Border>
                                                 </DataTemplate>
@@ -104,6 +113,7 @@
                                                                Visibility="{Binding bPKColor,Converter={StaticResource localVisibilityConverter}}"
                                                                HorizontalAlignment="Left"/>
                                 </StackPanel>
+                            </Grid>
                             </Border>
                             <Border BorderBrush="Blue" BorderThickness="0 0 0 1" Grid.Column="3" Grid.ColumnSpan="3">
                                 <ItemsControl ItemsSource="{Binding ScoreValues}">

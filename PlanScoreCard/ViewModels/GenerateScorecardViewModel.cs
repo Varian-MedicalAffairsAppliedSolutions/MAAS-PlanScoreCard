@@ -260,6 +260,8 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand StructureBuilderCommand { get; private set; }
         public GenerateScorecardViewModel(PlanModel pm,
             List<ScoreTemplateModel> scoreTemplates,
+            string templateName,
+            string templateSite,
             User user,
             IEventAggregator eventAggregator)
         {
@@ -280,24 +282,26 @@ namespace PlanScoreCard.ViewModels
             DoseValueViewModel = new DoseValueViewModel();
             HIViewModel = new HIViewModel();
             CIViewModel = new CIViewModel();
-            ImportScorecardCommand = new DelegateCommand(OnImportScoreCard);
+            //ImportScorecardCommand = new DelegateCommand(OnImportScoreCard);
             AddMetricCommand = new DelegateCommand(OnAddMetric, CanAddMetric);
             SaveTemplateCommand = new DelegateCommand(OnSaveTemplate, CanSaveTemplate);
             ScorePlanCommand = new DelegateCommand(OnScorePlan, CanScorePlan);
-            ImportPKScorecardCommand = new DelegateCommand(OnImportPKScorecard);
-            ImportEPRScorecardCommand = new DelegateCommand(OnImportEPRScorecard);
-            SetButtonVisibilityCommand = new DelegateCommand(OnSetImportVisibilty);
+            //ImportPKScorecardCommand = new DelegateCommand(OnImportPKScorecard);
+            //ImportEPRScorecardCommand = new DelegateCommand(OnImportEPRScorecard);
+            //SetButtonVisibilityCommand = new DelegateCommand(OnSetImportVisibilty);
             StructureBuilderCommand = new DelegateCommand(OnLaunchStructureBuilder);
-            TemplateOptions = new ObservableCollection<string>();
-            TemplateOptions.Add("ESAPI PlanScore");
-            TemplateOptions.Add("Proknow");
-            TemplateOptions.Add("ePeer Review");
+            //TemplateOptions = new ObservableCollection<string>();
+            //TemplateOptions.Add("ESAPI PlanScore");
+            //TemplateOptions.Add("Proknow");
+            //TemplateOptions.Add("ePeer Review");
             TreatmentSites = new ObservableCollection<string>();
             foreach (var site in ConfigurationManager.AppSettings["TreatmentSites"].Split(';'))
             {
                 TreatmentSites.Add(site);
             }
             TemplateAuthor = user.Id;
+            if (templateName != null) { TemplateName = templateName; }
+            if(templateSite != null) { SelectedTreatmentSite = templateSite; }
             SetInitialVisibilities();
             FillStructures();
             FillMetrics();
@@ -330,42 +334,79 @@ namespace PlanScoreCard.ViewModels
             //launch viewmodel.
             //FillStructures();
         }
+        #region ImportMethods
+        //private void OnSetImportVisibilty()
+        //{
+        //    bTemplateOption = true;
+        //}
+        //private void OnImportEPRScorecard()
+        //{
+        //    OpenFileDialog ofd = new OpenFileDialog();
+        //    ofd.Filter = "CSV (*.csv)|*.csv";
+        //    ofd.Title = "Open ePeerReview Template";
+        //    if (ofd.ShowDialog() == true)
+        //    {
+        //        _scoreTemplates = EPeerReviewScoreModel.GetScoreTemplateFromCSV(ofd.FileName);
+        //        //_eventAggregator.GetEvent<ScorePlanEvent>().Publish(_scoreTemplates);
+        //        int score_newId = ScoreMetrics.Count();
+        //        BuildScoreMetrics(score_newId, _scoreTemplates);
+        //    }
+        //}
 
-        private void OnSetImportVisibilty()
-        {
-            bTemplateOption = true;
-        }
-        private void OnImportEPRScorecard()
-        {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "CSV (*.csv)|*.csv";
-            ofd.Title = "Open ePeerReview Template";
-            if (ofd.ShowDialog() == true)
-            {
-                _scoreTemplates = EPeerReviewScoreModel.GetScoreTemplateFromCSV(ofd.FileName);
-                //_eventAggregator.GetEvent<ScorePlanEvent>().Publish(_scoreTemplates);
-                int score_newId = ScoreMetrics.Count();
-                BuildScoreMetrics(score_newId, _scoreTemplates);
-            }
-        }
+        //private void OnImportPKScorecard()
+        //{
+        //    //ScoreMetrics.Clear();//
+        //    OpenFileDialog ofd = new OpenFileDialog();
+        //    ofd.Filter = "JSON Template (*.json)|*.json";
+        //    ofd.Title = "Open ProKnow template";
+        //    //nt score_newId = 0;// ScoreMetrics.Count();
 
-        private void OnImportPKScorecard()
-        {
-            //ScoreMetrics.Clear();//
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "JSON Template (*.json)|*.json";
-            ofd.Title = "Open ProKnow template";
-            //nt score_newId = 0;// ScoreMetrics.Count();
+        //    if (ofd.ShowDialog() == true)
+        //    {
+        //        PKModel pk_scoreTemplates = JsonConvert.DeserializeObject<PKModel>(File.ReadAllText(ofd.FileName));
+        //        int score_newId = ScoreMetrics.Count();
+        //        _scoreTemplates = pk_scoreTemplates.ConvertToTemplate();
+        //        BuildScoreMetrics(score_newId, _scoreTemplates);
+        //        //_eventAggregator.GetEvent<ScorePlanEvent>().Publish(_scoreTemplates);
+        //    }
+        //}
+        ///// <summary>
+        ///// Allows for the import of a scorecard. 
+        ///// This will add metrics to an already existing scorecard if one is open. 
+        ///// </summary>
+        //private void OnImportScoreCard()
+        //{
+        //    //ScoreMetrics.Clear();//
+        //    OpenFileDialog ofd = new OpenFileDialog();
+        //    ofd.Filter = "JSON Template (*.json)|*.json";
+        //    ofd.Title = "Open PlanSC template";
+        //    int score_newId = ScoreMetrics.Count();
+        //    if (ofd.ShowDialog() == true)
+        //    {
+        //        try
+        //        {
+        //            InternalTemplateModel template = JsonConvert.DeserializeObject<InternalTemplateModel>(File.ReadAllText(ofd.FileName));
+        //            List<ScoreTemplateModel> scoreTemplates = template.ScoreTemplates;
+        //            BuildScoreMetrics(score_newId, scoreTemplates);
+        //            ScorePlanCommand.RaiseCanExecuteChanged();
+        //        }
+        //        catch
+        //        {
+        //            try
+        //            {
+        //                List<ScoreTemplateModel> scoreTemplates = JsonConvert.DeserializeObject<List<ScoreTemplateModel>>(File.ReadAllText(ofd.FileName));
+        //                BuildScoreMetrics(score_newId, scoreTemplates);
+        //                ScorePlanCommand.RaiseCanExecuteChanged();
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                throw new ApplicationException(ex.Message);
+        //            }
+        //        }
 
-            if (ofd.ShowDialog() == true)
-            {
-                PKModel pk_scoreTemplates = JsonConvert.DeserializeObject<PKModel>(File.ReadAllText(ofd.FileName));
-                int score_newId = ScoreMetrics.Count();
-                _scoreTemplates = pk_scoreTemplates.ConvertToTemplate();
-                BuildScoreMetrics(score_newId, _scoreTemplates);
-                //_eventAggregator.GetEvent<ScorePlanEvent>().Publish(_scoreTemplates);
-            }
-        }
+        //    }
+        //}
+        #endregion ImportMethods
         private void SetInitialVisibilities()
         {
             switch (ConfigurationManager.AppSettings["ImportTemplate"])
@@ -502,6 +543,12 @@ namespace PlanScoreCard.ViewModels
                 metricPoint.Score = point.Score;
                 metricPoint.bMidMetric = point.bMidMetric;
                 metricPoint.bMetricChecked = point.bMetricChecked;
+                if (point.Colors.Colors.Count() == 3)
+                {
+                    metricPoint.Colors = new PlanScoreColorModel(new List<double>{point.Colors.Colors.First(),
+                    point.Colors.Colors.ElementAt(1),point.Colors.Colors.ElementAt(2) }, point.Colors.ColorLabel);
+                }
+                //metricPoint.BackGroundBrush = point.BackGroundBrush;
                 sMetric.ScoreMetric.ScorePoints.Add(metricPoint);
                 sMetric.OnAddPlotScorePoint(id);
             }
@@ -575,42 +622,6 @@ namespace PlanScoreCard.ViewModels
             ScorePlanCommand.RaiseCanExecuteChanged();
         }
 
-        /// <summary>
-        /// Allows for the import of a scorecard. 
-        /// This will add metrics to an already existing scorecard if one is open. 
-        /// </summary>
-        private void OnImportScoreCard()
-        {
-            //ScoreMetrics.Clear();//
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "JSON Template (*.json)|*.json";
-            ofd.Title = "Open PlanSC template";
-            int score_newId = ScoreMetrics.Count();
-            if (ofd.ShowDialog() == true)
-            {
-                try
-                {
-                    InternalTemplateModel template = JsonConvert.DeserializeObject<InternalTemplateModel>(File.ReadAllText(ofd.FileName));
-                    List<ScoreTemplateModel> scoreTemplates = template.ScoreTemplates;
-                    BuildScoreMetrics(score_newId, scoreTemplates);
-                    ScorePlanCommand.RaiseCanExecuteChanged();
-                }
-                catch
-                {
-                    try
-                    {
-                        List<ScoreTemplateModel> scoreTemplates = JsonConvert.DeserializeObject<List<ScoreTemplateModel>>(File.ReadAllText(ofd.FileName));
-                        BuildScoreMetrics(score_newId, scoreTemplates);
-                        ScorePlanCommand.RaiseCanExecuteChanged();
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new ApplicationException(ex.Message);
-                    }
-                }
-
-            }
-        }
 
         private void BuildScoreMetrics(int score_newId, List<ScoreTemplateModel> scoreTemplates)
         {

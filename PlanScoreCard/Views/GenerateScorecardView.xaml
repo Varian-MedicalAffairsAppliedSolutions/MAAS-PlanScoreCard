@@ -30,7 +30,7 @@
             <TextBlock Text="Author" FontWeight="Bold" FontSize="14" Foreground="White" Margin="5"/>
             <TextBlock Text="{Binding TemplateAuthor}" Margin="5" Foreground="White" FontWeight="Bold"/>
         </StackPanel>
-        <Border BorderBrush="Blue" BorderThickness="2" Grid.Row="1">
+        <!--<Border BorderBrush="Blue" BorderThickness="2" Grid.Row="1">
             <StackPanel Orientation="Horizontal">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -100,7 +100,7 @@
                 <Button Content="{icons:FontAwesome Kind=PlusSolid}" Margin="10" Background="Blue"
                         Command="{Binding AddMetricCommand}" Width="50" VerticalAlignment="Center" Height="50"/>
             </StackPanel>
-        </Border>
+        </Border>-->
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

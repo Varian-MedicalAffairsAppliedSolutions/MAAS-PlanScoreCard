@@ -12,7 +12,7 @@ namespace PlanScoreCard.Services
 {
     public static class PlanScoreCalculationServices
     {
-        internal static double CalculatePKPosition(List<PlanScoreColorModel> Colors, bool increasing, double score)
+        internal static double CalculatePKPosition(List<PlanScoreColorModel> Colors, bool increasing, double score,double width)
         {
             if (increasing)
             {
@@ -27,7 +27,7 @@ namespace PlanScoreCard.Services
                     {
                         double pkNextValue = Colors.ElementAt(index + 1).ColorValue;
                         double pkValue = Colors.ElementAt(index).ColorValue;
-                        double position = (double)index * 60.0 + (score - pkValue) * (60 / (pkNextValue - pkValue));
+                        double position = (double)index * width + (score - pkValue) * (width / (pkNextValue - pkValue));
                         //(60.0*(pkNextValue-spoint_value.Score)/(pkNextValue-PKColors.ElementAt(index).PKColorValue));
                         return position;
                     }
@@ -47,7 +47,7 @@ namespace PlanScoreCard.Services
                     {
                         double pkPrevValue = Colors.ElementAt(index - 1).ColorValue;
                         double pkValue = Colors.ElementAt(index).ColorValue;
-                        var position = (double)index * 60 + (pkPrevValue - score) * (60 / (pkPrevValue - pkValue));
+                        var position = (double)index * width + (pkPrevValue - score) * (width / (pkPrevValue - pkValue));
                         return position;
                     }
                 }

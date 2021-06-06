@@ -85,6 +85,14 @@ namespace PlanScoreCard.Models
             get { return _bStatsVis; }
             set { SetProperty(ref _bStatsVis, value); }
         }
+        private double _blockWidth;
+
+        public double BlockWidth
+        {
+            get { return _blockWidth; }
+            set { _blockWidth = value; }
+        }
+
         public PlotModel ScorePlotModel { get; set; }
         public ObservableCollection<ScoreValueModel> ScoreValues { get; private set; }
         public ObservableCollection<PlanScoreColorModel> Colors { get; private set; }
@@ -338,6 +346,25 @@ namespace PlanScoreCard.Models
                     ScorePointSeries.Points.Add(new DataPoint(scoreValue.Value, scoreValue.Score));
                     ScorePlotModel.Series.Add(ScorePointSeries);
                     //get colors frm pk template if it exists.
+                    switch (template.ScorePoints.Where(x => x.Colors.Count() > 2).Count())
+                    {
+                        case 1: case 2: case 3: case 4:
+                            BlockWidth = 100.0;
+                            break;
+                        case 5:
+                            BlockWidth = 80.0;
+                            break;
+                        case 6: 
+                        case 7:
+                            BlockWidth = 60.0;
+                            break;
+                        case 8:
+                            BlockWidth = 40.0;
+                            break;
+                        default:
+                            BlockWidth = 20.0;
+                            break;
+                    }
                     if (template.ScorePoints.Count() > 0 && Colors.Count() == 0)
                     {
                         foreach (var score in template.ScorePoints)
@@ -375,7 +402,7 @@ namespace PlanScoreCard.Models
                         }
                         if (template.ScorePoints.All(x => x.Colors.Count() > 0))
                         {
-                            PKPosition = new System.Windows.Thickness(PlanScoreCalculationServices.CalculatePKPosition(Colors.ToList(), increasing, scoreValue.Score), 0, 0, 0);
+                            PKPosition = new System.Windows.Thickness(PlanScoreCalculationServices.CalculatePKPosition(Colors.ToList(), increasing, scoreValue.Score,BlockWidth), 0, 0, 0);
                         }
                     }
 

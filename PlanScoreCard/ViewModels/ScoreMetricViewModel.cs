@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace PlanScoreCard.ViewModels
 {
@@ -131,6 +132,7 @@ namespace PlanScoreCard.ViewModels
                 MetricTxt = GetMetricText(metricType);//                
             }
             SetCommands();//commands still need to work so you can delete the metrics that don't exist. 
+            
         }
         /// <summary>
         /// Get Metric text From Metric Type to display on the UI
@@ -533,6 +535,17 @@ namespace PlanScoreCard.ViewModels
                     }
                     temp_scorepoints.Last().PointX = sp.PointX;
                     temp_scorepoints.Last().Score = sp.Score;
+                    if (sp.Colors.Colors.Count() == 3)
+                    {
+                        temp_scorepoints.Last().Colors = new Models.Internals.PlanScoreColorModel(new List<double>{
+                        sp.Colors.Colors.First(),
+                        sp.Colors.Colors.ElementAt(1),
+                        sp.Colors.Colors.ElementAt(2) },
+                            sp.Colors.ColorLabel);
+                        //temp_scorepoints.Last().BackGroundBrush = new SolidColorBrush(Color.FromRgb((byte)sp.Colors.Colors.First(),
+                        //    (byte)sp.Colors.Colors.ElementAt(1),
+                        //    (byte)sp.Colors.Colors.ElementAt(2)));
+                    }
                 }
                 ScoreMetric.ScorePoints.Clear();
                 foreach (var t_sp in temp_scorepoints.OrderBy(x => x.PointId))
@@ -540,7 +553,9 @@ namespace PlanScoreCard.ViewModels
                     ScoreMetric.ScorePoints.Add(new ScorePointModel(t_sp.MetricId, t_sp.PointId, _eventAggregator)
                     {
                         PointX = t_sp.PointX,
-                        Score = t_sp.Score
+                        Score = t_sp.Score,
+                        Colors = t_sp.Colors,
+                        //BackGroundBrush = t_sp.BackGroundBrush
                     });
                 }
                 OnAddPlotScorePoint(ids.Item1);
@@ -568,6 +583,17 @@ namespace PlanScoreCard.ViewModels
                     }
                     temp_scorepoints.Last().PointX = sp.PointX;
                     temp_scorepoints.Last().Score = sp.Score;
+                    if (sp.Colors.Colors.Count() == 3)
+                    {
+                        temp_scorepoints.Last().Colors = new Models.Internals.PlanScoreColorModel(new List<double>{
+                        sp.Colors.Colors.First(),
+                        sp.Colors.Colors.ElementAt(1),
+                        sp.Colors.Colors.ElementAt(2) },
+                            sp.Colors.ColorLabel);
+                        //temp_scorepoints.Last().BackGroundBrush = new SolidColorBrush(Color.FromRgb((byte)sp.Colors.Colors.First(),
+                        //    (byte)sp.Colors.Colors.ElementAt(1),
+                        //    (byte)sp.Colors.Colors.ElementAt(2)));
+                    }
                 }
                 ScoreMetric.ScorePoints.Clear();
                 foreach (var t_sp in temp_scorepoints.OrderBy(x => x.PointId))
@@ -575,7 +601,9 @@ namespace PlanScoreCard.ViewModels
                     ScoreMetric.ScorePoints.Add(new ScorePointModel(t_sp.MetricId, t_sp.PointId, _eventAggregator)
                     {
                         PointX = t_sp.PointX,
-                        Score = t_sp.Score
+                        Score = t_sp.Score,
+                        Colors = t_sp.Colors,
+                        //BackGroundBrush = t_sp.BackGroundBrush
                     });
                 }
                 OnAddPlotScorePoint(ids.Item1);
@@ -603,6 +631,7 @@ namespace PlanScoreCard.ViewModels
                 ScoreMetric.ScorePoints.Add(scorepoint);
                 point_count++;
             }
+            OnAddPlotScorePoint(MetricId);
         }
     }
 }

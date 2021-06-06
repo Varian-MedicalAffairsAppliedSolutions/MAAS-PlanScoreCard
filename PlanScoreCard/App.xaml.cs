@@ -35,7 +35,7 @@ namespace PlanScoreCard
                     if (e.Args.Count()>0 && !String.IsNullOrWhiteSpace(e.Args.First()))
                     {
                        
-                        _patientId = e.Args.First().Split(';').First().TrimStart('\"');
+                        _patientId = e.Args.First().Split(';').First().Trim('\"');
                     }
                     else
                     {

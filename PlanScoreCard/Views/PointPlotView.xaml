@@ -37,13 +37,13 @@
                                 <Button Command="{Binding DeletePointCommand}" Content="{icons:FontAwesome Kind=TrashAltSolid}" Width="50"/>
                                 <CheckBox Content="Variation" Foreground="White" FontWeight="Bold" 
                                           IsEnabled="{Binding bMidMetric}" IsChecked="{Binding bMetricChecked}"/>
-                                <Button Command="{Binding LaunchColorPickerCommand}" Width="40" Height="40" Background="{Binding BackGroundBrush}"/>
+                                <Button Command="{Binding LaunchColorPickerCommand}" Width="40" Height="40" Background="{Binding Colors.PlanScoreBackgroundColor}"/>
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
-            <Button Content="Reorder Metrics" Command="{Binding ReOrderMetricsCommand}" Visibility="Hidden"/>
+            <Button Content="Reorder Metrics" Command="{Binding ReOrderMetricsCommand}"/>
         </StackPanel>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>

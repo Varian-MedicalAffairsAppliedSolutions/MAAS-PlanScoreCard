@@ -32,6 +32,8 @@ namespace PlanScoreCard.ViewModels
         private PlanningItem _plan;
         private User _user;
         private IEventAggregator _eventAggregator;
+        private string _templateName;
+        private string _templateSite;
 
         #region visibilityControls
         private bool _bLocalTemplate;
@@ -299,7 +301,7 @@ namespace PlanScoreCard.ViewModels
         private void OnGenerateScorecard()
         {
             GenScoreCardView = new GenerateScorecardView();
-            GenScoreCardView.DataContext = new GenerateScorecardViewModel(SelectedPlan, _scoreTemplates, _user, _eventAggregator);
+            GenScoreCardView.DataContext = new GenerateScorecardViewModel(SelectedPlan, _scoreTemplates, _templateName,_templateSite, _user, _eventAggregator);
             GenScoreCardView.ShowDialog();
         }
 
@@ -316,6 +318,8 @@ namespace PlanScoreCard.ViewModels
                 try
                 {
                     InternalTemplateModel template = JsonConvert.DeserializeObject<InternalTemplateModel>(File.ReadAllText(ofd.FileName));
+                    _templateName = template.TemplateName;
+                    _templateSite = template.Site;
                     _scoreTemplates = template.ScoreTemplates;
                 }
                 catch
