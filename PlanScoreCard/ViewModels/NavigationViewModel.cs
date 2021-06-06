@@ -177,14 +177,14 @@ namespace PlanScoreCard.ViewModels
             SelectedPlans = new ObservableCollection<PlanModel>();
             GenerateScorecardCommand = new DelegateCommand(OnGenerateScorecard, CanGenerateScorecard);
             ImportScorecardCommand = new DelegateCommand(OnImportScorecard);
-            ImportPKScorecardCommand = new DelegateCommand(OnImportPKScorecard);
-            ImportEPRScorecardCommand = new DelegateCommand(OnImportEPRScorecard);
+            //ImportPKScorecardCommand = new DelegateCommand(OnImportPKScorecard);
+            //ImportEPRScorecardCommand = new DelegateCommand(OnImportEPRScorecard);
             SetButtonVisibilityCommand = new DelegateCommand(OnSetImportVisibilty);
             TemplateOptions = new ObservableCollection<string>();
             TemplateOptions.Add("ESAPI PlanScore");
             TemplateOptions.Add("Proknow");
             TemplateOptions.Add("ePeer Review");
-            SetInitialVisibilities();
+            //SetInitialVisibilities();
             SetPlans();
         }
         public void UpdatePlanParameters(Patient patient, Course course, PlanSetup plan, List<string> feedbacks)
@@ -225,7 +225,7 @@ namespace PlanScoreCard.ViewModels
                     SelectedPlans.Add(plan);
                 }
             }
-            if(SelectedPlan == null && SelectedPlans.Count() > 0)
+            if (SelectedPlan == null && SelectedPlans.Count() > 0)
             {
                 SelectedPlan = SelectedPlans.FirstOrDefault();
             }
@@ -244,54 +244,54 @@ namespace PlanScoreCard.ViewModels
         /// <summary>
         /// Set import visibility options based on last selected item.
         /// </summary>
-        private void SetInitialVisibilities()
-        {
-            switch (ConfigurationManager.AppSettings["ImportTemplate"])
-            {
-                case "local":
-                    SelectedTemplateOption = "ESAPI PlanScore";
-                    return;
-                case "pk":
-                    SelectedTemplateOption = "Proknow";
-                    return;
-                case "ePR":
-                    SelectedTemplateOption = "ePeer Review";
-                    return;
-                default:
-                    SelectedTemplateOption = "ESAPI PlanScore";
-                    return;
-            }
-        }
-        /// <summary>
-        /// Import ePeer Review Template
-        /// </summary>
-        private void OnImportEPRScorecard()
-        {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "CSV (*.csv)|*.csv";
-            ofd.Title = "Open ePeerReview Template";
-            if (ofd.ShowDialog() == true)
-            {
-                _scoreTemplates = EPeerReviewScoreModel.GetScoreTemplateFromCSV(ofd.FileName);
-                _eventAggregator.GetEvent<ScorePlanEvent>().Publish(_scoreTemplates);
-            }
-        }
+        //private void SetInitialVisibilities()
+        //{
+        //    switch (ConfigurationManager.AppSettings["ImportTemplate"])
+        //    {
+        //        case "local":
+        //            SelectedTemplateOption = "ESAPI PlanScore";
+        //            return;
+        //        case "pk":
+        //            SelectedTemplateOption = "Proknow";
+        //            return;
+        //        case "ePR":
+        //            SelectedTemplateOption = "ePeer Review";
+        //            return;
+        //        default:
+        //            SelectedTemplateOption = "ESAPI PlanScore";
+        //            return;
+        //    }
+        //}
+        ///// <summary>
+        ///// Import ePeer Review Template
+        ///// </summary>
+        //private void OnImportEPRScorecard()
+        //{
+        //    OpenFileDialog ofd = new OpenFileDialog();
+        //    ofd.Filter = "CSV (*.csv)|*.csv";
+        //    ofd.Title = "Open ePeerReview Template";
+        //    if (ofd.ShowDialog() == true)
+        //    {
+        //        _scoreTemplates = EPeerReviewScoreModel.GetScoreTemplateFromCSV(ofd.FileName);
+        //        _eventAggregator.GetEvent<ScorePlanEvent>().Publish(_scoreTemplates);
+        //    }
+        //}
 
-        private void OnImportPKScorecard()
-        {
-            //ScoreMetrics.Clear();//
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "JSON Template (*.json)|*.json";
-            ofd.Title = "Open ProKnow template";
-            //nt score_newId = 0;// ScoreMetrics.Count();
+        //private void OnImportPKScorecard()
+        //{
+        //    //ScoreMetrics.Clear();//
+        //    OpenFileDialog ofd = new OpenFileDialog();
+        //    ofd.Filter = "JSON Template (*.json)|*.json";
+        //    ofd.Title = "Open ProKnow template";
+        //    //nt score_newId = 0;// ScoreMetrics.Count();
 
-            if (ofd.ShowDialog() == true)
-            {
-                PKModel pk_scoreTemplates = JsonConvert.DeserializeObject<PKModel>(File.ReadAllText(ofd.FileName));
-                _scoreTemplates = pk_scoreTemplates.ConvertToTemplate();
-                _eventAggregator.GetEvent<ScorePlanEvent>().Publish(_scoreTemplates);
-            }
-        }
+        //    if (ofd.ShowDialog() == true)
+        //    {
+        //        PKModel pk_scoreTemplates = JsonConvert.DeserializeObject<PKModel>(File.ReadAllText(ofd.FileName));
+        //        _scoreTemplates = pk_scoreTemplates.ConvertToTemplate();
+        //        _eventAggregator.GetEvent<ScorePlanEvent>().Publish(_scoreTemplates);
+        //    }
+        //}
 
         private bool CanGenerateScorecard()
         {
@@ -301,7 +301,7 @@ namespace PlanScoreCard.ViewModels
         private void OnGenerateScorecard()
         {
             GenScoreCardView = new GenerateScorecardView();
-            GenScoreCardView.DataContext = new GenerateScorecardViewModel(SelectedPlan, _scoreTemplates, _templateName,_templateSite, _user, _eventAggregator);
+            GenScoreCardView.DataContext = new GenerateScorecardViewModel(SelectedPlan, _scoreTemplates, _templateName, _templateSite, _user, _eventAggregator);
             GenScoreCardView.ShowDialog();
         }
 
@@ -309,31 +309,66 @@ namespace PlanScoreCard.ViewModels
         {
             //ScoreMetrics.Clear();//
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "JSON Template (*.json)|*.json";
-            ofd.Title = "Open PlanSC template";
+            ofd.Filter = "JSON Template (*.json)|*.json|ePeer Review(*.csv)|*.csv";
+            ofd.Title = "Open Planscore Template";
             int score_newId = 0;// ScoreMetrics.Count();
-
+            bool importSuccess = false;
             if (ofd.ShowDialog() == true)
             {
-                try
-                {
-                    InternalTemplateModel template = JsonConvert.DeserializeObject<InternalTemplateModel>(File.ReadAllText(ofd.FileName));
-                    _templateName = template.TemplateName;
-                    _templateSite = template.Site;
-                    _scoreTemplates = template.ScoreTemplates;
-                }
-                catch
+                if (ofd.FileName.EndsWith(".csv"))
                 {
                     try
                     {
-                        _scoreTemplates = JsonConvert.DeserializeObject<List<ScoreTemplateModel>>(File.ReadAllText(ofd.FileName));
+                        _scoreTemplates = EPeerReviewScoreModel.GetScoreTemplateFromCSV(ofd.FileName);
+                        importSuccess = true;
                     }
-                    catch (Exception ex)
+                    catch
                     {
-                        throw new ApplicationException(ex.Message);
+                        importSuccess = false;
                     }
                 }
-                _eventAggregator.GetEvent<ScorePlanEvent>().Publish(_scoreTemplates);
+                else
+                {
+                    try
+                    {
+                        InternalTemplateModel template = JsonConvert.DeserializeObject<InternalTemplateModel>(File.ReadAllText(ofd.FileName));
+                        _templateName = template.TemplateName;
+                        _templateSite = template.Site;
+                        _scoreTemplates = template.ScoreTemplates;
+                        if (_scoreTemplates.Count() == 0)
+                        {
+                            PKModel pk_scoreTemplates = JsonConvert.DeserializeObject<PKModel>(File.ReadAllText(ofd.FileName));
+                            _scoreTemplates = pk_scoreTemplates.ConvertToTemplate();
+                        }
+                        importSuccess = true;
+                    }
+                    catch
+                    {
+                        try
+                        {
+                            _scoreTemplates = JsonConvert.DeserializeObject<List<ScoreTemplateModel>>(File.ReadAllText(ofd.FileName));
+                            importSuccess = true;
+                        }
+                        catch
+                        {
+                            try
+                            {
+                                PKModel pk_scoreTemplates = JsonConvert.DeserializeObject<PKModel>(File.ReadAllText(ofd.FileName));
+                                _scoreTemplates = pk_scoreTemplates.ConvertToTemplate();
+
+                                importSuccess = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new ApplicationException(ex.Message);
+                            }
+                        }
+                    }
+                }
+                if (importSuccess)
+                {
+                    _eventAggregator.GetEvent<ScorePlanEvent>().Publish(_scoreTemplates);
+                }
             }
         }
 
@@ -374,7 +409,7 @@ namespace PlanScoreCard.ViewModels
         /// <param name="course"></param>
         private void AddPlansFromCourse(Course course)
         {
-            foreach (var ps in course.PlanSums.Where(x=>x.StructureSet!=null && x.Dose!=null))
+            foreach (var ps in course.PlanSums.Where(x => x.StructureSet != null && x.Dose != null))
             {
                 Plans.Add(new PlanModel(ps, _eventAggregator) { PlanId = ps.Id, CourseId = course.Id, DisplayTxt = $"{course.Id}: {ps.Id}" });
             }
