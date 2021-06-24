@@ -235,24 +235,24 @@ namespace PlanScoreCard.Models
                                     if ((plan as PlanSetup).TotalDose.UnitAsString.Contains('c'))
                                     {
                                         //this means templat is in Gy and dose in in cGy
-                                        dTarget = template.HI_Target * 100.0 / (plan as PlanSetup).TotalDose.Dose * 100.0;
+                                        dTarget = template.HI_Target * 100.0;
                                     }
                                     else
                                     {
                                         //plan is in Gy and template is in cgy. 
-                                        dTarget = template.HI_Target / (plan as PlanSetup).TotalDose.Dose;
+                                        dTarget = template.HI_Target/100.0;
                                     }
                                 }
                                 else
                                 {
-                                    dTarget = template.HI_Target / (plan as PlanSetup).TotalDose.Dose * 100.0;
+                                    dTarget = template.HI_Target;
                                 }
                             }
                             var dvh = plan.GetDVHCumulativeData(structure, DoseValuePresentation.Absolute,
                                 VolumePresentation.Relative, _dvhResolution);
                             if (dvh == null) { scoreValue.Value = ScoreMax = scoreValue.Score = -100; return; }
-                            var h_val = template.HI_HiValue * dTarget / 100.0;
-                            var l_val = template.HI_LowValue * dTarget / 100.0;
+                            var h_val = template.HI_HiValue;// * dTarget / 100.0;
+                            var l_val = template.HI_LowValue;// * dTarget / 100.0;
                             if (template.HI_TargetUnit != (plan as PlanSetup).TotalDose.UnitAsString)
                             {
                                 if ((plan as PlanSetup).TotalDose.UnitAsString.Contains('c'))
@@ -328,7 +328,7 @@ namespace PlanScoreCard.Models
                     scoreValue.Value = -1000;
                 }
 
-                if (scoreValue.Value != -1000)
+                if (scoreValue.Value != -1000 && template.ScorePoints.Count()>0)
                 {
                     //break scorepoints into 2 groups, before and after the variation.
                     //this one sets marker color.

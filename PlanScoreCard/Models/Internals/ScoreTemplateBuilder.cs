@@ -132,7 +132,9 @@ namespace PlanScoreCard.Models.Internals
                     new HIViewModel
                     {
                         HI_HiValue = template.HI_HiValue,
-                        HI_LowValue = template.HI_LowValue
+                        HI_LowValue = template.HI_LowValue,
+                        TargetValue = template.HI_Target,
+                        SelectedDoseUnit = template.HI_TargetUnit
                     },
                     new CIViewModel()
                     {

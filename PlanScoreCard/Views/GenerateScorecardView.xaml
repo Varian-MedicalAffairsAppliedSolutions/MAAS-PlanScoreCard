@@ -30,15 +30,13 @@
             <TextBlock Text="Author" FontWeight="Bold" FontSize="14" Foreground="White" Margin="5"/>
             <TextBlock Text="{Binding TemplateAuthor}" Margin="5" Foreground="White" FontWeight="Bold"/>
         </StackPanel>
-        <!--<Border BorderBrush="Blue" BorderThickness="2" Grid.Row="1">
+        <Border BorderBrush="Blue" BorderThickness="2" Grid.Row="1">
             <StackPanel Orientation="Horizontal">
-                <Grid>
+                <!--<Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
@@ -69,38 +67,38 @@
                         </ListView>
 
                     </Grid>
-                </Grid>
-                <StackPanel>
-                    <TextBlock Text="Structure" HorizontalAlignment="Center" Foreground="White"/>
-                    <ComboBox Width="150" ItemsSource="{Binding Structures}" SelectedValue="{Binding SelectedStructure}"
+                </Grid>-->
+                    <StackPanel>
+                        <TextBlock Text="Structure" HorizontalAlignment="Center" Foreground="White"/>
+                        <ComboBox Width="150" ItemsSource="{Binding Structures}" SelectedValue="{Binding SelectedStructure}"
                               DisplayMemberPath="StructureId" Margin="5"
                               ToolTip="{Binding SelectedStructure.StructureComment}"/>
-                    <TextBlock Text="Can't find the structure you're looking for..." FontStyle="Italic" FontSize="9" Foreground="White" Margin="0,5,0,0"/>
-                    <Button Content="Structure Generator" Command="{Binding StructureBuilderCommand}" Margin="5"/>
-                </StackPanel>
-                <StackPanel>
-                    <TextBlock Text="Metric" HorizontalAlignment="Center" Foreground="White"/>
-                    <ComboBox Width="150" ItemsSource="{Binding MetricTypes}" SelectedValue="{Binding SelectedMetric}" Margin="5"/>
-                </StackPanel>
-                <Grid Visibility="{Binding BDAtV, Converter={StaticResource localVisibilityConverter}}">
-                    <local:DoseAtVolumeView DataContext="{Binding DoseAtVolumeViewModel}"/>
-                </Grid>
-                <Grid Visibility="{Binding BVAtD, Converter={StaticResource localVisibilityConverter}}">
-                    <local:VolumeAtDoseView DataContext="{Binding VolumeAtDoseViewModel}"/>
-                </Grid>
-                <Grid Visibility="{Binding BDV, Converter={StaticResource localVisibilityConverter}}">
-                    <local:DoseValueView DataContext="{Binding DoseValueViewModel}"/>
-                </Grid>
-                <Grid Visibility="{Binding BHI, Converter={StaticResource localVisibilityConverter}}">
-                    <local:HIView DataContext="{Binding HIViewModel}"/>
-                </Grid>
-                <Grid Visibility="{Binding BCI,Converter={StaticResource localVisibilityConverter}}">
-                    <local:CIView DataContext="{Binding CIViewModel}"/>
-                </Grid>
-                <Button Content="{icons:FontAwesome Kind=PlusSolid}" Margin="10" Background="Blue"
+                        <TextBlock Text="Can't find the structure you're looking for..." FontStyle="Italic" FontSize="9" Foreground="White" Margin="0,5,0,0"/>
+                        <Button Content="Structure Generator" Command="{Binding StructureBuilderCommand}" Margin="5"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Metric" HorizontalAlignment="Center" Foreground="White"/>
+                        <ComboBox Width="150" ItemsSource="{Binding MetricTypes}" SelectedValue="{Binding SelectedMetric}" Margin="5"/>
+                    </StackPanel>
+                    <Grid Visibility="{Binding BDAtV, Converter={StaticResource localVisibilityConverter}}">
+                        <local:DoseAtVolumeView DataContext="{Binding DoseAtVolumeViewModel}"/>
+                    </Grid>
+                    <Grid Visibility="{Binding BVAtD, Converter={StaticResource localVisibilityConverter}}">
+                        <local:VolumeAtDoseView DataContext="{Binding VolumeAtDoseViewModel}"/>
+                    </Grid>
+                    <Grid Visibility="{Binding BDV, Converter={StaticResource localVisibilityConverter}}">
+                        <local:DoseValueView DataContext="{Binding DoseValueViewModel}"/>
+                    </Grid>
+                    <Grid Visibility="{Binding BHI, Converter={StaticResource localVisibilityConverter}}">
+                        <local:HIView DataContext="{Binding HIViewModel}"/>
+                    </Grid>
+                    <Grid Visibility="{Binding BCI,Converter={StaticResource localVisibilityConverter}}">
+                        <local:CIView DataContext="{Binding CIViewModel}"/>
+                    </Grid>
+                    <Button Content="{icons:FontAwesome Kind=PlusSolid}" Margin="10" Background="Blue"
                         Command="{Binding AddMetricCommand}" Width="50" VerticalAlignment="Center" Height="50"/>
             </StackPanel>
-        </Border>-->
+        </Border>
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
