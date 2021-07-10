@@ -137,6 +137,14 @@ namespace PlanScoreCard.Models
                 Structure structure = GetStructureFromTemplate(id, code, auto, comment, plan);
                 ScoreValueModel scoreValue = new ScoreValueModel();
                 scoreValue.PlanId = plan.Id;
+                if(plan is PlanSetup)
+                {
+                    scoreValue.CourseId = (plan as PlanSetup).Course.Id;
+                }
+                else if(plan is PlanSum)
+                {
+                    scoreValue.CourseId = (plan as PlanSum).Course.Id;
+                }
                 StructureId = structure == null ? " - " : structure.Id;
                 StructureComment = structure == null ? " - " : comment;
                 if (structure != null && plan.Dose != null && !structure.IsEmpty)

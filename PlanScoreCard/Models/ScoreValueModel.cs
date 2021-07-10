@@ -5,5 +5,6 @@
         public string PlanId { get; set; }
         public double Value { get; set; }
         public double Score { get; set; }
+        public string CourseId { get; set; }
     }
 }

@@ -119,6 +119,7 @@
     <Compile Include="Events\DeleteMetricEvent.cs" />
     <Compile Include="Events\DeleteScorePointEvent.cs" />
     <Compile Include="Events\DeleteStructureOperationEvent.cs" />
+    <Compile Include="Events\FreePrimarySelectionEvent.cs" />
     <Compile Include="Events\MetricDownEvent.cs" />
     <Compile Include="Events\MetricUpEvent.cs" />
     <Compile Include="Events\PlanChangedEvent.cs" />

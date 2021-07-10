@@ -27,6 +27,28 @@ namespace PlanScoreCard.Models
                 _eventAggregator.GetEvent<PlanSelectedEvent>().Publish(this);
             }
         }
+        private bool _bPrimary;
+
+        public bool bPrimary
+        {
+            get { return _bPrimary; }
+            set
+            {
+                SetProperty(ref _bPrimary, value);
+                _eventAggregator.GetEvent<FreePrimarySelectionEvent>().Publish(bPrimary);
+                if (bPrimary)
+                {
+                    _eventAggregator.GetEvent<PlanSelectedEvent>().Publish(this);
+                }
+            }
+        }
+        private bool _bPrimaryEnabled;
+
+        public bool bPrimaryEnabled
+        {
+            get { return _bPrimaryEnabled; }
+            set { SetProperty(ref _bPrimaryEnabled, value); }
+        }
 
 
         private PlanningItem _plan;

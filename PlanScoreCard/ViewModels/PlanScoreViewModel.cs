@@ -26,7 +26,7 @@ namespace PlanScoreCard.ViewModels
         private string _patientId;
         private string _courseId;
         private string _planId;
-        private PlanSetup _plan;
+        private PlanningItem _plan;
         private Course _course;
         private Application _app;
         private IEventAggregator _eventAggregator;
@@ -70,13 +70,19 @@ namespace PlanScoreCard.ViewModels
             if (plans != null)
             {
                 Plans.Clear();
-                foreach (var plan in plans)
+                foreach (var plan in plans.OrderByDescending(x=>x.bPrimary))
                 {
                     _plan = _patient.Courses.FirstOrDefault(x => x.Id == plan.CourseId).PlanSetups.FirstOrDefault(x => x.Id == plan.PlanId && x.Course.Id == plan.CourseId);
-                    Plans.Add(_plan);
-                    PlanScores.Clear();
-
+                    if(_plan == null)
+                    {
+                        _plan = _patient.Courses.FirstOrDefault(x => x.Id == plan.CourseId).PlanSums.FirstOrDefault(x => x.Id == plan.PlanId && x.Course.Id == plan.CourseId);
+                    }
+                    if (_plan != null)
+                    {
+                        Plans.Add(_plan);
+                    }
                 }
+                PlanScores.Clear();
                 if (_currentTemplate != null)
                 {
                     ScorePlan(_currentTemplate);
@@ -99,13 +105,19 @@ namespace PlanScoreCard.ViewModels
             }
 
             //remove score points from metrics that didn't have the
-            var planScores = PlanScores.Where(x => x.ScoreValues.First().Value > -999);
-            ScoreTotalText = $"Plan Scores: ";
-            if (planScores.Count() != 0)
+            if (PlanScores.Any(x => x.ScoreValues.Count() > 0))
             {
-                foreach (var planId in planScores.FirstOrDefault().ScoreValues.Select(x => x.PlanId))
+                var planScores = PlanScores.Where(x => x.ScoreValues.First().Value > -999);
+                ScoreTotalText = $"Plan Scores: ";
+                if (planScores.Count() != 0)
                 {
-                    ScoreTotalText += $"\n\t\t{planId}: {planScores.Sum(x => x.ScoreValues.FirstOrDefault(y => y.PlanId == planId).Score):F2}/{planScores.Sum(x => x.ScoreMax):F2} ({planScores.Sum(x => x.ScoreValues.FirstOrDefault(y => y.PlanId == planId).Score) / planScores.Sum(x => x.ScoreMax) * 100.0:F2}%)";
+                    foreach (var pc in planScores.FirstOrDefault().ScoreValues.Select(x => new { planId = x.PlanId, courseId = x.CourseId }))
+                    {
+                        string cid = pc.courseId;
+                        string pid = pc.planId;
+                        double planTotal = planScores.Sum(x => x.ScoreValues.FirstOrDefault(y => y.PlanId == pc.planId && y.CourseId == pc.courseId).Score);
+                        ScoreTotalText += $"\n\t\t[{cid}] {pid}: {planTotal:F2}/{planScores.Sum(x => x.ScoreMax):F2} ({planTotal / planScores.Sum(x => x.ScoreMax) * 100.0:F2}%)";
+                    }
                 }
             }
         }

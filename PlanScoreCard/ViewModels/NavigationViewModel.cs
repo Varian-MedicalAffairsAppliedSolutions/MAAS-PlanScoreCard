@@ -171,6 +171,7 @@ namespace PlanScoreCard.ViewModels
             _user = user;
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<PlanSelectedEvent>().Subscribe(OnPlanSelectionChanged);
+            _eventAggregator.GetEvent<FreePrimarySelectionEvent>().Subscribe(SetPrimarySelections);
             //_eventAggregator.GetEvent<UpdateTemplatesEvent>().Subscribe(OnTemplateUpdated);
             _scoreTemplates = new List<ScoreTemplateModel>();
             Plans = new ObservableCollection<PlanModel>();
@@ -187,6 +188,8 @@ namespace PlanScoreCard.ViewModels
             //SetInitialVisibilities();
             SetPlans();
         }
+
+
         public void UpdatePlanParameters(Patient patient, Course course, PlanSetup plan, List<string> feedbacks)
         {
             //_app.ClosePatient();
@@ -217,8 +220,8 @@ namespace PlanScoreCard.ViewModels
         {
             SelectedPlans.Clear();
             //Plans.Clear();
-            SelectedPlanDisplay = String.Join(",", Plans.Where(x => x.bSelected).Select(x => x.PlanId));
-            foreach (var plan in Plans)
+            SelectedPlanDisplay = String.Join(",", Plans.Where(x => x.bSelected).OrderByDescending(x=>x.bPrimary).Select(x => x.PlanId));
+            foreach (var plan in Plans.OrderByDescending(x=>x.bPrimary))
             {
                 if (plan.bSelected)
                 {
@@ -389,11 +392,12 @@ namespace PlanScoreCard.ViewModels
                 if (_plan is PlanSetup)
                 {
                     Plans.FirstOrDefault(x => x.CourseId == (_plan as PlanSetup).Course.Id && x.PlanId == _plan.Id).bSelected = true;
-
+                    Plans.FirstOrDefault(x => x.CourseId == (_plan as PlanSetup).Course.Id && x.PlanId == _plan.Id).bPrimary = true;
                 }
                 else if (_plan is PlanSum)
                 {
                     Plans.FirstOrDefault(x => x.CourseId == (_plan as PlanSum).Course.Id && x.PlanId == _plan.Id).bSelected = true;
+                    Plans.FirstOrDefault(x => x.CourseId == (_plan as PlanSum).Course.Id && x.PlanId == _plan.Id).bPrimary = true;
                 }
                 else
                 {
@@ -426,6 +430,30 @@ namespace PlanScoreCard.ViewModels
         internal void UpdateScoreTemplates(List<ScoreTemplateModel> templates)
         {
             _scoreTemplates = templates;
+        }
+        private void SetPrimarySelections(bool obj)
+        {
+            if (obj)
+            {
+                foreach(var plan in Plans)
+                {
+                    if (plan.bPrimary)
+                    {
+                        plan.bPrimaryEnabled = true;
+                    }
+                    else
+                    {
+                        plan.bPrimaryEnabled = false;
+                    }
+                }
+            }
+            else
+            {
+                foreach(var plan in Plans)
+                {
+                    plan.bPrimaryEnabled = true;
+                }
+            }
         }
     }
 }

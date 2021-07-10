@@ -20,12 +20,29 @@
         </Grid.ColumnDefinitions>
         <StackPanel>
             <TextBlock Text="Plan Selection for Scoring" FontWeight="Bold" FontSize="18" HorizontalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Checkboxes:" Margin="40,0,0,0"/>
+                <Border BorderBrush="White" BorderThickness="0,0,1,0" Margin="5,0,5,0">
+                    <Border BorderBrush="White" BorderThickness="1" Margin="2,0,5,0">
+                        <TextBlock Text="Primary" Margin="2,0,2,0"/>
+                    </Border>
+                </Border>
+                <Border BorderBrush="White" BorderThickness="1">
+                    <TextBlock Text="Included" Margin="2,0,2,0"/>
+                </Border>
+            </StackPanel>
             <Grid>
                 <ComboBox ItemsSource="{Binding Plans}"
-                               Margin="40,5,0,0" Width="250" Height="20" HorizontalAlignment="Left">
+                               Margin="40,5,0,2" Width="250" Height="20"
+                          HorizontalAlignment="Left" SelectedItem="{Binding bPrimary}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <CheckBox IsChecked="{Binding bSelected, Mode=TwoWay}" Content="{Binding DisplayTxt}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Border BorderBrush="White" BorderThickness="0,0,1,0" Margin="0,0,8,0"  Visibility="{Binding bPrimaryEnabled, Mode=TwoWay,Converter={StaticResource localVisibilityConverter}}">
+                                    <CheckBox IsChecked="{Binding bPrimary, Mode=TwoWay}"/>
+                                </Border>
+                                <CheckBox IsChecked="{Binding bSelected, Mode=TwoWay}" Content="{Binding DisplayTxt}" Margin="-2" />
+                            </StackPanel>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
