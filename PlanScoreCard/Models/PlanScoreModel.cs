@@ -92,6 +92,13 @@ namespace PlanScoreCard.Models
             get { return _blockWidth; }
             set { _blockWidth = value; }
         }
+        private int fontSize;
+
+        public int FontSize
+        {
+            get { return fontSize; }
+            set { fontSize = value; }
+        }
 
         public PlotModel ScorePlotModel { get; set; }
         public ObservableCollection<ScoreValueModel> ScoreValues { get; private set; }
@@ -350,19 +357,24 @@ namespace PlanScoreCard.Models
                     {
                         case 1: case 2: case 3: case 4:
                             BlockWidth = 100.0;
+                            FontSize = 10;
                             break;
                         case 5:
                             BlockWidth = 80.0;
+                            FontSize = 9;
                             break;
                         case 6: 
                         case 7:
                             BlockWidth = 60.0;
+                            FontSize = 7;
                             break;
                         case 8:
                             BlockWidth = 40.0;
+                            FontSize = 5;
                             break;
                         default:
                             BlockWidth = 20.0;
+                            FontSize = 4;
                             break;
                     }
                     if (template.ScorePoints.Count() > 0 && Colors.Count() == 0)
@@ -400,9 +412,9 @@ namespace PlanScoreCard.Models
                             }
 
                         }
-                        if (template.ScorePoints.All(x => x.Colors.Count() > 0))
+                        if (template.ScorePoints.Any(x => x.Colors.Count() > 0))
                         {
-                            PKPosition = new System.Windows.Thickness(PlanScoreCalculationServices.CalculatePKPosition(Colors.ToList(), increasing, scoreValue.Score,BlockWidth), 0, 0, 0);
+                            PKPosition = new System.Windows.Thickness(PlanScoreCalculationServices.CalculatePKPosition(Colors.Where(x=>x.Colors.Count()>0).ToList(), increasing, scoreValue.Score,BlockWidth), 0, 0, 0);
                         }
                     }
 

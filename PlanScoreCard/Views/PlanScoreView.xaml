@@ -72,7 +72,7 @@
                                 <ColumnDefinition Width="3*"/>
                             </Grid.ColumnDefinitions>
                             <Border BorderBrush="Blue" BorderThickness="0 0 0 1">
-                                <TextBlock Text="{Binding MetricId, Converter={StaticResource localMetricIdConverter}}" Foreground="White" HorizontalAlignment="Center" Margin="5"/>
+                                <TextBlock Text="{Binding MetricId, Converter={StaticResource localMetricIdConverter}}" Foreground="White" HorizontalAlignment="Center"/>
                             </Border>
                             <Border BorderBrush="Blue" BorderThickness="0 0 0 1" Grid.Column="1" Grid.ColumnSpan="2">
                             <Grid>
@@ -84,12 +84,12 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                    <TextBlock Foreground="White" HorizontalAlignment="Center" Margin="0,5,0,0" TextWrapping="Wrap">
+                                    <TextBlock Foreground="White" HorizontalAlignment="Center" TextWrapping="Wrap">
                                     <Run Text="{Binding StructureId}"/>
                                     <LineBreak/>
                                     <Run Text="{Binding StructureComment}" FontSize="8"/>
                                     </TextBlock>
-                                    <TextBlock Text="{Binding MetricText}" Foreground="White" HorizontalAlignment="Center" Margin="0,5,0,0" Grid.Column="1"/>
+                                    <TextBlock Text="{Binding MetricText}" Foreground="White" HorizontalAlignment="Center" Grid.Column="1"/>
 
                                 <StackPanel Grid.ColumnSpan="2" Grid.Row="1">
                                     <Grid>
@@ -103,7 +103,8 @@
                                                 <DataTemplate>
                                                     <Border Background="{Binding PlanScoreBackgroundColor}"  BorderBrush="Black" BorderThickness="1" 
                                                             Width="{Binding RelativeSource={RelativeSource AncestorType=StackPanel}, Path=DataContext.BlockWidth}" Height="25">
-                                                        <TextBlock Text="{Binding ColorLabel}" TextWrapping="Wrap" FontSize="10" FontWeight="Bold"/>
+                                                        <TextBlock Text="{Binding ColorLabel}" TextWrapping="Wrap" 
+                                                            FontSize="{Binding RelativeSource={RelativeSource AncestorType=StackPanel}, Path=DataContext.FontSize}" FontWeight="Bold"/>
                                                     </Border>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
@@ -125,9 +126,9 @@
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding PlanId}" Foreground="White" HorizontalAlignment="Center" Margin="2"/>
-                                                <TextBlock Text="{Binding Value, Converter={StaticResource localDoubleConverter}}" Foreground="White" HorizontalAlignment="Center" Margin="2" Grid.Column="1"/>
-                                                <TextBlock Text="{Binding Score, Converter={StaticResource localDoubleConverter}}" Foreground="White" HorizontalAlignment="Center" Margin="2" Grid.Column="2"/>
+                                                <TextBlock Text="{Binding PlanId}" Foreground="White" HorizontalAlignment="Center" Margin="15,0,0,0"/>
+                                                <TextBlock Text="{Binding Value, Converter={StaticResource localDoubleConverter}}" Foreground="White" HorizontalAlignment="Center" Grid.Column="1" Margin="15,0,0,0"/>
+                                                <TextBlock Text="{Binding Score, Converter={StaticResource localDoubleConverter}}" Foreground="White" HorizontalAlignment="Center" Grid.Column="2" Margin="15,0,0,0"/>
                                             </Grid>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
@@ -135,7 +136,7 @@
                             </Border>
                             <Border BorderBrush="Blue" BorderThickness="0 0 0 1" Grid.Column="6">
                                 <StackPanel>
-                                    <TextBlock Text="{Binding ScoreMax, Converter={StaticResource localDoubleConverter}}" Foreground="White" HorizontalAlignment="Center" Margin="5"/>
+                                    <TextBlock Text="{Binding ScoreMax, Converter={StaticResource localDoubleConverter}}" Foreground="White" HorizontalAlignment="Center" Margin="5,0,0,0"/>
                                     <StackPanel Visibility="{Binding bStatsVis,Converter={StaticResource localVisibilityConverter}}">
                                         <TextBlock Text="Score Stats" FontSize="10" HorizontalAlignment="Center"/>
                                         <TextBlock Text="{Binding MaxScore}" HorizontalAlignment="Center"/>
@@ -144,7 +145,7 @@
                                     </StackPanel>
                                 </StackPanel>
                             </Border>
-                            <Border BorderBrush="Blue" BorderThickness="0 0 0 1 " Grid.Column="7">
+                            <Border BorderBrush="Blue" BorderThickness="0 0 0 1" Grid.Column="7">
                                 <StackPanel>
                                     <oxy:PlotView Model="{Binding ScorePlotModel}" Background="Gray" Height="55" Foreground="Black"/>
                                     <Grid>

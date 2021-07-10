@@ -81,9 +81,10 @@ namespace PlanScoreCard
                             MV = container.Resolve<MainView>();
                             MV.DataContext = container.Resolve<MainViewModel>();
                             MV.ShowDialog();
+                            _app.ClosePatient();
                         }
                     }
-                    _app.ClosePatient();
+                   
                 }
                 else
                 {   
