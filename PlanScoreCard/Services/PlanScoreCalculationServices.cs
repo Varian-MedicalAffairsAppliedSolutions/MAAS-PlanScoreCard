@@ -39,7 +39,7 @@ namespace PlanScoreCard.Services
                 if (Colors.IndexOf(Colors.FirstOrDefault(x => x.ColorValue <= score)) != 0)
                 {
                     int index = Colors.IndexOf(Colors.FirstOrDefault(x => x.ColorValue <= score));
-                    if (index == 0)
+                    if (index == -1)//-1 returned if IndexOf returns nothing.
                     {
                         return 0.0;
                     }

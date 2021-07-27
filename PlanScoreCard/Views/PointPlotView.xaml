@@ -42,7 +42,7 @@
                 <TextBlock Text="Delete" Grid.Column="4"/>
                 <TextBlock Text="*Color" Grid.Column="6"/>
                 <Border Grid.Row="1" Grid.ColumnSpan="7" BorderThickness="0,1,0,0" BorderBrush="White">
-                <TextBlock Text="*Color selection qualitative only. Scores colors set by validation." TextWrapping="Wrap" FontSize="10"/>
+                <TextBlock Text="*Color selection qualitative only. Plot colors set by variation." TextWrapping="Wrap" FontSize="10"/>
                 </Border>
             </Grid>
             <ScrollViewer Height="380" Margin="5">

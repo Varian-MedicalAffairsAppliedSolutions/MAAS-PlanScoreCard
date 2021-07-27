@@ -315,6 +315,11 @@ namespace PlanScoreCard.ViewModels
         private void OnAddStructure(StructureModel obj)
         {
             Structures.Add(obj);
+            //also add structures to each metric in case you want to change it.
+            foreach(var sm in ScoreMetrics)
+            {
+                sm.StructureIds.Add(obj);
+            }
         }
 
         private void OnPlanChanged(List<PlanModel> obj)
@@ -543,7 +548,7 @@ namespace PlanScoreCard.ViewModels
                 metricPoint.Score = point.Score;
                 metricPoint.bMidMetric = point.bMidMetric;
                 metricPoint.bMetricChecked = point.bMetricChecked;
-                if (point.Colors.Colors.Count() == 3)
+                if (point.Colors!=null && point.Colors.Colors.Count() == 3)
                 {
                     metricPoint.Colors = new PlanScoreColorModel(new List<double>{point.Colors.Colors.First(),
                     point.Colors.Colors.ElementAt(1),point.Colors.Colors.ElementAt(2) }, point.Colors.ColorLabel);
