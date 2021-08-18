@@ -100,7 +100,7 @@ namespace PlanScoreCard.Models
             set { fontSize = value; }
         }
 
-        public PlotModel ScorePlotModel { get; set; }
+        public ViewResolvingPlotModel ScorePlotModel { get; set; }
         public ObservableCollection<ScoreValueModel> ScoreValues { get; private set; }
         public ObservableCollection<PlanScoreColorModel> Colors { get; private set; }
         public PlanScoreModel(VMS.TPS.Common.Model.API.Application app)
@@ -109,7 +109,7 @@ namespace PlanScoreCard.Models
             _dvhResolution = Convert.ToDouble(ConfigurationManager.AppSettings["DVHResolution"]);
             ScoreValues = new ObservableCollection<ScoreValueModel>();
             Colors = new ObservableCollection<PlanScoreColorModel>();
-            ScorePlotModel = new PlotModel();
+            ScorePlotModel = new ViewResolvingPlotModel();
         }
         public void BuildPlanScoreFromTemplate(ObservableCollection<PlanningItem> plans, ScoreTemplateModel template, int metricId)
         {

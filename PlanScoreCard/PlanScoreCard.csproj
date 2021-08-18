@@ -154,6 +154,7 @@
     <Compile Include="Services\PlanScoreCalculationServices.cs" />
     <Compile Include="Services\PlanScorePlottingServices.cs" />
     <Compile Include="Services\StructureGenerationService.cs" />
+    <Compile Include="Services\ViewResolvingPlotModel.cs" />
     <Compile Include="Startup\Bootstrapper.cs" />
     <Compile Include="ViewModels\CIViewModel.cs" />
     <Compile Include="ViewModels\ColorPickerViewModel.cs" />

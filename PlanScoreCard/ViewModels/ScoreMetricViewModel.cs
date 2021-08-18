@@ -90,7 +90,7 @@ namespace PlanScoreCard.ViewModels
         public string SelectedDoseValueMetric { get; set; }
         public ObservableCollection<StructureModel> StructureIds { get; set; }
         public DelegateCommand AddPointCommand { get; private set; }
-        public PlotModel ScoreMetricPlotModel { get; set; }
+        public ViewResolvingPlotModel ScoreMetricPlotModel { get; set; }
         public DelegateCommand ExpandMetricDetailsCommand { get; private set; }
         public DelegateCommand ContractMetricDetailsCommand { get; private set; }
         public DelegateCommand DeleteMetricCommand { get; private set; }
@@ -126,7 +126,7 @@ namespace PlanScoreCard.ViewModels
             if (ScoreMetric != null)
             {
                 SetEvents();
-                ScoreMetricPlotModel = new PlotModel();
+                ScoreMetricPlotModel = new ViewResolvingPlotModel();
                 SetPlotProperties(metricType);
                 StructureTxt = StructureIds.FirstOrDefault(x => x.StructureId == selectedStructure.StructureId);
                 MetricTxt = GetMetricText(metricType);//                
