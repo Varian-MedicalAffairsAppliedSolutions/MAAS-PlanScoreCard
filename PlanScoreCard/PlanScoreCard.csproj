@@ -124,6 +124,9 @@
     <Compile Include="Events\MetricUpEvent.cs" />
     <Compile Include="Events\PlanChangedEvent.cs" />
     <Compile Include="Events\PlanSelectedEvent.cs" />
+    <Compile Include="Events\Plugins\ConsoleUpdateEvent.cs" />
+    <Compile Include="Events\Plugins\PlotUpdateEvent.cs" />
+    <Compile Include="Events\Plugins\PluginVisibilityEvent.cs" />
     <Compile Include="Events\PointDownEvent.cs" />
     <Compile Include="Events\PointUpEvent.cs" />
     <Compile Include="Events\ScorePlanEvent.cs" />
@@ -151,11 +154,13 @@
     <Compile Include="Models\StructureModelNestingModel.cs" />
     <Compile Include="Models\StructureOperationEnum.cs" />
     <Compile Include="Models\StructureOperationModel.cs" />
+    <Compile Include="Services\NormalizationService.cs" />
     <Compile Include="Services\PlanScoreCalculationServices.cs" />
     <Compile Include="Services\PlanScorePlottingServices.cs" />
     <Compile Include="Services\StructureGenerationService.cs" />
     <Compile Include="Services\ViewResolvingPlotModel.cs" />
     <Compile Include="Startup\Bootstrapper.cs" />
+    <Compile Include="UIExtensions\ScrollViewerExt.cs" />
     <Compile Include="ViewModels\CIViewModel.cs" />
     <Compile Include="ViewModels\ColorPickerViewModel.cs" />
     <Compile Include="ViewModels\DoseAtVolumeViewModel.cs" />
@@ -165,6 +170,7 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\NavigationViewModel.cs" />
     <Compile Include="ViewModels\PlanScoreViewModel.cs" />
+    <Compile Include="ViewModels\PluginViewModel.cs" />
     <Compile Include="ViewModels\ScoreMetricViewModel.cs" />
     <Compile Include="ViewModels\StructureBuilderGroupViewModel.cs" />
     <Compile Include="ViewModels\StructureBuilderViewModel.cs" />
@@ -195,6 +201,15 @@
     </Compile>
     <Compile Include="Views\PlanScoreView.xaml.cs">
       <DependentUpon>PlanScoreView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PluginConsoleView.xaml.cs">
+      <DependentUpon>PluginConsoleView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PluginPlotView.xaml.cs">
+      <DependentUpon>PluginPlotView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PluginView.xaml.cs">
+      <DependentUpon>PluginView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PointPlotView.xaml.cs">
       <DependentUpon>PointPlotView.xaml</DependentUpon>
@@ -276,6 +291,18 @@
     <Page Include="Views\PlanScoreView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PluginConsoleView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PluginPlotView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PluginView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\PointPlotView.xaml">
       <SubType>Designer</SubType>

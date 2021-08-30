@@ -1,9 +1,11 @@
 ﻿using Microsoft.Win32;
 using Newtonsoft.Json;
 using PlanScoreCard.Events;
+using PlanScoreCard.Events.Plugin;
 using PlanScoreCard.Models;
 using PlanScoreCard.Models.Internals;
 using PlanScoreCard.Models.Proknow;
+using PlanScoreCard.Services;
 using PlanScoreCard.Views;
 using Prism.Commands;
 using Prism.Events;
@@ -15,6 +17,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using VMS.TPS.Common.Model.API;
 
@@ -129,6 +132,7 @@ namespace PlanScoreCard.ViewModels
             set
             {
                 SetProperty(ref selectedPlan, value);
+                NormalizePlanCommand.RaiseCanExecuteChanged();
                 GenerateScorecardCommand.RaiseCanExecuteChanged();
                 if (SelectedPlan != null)
                 {
@@ -158,6 +162,7 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand ImportPKScorecardCommand { get; private set; }
         public DelegateCommand ImportEPRScorecardCommand { get; private set; }
         public DelegateCommand SetButtonVisibilityCommand { get; private set; }
+        public DelegateCommand NormalizePlanCommand { get; private set; }
         public NavigationViewModel(Patient patient, Course course, PlanSetup plan, User user, Application app,
             IEventAggregator eventAggregator)
         {
@@ -181,6 +186,7 @@ namespace PlanScoreCard.ViewModels
             //ImportPKScorecardCommand = new DelegateCommand(OnImportPKScorecard);
             //ImportEPRScorecardCommand = new DelegateCommand(OnImportEPRScorecard);
             SetButtonVisibilityCommand = new DelegateCommand(OnSetImportVisibilty);
+            NormalizePlanCommand = new DelegateCommand(() => OnNormalizePlan());
             TemplateOptions = new ObservableCollection<string>();
             TemplateOptions.Add("ESAPI PlanScore");
             TemplateOptions.Add("Proknow");
@@ -188,7 +194,22 @@ namespace PlanScoreCard.ViewModels
             //SetInitialVisibilities();
             SetPlans();
         }
-
+        private void OnNormalizePlan()
+        {
+            if (Plans.Any(x => x.bPrimary) && _scoreTemplates.Count() > 0)
+            {
+                //_eventAggregator.GetEvent<PluginVisibilityEvent>().Publish(true);
+                //NormalizationService normService = new NormalizationService(
+                //    _app, _patient, Plans.FirstOrDefault(x => x.bPrimary), _scoreTemplates, _eventAggregator);
+                //_app.ClosePatient();
+                //_app.Dispose();
+                //new Thread(new ThreadStart(normService.GetPlan)).Start();
+                //var newplan = Task.Run(()=>normService.GetPlan());
+                //var newplan = normService.GetPlan();
+                //Plans.Add(newplan);
+                //Plans.FirstOrDefault(x => x.CourseId == newplan.CourseId && x.PlanId == newplan.PlanId).bSelected = true;
+            }
+        }
 
         public void UpdatePlanParameters(Patient patient, Course course, PlanSetup plan, List<string> feedbacks)
         {
@@ -220,8 +241,8 @@ namespace PlanScoreCard.ViewModels
         {
             SelectedPlans.Clear();
             //Plans.Clear();
-            SelectedPlanDisplay = String.Join(",", Plans.Where(x => x.bSelected).OrderByDescending(x=>x.bPrimary).Select(x => x.PlanId));
-            foreach (var plan in Plans.OrderByDescending(x=>x.bPrimary))
+            SelectedPlanDisplay = String.Join(",", Plans.Where(x => x.bSelected).OrderByDescending(x => x.bPrimary).Select(x => x.PlanId));
+            foreach (var plan in Plans.OrderByDescending(x => x.bPrimary))
             {
                 if (plan.bSelected)
                 {
@@ -435,7 +456,7 @@ namespace PlanScoreCard.ViewModels
         {
             if (obj)
             {
-                foreach(var plan in Plans)
+                foreach (var plan in Plans)
                 {
                     if (plan.bPrimary)
                     {
@@ -449,7 +470,7 @@ namespace PlanScoreCard.ViewModels
             }
             else
             {
-                foreach(var plan in Plans)
+                foreach (var plan in Plans)
                 {
                     plan.bPrimaryEnabled = true;
                 }

@@ -1,4 +1,5 @@
 ﻿using PlanScoreCard.Events;
+using PlanScoreCard.Events.Plugin;
 using PlanScoreCard.Models.Internals;
 using Prism.Events;
 using Prism.Mvvm;
@@ -46,6 +47,21 @@ namespace PlanScoreCard.ViewModels
             bPluginVisibility = false;
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<ScorePlanEvent>().Subscribe(OnScorePlan);
+            _eventAggregator.GetEvent<PluginVisibilityEvent>().Subscribe(OnPluginVisible);
+        }
+
+        private void OnPluginVisible(bool obj)
+        {
+            bPluginVisibility = obj;
+            if (obj)
+            {
+                PluginWidth = 200;
+
+            }
+            else
+            {
+                PluginWidth = 0;
+            }
         }
 
         private void OnScorePlan(List<ScoreTemplateModel> templates)

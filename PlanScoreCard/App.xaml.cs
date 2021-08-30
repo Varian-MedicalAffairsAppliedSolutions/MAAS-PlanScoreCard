@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using VMS.TPS.Common.Model.API;
 
+[assembly: ESAPIScript(IsWriteable = true)]
 namespace PlanScoreCard
 {
     /// <summary>
@@ -33,7 +34,7 @@ namespace PlanScoreCard
             {
                 var provider = new CultureInfo("en-US");
                 DateTime endDate = DateTime.Now;
-                if (DateTime.TryParse("9/30/2021", provider, DateTimeStyles.None, out endDate))
+                if (DateTime.TryParse("10/31/2021", provider, DateTimeStyles.None, out endDate))
                 {
                     if (DateTime.Now <= endDate)
                     {
@@ -88,7 +89,10 @@ namespace PlanScoreCard
                                 _app.ClosePatient();
                             }
                         }
-
+                        else
+                        {
+                            System.Windows.Application.Current.Shutdown();
+                        }
                     }
                     else
                     {

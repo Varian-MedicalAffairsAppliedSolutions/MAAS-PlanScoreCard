@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using VMS.TPS.Common.Model.API;
 
-[assembly:ESAPIScript(IsWriteable = true)]
 namespace PlanScoreCard.Services
 {
     public static class StructureGenerationService

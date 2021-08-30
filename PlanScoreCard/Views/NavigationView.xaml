@@ -62,9 +62,13 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Button Content="Create/Edit" Command="{Binding GenerateScorecardCommand}" Background="Blue"
-                    Width="150" Margin="0,5,0,5" Foreground="White"/>
+                    Width="150" Foreground="White" Margin="2"/>
+            <StackPanel Grid.Row="1">
             <Button Content="Import ScoreCard" Command="{Binding ImportScorecardCommand}" Background="Blue"
-                        Grid.Row="1" Width="150"/>
+                        Grid.Row="1" Width="150" Margin="2"/>
+            <!--<Button Content="Normalize to Max Score" Command="{Binding NormalizePlanCommand}" Background="Blue"
+                    Width="150" Margin="2"/>-->
+            </StackPanel>
             <!--Visibility="{Binding bLocalTemplate, Converter={StaticResource localVisibilityConverter}}"/>-->
             <!--<Button Content="Import PK Scorecard" Command="{Binding ImportPKScorecardCommand}" Background="Blue"
                     Grid.Row ="1" Width="150"
