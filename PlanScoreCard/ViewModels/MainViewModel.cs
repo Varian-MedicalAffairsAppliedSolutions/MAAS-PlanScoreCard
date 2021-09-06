@@ -32,6 +32,7 @@ namespace PlanScoreCard.ViewModels
 
         public MainViewModel(NavigationViewModel navigationViewModel,
             PlanScoreViewModel planScoreViewModel,
+            PluginViewModel pluginViewModel,
             Patient patient,
             Course course,
             PlanSetup plan,
@@ -44,6 +45,7 @@ namespace PlanScoreCard.ViewModels
             _app = app;
             NavigationViewModel = navigationViewModel;
             PlanScoreViewModel = planScoreViewModel;
+            PluginViewModel = pluginViewModel;
             bPluginVisibility = false;
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<ScorePlanEvent>().Subscribe(OnScorePlan);
@@ -55,7 +57,7 @@ namespace PlanScoreCard.ViewModels
             bPluginVisibility = obj;
             if (obj)
             {
-                PluginWidth = 200;
+                PluginWidth = 300;
 
             }
             else
@@ -81,6 +83,7 @@ namespace PlanScoreCard.ViewModels
 
         public NavigationViewModel NavigationViewModel { get; }
         public PlanScoreViewModel PlanScoreViewModel { get; }
+        public PluginViewModel PluginViewModel { get; }
 
         private IEventAggregator _eventAggregator;
     }

@@ -198,16 +198,16 @@ namespace PlanScoreCard.ViewModels
         {
             if (Plans.Any(x => x.bPrimary) && _scoreTemplates.Count() > 0)
             {
-                //_eventAggregator.GetEvent<PluginVisibilityEvent>().Publish(true);
-                //NormalizationService normService = new NormalizationService(
-                //    _app, _patient, Plans.FirstOrDefault(x => x.bPrimary), _scoreTemplates, _eventAggregator);
+                _eventAggregator.GetEvent<PluginVisibilityEvent>().Publish(true);
+                NormalizationService normService = new NormalizationService(
+                    _app, _patient, Plans.FirstOrDefault(x => x.bPrimary), _scoreTemplates, _eventAggregator);
                 //_app.ClosePatient();
                 //_app.Dispose();
                 //new Thread(new ThreadStart(normService.GetPlan)).Start();
                 //var newplan = Task.Run(()=>normService.GetPlan());
-                //var newplan = normService.GetPlan();
-                //Plans.Add(newplan);
-                //Plans.FirstOrDefault(x => x.CourseId == newplan.CourseId && x.PlanId == newplan.PlanId).bSelected = true;
+                var newplan = normService.GetPlan();
+                Plans.Add(newplan);
+                Plans.FirstOrDefault(x => x.CourseId == newplan.CourseId && x.PlanId == newplan.PlanId).bSelected = true;
             }
         }
 

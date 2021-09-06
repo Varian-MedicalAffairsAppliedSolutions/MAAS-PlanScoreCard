@@ -36,7 +36,7 @@ namespace PlanScoreCard.Services
             //GetPlan(plan);
             //_app.SaveModifications();
         }
-        public void GetPlan()
+        public PlanModel GetPlan()
         {
             //_app = VMS.TPS.Common.Model.API.Application.CreateApplication();
             //_patient = _app.OpenPatientById(_patientId);
@@ -62,11 +62,15 @@ namespace PlanScoreCard.Services
             var _newPlan = _newCourse.CopyPlanSetup(plan);
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"Generated New Plan {_newPlan.Id} in {_newCourse.Id}");
             TestNormalization(_newPlan);
-            //var newPlanModel = new PlanModel(_newPlan, _eventAggregator);
+            var newPlanModel = new PlanModel(_newPlan, _eventAggregator)
+            {
+                CourseId = _newPlan.Course.Id,
+                PlanId = _newPlan.Id
+            };
             _app.SaveModifications();
             //_app.ClosePatient();
             //_app.Dispose();
-            //return newPlanModel;
+            return newPlanModel;
         }
 
         private void TestNormalization(PlanSetup newPlan)
