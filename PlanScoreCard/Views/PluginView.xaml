@@ -4,12 +4,18 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:local="clr-namespace:PlanScoreCard.Views"
+        xmlns:local="clr-namespace:PlanScoreCard.Views.Plugins"
         mc:Ignorable="d"
         Title="PluginView" Height="450" Width="800">
     <Grid>
 
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <local:PluginConsoleView/>
+        <local:PluginPlotView Grid.Row="1"/>
+
     </Grid>
 </metro:MetroWindow>
 

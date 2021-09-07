@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using PlanScoreCard.Services;
 using PlanScoreCard.ViewModels;
 using PlanScoreCard.Views;
 using Prism.Events;
@@ -27,6 +28,8 @@ namespace PlanScoreCard.Startup
             //events
             container.RegisterType<EventAggregator>().As<IEventAggregator>().SingleInstance();
 
+            // services
+            container.RegisterType<ViewLauncherService>().AsSelf();
 
             return container.Build();
         }
