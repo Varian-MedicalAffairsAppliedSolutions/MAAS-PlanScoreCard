@@ -58,6 +58,8 @@ namespace PlanScoreCard.Views
 
         public PluginView()
         {
+            PlotModel = new PlotModel();
+            ConsoleOutput = "";
             DataContext = this;
             InitializeComponent();
         }
@@ -66,6 +68,7 @@ namespace PlanScoreCard.Views
         public void UpdatePlot(PlotModel plotModel)
         {
             PlotModel = plotModel;
+            PlotModel.InvalidatePlot(true);
         }
 
         public void UpdateConsoleOutput(string consoleOutput)
