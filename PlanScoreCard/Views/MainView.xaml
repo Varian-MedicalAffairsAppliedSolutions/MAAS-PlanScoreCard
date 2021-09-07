@@ -9,9 +9,9 @@
         xmlns:converters ="clr-namespace:PlanScoreCard.Converters"
         mc:Ignorable="d"
         Title="ESAPI Plan Scorecard" Height="850" Width="1200">
-    <metro:MetroWindow.Resources>
+    <!--<metro:MetroWindow.Resources>
         <converters:BoolVisibilityConverter x:Key="localBoolVisibilityConverter"/>
-    </metro:MetroWindow.Resources>
+    </metro:MetroWindow.Resources>-->
     <Grid>
         
         <Grid.RowDefinitions>
@@ -23,11 +23,12 @@
             <ColumnDefinition Width="{Binding PluginWidth}"/>
         </Grid.ColumnDefinitions>
         <local:NavigationView DataContext="{Binding NavigationViewModel}"/>
-        <Border Grid.Row="1" BorderBrush="Blue" BorderThickness="1">
+        <!--<local:NavigationView DataContext="{Binding NavigationViewModel}"/>-->
+        <!--<Border Grid.Row="1" BorderBrush="Blue" BorderThickness="1">
             <local:PlanScoreView DataContext="{Binding PlanScoreViewModel}"/>
         </Border>
         <Grid Grid.RowSpan="2" Grid.Column="1" Visibility="{Binding bPluginVisibility,Converter={StaticResource localBoolVisibilityConverter}}">
             <plugin:PluginView DataContext="{Binding PluginViewModel}" />
-        </Grid>
+        </Grid>-->
     </Grid>
 </metro:MetroWindow>
