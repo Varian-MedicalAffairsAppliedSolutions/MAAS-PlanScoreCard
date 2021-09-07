@@ -24,10 +24,10 @@
         </Grid.ColumnDefinitions>
         <local:NavigationView DataContext="{Binding NavigationViewModel}"/>
         <!--<local:NavigationView DataContext="{Binding NavigationViewModel}"/>-->
-        <!--<Border Grid.Row="1" BorderBrush="Blue" BorderThickness="1">
+        <Border Grid.Row="1" BorderBrush="Blue" BorderThickness="1">
             <local:PlanScoreView DataContext="{Binding PlanScoreViewModel}"/>
         </Border>
-        <Grid Grid.RowSpan="2" Grid.Column="1" Visibility="{Binding bPluginVisibility,Converter={StaticResource localBoolVisibilityConverter}}">
+        <!--<Grid Grid.RowSpan="2" Grid.Column="1" Visibility="{Binding bPluginVisibility,Converter={StaticResource localBoolVisibilityConverter}}">
             <plugin:PluginView DataContext="{Binding PluginViewModel}" />
         </Grid>-->
     </Grid>

@@ -1,4 +1,5 @@
 ﻿using MahApps.Metro.Controls;
+using PlanScoreCard.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +21,13 @@ namespace PlanScoreCard.Views
     /// </summary>
     public partial class PluginView : MetroWindow
     {
-        public PluginView()
+
+        private PluginViewModel PluginViewModel;
+
+        public PluginView(PluginViewModel pluginViewModel)
         {
+            PluginViewModel = pluginViewModel;
+            DataContext = PluginViewModel;
             InitializeComponent();
         }
     }

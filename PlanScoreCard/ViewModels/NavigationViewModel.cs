@@ -25,6 +25,7 @@ namespace PlanScoreCard.ViewModels
 {
     public class NavigationViewModel : BindableBase
     {
+        private readonly ViewLauncherService ViewLauncherService;
 
         private string _patientId;
         private string _courseId;
@@ -83,7 +84,6 @@ namespace PlanScoreCard.ViewModels
         }
 
         private string selectedTemplateOption;
-
 
         public string SelectedTemplateOption
         {
@@ -164,7 +164,7 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand SetButtonVisibilityCommand { get; private set; }
         public DelegateCommand NormalizePlanCommand { get; private set; }
         public NavigationViewModel(Patient patient, Course course, PlanSetup plan, User user, Application app,
-            IEventAggregator eventAggregator)
+            IEventAggregator eventAggregator, ViewLauncherService viewLauncherService)
         {
             _patientId = patient.Id;
             _courseId = course.Id;
@@ -174,6 +174,8 @@ namespace PlanScoreCard.ViewModels
             _course = course;
             _plan = plan;
             _user = user;
+
+            ViewLauncherService = viewLauncherService;
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<PlanSelectedEvent>().Subscribe(OnPlanSelectionChanged);
             _eventAggregator.GetEvent<FreePrimarySelectionEvent>().Subscribe(SetPrimarySelections);
@@ -198,7 +200,10 @@ namespace PlanScoreCard.ViewModels
         {
             if (Plans.Any(x => x.bPrimary) && _scoreTemplates.Count() > 0)
             {
-                _eventAggregator.GetEvent<PluginVisibilityEvent>().Publish(true);
+                //_eventAggregator.GetEvent<PluginVisibilityEvent>().Publish(true);
+                PluginView pluginView = ViewLauncherService.GetPluginView();
+                pluginView.Show();
+
                 NormalizationService normService = new NormalizationService(
                     _app, _patient, Plans.FirstOrDefault(x => x.bPrimary), _scoreTemplates, _eventAggregator);
                 //_app.ClosePatient();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PlanScoreCard.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,8 +21,12 @@ namespace PlanScoreCard.Views.Plugins
     /// </summary>
     public partial class PluginPlotView : UserControl
     {
-        public PluginPlotView()
+        PluginPlotViewModel PluginPlotViewModel;
+
+        public PluginPlotView(PluginPlotViewModel pluginPlotViewModel)
         {
+            PluginPlotViewModel = pluginPlotViewModel; 
+            DataContext = PluginPlotViewModel;
             InitializeComponent();
         }
     }

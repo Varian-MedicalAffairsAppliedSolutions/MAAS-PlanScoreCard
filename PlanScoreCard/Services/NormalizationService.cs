@@ -40,12 +40,15 @@ namespace PlanScoreCard.Services
         {
             //_app = VMS.TPS.Common.Model.API.Application.CreateApplication();
             //_patient = _app.OpenPatientById(_patientId);
+
             var course = _patient.Courses.FirstOrDefault(x => x.Id == _planModel.CourseId);
             var plan = course.PlanSetups.FirstOrDefault(x => x.Id == _planModel.PlanId);
+
             _eventAggregator.GetEvent<PlotUpdateEvent>().Publish("Series_X_Plan Normalization [%]");
             _eventAggregator.GetEvent<PlotUpdateEvent>().Publish("Series_Y_Score");
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"Accessing plan {plan.Id}");
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\tInitial Normalization = {plan.PlanNormalizationValue}");
+
             //copy plan.
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish("Copying plan");
             _patient.BeginModifications();

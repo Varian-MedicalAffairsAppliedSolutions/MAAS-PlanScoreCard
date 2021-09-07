@@ -171,6 +171,8 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\NavigationViewModel.cs" />
     <Compile Include="ViewModels\PlanScoreViewModel.cs" />
+    <Compile Include="ViewModels\PluginConsoleViewModel.cs" />
+    <Compile Include="ViewModels\PluginPlotViewModel.cs" />
     <Compile Include="ViewModels\PluginViewModel.cs" />
     <Compile Include="ViewModels\ScoreMetricViewModel.cs" />
     <Compile Include="ViewModels\StructureBuilderGroupViewModel.cs" />

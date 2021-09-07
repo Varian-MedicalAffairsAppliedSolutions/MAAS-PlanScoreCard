@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using PlanScoreCard.Views;
+using PlanScoreCard.Views.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +22,19 @@ namespace PlanScoreCard.Services
             Context = componentContext;
         }
 
-        /// <summary>
-        /// Generate a home view
-        /// </summary>
-        /// <returns></returns>
         public PluginView GetPluginView()
         {
             return GetView<PluginView>();
+        }
+
+        public PluginConsoleView GetPluginConsoleView()
+        {
+            return GetView<PluginConsoleView>();
+        }
+
+        public PluginPlotView GetPluginPlotView()
+        {
+            return GetView<PluginPlotView>();
         }
 
         /// <summary>

@@ -13,9 +13,8 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <local:PluginConsoleView/>
-        <local:PluginPlotView Grid.Row="1"/>
-
+        <UserControl Grid.Row="0" Content="{Binding PluginConsoleUserControl}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+        <UserControl Grid.Row="1" Content="{Binding PluginPlotUserControl}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
     </Grid>
 </metro:MetroWindow>
 
