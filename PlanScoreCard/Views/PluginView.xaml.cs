@@ -1,8 +1,11 @@
 ﻿using MahApps.Metro.Controls;
+using OxyPlot;
 using PlanScoreCard.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,16 +22,63 @@ namespace PlanScoreCard.Views
     /// <summary>
     /// Interaction logic for PluginView.xaml
     /// </summary>
-    public partial class PluginView : MetroWindow
+    public partial class PluginView : MetroWindow , INotifyPropertyChanged
     {
 
-        private PluginViewModel PluginViewModel;
-
-        public PluginView(PluginViewModel pluginViewModel)
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PluginViewModel = pluginViewModel;
-            DataContext = PluginViewModel;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+        private string consoleOutput;
+        public string ConsoleOutput
+        {
+            get { return consoleOutput; }
+            set 
+            { 
+                consoleOutput = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private PlotModel plotModel;
+
+        public PlotModel PlotModel
+        {
+            get { return plotModel; }
+            set 
+            { 
+                plotModel = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        public PluginView()
+        {
+            DataContext = this;
             InitializeComponent();
         }
+
+
+        public void UpdatePlot(PlotModel plotModel)
+        {
+            PlotModel = plotModel;
+        }
+
+        public void UpdateConsoleOutput(string consoleOutput)
+        {
+            ConsoleOutput = consoleOutput;
+        }
+
+        public void SendToFront()
+        {
+            Topmost = true;
+            Topmost = false;
+        }
+
+
     }
 }

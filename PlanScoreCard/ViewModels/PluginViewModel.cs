@@ -16,6 +16,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace PlanScoreCard.ViewModels
 {
@@ -24,6 +25,11 @@ namespace PlanScoreCard.ViewModels
         private string _consoleOutput;
         private IEventAggregator _eventAggregator;
         private ViewLauncherService ViewLauncherService;
+        private PluginViewService PluginViewService;
+
+        private readonly IEventAggregator EventAggregator;
+        private readonly IEventAggregator ViewEventAggregator;
+        private Dispatcher ViewDispatcher;
 
         public string ConsoleOutput
         {
@@ -72,7 +78,7 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand OptimizeCommand { get; private set; }
         public DelegateCommand FinalizeCommand { get; private set; }
         public PlotModel PlotData { get; set; }
-        public PluginViewModel(IEventAggregator eventAggregator, ViewLauncherService viewLauncherService)
+        public PluginViewModel(IEventAggregator eventAggregator, ViewLauncherService viewLauncherService , PluginViewService pluginViewService)
         {
             _eventAggregator = eventAggregator;
             ViewLauncherService = viewLauncherService;
@@ -82,10 +88,20 @@ namespace PlanScoreCard.ViewModels
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Subscribe(OnConsoleUpdate);
             _eventAggregator.GetEvent<PlotUpdateEvent>().Subscribe(OnUpdatePlot);
             _eventAggregator.GetEvent<PluginVisibilityEvent>().Subscribe(OnPluginRun);
+            _eventAggregator.GetEvent<ShowPluginViewEvent>().Subscribe(ShowPluginView);
             ReloadAppCommand = new DelegateCommand(OnReloadApp);
             OptimizeCommand = new DelegateCommand(OnOptimize);
             FinalizeCommand = new DelegateCommand(OnFinalize);
 
+            ViewEventAggregator = new EventAggregator();
+
+             PluginViewService = pluginViewService; 
+        }
+
+        private void ShowPluginView()
+        {
+            PluginViewService.ShowPluginView();
+            PluginViewService.SendToFront();
         }
 
         private void OnFinalize()
@@ -166,6 +182,8 @@ namespace PlanScoreCard.ViewModels
             {
                 //_eventAggregator.GetEvent<UpdateMetricDuringOptimizationEvent>().Publish(obj);
             }
+
+            PluginViewService.UpdatePlot(PlotData);
         }
 
         private void GeneratePlotSeries(string obj)
@@ -179,7 +197,6 @@ namespace PlanScoreCard.ViewModels
             //           Convert.ToDouble(obj.Split(';').Last().TrimEnd('>'))));
             PlotData.Series.Add(series);
             // PlotData.InvalidatePlot(true);
-
         }
 
         private void ResetPlotSeries(string title, double xval, double yval)
@@ -229,6 +246,7 @@ namespace PlanScoreCard.ViewModels
             //    bReloadAvailable = true; 
             //}
             ConsoleOutput += System.Environment.NewLine + obj;
+            PluginViewService.UpdateConsoleOutput(ConsoleOutput);
         }
     }
     public class PlotSeriesData

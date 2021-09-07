@@ -130,6 +130,7 @@
     <Compile Include="Events\PointDownEvent.cs" />
     <Compile Include="Events\PointUpEvent.cs" />
     <Compile Include="Events\ScorePlanEvent.cs" />
+    <Compile Include="Events\ShowPluginViewEvent.cs" />
     <Compile Include="Events\StructureBuilderChangedEvent.cs" />
     <Compile Include="Events\VariationCheckedEvent.cs" />
     <Compile Include="Models\Internals\EPeerReviewScoreModel.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="Services\NormalizationService.cs" />
     <Compile Include="Services\PlanScoreCalculationServices.cs" />
     <Compile Include="Services\PlanScorePlottingServices.cs" />
+    <Compile Include="Services\PluginViewService.cs" />
     <Compile Include="Services\StructureGenerationService.cs" />
     <Compile Include="Services\ViewLauncherService.cs" />
     <Compile Include="Services\ViewResolvingPlotModel.cs" />

@@ -200,9 +200,7 @@ namespace PlanScoreCard.ViewModels
         {
             if (Plans.Any(x => x.bPrimary) && _scoreTemplates.Count() > 0)
             {
-                //_eventAggregator.GetEvent<PluginVisibilityEvent>().Publish(true);
-                PluginView pluginView = ViewLauncherService.GetPluginView();
-                pluginView.Show();
+                _eventAggregator.GetEvent<ShowPluginViewEvent>().Publish();
 
                 NormalizationService normService = new NormalizationService( _app, _patient, Plans.FirstOrDefault(x => x.bPrimary), _scoreTemplates, _eventAggregator);
                 //_app.ClosePatient();
