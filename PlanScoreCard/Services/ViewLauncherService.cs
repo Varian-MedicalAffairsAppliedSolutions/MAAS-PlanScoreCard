@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using PlanScoreCard.Views;
-using PlanScoreCard.Views.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,20 +26,6 @@ namespace PlanScoreCard.Services
             return GetView<PluginView>();
         }
 
-        public PluginConsoleView GetPluginConsoleView()
-        {
-            return GetView<PluginConsoleView>();
-        }
-
-        public PluginPlotView GetPluginPlotView()
-        {
-            return GetView<PluginPlotView>();
-        }
-
-        /// <summary>
-        /// Generate a generic view
-        /// </summary>
-        /// <returns></returns>
         public T GetView<T>()
         {
             return Context.Resolve<T>();

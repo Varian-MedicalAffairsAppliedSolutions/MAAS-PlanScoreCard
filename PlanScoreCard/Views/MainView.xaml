@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PlanScoreCard.Views"
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:plugin="clr-namespace:PlanScoreCard.Views.Plugins"
         xmlns:converters ="clr-namespace:PlanScoreCard.Converters"
         mc:Ignorable="d"
         Title="ESAPI Plan Scorecard" Height="850" Width="1200">

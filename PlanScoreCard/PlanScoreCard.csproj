@@ -171,8 +171,6 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\NavigationViewModel.cs" />
     <Compile Include="ViewModels\PlanScoreViewModel.cs" />
-    <Compile Include="ViewModels\PluginConsoleViewModel.cs" />
-    <Compile Include="ViewModels\PluginPlotViewModel.cs" />
     <Compile Include="ViewModels\PluginViewModel.cs" />
     <Compile Include="ViewModels\ScoreMetricViewModel.cs" />
     <Compile Include="ViewModels\StructureBuilderGroupViewModel.cs" />
@@ -204,12 +202,6 @@
     </Compile>
     <Compile Include="Views\PlanScoreView.xaml.cs">
       <DependentUpon>PlanScoreView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PluginConsoleView.xaml.cs">
-      <DependentUpon>PluginConsoleView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PluginPlotView.xaml.cs">
-      <DependentUpon>PluginPlotView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PluginView.xaml.cs">
       <DependentUpon>PluginView.xaml</DependentUpon>
@@ -294,14 +286,6 @@
     <Page Include="Views\PlanScoreView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\PluginConsoleView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\PluginPlotView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\PluginView.xaml">
       <SubType>Designer</SubType>

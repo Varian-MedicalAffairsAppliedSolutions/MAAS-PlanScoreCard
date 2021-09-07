@@ -2,7 +2,6 @@
 using PlanScoreCard.Services;
 using PlanScoreCard.ViewModels;
 using PlanScoreCard.Views;
-using PlanScoreCard.Views.Plugins;
 using Prism.Events;
 using VMS.TPS.Common.Model.API;
 
@@ -25,15 +24,12 @@ namespace PlanScoreCard.Startup
             container.RegisterType<PlanScoreViewModel>().AsSelf();
             container.RegisterType<PluginViewModel>().AsSelf();
             container.RegisterType<MainViewModel>().AsSelf();
-            container.RegisterType<PluginPlotViewModel>().AsSelf();
-            container.RegisterType<PluginConsoleViewModel>().AsSelf();
 
 
             // views
             container.RegisterType<MainView>().AsSelf();
             container.RegisterType<PluginView>().AsSelf();
-            container.RegisterType<PluginConsoleView>().AsSelf();
-            container.RegisterType<PluginPlotView>().AsSelf();
+
 
             //events
             container.RegisterType<EventAggregator>().As<IEventAggregator>().SingleInstance();

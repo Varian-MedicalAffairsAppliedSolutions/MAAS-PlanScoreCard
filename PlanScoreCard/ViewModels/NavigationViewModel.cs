@@ -204,8 +204,7 @@ namespace PlanScoreCard.ViewModels
                 PluginView pluginView = ViewLauncherService.GetPluginView();
                 pluginView.Show();
 
-                NormalizationService normService = new NormalizationService(
-                    _app, _patient, Plans.FirstOrDefault(x => x.bPrimary), _scoreTemplates, _eventAggregator);
+                NormalizationService normService = new NormalizationService( _app, _patient, Plans.FirstOrDefault(x => x.bPrimary), _scoreTemplates, _eventAggregator);
                 //_app.ClosePatient();
                 //_app.Dispose();
                 //new Thread(new ThreadStart(normService.GetPlan)).Start();
