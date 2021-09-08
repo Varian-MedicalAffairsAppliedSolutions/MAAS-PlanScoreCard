@@ -25,17 +25,14 @@ namespace PlanScoreCard.Startup
             container.RegisterType<PluginViewModel>().AsSelf();
             container.RegisterType<MainViewModel>().AsSelf();
 
-
             // views
             container.RegisterType<MainView>().AsSelf();
             container.RegisterType<PluginView>().AsSelf();
-
 
             //events
             container.RegisterType<EventAggregator>().As<IEventAggregator>().SingleInstance();
 
             // services
-            container.RegisterType<ViewLauncherService>().AsSelf();
             container.RegisterType<PluginViewService>().AsSelf();
 
             return container.Build();

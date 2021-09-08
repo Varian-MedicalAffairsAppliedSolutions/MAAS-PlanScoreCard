@@ -1,5 +1,7 @@
 ﻿using MahApps.Metro.Controls;
 using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
 using PlanScoreCard.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -7,6 +9,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,13 +27,39 @@ namespace PlanScoreCard.Views
     /// </summary>
     public partial class PluginView : MetroWindow , INotifyPropertyChanged
     {
-
+        private bool disposed;
+        private readonly Timer timer;
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        protected void RaisePropertyChanged(string property)
+        {
+            var handler = this.PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(property));
+            }
+        }
 
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        private void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    this.timer.Dispose();
+                }
+            }
+
+            this.disposed = true;
+        }
 
         private string consoleOutput;
         public string ConsoleOutput
@@ -44,7 +73,6 @@ namespace PlanScoreCard.Views
         }
 
         private PlotModel plotModel;
-
         public PlotModel PlotModel
         {
             get { return plotModel; }
@@ -55,20 +83,62 @@ namespace PlanScoreCard.Views
             }
         }
 
+        private string xAxisLabel;
+
+        public string XAxisLabel
+        {
+            get { return xAxisLabel; }
+            set 
+            { 
+                xAxisLabel = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string yAxisLabel;
+
+        public string YAxisLabel
+        {
+            get { return yAxisLabel; }
+            set
+            {
+                yAxisLabel = value;
+                OnPropertyChanged();
+            }
+        }
 
         public PluginView()
         {
-            PlotModel = new PlotModel();
             ConsoleOutput = "";
             DataContext = this;
+
+            InititatePlotModel();
+
             InitializeComponent();
         }
 
+        private void InititatePlotModel()
+        {
+
+            XAxisLabel = "Iteration";
+            YAxisLabel = "Plan Score";
+
+            PlotModel = new PlotModel();
+            PlotModel.Axes.Add(new LinearAxis { Title = XAxisLabel, Position = AxisPosition.Bottom });
+            PlotModel.Axes.Add(new LinearAxis { Title = YAxisLabel, Position = AxisPosition.Left });
+
+            LineSeries series = new LineSeries();
+            series.Color = OxyColor.FromArgb(255,16,161,211);
+            series.StrokeThickness = 1;
+            PlotModel.Series.Add(series);
+        }
 
         public void UpdatePlot(PlotModel plotModel)
         {
             PlotModel = plotModel;
+
             PlotModel.InvalidatePlot(true);
+            RaisePropertyChanged("PlotModel");
         }
 
         public void UpdateConsoleOutput(string consoleOutput)
@@ -82,6 +152,23 @@ namespace PlanScoreCard.Views
             Topmost = false;
         }
 
+        internal void AddPlotPoint(double xval, double yval)
+        {
+            LineSeries series = (LineSeries)PlotModel.Series.First();
+            series.Points.Add(new DataPoint(xval, yval));
+            PlotModel.InvalidatePlot(true);
+        }
 
+        internal void SetXAxisLabel(string xAxisLabel)
+        {
+            XAxisLabel = xAxisLabel;
+            PlotModel.InvalidatePlot(true);
+        }
+
+        internal void SetYAxisLabel(string yAxisLabel)
+        {
+            YAxisLabel = yAxisLabel;
+            PlotModel.InvalidatePlot(true);
+        }
     }
 }

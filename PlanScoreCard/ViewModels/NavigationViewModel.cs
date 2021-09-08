@@ -25,7 +25,6 @@ namespace PlanScoreCard.ViewModels
 {
     public class NavigationViewModel : BindableBase
     {
-        private readonly ViewLauncherService ViewLauncherService;
 
         private string _patientId;
         private string _courseId;
@@ -164,7 +163,7 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand SetButtonVisibilityCommand { get; private set; }
         public DelegateCommand NormalizePlanCommand { get; private set; }
         public NavigationViewModel(Patient patient, Course course, PlanSetup plan, User user, Application app,
-            IEventAggregator eventAggregator, ViewLauncherService viewLauncherService)
+            IEventAggregator eventAggregator)
         {
             _patientId = patient.Id;
             _courseId = course.Id;
@@ -175,7 +174,6 @@ namespace PlanScoreCard.ViewModels
             _plan = plan;
             _user = user;
 
-            ViewLauncherService = viewLauncherService;
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<PlanSelectedEvent>().Subscribe(OnPlanSelectionChanged);
             _eventAggregator.GetEvent<FreePrimarySelectionEvent>().Subscribe(SetPrimarySelections);

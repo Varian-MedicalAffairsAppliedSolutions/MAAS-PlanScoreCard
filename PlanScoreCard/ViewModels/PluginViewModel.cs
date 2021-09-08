@@ -24,7 +24,6 @@ namespace PlanScoreCard.ViewModels
     {
         private string _consoleOutput;
         private IEventAggregator _eventAggregator;
-        private ViewLauncherService ViewLauncherService;
         private PluginViewService PluginViewService;
 
         private readonly IEventAggregator EventAggregator;
@@ -78,10 +77,9 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand OptimizeCommand { get; private set; }
         public DelegateCommand FinalizeCommand { get; private set; }
         public PlotModel PlotData { get; set; }
-        public PluginViewModel(IEventAggregator eventAggregator, ViewLauncherService viewLauncherService , PluginViewService pluginViewService)
+        public PluginViewModel(IEventAggregator eventAggregator , PluginViewService pluginViewService)
         {
             _eventAggregator = eventAggregator;
-            ViewLauncherService = viewLauncherService;
             //Feedbacks = new List<string>();
             PlotData = new PlotModel() { LegendPosition = LegendPosition.RightTop };
             PlotSeries = new List<PlotSeriesData>();
@@ -130,12 +128,15 @@ namespace PlanScoreCard.ViewModels
             {
                 if (obj.Split('_').ElementAt(1) == "X")
                 {
-                    PlotData.Axes.Add(new LinearAxis { Title = obj.Split('_').Last(), Position = AxisPosition.Bottom });
+                    //PlotData.Axes.Add(new LinearAxis { Title = obj.Split('_').Last(), Position = AxisPosition.Bottom });
+                    PluginViewService.UpdateXAxisLebel(obj.Split('_').Last());
                 }
                 else if (obj.Split('_').ElementAt(1) == "Y")
                 {
-                    PlotData.Axes.Add(new LinearAxis { Title = obj.Split('_').Last(), Position = AxisPosition.Left });
+                    //PlotData.Axes.Add(new LinearAxis { Title = obj.Split('_').Last(), Position = AxisPosition.Left });
+                    PluginViewService.UpdateYAxisLebel(obj.Split('_').Last());
                 }
+                PluginViewService.UpdatePlot(PlotData);
             }
             else if (obj.StartsWith("PlotPoint"))
             {
@@ -182,8 +183,6 @@ namespace PlanScoreCard.ViewModels
             {
                 //_eventAggregator.GetEvent<UpdateMetricDuringOptimizationEvent>().Publish(obj);
             }
-
-            PluginViewService.UpdatePlot(PlotData);
         }
 
         private void GeneratePlotSeries(string obj)
@@ -202,11 +201,14 @@ namespace PlanScoreCard.ViewModels
         private void ResetPlotSeries(string title, double xval, double yval)
         {
             LineSeries series = PlotData.Series.First(x => x.Title == title) as LineSeries;
-            series.Points.Clear();
-            foreach (var point in PlotSeries.FirstOrDefault(x => x.Title == title).DataPoints.OrderBy(x => x.Item1))
-            {
-                series.Points.Add(new DataPoint(point.Item1, point.Item2));
-            }
+            series.Points.Add(new DataPoint(xval, yval));
+            PluginViewService.AddPlotPoint(xval, yval);
+            
+            //series.Points.Clear();
+            //foreach (var point in PlotSeries.FirstOrDefault(x => x.Title == title).DataPoints.OrderBy(x => x.Item1))
+            //{
+            //    series.Points.Add(new DataPoint(point.Item1, point.Item2));
+            //}
             PlotData.InvalidatePlot(true);
         }
 
