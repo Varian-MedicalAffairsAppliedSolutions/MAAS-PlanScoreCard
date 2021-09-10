@@ -27,6 +27,40 @@ namespace PlanScoreCard.ViewModels
     {
 
         private string _patientId;
+
+        private string patientId;
+
+        public string PatientID
+        {
+            get { return patientId; }
+            set { SetProperty(ref patientId, value); }
+        }
+
+        private string courseID;
+
+        public string CourseID
+        {
+            get { return courseID; }
+            set { SetProperty(ref courseID ,value); }
+        }
+
+        private string planID;
+
+        public string PlanID
+        {
+            get { return planID; }
+            set { SetProperty(ref planID, value); }
+        }
+
+        private string scoreCardName;
+
+        public string ScoreCardName
+        {
+            get { return scoreCardName; }
+            set { SetProperty(ref scoreCardName, value); }
+        }
+
+
         private string _courseId;
         private string _planId;
         private Application _app;
@@ -153,7 +187,6 @@ namespace PlanScoreCard.ViewModels
             }
         }
         public ObservableCollection<PlanModel> SelectedPlans { get; private set; }
-
         public ObservableCollection<PlanModel> Plans { get; private set; }
         public DelegateCommand GenerateScorecardCommand { get; private set; }
         public DelegateCommand ImportScorecardCommand { get; private set; }
@@ -166,11 +199,14 @@ namespace PlanScoreCard.ViewModels
             IEventAggregator eventAggregator)
         {
             _patientId = patient.Id;
+            PatientID = patient.Id;
+            CourseID = course.Id;
             _courseId = course.Id;
             _planId = plan.Id;
             _app = app;
             _patient = patient;
             _course = course;
+            PlanID = plan.Id;
             _plan = plan;
             _user = user;
 
@@ -337,8 +373,14 @@ namespace PlanScoreCard.ViewModels
             ofd.Title = "Open Planscore Template";
             int score_newId = 0;// ScoreMetrics.Count();
             bool importSuccess = false;
+           
+
             if (ofd.ShowDialog() == true)
             {
+
+                if (!String.IsNullOrEmpty(ofd.FileName))
+                    ScoreCardName = ofd.SafeFileName;
+
                 if (ofd.FileName.EndsWith(".csv"))
                 {
                     try

@@ -30,6 +30,8 @@ namespace PlanScoreCard.Views
         private bool disposed;
         private readonly Timer timer;
         public event PropertyChangedEventHandler PropertyChanged;
+
+
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -43,24 +45,7 @@ namespace PlanScoreCard.Views
             }
         }
 
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        private void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    this.timer.Dispose();
-                }
-            }
-
-            this.disposed = true;
-        }
-
+        // ConsoleOutput Binding Proeperty
         private string consoleOutput;
         public string ConsoleOutput
         {
@@ -72,6 +57,7 @@ namespace PlanScoreCard.Views
             }
         }
 
+        // PlotModel Binding Proerty
         private PlotModel plotModel;
         public PlotModel PlotModel
         {
@@ -83,8 +69,8 @@ namespace PlanScoreCard.Views
             }
         }
 
-        private string xAxisLabel;
 
+        private string xAxisLabel;
         public string XAxisLabel
         {
             get { return xAxisLabel; }
@@ -96,7 +82,6 @@ namespace PlanScoreCard.Views
         }
 
         private string yAxisLabel;
-
         public string YAxisLabel
         {
             get { return yAxisLabel; }
@@ -120,16 +105,30 @@ namespace PlanScoreCard.Views
         private void InititatePlotModel()
         {
 
+            // ** DEV NOTE: Are the axies titles alwaays constant? Do I update to change this string to add units based on their selected parameters?
             XAxisLabel = "Iteration";
             YAxisLabel = "Plan Score";
 
             PlotModel = new PlotModel();
-            PlotModel.Axes.Add(new LinearAxis { Title = XAxisLabel, Position = AxisPosition.Bottom });
-            PlotModel.Axes.Add(new LinearAxis { Title = YAxisLabel, Position = AxisPosition.Left });
+            PlotModel.Axes.Add(new LinearAxis 
+                                        { 
+                                            Title = XAxisLabel, 
+                                            Position = AxisPosition.Bottom,
+                                            FontSize = 18,
+                                            TitleFontWeight = 200
+                                        });
+
+            PlotModel.Axes.Add(new LinearAxis 
+                                        { 
+                                            Title = YAxisLabel, 
+                                            Position = AxisPosition.Left,
+                                            FontSize = 18,
+                                            TitleFontWeight = 200
+                                        });
 
             LineSeries series = new LineSeries();
             series.Color = OxyColor.FromArgb(255,16,161,211);
-            series.StrokeThickness = 1;
+            series.StrokeThickness = 1.2;
             PlotModel.Series.Add(series);
         }
 

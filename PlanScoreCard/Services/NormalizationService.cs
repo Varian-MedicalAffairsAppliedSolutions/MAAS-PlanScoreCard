@@ -46,11 +46,12 @@ namespace PlanScoreCard.Services
 
             _eventAggregator.GetEvent<PlotUpdateEvent>().Publish("Series_X_Plan Normalization [%]");
             _eventAggregator.GetEvent<PlotUpdateEvent>().Publish("Series_Y_Score");
-            _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"Accessing plan {plan.Id}");
+
+            _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"Accessing Plan {plan.Id}");
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\tInitial Normalization = {plan.PlanNormalizationValue}");
 
             //copy plan.
-            _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish("Copying plan");
+            _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish("Copying Plan");
             _patient.BeginModifications();
             Course _newCourse = null;
             if (_patient.Courses.Any(x => x.Id == "N-Opt"))
@@ -63,7 +64,7 @@ namespace PlanScoreCard.Services
                 _newCourse.Id = "N-Opt";
             }
             var _newPlan = _newCourse.CopyPlanSetup(plan);
-            _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"Generated New Plan {_newPlan.Id} in {_newCourse.Id}");
+            _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\n* New Plan Generated * \n - CourseID : {_newCourse.Id} \n - PlanID : { _newPlan.Id}\n");
             TestNormalization(_newPlan);
             var newPlanModel = new PlanModel(_newPlan, _eventAggregator)
             {
@@ -98,8 +99,8 @@ namespace PlanScoreCard.Services
             }
             maxScore = planScores.Max(x => x.Item2);
             maxNorm = planScores.FirstOrDefault(x => x.Item2 == maxScore).Item1;
-            _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\tMax Score {maxScore:F3} changing normalization to {maxNorm}");
-            _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"Activate Plan: {newPlan.Course};{newPlan}");
+            _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\n\tMax Score {maxScore:F3} \n\nScoreCard Normalization: {maxNorm}");
+            _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\n * Activate Plan * \nCourseID: {newPlan.Course}; \nPlanID: {newPlan}");
             newPlan.PlanNormalizationValue = maxNorm;
         }
 
@@ -126,8 +127,8 @@ namespace PlanScoreCard.Services
                 }
             }
             planScores.Add(new Tuple<double, double>(planNorm, score));
-            _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\t\tScore at {planNorm} = {score}");
-            _eventAggregator.GetEvent<PlotUpdateEvent>().Publish($"PlotPoint:<{newPlan.Id};{planNorm};{score}>");
+            _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\tScore at {planNorm} = {Math.Round(score,2)}");
+            _eventAggregator.GetEvent<PlotUpdateEvent>().Publish($"PlotPoint:<{newPlan.Id};{planNorm};{Math.Round(score, 2)}>");
         }
     }
 }

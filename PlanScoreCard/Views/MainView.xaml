@@ -7,7 +7,7 @@
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:converters ="clr-namespace:PlanScoreCard.Converters"
         mc:Ignorable="d"
-        Title="ESAPI Plan Scorecard" Height="850" Width="1200">
+        Title="" Height="700" Width="1200" WindowStartupLocation="CenterScreen">
     <!--<metro:MetroWindow.Resources>
         <converters:BoolVisibilityConverter x:Key="localBoolVisibilityConverter"/>
     </metro:MetroWindow.Resources>-->
@@ -17,17 +17,10 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="{Binding PluginWidth}"/>
-        </Grid.ColumnDefinitions>
+
         <local:NavigationView DataContext="{Binding NavigationViewModel}"/>
-        <!--<local:NavigationView DataContext="{Binding NavigationViewModel}"/>-->
-        <Border Grid.Row="1" BorderBrush="Blue" BorderThickness="1">
+        <Border Grid.Row="1" BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="1">
             <local:PlanScoreView DataContext="{Binding PlanScoreViewModel}"/>
         </Border>
-        <!--<Grid Grid.RowSpan="2" Grid.Column="1" Visibility="{Binding bPluginVisibility,Converter={StaticResource localBoolVisibilityConverter}}">
-            <plugin:PluginView DataContext="{Binding PluginViewModel}" />
-        </Grid>-->
     </Grid>
 </metro:MetroWindow>

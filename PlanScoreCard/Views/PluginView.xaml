@@ -8,7 +8,7 @@
         xmlns:helper="clr-namespace:PlanScoreCard.UIExtensions"
         xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
-        Title="PluginView" Height="400" Width="800">
+        Title="PluginView" Height="800" Width="1000" WindowStartupLocation="CenterScreen">
     <Grid>
 
 
@@ -17,10 +17,25 @@
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
         
-        <ScrollViewer helper:ScrollViewerExt.AutoScroll="True" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
-            <TextBlock Text="{Binding ConsoleOutput}" TextWrapping="Wrap" FontFamily="Lucinda Console" FontWeight="Bold" Foreground="GhostWhite"/>
+        <ScrollViewer helper:ScrollViewerExt.AutoScroll="True" 
+                      Grid.Row="0" 
+                      HorizontalAlignment="Stretch" 
+                      VerticalAlignment="Stretch" 
+                      Margin="10">
+            <TextBlock Text="{Binding ConsoleOutput}" 
+                       TextWrapping="Wrap" 
+                       FontFamily="Lucinda Console" 
+                       FontWeight="Bold" 
+                       Foreground="Black"
+                       
+            />
         </ScrollViewer>
-        <oxy:PlotView Model="{Binding PlotModel}" Background="Gainsboro"  Visibility="Visible" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5"/>
+        <oxy:PlotView Model="{Binding PlotModel}" 
+                      Background="Gainsboro"  
+                      Visibility="Visible" Grid.Column="1" 
+                      HorizontalAlignment="Stretch" 
+                      VerticalAlignment="Stretch" 
+                      Margin="5"/>
     </Grid>
 </metro:MetroWindow>
 

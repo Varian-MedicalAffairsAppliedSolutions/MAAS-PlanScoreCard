@@ -6,15 +6,129 @@
              xmlns:local="clr-namespace:PlanScoreCard.Views"
              xmlns:converters="clr-namespace:PlanScoreCard.Converters"
              xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls" xmlns:viewmodels="clr-namespace:PlanScoreCard.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:NavigationViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="200" d:DesignWidth="1200">
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:BoolVisibilityConverter x:Key="localVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="  ESAPI Plan ScoreCard" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" FontStyle="Italic" FontWeight="DemiBold" Margin="5" VerticalAlignment="Center" FontSize="20"/>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <TextBlock Text="Checkboxes:" Margin="40,0,0,0"/>
+                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0,0,1,0" Margin="5,0,5,0">
+                    <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="1" Margin="2,0,5,0">
+                        <TextBlock Text="Primary" Margin="2,0,2,0"/>
+                    </Border>
+                </Border>
+                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="1">
+                    <TextBlock Text="Included" Margin="2,0,2,0"/>
+                </Border>
+            </StackPanel>
+
+            <Button Content="Create / Edit ScoreCard" Command="{Binding GenerateScorecardCommand}" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.Column="6" Margin="2"/>
+
+
+        </Grid>
+       
+        <Grid Grid.Row="1">
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0" Margin="5,0,5,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="Patient ID" Height="28" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+                    <TextBox Text="{Binding PatientID, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" VerticalAlignment="Top" />
+                </Grid>
+
+                <Grid Grid.Column="1" Margin="5,0,5,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="Course ID" Height="28" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                    <TextBox Text="{Binding CourseID, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" VerticalAlignment="Top" />
+                </Grid>
+
+                <Grid Grid.Column="2" Margin="5,0,5,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="Plan ID" Height="28" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                    <ComboBox Grid.Row="1" VerticalAlignment="Top" ItemsSource="{Binding Plans}" SelectedItem="{Binding bPrimary}" Text="{Binding PlanID, UpdateSourceTrigger=PropertyChanged}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border BorderBrush="Gray" BorderThickness="0,0,1,0" Margin="0,0,8,0"  Visibility="{Binding bPrimaryEnabled, Mode=TwoWay,Converter={StaticResource localVisibilityConverter}}">
+                                        <CheckBox IsChecked="{Binding bPrimary, Mode=TwoWay}"/>
+                                    </Border>
+                                    <CheckBox IsChecked="{Binding bSelected, Mode=TwoWay}" Content="{Binding DisplayTxt}" Margin="-2" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Grid>
+
+                <Grid Grid.Column="5" Margin="5,0,5,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="ScoreCard" Height="28" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                    <TextBox Text="{Binding ScoreCardName, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" Grid.Row="1" VerticalAlignment="Top" />
+                </Grid>
+
+                <Grid Grid.Column="6" Margin="5,0,5,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Button Content="Import ScoreCard" Command="{Binding ImportScorecardCommand}" Grid.Row="1" VerticalAlignment="Top" />
+                </Grid>
+
+                <Grid Grid.Column="4" Margin="5,0,5,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Button Content="Normalize To Max Score" Command="{Binding NormalizePlanCommand}" Grid.Row="1" VerticalAlignment="Top" />
+                </Grid>
+
+
+            </Grid>
+        
+        </Grid>
+        <!--<Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
@@ -69,14 +183,15 @@
             <Button Content="Normalize to Max Score" Command="{Binding NormalizePlanCommand}" Background="Blue"
                     Width="150" Margin="2"/>
             </StackPanel>
-            <!--Visibility="{Binding bLocalTemplate, Converter={StaticResource localVisibilityConverter}}"/>-->
-            <!--<Button Content="Import PK Scorecard" Command="{Binding ImportPKScorecardCommand}" Background="Blue"
+            -->
+        <!--Visibility="{Binding bLocalTemplate, Converter={StaticResource localVisibilityConverter}}"/>-->
+        <!--<Button Content="Import PK Scorecard" Command="{Binding ImportPKScorecardCommand}" Background="Blue"
                     Grid.Row ="1" Width="150"
                         Visibility="{Binding bPKTemplate, Converter={StaticResource localVisibilityConverter}}"/>
             <Button Content="Import ePR Scorecard" Command="{Binding ImportEPRScorecardCommand}" Background="Blue"
                     Grid.Row ="1" Width="150"
                     Visibility="{Binding bePRTemplate, Converter={StaticResource localVisibilityConverter}}"/>-->
-            <!--<Button Grid.Row="1" Grid.Column="1" Command="{Binding SetButtonVisibilityCommand}" Width="30" Background="Blue">
+        <!--<Button Grid.Row="1" Grid.Column="1" Command="{Binding SetButtonVisibilityCommand}" Width="30" Background="Blue">
                 <icons:FontAwesome Kind="CaretDownSolid"/>
             </Button>
             <Grid Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" Height="150"
@@ -95,6 +210,7 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </Grid>-->
-        </Grid>
+        <!--
+        </Grid>-->
     </Grid>
 </UserControl>
