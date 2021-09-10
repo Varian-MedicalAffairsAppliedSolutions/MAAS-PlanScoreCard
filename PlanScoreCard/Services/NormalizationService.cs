@@ -87,18 +87,21 @@ namespace PlanScoreCard.Services
             }
             var maxScore = planScores.Max(x => x.Item2);
             var maxNorm = planScores.FirstOrDefault(x => x.Item2 == maxScore).Item1;
+            planScores.Clear();
             for (double i = -2; i < 2; i += 0.2)
             {
                  ScorePlanAtNormValue(newPlan, planScores, maxNorm, i);
             }
             maxScore = planScores.Max(x => x.Item2);
             maxNorm = planScores.FirstOrDefault(x => x.Item2 == maxScore).Item1;
+            planScores.Clear();
             for (double i = -0.2; i < 0.2; i += 0.01)
             {
                  ScorePlanAtNormValue(newPlan, planScores, maxNorm, i);
             }
             maxScore = planScores.Max(x => x.Item2);
             maxNorm = planScores.FirstOrDefault(x => x.Item2 == maxScore).Item1;
+            planScores.Clear();
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\n\tMax Score {maxScore:F3} \n\nScoreCard Normalization: {maxNorm}");
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\n * Activate Plan * \nCourseID: {newPlan.Course}; \nPlanID: {newPlan}");
             newPlan.PlanNormalizationValue = maxNorm;
@@ -110,7 +113,7 @@ namespace PlanScoreCard.Services
             newPlan.PlanNormalizationValue = planNorm;
             //var planScore = PlanScore.API.ScoreCardReader.ScorePlanFromTemplate(filename, new List<PlanningItem> { newPlan as PlanningItem });
             int metricId = 0;
-            planScores.Clear();
+            PlanScores.Clear();
             foreach (var template in _templates)
             {
                 var psm = new PlanScoreModel(_app);
