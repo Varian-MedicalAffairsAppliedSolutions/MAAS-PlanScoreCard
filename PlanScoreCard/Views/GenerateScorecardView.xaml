@@ -22,13 +22,13 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <TextBlock Text="Template Name" FontWeight="Bold" FontSize="14" Foreground="White" Margin="5"/>
+            <TextBlock Text="Template Name" FontWeight="Bold" FontSize="14" Foreground="Black" Margin="5"/>
             <TextBox Width="150" Margin="5" Text="{Binding TemplateName}"/>
-            <TextBlock Text="Treatment Site" FontWeight="Bold" FontSize="14" Foreground="White" Margin="5"/>
+            <TextBlock Text="Treatment Site" FontWeight="Bold" FontSize="14" Foreground="Black" Margin="5"/>
             <ComboBox ItemsSource="{Binding TreatmentSites}" SelectedItem="{Binding SelectedTreatmentSite}"
                       Width="150" Margin="5"/>
-            <TextBlock Text="Author" FontWeight="Bold" FontSize="14" Foreground="White" Margin="5"/>
-            <TextBlock Text="{Binding TemplateAuthor}" Margin="5" Foreground="White" FontWeight="Bold"/>
+            <TextBlock Text="Author" FontWeight="Bold" FontSize="14" Foreground="Black" Margin="5"/>
+            <TextBlock Text="{Binding TemplateAuthor}" Margin="5" Foreground="Black" FontWeight="Bold"/>
         </StackPanel>
         <Border BorderBrush="Blue" BorderThickness="2" Grid.Row="1">
             <StackPanel Orientation="Horizontal">
@@ -56,12 +56,12 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Text="Select Template Type" Margin="35,0,0,0" Foreground="White"/>
+                        <TextBlock Text="Select Template Type" Margin="35,0,0,0" Foreground="Black"/>
                         <ListView ItemsSource="{Binding TemplateOptions}" SelectedItem="{Binding SelectedTemplateOption}"
                           Grid.Row="1" Background="DarkBlue">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <Label Content="{Binding}" Width="150" Foreground="White"/>
+                                    <Label Content="{Binding}" Width="150" Foreground="Black"/>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
@@ -69,15 +69,15 @@
                     </Grid>
                 </Grid>-->
                     <StackPanel>
-                        <TextBlock Text="Structure" HorizontalAlignment="Center" Foreground="White"/>
+                    <TextBlock Text="Structure" HorizontalAlignment="Center" Foreground="Black"/>
                         <ComboBox Width="150" ItemsSource="{Binding Structures}" SelectedValue="{Binding SelectedStructure}"
                               DisplayMemberPath="StructureId" Margin="5"
                               ToolTip="{Binding SelectedStructure.StructureComment}"/>
-                        <TextBlock Text="Can't find the structure you're looking for..." FontStyle="Italic" FontSize="9" Foreground="White" Margin="0,5,0,0"/>
+                        <TextBlock Text="Can't find the structure you're looking for..." FontStyle="Italic" FontSize="9" Foreground="Black" Margin="0,5,0,0"/>
                         <Button Content="Structure Generator" Command="{Binding StructureBuilderCommand}" Margin="5"/>
                     </StackPanel>
                     <StackPanel>
-                        <TextBlock Text="Metric" HorizontalAlignment="Center" Foreground="White"/>
+                        <TextBlock Text="Metric" HorizontalAlignment="Center" Foreground="Black"/>
                         <ComboBox Width="150" ItemsSource="{Binding MetricTypes}" SelectedValue="{Binding SelectedMetric}" Margin="5"/>
                     </StackPanel>
                     <Grid Visibility="{Binding BDAtV, Converter={StaticResource localVisibilityConverter}}">
@@ -108,7 +108,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Select metric to add points" FontStyle="Italic" Foreground="White" Width="200"/>
+            <TextBlock Text="Select metric to add points" FontStyle="Italic" Foreground="Black" Width="200"/>
             <ScrollViewer Height="550" Grid.Row="1">
                 <ListBox BorderBrush="Blue" ItemsSource="{Binding ScoreMetrics}"
                      SelectedItem="{Binding SelectedScoreMetric}">
