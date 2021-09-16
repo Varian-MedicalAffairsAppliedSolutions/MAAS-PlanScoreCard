@@ -340,7 +340,7 @@ namespace PlanScoreCard.ViewModels
                         MarkerSize = 8
                     };
                     //add to the plot
-                    ScorePointSeries.Points.Add(new DataPoint(spoint.PointX, spoint.Score));
+                    ScorePointSeries.Points.Add(new DataPoint(Convert.ToDouble(spoint.PointX), spoint.Score));
                     ScoreMetricPlotModel.Series.Add(ScorePointSeries);
                 }
                 if (ScoreMetric.ScorePoints.Any(x => x.bMetricChecked))
@@ -353,7 +353,7 @@ namespace PlanScoreCard.ViewModels
                     {
 
                         //add to the plot
-                        PointSeriesAbove.Points.Add(new DataPoint(spoint.PointX, spoint.Score));
+                        PointSeriesAbove.Points.Add(new DataPoint(Convert.ToDouble(spoint.PointX), spoint.Score));
                     }
                     ScoreMetricPlotModel.Series.Add(PointSeriesAbove);
 
@@ -364,7 +364,7 @@ namespace PlanScoreCard.ViewModels
                     foreach (var spoint in ScoreMetric.ScorePoints.Where(x => x.Score <= ScoreMetric.ScorePoints.SingleOrDefault(y => y.bMetricChecked).Score).OrderBy(x => x.PointX))
                     {
                         //add to the plot
-                        PointSeriesBelow.Points.Add(new DataPoint(spoint.PointX, spoint.Score));
+                        PointSeriesBelow.Points.Add(new DataPoint(Convert.ToDouble(spoint.PointX), spoint.Score));
                     }
                     ScoreMetricPlotModel.Series.Add(PointSeriesBelow);
                 }
@@ -378,7 +378,7 @@ namespace PlanScoreCard.ViewModels
                     foreach (var spoint in ScoreMetric.ScorePoints.OrderBy(x => x.PointX))
                     {
                         //add to the plot
-                        PointSeriesAllGreen.Points.Add(new DataPoint(spoint.PointX, spoint.Score));
+                        PointSeriesAllGreen.Points.Add(new DataPoint(Convert.ToDouble(spoint.PointX), spoint.Score));
                     }
                     ScoreMetricPlotModel.Series.Add(PointSeriesAllGreen);
                 }

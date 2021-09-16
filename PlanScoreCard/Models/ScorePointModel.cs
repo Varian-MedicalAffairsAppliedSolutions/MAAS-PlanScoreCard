@@ -14,9 +14,9 @@ namespace PlanScoreCard.Models
 {
     public class ScorePointModel : BindableBase
     {
-        private double _pointX;
+        private decimal _pointX;
 
-        public double PointX
+        public decimal PointX
         {
             get { return _pointX; }
             set
@@ -25,6 +25,7 @@ namespace PlanScoreCard.Models
                 _eventAggregator.GetEvent<AddScorePointEvent>().Publish(MetricId);
             }
         }
+
         private int _metricId;
         public int MetricId
         {

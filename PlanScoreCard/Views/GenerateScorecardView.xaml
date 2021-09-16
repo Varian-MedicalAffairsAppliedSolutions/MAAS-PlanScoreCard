@@ -30,7 +30,7 @@
             <TextBlock Text="Author" FontWeight="Bold" FontSize="14" Foreground="Black" Margin="5"/>
             <TextBlock Text="{Binding TemplateAuthor}" Margin="5" Foreground="Black" FontWeight="Bold"/>
         </StackPanel>
-        <Border BorderBrush="Blue" BorderThickness="2" Grid.Row="1">
+        <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="2" Grid.Row="1">
             <StackPanel Orientation="Horizontal">
                 <!--<Grid>
                     <Grid.RowDefinitions>

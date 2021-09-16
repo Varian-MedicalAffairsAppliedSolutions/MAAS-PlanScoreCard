@@ -21,7 +21,7 @@
         </Grid.ColumnDefinitions>
         <StackPanel Width="350">
             <!--<TextBlock Foreground="White" Text="Added Point (X, Score)"/>-->
-            <Button Command="{Binding AddPointCommand}" Content="Add Score Point" Background="Blue"/>
+            <Button Command="{Binding AddPointCommand}" Content="Add Score Point" Foreground="White" Background="{DynamicResource ResourceKey=MahApps.Brushes.Accent}"/>
             <Grid Margin="2,0,10,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -60,9 +60,9 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding PointId}" Foreground="White" Grid.Column="0"/>
-                                <TextBox Text="{Binding PointX, UpdateSourceTrigger=PropertyChanged,StringFormat=\{0:n\},Converter={StaticResource localDoubleConverter}}" Grid.Column="1"/>
-                                <TextBox Text="{Binding Score,UpdateSourceTrigger=PropertyChanged,StringFormat=\{0:n\},Converter={StaticResource localDoubleConverter}}" Grid.Column="2"/>
-                            <StackPanel Width="50" Grid.Column="3">
+                                <TextBox Text="{Binding PointX, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource localDoubleConverter}}" Grid.Column="1"/>
+                                <TextBox Text="{Binding Score,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource localDoubleConverter}}" Grid.Column="2"/>
+                                <StackPanel Width="50" Grid.Column="3">
                                     <Button Command="{Binding PointUpCommand}" Content="{icons:FontAwesome Kind=SortUpSolid}"/>
                                     <Button Command="{Binding PointDownCommand}" Content="{icons:FontAwesome Kind=SortDownSolid}"/>
                                 </StackPanel>

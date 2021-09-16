@@ -12,7 +12,11 @@ namespace PlanScoreCard.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value;
+            //string valueString = (string)value;
+
+            string valueString = String.Format("{0:n}", value);
+
+            return valueString;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
