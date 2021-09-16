@@ -28,7 +28,7 @@
         </Grid.RowDefinitions>
         <TextBlock Grid.ColumnSpan="4" FontWeight="Bold" FontSize="14" Foreground="White" Text="Select Color for this metric point"/>
         <Border BorderBrush="White" BorderThickness="1" Grid.Row="1" Grid.ColumnSpan="2">
-            <Button Background="#00000000" Content="Transparent (no color)" FontWeight="Bold" Width="200" Height="30"
+            <Button Background="#00FFFFFF" Content="Transparent (no color)" FontWeight="Bold" Width="200" Height="30"
                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
         </Border>
         <TextBlock Text="Label:" FontWeight="Bold" Foreground="White" FontSize="14" Grid.Column="2"/>

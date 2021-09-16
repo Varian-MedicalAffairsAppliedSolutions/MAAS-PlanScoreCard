@@ -132,7 +132,7 @@ namespace PlanScoreCard.ViewModels
                 MetricTxt = GetMetricText(metricType);//                
             }
             SetCommands();//commands still need to work so you can delete the metrics that don't exist. 
-            
+
         }
         /// <summary>
         /// Get Metric text From Metric Type to display on the UI
@@ -492,12 +492,18 @@ namespace PlanScoreCard.ViewModels
                 {
                     if (metric.PointId == obj.Item2 && !obj.Item4.Contains("#00000000"))
                     {
-                        metric.Colors = new Models.Internals.PlanScoreColorModel(new List<double>
+                        try
                         {
-                            Convert.ToByte(obj.Item4.Substring(3,2),16),
-                            Convert.ToByte(obj.Item4.Substring(5,2),16),
-                            Convert.ToByte(obj.Item4.Substring(7,2),16)
-                        }, $"{obj.Item3}[{metric.Score}]");
+                            byte byteA = Convert.ToByte(obj.Item4.Substring(3, 2), 16);
+                            byte byteB = Convert.ToByte(obj.Item4.Substring(5, 2), 16);
+                            byte byteC = Convert.ToByte(obj.Item4.Substring(7, 2), 16);
+
+                            metric.Colors = new Models.Internals.PlanScoreColorModel(new List<double> { byteA, byteB, byteC }, $"{obj.Item3}[{metric.Score}]");
+                        }
+                        catch (Exception ex)
+                        {
+                            return;
+                        }
                     }
                 }
             }
