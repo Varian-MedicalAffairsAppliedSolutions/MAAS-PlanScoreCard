@@ -30,6 +30,16 @@ namespace PlanScoreCard.Services
             return GetView<EditScoreCardView>();
         }
 
+
+        /// <summary>
+        /// Generate a home view
+        /// </summary>
+        /// <returns></returns>
+        public EditScoreCardView GetEditMetricView_DoseAtVolume()
+        {
+            return GetView<EditScoreCardView>();
+        }
+
         /// <summary>
         /// Generate a generic view
         /// </summary>

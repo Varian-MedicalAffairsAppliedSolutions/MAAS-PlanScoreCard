@@ -109,6 +109,7 @@
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
     <Compile Include="Converters\DoubleDecimalConverter.cs" />
     <Compile Include="Converters\DoubleF2Converter.cs" />
+    <Compile Include="Converters\MetricEditorConverter.cs" />
     <Compile Include="Converters\MetricIdConverter.cs" />
     <Compile Include="Events\AddScorePointEvent.cs" />
     <Compile Include="Events\AddStructureEvent.cs" />
@@ -178,6 +179,7 @@
     <Compile Include="ViewModels\HIViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IScoreMetricViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\MetricEditors\EditDoseAtVolumeViewModel.cs" />
     <Compile Include="ViewModels\NavigationViewModel.cs" />
     <Compile Include="ViewModels\PlanScoreViewModel.cs" />
     <Compile Include="ViewModels\PluginViewModel.cs" />
@@ -208,6 +210,9 @@
     </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MetricEditors\EditDoseAtVolumeView.xaml.cs">
+      <DependentUpon>EditDoseAtVolumeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\NavigationView.xaml.cs">
       <DependentUpon>NavigationView.xaml</DependentUpon>
@@ -292,6 +297,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MainView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MetricEditors\EditDoseAtVolumeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

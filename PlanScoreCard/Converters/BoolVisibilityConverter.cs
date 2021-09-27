@@ -8,6 +8,9 @@ namespace PlanScoreCard.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null)
+                return null;
+
             if ((bool)value)
             {
                 return System.Windows.Visibility.Visible;
