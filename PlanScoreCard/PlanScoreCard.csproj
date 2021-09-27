@@ -119,8 +119,12 @@
     <Compile Include="Events\DeleteMetricEvent.cs" />
     <Compile Include="Events\DeleteScorePointEvent.cs" />
     <Compile Include="Events\DeleteStructureOperationEvent.cs" />
+    <Compile Include="Events\EditScoreCardSetPlanEvent.cs" />
+    <Compile Include="Events\EditScoreCardSetUserEvent.cs" />
     <Compile Include="Events\FreePrimarySelectionEvent.cs" />
+    <Compile Include="Events\LoadEditScoreCardViewEvent.cs" />
     <Compile Include="Events\MetricDownEvent.cs" />
+    <Compile Include="Events\MetricRankChangedEvent.cs" />
     <Compile Include="Events\MetricUpEvent.cs" />
     <Compile Include="Events\PlanChangedEvent.cs" />
     <Compile Include="Events\PlanSelectedEvent.cs" />
@@ -148,6 +152,7 @@
     <Compile Include="Models\Proknow\pk_custommodel.cs" />
     <Compile Include="Models\Proknow\pk_objectiveModel.cs" />
     <Compile Include="Models\Proknow\pk_typeEnum.cs" />
+    <Compile Include="Models\ScoreCardModel.cs" />
     <Compile Include="Models\ScoreMetricModel.cs" />
     <Compile Include="Models\ScorePointModel.cs" />
     <Compile Include="Models\ScoreValueModel.cs" />
@@ -160,6 +165,7 @@
     <Compile Include="Services\PlanScorePlottingServices.cs" />
     <Compile Include="Services\PluginViewService.cs" />
     <Compile Include="Services\StructureGenerationService.cs" />
+    <Compile Include="Services\ViewLauncherService.cs" />
     <Compile Include="Services\ViewResolvingPlotModel.cs" />
     <Compile Include="Startup\Bootstrapper.cs" />
     <Compile Include="UIExtensions\ScrollViewerExt.cs" />
@@ -167,8 +173,10 @@
     <Compile Include="ViewModels\ColorPickerViewModel.cs" />
     <Compile Include="ViewModels\DoseAtVolumeViewModel.cs" />
     <Compile Include="ViewModels\DoseValueViewModel.cs" />
+    <Compile Include="ViewModels\EditScoreCardViewModel.cs" />
     <Compile Include="ViewModels\GenerateScorecardViewModel.cs" />
     <Compile Include="ViewModels\HIViewModel.cs" />
+    <Compile Include="ViewModels\Interfaces\IScoreMetricViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\NavigationViewModel.cs" />
     <Compile Include="ViewModels\PlanScoreViewModel.cs" />
@@ -188,6 +196,9 @@
     </Compile>
     <Compile Include="Views\DoseValueView.xaml.cs">
       <DependentUpon>DoseValueView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditScoreCardView.xaml.cs">
+      <DependentUpon>EditScoreCardView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GenerateScorecardView.xaml.cs">
       <DependentUpon>GenerateScorecardView.xaml</DependentUpon>
@@ -265,6 +276,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DoseValueView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditScoreCardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

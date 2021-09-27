@@ -1,11 +1,12 @@
-﻿using Prism.Mvvm;
+﻿using PlanScoreCard.ViewModels.Interfaces;
+using Prism.Mvvm;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Linq;
 
 namespace PlanScoreCard.ViewModels
 {
-    public class DoseValueViewModel : BindableBase
+    public class DoseValueViewModel : BindableBase , IScoreMetricViewModel
 	{
 		public ObservableCollection<string> DoseUnits { get; private set; }
 		private string _selectedDoseUnit;

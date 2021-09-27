@@ -9,6 +9,7 @@ namespace PlanScoreCard.Models.Internals
     public class ScoreTemplateModel
     {
         public StructureModel Structure { get; set; }
+        public int Rank { get; set; }
         public string MetricType { get; set; }
         public double InputValue { get; set; }
         public string InputUnit { get; set; }
@@ -21,6 +22,8 @@ namespace PlanScoreCard.Models.Internals
         public double HI_Target { get; set; }
         public string HI_TargetUnit { get; set; }
         public List<ScorePointInternalModel> ScorePoints { get; private set; }
+
+
         /// <summary>
         /// Constructor for all dose metrics other than HI. 
         /// </summary>
@@ -76,6 +79,7 @@ namespace PlanScoreCard.Models.Internals
                 ScorePoints.Add(point);
             }
         }
+
         public ScoreTemplateModel()
         {
             ScorePoints = new List<ScorePointInternalModel>();

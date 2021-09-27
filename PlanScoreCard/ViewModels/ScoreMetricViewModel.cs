@@ -175,7 +175,7 @@ namespace PlanScoreCard.ViewModels
         {
             if (metricType == MetricTypeEnum.DoseAtVolume)
             {
-                return new ScoreMetricModel
+                return new ScoreMetricModel(_eventAggregator)
                 {
                     Id = _metricId,
                     Structure = selectedStructure,
@@ -187,7 +187,7 @@ namespace PlanScoreCard.ViewModels
             }
             else if (metricType == MetricTypeEnum.VolumeAtDose || metricType == MetricTypeEnum.VolumeOfRegret || metricType == MetricTypeEnum.ConformationNumber)
             {
-                return new ScoreMetricModel
+                return new ScoreMetricModel(_eventAggregator)
                 {
                     Id = _metricId,
                     Structure = selectedStructure,
@@ -199,7 +199,7 @@ namespace PlanScoreCard.ViewModels
             }
             else if (metricType == MetricTypeEnum.MaxDose || metricType == MetricTypeEnum.MinDose || metricType == MetricTypeEnum.MeanDose)
             {
-                return new ScoreMetricModel
+                return new ScoreMetricModel(_eventAggregator)
                 {
                     Id = _metricId,
                     Structure = selectedStructure,
@@ -209,7 +209,7 @@ namespace PlanScoreCard.ViewModels
             }
             else if (metricType == MetricTypeEnum.HomogeneityIndex)
             {
-                return new ScoreMetricModel
+                return new ScoreMetricModel(_eventAggregator)
                 {
                     Id = _metricId,
                     Structure = selectedStructure,
@@ -222,7 +222,7 @@ namespace PlanScoreCard.ViewModels
             }
             else if (metricType == MetricTypeEnum.ConformityIndex)
             {
-                return new ScoreMetricModel
+                return new ScoreMetricModel(_eventAggregator)
                 {
                     Id = _metricId,
                     Structure = selectedStructure,
@@ -618,7 +618,7 @@ namespace PlanScoreCard.ViewModels
 
         private void OnReorderMetrics()
         {
-            var tempPoints = new ScoreMetricModel();
+            var tempPoints = new ScoreMetricModel(_eventAggregator);
             foreach (var point in ScoreMetric.ScorePoints)
             {
                 tempPoints.ScorePoints.Add(point);

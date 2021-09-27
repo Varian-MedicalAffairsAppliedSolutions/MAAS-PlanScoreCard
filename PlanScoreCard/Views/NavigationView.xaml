@@ -43,7 +43,7 @@
                     <TextBlock Text="Included" Margin="2,0,2,0"/>
                 </Border>
             </StackPanel>
-
+            <Button Content="NEW SCORECARD EDIT" Command="{Binding EditScorecardCommand}" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.Column="5" Margin="2"/>
             <Button Content="Create / Edit ScoreCard" Command="{Binding GenerateScorecardCommand}" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.Column="6" Margin="2"/>
 
 

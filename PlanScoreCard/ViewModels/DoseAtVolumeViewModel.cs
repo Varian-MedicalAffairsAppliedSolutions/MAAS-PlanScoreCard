@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using PlanScoreCard.ViewModels.Interfaces;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PlanScoreCard.ViewModels
 {
-	public class DoseAtVolumeViewModel : BindableBase
+	public class DoseAtVolumeViewModel : BindableBase , IScoreMetricViewModel
 	{
 		private string _volume;
 

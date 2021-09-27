@@ -154,6 +154,109 @@ namespace PlanScoreCard.Models.Internals
             return ScoreMetrics;
         }
 
+        public static List<ScoreMetricModel> GetScoreCardMetricsFromTemplate(List<ScoreTemplateModel> scoreTemplates, IEventAggregator _eventAggregator, int score_newId, List<StructureModel> structures)
+        {
+            _structures = structures;
+            var ScoreMetrics = new List<ScoreMetricModel>();
+            int rankCounter = 1;
+            foreach (var template in scoreTemplates)
+            {
+                ScoreMetricModel scoreMetric = new ScoreMetricModel(_eventAggregator);
+                scoreMetric.EventAggregator = _eventAggregator;
+                scoreMetric.CanReorder = false;
+
+                // Structures
+                foreach (StructureModel structure in structures)
+                    scoreMetric.Structures.Add(structure);
+
+                // Rank
+                scoreMetric.Id = rankCounter;
+                rankCounter++;
+
+                // Metric Type
+                scoreMetric.MetricType = (MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType);
+
+                // Structure
+                scoreMetric.Structure = template.Structure;
+
+                // Metric Type - Dependant Variables
+                if (scoreMetric.MetricType == MetricTypeEnum.DoseAtVolume || scoreMetric.MetricType == MetricTypeEnum.VolumeAtDose)
+                {
+                    scoreMetric.OutputUnit = template.OutputUnit;
+                    scoreMetric.InputUnit = template.InputUnit;
+                    scoreMetric.InputValue = template.InputValue.ToString();
+                }
+                else if (scoreMetric.MetricType == MetricTypeEnum.MaxDose || scoreMetric.MetricType == MetricTypeEnum.MeanDose || scoreMetric.MetricType == MetricTypeEnum.MinDose)
+                {
+                    scoreMetric.OutputUnit = template.OutputUnit;
+                }
+                else if (scoreMetric.MetricType == MetricTypeEnum.HomogeneityIndex)
+                {
+                    scoreMetric.HI_Hi = template.HI_HiValue.ToString();
+                    scoreMetric.HI_Lo = template.HI_LowValue.ToString();
+                    scoreMetric.HI_Target = template.InputValue.ToString();
+                    scoreMetric.OutputUnit = template.HI_TargetUnit;
+                }
+                else if (scoreMetric.MetricType == MetricTypeEnum.ConformityIndex)
+                {
+                    scoreMetric.OutputUnit = template.InputUnit;
+                    scoreMetric.InputValue = template.InputValue.ToString();
+                }
+
+                // Metric Text
+                scoreMetric.MetricText = GetScoreMetricText(scoreMetric);
+
+                // Set the ScorePoints 
+                int scorePointId = 0;
+                foreach (ScorePointInternalModel scorepoint in template.ScorePoints)
+                {
+                    ScorePointModel pointModel = new ScorePointModel(score_newId, scorePointId, _eventAggregator);
+                    pointModel.PointX = Convert.ToDecimal(scorepoint.PointX);
+                    pointModel.Score = scorepoint.Score;
+                    pointModel.bMetricChecked = scorepoint.Variation;
+
+                    if (scorepoint.Colors.Count() > 2)
+                        pointModel.Colors = new PlanScoreColorModel(new List<double>{scorepoint.Colors.First(),scorepoint.Colors.ElementAt(1), scorepoint.Colors.ElementAt(2) }, scorepoint.Label);
+
+                    scoreMetric.ScorePoints.Add(pointModel);
+                    scorePointId++;
+                }
+
+
+                scoreMetric.CanReorder = true;
+                ScoreMetrics.Add(scoreMetric);
+                score_newId++;
+            }
+            return ScoreMetrics;
+        }
+
+        private static string GetScoreMetricText(ScoreMetricModel scoreMetric)
+        {
+            switch (scoreMetric.MetricType)
+            {
+                case MetricTypeEnum.DoseAtVolume:
+                    return $"Dose at {scoreMetric.InputValue}{scoreMetric.InputUnit}";
+                case MetricTypeEnum.VolumeAtDose:
+                    return $"Volume at {scoreMetric.InputValue}{scoreMetric.InputUnit}";
+                case MetricTypeEnum.MinDose:
+                    return $"Min Dose [{scoreMetric.OutputUnit}]";
+                case MetricTypeEnum.MeanDose:
+                    return $"Mean Dose [{scoreMetric.OutputUnit}]";
+                case MetricTypeEnum.MaxDose:
+                    return $"Max Dose [{scoreMetric.OutputUnit}]";
+                case MetricTypeEnum.VolumeOfRegret:
+                    return $"Vol of regret at {scoreMetric.InputValue}{scoreMetric.InputUnit}";
+                case MetricTypeEnum.ConformationNumber:
+                    return $"Conf No. at {scoreMetric.InputValue}{scoreMetric.InputUnit}";
+                case MetricTypeEnum.HomogeneityIndex:
+                    return $"HI [D{scoreMetric.HI_Hi}-D{scoreMetric.HI_Lo}]/{scoreMetric.HI_Target}";
+                case MetricTypeEnum.ConformityIndex:
+                    return $"CI [{scoreMetric.InputValue} [{scoreMetric.InputUnit}]]";
+                default:
+                    return "Undefined Metric";
+            }
+        }
+
         private static void SetScorePoints(int score_newId, ScoreTemplateModel template, ScoreMetricViewModel scoreMetricVM, IEventAggregator eventAggregator)
         {
             int scorePointId = 0;

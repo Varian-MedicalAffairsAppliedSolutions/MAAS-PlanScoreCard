@@ -1,11 +1,12 @@
-﻿using Prism.Mvvm;
+﻿using PlanScoreCard.ViewModels.Interfaces;
+using Prism.Mvvm;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Linq;
 
 namespace PlanScoreCard.ViewModels
 {
-    public class CIViewModel : BindableBase
+    public class CIViewModel : BindableBase , IScoreMetricViewModel
 	{
 		private string _dose;
 

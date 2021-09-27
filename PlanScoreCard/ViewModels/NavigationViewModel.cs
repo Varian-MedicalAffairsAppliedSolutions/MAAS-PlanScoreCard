@@ -69,6 +69,7 @@ namespace PlanScoreCard.ViewModels
         private PlanningItem _plan;
         private User _user;
         private IEventAggregator _eventAggregator;
+        private ViewLauncherService ViewLauncher;
         private string _templateName;
         private string _templateSite;
 
@@ -186,17 +187,25 @@ namespace PlanScoreCard.ViewModels
                 }
             }
         }
+
+        // Plan Collections
         public ObservableCollection<PlanModel> SelectedPlans { get; private set; }
         public ObservableCollection<PlanModel> Plans { get; private set; }
+
+        // Commands 
         public DelegateCommand GenerateScorecardCommand { get; private set; }
+        public DelegateCommand EditScorecardCommand { get; private set; }
         public DelegateCommand ImportScorecardCommand { get; private set; }
         public GenerateScorecardView GenScoreCardView { get; private set; }
+        public EditScoreCardView EditScoreCardView { get; private set; }
         public DelegateCommand ImportPKScorecardCommand { get; private set; }
         public DelegateCommand ImportEPRScorecardCommand { get; private set; }
         public DelegateCommand SetButtonVisibilityCommand { get; private set; }
         public DelegateCommand NormalizePlanCommand { get; private set; }
+
+        // Constructor
         public NavigationViewModel(Patient patient, Course course, PlanSetup plan, User user, Application app,
-            IEventAggregator eventAggregator)
+            IEventAggregator eventAggregator, ViewLauncherService viewLauncherService)
         {
             _patientId = patient.Id;
             PatientID = patient.Id;
@@ -209,6 +218,7 @@ namespace PlanScoreCard.ViewModels
             PlanID = plan.Id;
             _plan = plan;
             _user = user;
+            ViewLauncher = viewLauncherService;
 
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<PlanSelectedEvent>().Subscribe(OnPlanSelectionChanged);
@@ -218,6 +228,7 @@ namespace PlanScoreCard.ViewModels
             Plans = new ObservableCollection<PlanModel>();
             SelectedPlans = new ObservableCollection<PlanModel>();
             GenerateScorecardCommand = new DelegateCommand(OnGenerateScorecard, CanGenerateScorecard);
+            EditScorecardCommand = new DelegateCommand(OnEditScoreCard);
             ImportScorecardCommand = new DelegateCommand(OnImportScorecard);
             //ImportPKScorecardCommand = new DelegateCommand(OnImportPKScorecard);
             //ImportEPRScorecardCommand = new DelegateCommand(OnImportEPRScorecard);
@@ -230,6 +241,7 @@ namespace PlanScoreCard.ViewModels
             //SetInitialVisibilities();
             SetPlans();
         }
+
         private void OnNormalizePlan()
         {
             if (Plans.Any(x => x.bPrimary) && _scoreTemplates.Count() > 0)
@@ -363,6 +375,19 @@ namespace PlanScoreCard.ViewModels
             GenScoreCardView = new GenerateScorecardView();
             GenScoreCardView.DataContext = new GenerateScorecardViewModel(SelectedPlan, _scoreTemplates, _templateName, _templateSite, _user, _eventAggregator);
             GenScoreCardView.ShowDialog();
+        }
+
+        private void OnEditScoreCard()
+        {
+            // Compile the ScoreCard Model - TEMPORARY 
+            ScoreCardModel scoreCard = new ScoreCardModel(_templateName, _templateSite, _scoreTemplates);
+
+            EditScoreCardView editScoreCardView = ViewLauncher.GetEditScoreCardView();
+            _eventAggregator.GetEvent<EditScoreCardSetPlanEvent>().Publish(SelectedPlan); // Push the SelectedPlan
+            _eventAggregator.GetEvent<EditScoreCardSetUserEvent>().Publish(_user); // Push the User
+            _eventAggregator.GetEvent<LoadEditScoreCardViewEvent>().Publish(scoreCard); // Push the ScoreCardModel to the ViewModel
+
+            editScoreCardView.ShowDialog();
         }
 
         private void OnImportScorecard()
