@@ -2,6 +2,7 @@
 using PlanScoreCard.Models;
 using PlanScoreCard.Models.Internals;
 using PlanScoreCard.Services;
+using PlanScoreCard.Views.MetricEditors;
 using Prism.Events;
 using Prism.Mvvm;
 using System;
@@ -11,6 +12,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using VMS.TPS.Common.Model.API;
 
 namespace PlanScoreCard.ViewModels
@@ -21,6 +23,19 @@ namespace PlanScoreCard.ViewModels
         private User User;
         private PlanModel PlanModel;
         private IEventAggregator EventAggregator;
+
+        private ViewLauncherService ViewLauncherService;
+
+        private object metricEdtiorControl;
+
+        public object MetricEditorControl
+        {
+            get { return metricEdtiorControl; }
+            set { SetProperty( ref metricEdtiorControl , value); }
+        }
+
+
+        public ObservableCollection<MetricTypeEnum> MetricTypes {  get; set; }
  
         // Private Class Collections
 
@@ -62,6 +77,7 @@ namespace PlanScoreCard.ViewModels
                 ShowScorePointModels(selectedMetric);
                 ScoreMetricPlotModel = selectedMetric.ScoreMetricPlotModel;
                 ScoreMetricPlotModel.InvalidatePlot(true);
+                UpdateMetricEditor(selectedMetric);
             }
         }
 
@@ -143,8 +159,11 @@ namespace PlanScoreCard.ViewModels
         }
 
         // Constructor
-        public EditScoreCardViewModel(IEventAggregator eventAggregator)
+        public EditScoreCardViewModel(IEventAggregator eventAggregator, ViewLauncherService viewLauncherService)
         {
+
+            ViewLauncherService = viewLauncherService;
+
             // Events
             EventAggregator = eventAggregator;
             EventAggregator.GetEvent<LoadEditScoreCardViewEvent>().Subscribe(LoadScoreCard);
@@ -157,6 +176,8 @@ namespace PlanScoreCard.ViewModels
             ScoreMetrics = new ObservableCollection<ScoreMetricModel>();
             MetricPointModels = new ObservableCollection<ScorePointModel>();
             TreatmentSites = new ObservableCollection<string>();
+            MetricTypes = new ObservableCollection<MetricTypeEnum>();
+
 
             Bind();
 
@@ -170,6 +191,20 @@ namespace PlanScoreCard.ViewModels
 
             foreach (var site in ConfigurationManager.AppSettings["TreatmentSites"].Split(';'))
                 TreatmentSites.Add(site);
+
+            // Add the MetricTypes
+            MetricTypes.Add(MetricTypeEnum.ConformationNumber);
+            MetricTypes.Add(MetricTypeEnum.ConformityIndex);
+            MetricTypes.Add(MetricTypeEnum.DoseAtVolume);
+            MetricTypes.Add(MetricTypeEnum.HomogeneityIndex);
+            MetricTypes.Add(MetricTypeEnum.MaxDose);
+            MetricTypes.Add(MetricTypeEnum.MeanDose);
+            MetricTypes.Add(MetricTypeEnum.MinDose);
+            MetricTypes.Add(MetricTypeEnum.Volume);
+            MetricTypes.Add(MetricTypeEnum.VolumeAtDose);
+            MetricTypes.Add(MetricTypeEnum.VolumeOfRegret);
+            MetricTypes.Add(MetricTypeEnum.Undefined);
+
         }
 
         // Event Methods
@@ -254,6 +289,40 @@ namespace PlanScoreCard.ViewModels
 
             // Set the Selected ScorePoint
             SelectedMetricPointModel = MetricPointModels.First();
+        }
+
+        private void UpdateMetricEditor(ScoreMetricModel scoreMetric)
+        {
+            if (scoreMetric.MetricType == MetricTypeEnum.ConformityIndex)
+            {
+                EditCIView volumeAtDoseView = ViewLauncherService.GetEditMetricView_CI();
+                EventAggregator.GetEvent<ShowCIMetricEvent>().Publish(scoreMetric);
+                MetricEditorControl = volumeAtDoseView;
+            }
+            else if (scoreMetric.MetricType == MetricTypeEnum.DoseAtVolume)
+            {
+                EditDoseAtVolumeView volumeAtDoseView = ViewLauncherService.GetEditMetricView_DoseAtVolume();
+                EventAggregator.GetEvent<ShowDoseAtVolumeMetricEvent>().Publish(scoreMetric);
+                MetricEditorControl = volumeAtDoseView;
+            }
+            else if (scoreMetric.MetricType == MetricTypeEnum.HomogeneityIndex)
+            {
+                EditHIView volumeAtDoseView = ViewLauncherService.GetEditMetricView_HI();
+                EventAggregator.GetEvent<ShowHIMetricEvent>().Publish(scoreMetric);
+                MetricEditorControl = volumeAtDoseView;
+            }
+            else if (scoreMetric.MetricType == MetricTypeEnum.MaxDose || scoreMetric.MetricType == MetricTypeEnum.MinDose || scoreMetric.MetricType == MetricTypeEnum.MeanDose)
+            {
+                EditDoseValueView volumeAtDoseView = ViewLauncherService.GetEditMetricView_DoseValue();
+                EventAggregator.GetEvent<ShowDoseValueMetricEvent>().Publish(scoreMetric);
+                MetricEditorControl = volumeAtDoseView;
+            }
+            else if (scoreMetric.MetricType == MetricTypeEnum.VolumeAtDose || scoreMetric.MetricType == MetricTypeEnum.VolumeOfRegret || scoreMetric.MetricType == MetricTypeEnum.ConformationNumber)
+            {
+                EditVolumeAtDoseView volumeAtDoseView = ViewLauncherService.GetEditMetricView_VolumeAtDose();
+                EventAggregator.GetEvent<ShowVolumeAtDoseMetricEvent>().Publish(scoreMetric);
+                MetricEditorControl = volumeAtDoseView;
+            }
         }
 
     }

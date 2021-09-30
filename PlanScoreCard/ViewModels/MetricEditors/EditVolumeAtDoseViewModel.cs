@@ -12,20 +12,19 @@ using System.Threading.Tasks;
 
 namespace PlanScoreCard.ViewModels.MetricEditors
 {
-    public class EditDoseAtVolumeViewModel : BindableBase
+    public class EditVolumeAtDoseViewModel : BindableBase
     {
-
         private ScoreMetricModel ScoreMetric;
 
-        private string volume;
+        private string dose;
 
-        public string Volume
+        public string Dose
         {
-            get { return volume; }
-            set 
-            { 
-                SetProperty(ref volume , value);
-                ScoreMetric.InputValue = Volume;
+            get { return dose; }
+            set
+            {
+                SetProperty(ref dose, value);
+                ScoreMetric.InputValue = Dose;
             }
         }
 
@@ -34,8 +33,8 @@ namespace PlanScoreCard.ViewModels.MetricEditors
         public string DoseUnit
         {
             get { return doseUnit; }
-            set 
-            { 
+            set
+            {
                 SetProperty(ref doseUnit, value);
                 ScoreMetric.OutputUnit = DoseUnit;
             }
@@ -54,9 +53,9 @@ namespace PlanScoreCard.ViewModels.MetricEditors
         public string VolumeUnit
         {
             get { return volumeUnit; }
-            set 
-            { 
-                SetProperty(ref volumeUnit , value);
+            set
+            {
+                SetProperty(ref volumeUnit, value);
                 ScoreMetric.OutputUnit = DoseUnit;
             }
         }
@@ -66,37 +65,38 @@ namespace PlanScoreCard.ViewModels.MetricEditors
         public ObservableCollection<string> VolumeUnits
         {
             get { return volumeUnits; }
-            set { SetProperty(ref volumeUnits , value); }
+            set { SetProperty(ref volumeUnits, value); }
         }
 
         private IEventAggregator EventAggregator;
-        public EditDoseAtVolumeViewModel(IEventAggregator eventAggregator)
+
+        public EditVolumeAtDoseViewModel(IEventAggregator eventAggregator)
         {
             EventAggregator = eventAggregator;
-            EventAggregator.GetEvent<ShowDoseAtVolumeMetricEvent>().Subscribe(SetMetric);
+            EventAggregator.GetEvent<ShowVolumeAtDoseMetricEvent>().Subscribe(SetMetric);
 
             DoseUnits = new ObservableCollection<string>();
             VolumeUnits = new ObservableCollection<string>();
 
             var dUnits = ConfigurationManager.AppSettings["DoseUnits"].Split(';');
-			var vUnits = ConfigurationManager.AppSettings["VolumeUnits"].Split(';');
-			foreach (var du in dUnits)
-			{
-				DoseUnits.Add(du);
-			}
-			foreach (var vu in vUnits)
-			{
-				VolumeUnits.Add(vu);
-			}
-		}
+            var vUnits = ConfigurationManager.AppSettings["VolumeUnits"].Split(';');
+            foreach (var du in dUnits)
+            {
+                DoseUnits.Add(du);
+            }
+            foreach (var vu in vUnits)
+            {
+                VolumeUnits.Add(vu);
+            }
+        }
 
         private void SetMetric(ScoreMetricModel scoreMetric)
         {
             ScoreMetric = scoreMetric;
 
-            Volume = scoreMetric.InputValue;
-            VolumeUnit = scoreMetric.InputUnit;
-            DoseUnit = scoreMetric.OutputUnit;
+            Dose = scoreMetric.InputValue;
+            VolumeUnit = scoreMetric.OutputUnit;
+            DoseUnit = scoreMetric.InputUnit;
         }
     }
 }

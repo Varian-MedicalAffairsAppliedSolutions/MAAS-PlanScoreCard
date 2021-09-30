@@ -1,7 +1,9 @@
 ﻿using Autofac;
 using PlanScoreCard.Services;
 using PlanScoreCard.ViewModels;
+using PlanScoreCard.ViewModels.MetricEditors;
 using PlanScoreCard.Views;
+using PlanScoreCard.Views.MetricEditors;
 using Prism.Events;
 using VMS.TPS.Common.Model.API;
 
@@ -25,12 +27,21 @@ namespace PlanScoreCard.Startup
             container.RegisterType<PluginViewModel>().AsSelf();
             container.RegisterType<MainViewModel>().AsSelf();
             container.RegisterType<EditScoreCardViewModel>().AsSelf();
+            container.RegisterType<EditDoseAtVolumeViewModel>().AsSelf();
+            container.RegisterType<EditVolumeAtDoseViewModel>().AsSelf();
+            container.RegisterType<EditDoseValueViewModel>().AsSelf();
+            container.RegisterType<EditHIViewModel>().AsSelf();
+            container.RegisterType<EditCIViewModel>().AsSelf();
 
             // views
             container.RegisterType<MainView>().AsSelf();
             container.RegisterType<PluginView>().AsSelf();
             container.RegisterType<EditScoreCardView>().AsSelf();
-
+            container.RegisterType<EditDoseAtVolumeView>().AsSelf();
+            container.RegisterType<EditVolumeAtDoseView>().AsSelf();
+            container.RegisterType<EditDoseValueView>().AsSelf();
+            container.RegisterType<EditHIView>().AsSelf();
+            container.RegisterType<EditCIView>().AsSelf();
             //events
             container.RegisterType<EventAggregator>().As<IEventAggregator>().SingleInstance();
 

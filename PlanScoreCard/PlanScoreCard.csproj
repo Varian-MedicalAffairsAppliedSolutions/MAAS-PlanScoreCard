@@ -135,7 +135,12 @@
     <Compile Include="Events\PointDownEvent.cs" />
     <Compile Include="Events\PointUpEvent.cs" />
     <Compile Include="Events\ScorePlanEvent.cs" />
+    <Compile Include="Events\ShowCIMetricEvent.cs" />
+    <Compile Include="Events\ShowDoseAtVolumeMetricEvent.cs" />
+    <Compile Include="Events\ShowDoseValueMetricEvent.cs" />
+    <Compile Include="Events\ShowHIMetricEvent.cs" />
     <Compile Include="Events\ShowPluginViewEvent.cs" />
+    <Compile Include="Events\ShowVolumeAtDoseMetricEvent.cs" />
     <Compile Include="Events\StructureBuilderChangedEvent.cs" />
     <Compile Include="Events\VariationCheckedEvent.cs" />
     <Compile Include="Models\Internals\EPeerReviewScoreModel.cs" />
@@ -179,7 +184,11 @@
     <Compile Include="ViewModels\HIViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IScoreMetricViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\MetricEditors\EditCIViewModel.cs" />
     <Compile Include="ViewModels\MetricEditors\EditDoseAtVolumeViewModel.cs" />
+    <Compile Include="ViewModels\MetricEditors\EditDoseValueViewModel.cs" />
+    <Compile Include="ViewModels\MetricEditors\EditHIViewModel.cs" />
+    <Compile Include="ViewModels\MetricEditors\EditVolumeAtDoseViewModel.cs" />
     <Compile Include="ViewModels\NavigationViewModel.cs" />
     <Compile Include="ViewModels\PlanScoreViewModel.cs" />
     <Compile Include="ViewModels\PluginViewModel.cs" />
@@ -211,8 +220,20 @@
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MetricEditors\EditCIView.xaml.cs">
+      <DependentUpon>EditCIView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MetricEditors\EditDoseAtVolumeView.xaml.cs">
       <DependentUpon>EditDoseAtVolumeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MetricEditors\EditDoseValueView.xaml.cs">
+      <DependentUpon>EditDoseValueView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MetricEditors\EditHIView.xaml.cs">
+      <DependentUpon>EditHIView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MetricEditors\EditVolumeAtDoseView.xaml.cs">
+      <DependentUpon>EditVolumeAtDoseView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\NavigationView.xaml.cs">
       <DependentUpon>NavigationView.xaml</DependentUpon>
@@ -300,7 +321,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\MetricEditors\EditCIView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MetricEditors\EditDoseAtVolumeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MetricEditors\EditDoseValueView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MetricEditors\EditHIView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MetricEditors\EditVolumeAtDoseView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

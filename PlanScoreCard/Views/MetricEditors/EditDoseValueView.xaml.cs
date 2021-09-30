@@ -17,17 +17,16 @@ using System.Windows.Shapes;
 namespace PlanScoreCard.Views.MetricEditors
 {
     /// <summary>
-    /// Interaction logic for EditDoseAtVolumeView.xaml
+    /// Interaction logic for EditDoseValueView.xaml
     /// </summary>
-    public partial class EditDoseAtVolumeView : UserControl
+    public partial class EditDoseValueView : UserControl
     {
+        private EditDoseValueViewModel EditDoseValueViewModel;
 
-        private EditDoseAtVolumeViewModel EditDoseAtVolumeViewModel;
-
-        public EditDoseAtVolumeView(EditDoseAtVolumeViewModel editDoseAtVolumeViewModel)
+        public EditDoseValueView(EditDoseValueViewModel editDoseValueViewModel)
         {
-            EditDoseAtVolumeViewModel = editDoseAtVolumeViewModel;
-            DataContext = EditDoseAtVolumeViewModel; 
+            EditDoseValueViewModel = editDoseValueViewModel;
+            DataContext = EditDoseValueViewModel;
             InitializeComponent();
         }
     }

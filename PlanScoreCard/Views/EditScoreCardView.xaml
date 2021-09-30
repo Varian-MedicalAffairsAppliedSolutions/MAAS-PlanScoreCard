@@ -211,7 +211,7 @@
 
                     <Grid Grid.Column="1">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="20"/>
                             <RowDefinition Height="40"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="400"/>
@@ -223,17 +223,17 @@
                         </Grid.ColumnDefinitions>
 
 
-                        <Label Grid.Column="0" Grid.Row="0" Content="Structure" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
-                        <ComboBox Grid.Column="0" Grid.Row="1" DisplayMemberPath="StructureId" SelectedValuePath="Value" SelectedItem="{Binding Structure}" ItemsSource="{Binding Structures}" Margin="5" Background="WhiteSmoke"/>
+                        <Label Grid.Column="0" Grid.Row="0" FontSize="12" Content="Structure" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
+                        <ComboBox Height="25" Grid.Column="0" Grid.Row="1" DisplayMemberPath="StructureId" SelectedValuePath="Value" SelectedItem="{Binding SelectedScoreMetric.Structure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Structures}" Margin="5,0,5,0" Background="WhiteSmoke"/>
 
-                        <Label Grid.Column="1" Grid.Row="0" Content="Metric Type" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
-                        <ComboBox Grid.Column="1" Grid.Row="1" Text="{Binding SelectedScoreMetric.MetricType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5" />
+                        <Label Grid.Column="1" Grid.Row="0" FontSize="12" Content="Metric Type" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
+                        <ComboBox Height="25" Grid.Column="1" Grid.Row="1" SelectedItem="{Binding SelectedScoreMetric.MetricType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding MetricTypes}" Margin="5,0,5,0" />
 
-                        <Label Grid.Column="2" Grid.Row="0" Content="Description" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
-                        <TextBox Grid.Column="2" Text="{Binding SelectedScoreMetric.MetricText}" Grid.Row="1" Margin="5" IsReadOnly="True"/>
+                        <Label Grid.Column="2" Grid.Row="0" FontSize="12" Content="Description" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
+                        <TextBox Height="25" Grid.Column="2" Text="{Binding SelectedScoreMetric.MetricText}" Grid.Row="1" Margin="5,0,5,0" IsReadOnly="True"/>
 
                         <GroupBox  Margin="5" FontSize="16" FontWeight="Bold" Background="WhiteSmoke" Grid.ColumnSpan="3" Grid.Row="2">
-                            <!--<UserControl Content="{Binding SelectedScoreMetric, Converter={StaticResource localVisibilityConverter} , Mode=TwoWay}"/>-->
+                            <UserControl Margin="-5" Content="{Binding MetricEditorControl , Mode=TwoWay, NotifyOnSourceUpdated=True}"/>
                         </GroupBox>
 
 

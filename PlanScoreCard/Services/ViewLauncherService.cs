@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using PlanScoreCard.Views;
+using PlanScoreCard.Views.MetricEditors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,9 +36,28 @@ namespace PlanScoreCard.Services
         /// Generate a home view
         /// </summary>
         /// <returns></returns>
-        public EditScoreCardView GetEditMetricView_DoseAtVolume()
+        public EditDoseAtVolumeView GetEditMetricView_DoseAtVolume()
         {
-            return GetView<EditScoreCardView>();
+            return GetView<EditDoseAtVolumeView>();
+        }
+
+        public EditVolumeAtDoseView GetEditMetricView_VolumeAtDose()
+        {
+            return GetView<EditVolumeAtDoseView>();
+        }
+
+        public EditDoseValueView GetEditMetricView_DoseValue()
+        {
+            return GetView<EditDoseValueView>();
+        }
+
+        public EditHIView GetEditMetricView_HI()
+        {
+            return GetView<EditHIView>();
+        }
+        public EditCIView GetEditMetricView_CI()
+        {
+            return GetView<EditCIView>();
         }
 
         /// <summary>
