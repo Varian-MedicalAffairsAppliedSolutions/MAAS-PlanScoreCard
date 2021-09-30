@@ -3,6 +3,7 @@ using PlanScoreCard.Models;
 using PlanScoreCard.Models.Internals;
 using PlanScoreCard.Services;
 using PlanScoreCard.Views.MetricEditors;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using System;
@@ -12,7 +13,9 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using VMS.TPS.Common.Model.API;
 
 namespace PlanScoreCard.ViewModels
@@ -33,7 +36,6 @@ namespace PlanScoreCard.ViewModels
             get { return metricEdtiorControl; }
             set { SetProperty( ref metricEdtiorControl , value); }
         }
-
 
         public ObservableCollection<MetricTypeEnum> MetricTypes {  get; set; }
  
@@ -71,10 +73,12 @@ namespace PlanScoreCard.ViewModels
         {
             get { return selectedMetric; }
             set 
-            { 
-
+            {
                 SetProperty(ref selectedMetric, value);
                 ShowScorePointModels(selectedMetric);
+
+                if (selectedMetric == null)
+                    return;
                 ScoreMetricPlotModel = selectedMetric.ScoreMetricPlotModel;
                 ScoreMetricPlotModel.InvalidatePlot(true);
                 UpdateMetricEditor(selectedMetric);
@@ -90,6 +94,9 @@ namespace PlanScoreCard.ViewModels
             set 
             { 
                 metricPointModels = value;
+                
+                if(metricPointModels.Count() > 0)
+                    SelectedMetricPointModel = metricPointModels.First();
             }
         }
 
@@ -155,8 +162,22 @@ namespace PlanScoreCard.ViewModels
         public ViewResolvingPlotModel ScoreMetricPlotModel
         {
             get { return scoreMetricPlotModel; }
-            set { SetProperty( ref scoreMetricPlotModel , value); }
+            
+            set 
+            { 
+                SetProperty( ref scoreMetricPlotModel , value);
+                SelectedScoreMetric.SetPlotProperties(SelectedScoreMetric.MetricType);
+            }
         }
+
+        // Commands
+        public DelegateCommand DeleteMetricCommand { get; private set; }
+        public DelegateCommand AddMetricCommand { get; private set; }
+        public DelegateCommand CopyMetricCommand { get; private set; }
+        public DelegateCommand MetricUpCommand { get; private set; }
+        public DelegateCommand MetricDownCommand { get; private set; }
+        public DelegateCommand AddPointCommand { get; private set; }
+        public DelegateCommand DeletePointCommand { get; private set; }
 
         // Constructor
         public EditScoreCardViewModel(IEventAggregator eventAggregator, ViewLauncherService viewLauncherService)
@@ -170,6 +191,18 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<EditScoreCardSetUserEvent>().Subscribe(SetUser);
             EventAggregator.GetEvent<EditScoreCardSetPlanEvent>().Subscribe(SetPlan);
             EventAggregator.GetEvent<MetricRankChangedEvent>().Subscribe(ReRankMetrics);
+            EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Subscribe(UpdateScoreMetricPlotModel);
+            EventAggregator.GetEvent<ReRankMetricPointsEvent>().Subscribe(ReRankPoints);
+            EventAggregator.GetEvent<UpdateScorePointGridEvent>().Subscribe(ReloadScorePoints);
+
+            // Commands
+            DeleteMetricCommand = new DelegateCommand(DeleteMetric);
+            AddMetricCommand = new DelegateCommand(AddMetric);
+            CopyMetricCommand = new DelegateCommand(CopyMetric);
+            MetricUpCommand = new DelegateCommand(MetricUp);
+            MetricDownCommand = new DelegateCommand(MetricDown);
+            AddPointCommand = new DelegateCommand(AddPoint);
+            DeletePointCommand = new DelegateCommand(DeletePoint);
 
             // Inititate Collections
             Structures = new ObservableCollection<StructureModel>();
@@ -178,9 +211,130 @@ namespace PlanScoreCard.ViewModels
             TreatmentSites = new ObservableCollection<string>();
             MetricTypes = new ObservableCollection<MetricTypeEnum>();
 
-
             Bind();
+        }
 
+        private void ReloadScorePoints(SolidColorBrush obj)
+        {
+            SelectedMetricPointModel.PlanScoreBackgroundColor = obj;
+        }
+
+        private void DeletePoint()
+        {
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to delete the ScorePoint?", "Delete Point", MessageBoxButton.YesNo);
+
+            if (result != MessageBoxResult.Yes)
+                return;
+
+            MetricPointModels.Remove(SelectedMetricPointModel);
+            ReRankPoints();
+        }
+
+        private void AddPoint()
+        {
+            int selectedIndex = MetricPointModels.IndexOf(SelectedMetricPointModel);
+            ScorePointModel metricModel = new ScorePointModel(selectedIndex + 1, selectedIndex + 1, EventAggregator);
+            MetricPointModels.Insert(selectedIndex + 1, metricModel);
+            ReRankPoints();
+        }
+
+        private void MetricDown()
+        {
+            int selectedIndex = ScoreMetrics.IndexOf(SelectedScoreMetric);
+            int maxIndex = ScoreMetrics.Count();
+            if (selectedIndex + 1 >= maxIndex)
+                return;
+            ScoreMetrics.Move(selectedIndex, selectedIndex + 1);
+            ReRankMetrics();
+        }
+
+        private void MetricUp()
+        {
+            int selectedIndex = ScoreMetrics.IndexOf(SelectedScoreMetric);
+            if (selectedIndex == 0)
+                return;
+            ScoreMetrics.Move(selectedIndex, selectedIndex - 1);
+            ReRankMetrics();
+        }
+
+        private void UpdateScoreMetricPlotModel()
+        {
+            if(SelectedScoreMetric == null) 
+                    return;
+
+            ScoreMetricPlotModel = SelectedScoreMetric.ScoreMetricPlotModel;
+            SelectedScoreMetric.SetPlotProperties(SelectedScoreMetric.MetricType);
+            
+            foreach (ScorePointModel scorePoint in SelectedScoreMetric.ScorePoints.ToList())
+            {
+                SelectedScoreMetric.OnAddPlotScorePoint(SelectedScoreMetric.Id);
+            }
+
+            ScoreMetricPlotModel.InvalidatePlot(true);
+        }
+
+        private void CopyMetric()
+        {
+            int selectedIndex = ScoreMetrics.IndexOf(SelectedScoreMetric);
+            ScoreMetricModel metricModel = new ScoreMetricModel(EventAggregator);
+            metricModel.MetricType = SelectedScoreMetric.MetricType;
+            metricModel.InputUnit = SelectedScoreMetric.InputUnit;
+            metricModel.OutputUnit = SelectedScoreMetric.OutputUnit;
+            metricModel.InputValue = SelectedScoreMetric.InputValue;
+            metricModel.HI_Hi = SelectedScoreMetric.HI_Hi;
+            metricModel.HI_Lo = SelectedScoreMetric.HI_Lo;
+            metricModel.HI_Target = SelectedScoreMetric.HI_Target;
+            metricModel.MetricText = SelectedScoreMetric.MetricText;
+
+            // Structures
+            foreach (StructureModel structure in selectedMetric.Structures)
+                metricModel.Structures.Add(structure);
+
+            metricModel.Structure = metricModel.Structures.FirstOrDefault(s => s.StructureId == SelectedScoreMetric.Structure.StructureId);
+
+            // ScorePoints
+            foreach (ScorePointModel scorePoint in selectedMetric.ScorePoints)
+                metricModel.ScorePoints.Add(new ScorePointModel(scorePoint.MetricId, scorePoint.PointId, EventAggregator) { Score = scorePoint.Score, PointX = scorePoint.PointX, Colors = scorePoint.Colors ,  bMetricChecked = scorePoint.bMetricChecked, bMidMetric = scorePoint.bMidMetric});
+
+            metricModel.ScoreMetricPlotModel = new ViewResolvingPlotModel();
+            metricModel.SetPlotProperties(metricModel.MetricType);
+
+            foreach  (ScorePointModel scorePoint in metricModel.ScorePoints.ToList())
+            {
+                metricModel.OnAddPlotScorePoint(metricModel.Id);
+            }
+
+            ScoreMetrics.Insert(selectedIndex + 1, metricModel);
+            ReRankMetrics();
+        }
+
+        private void AddMetric()
+        {
+            ScoreMetricModel metricModel = new ScoreMetricModel(EventAggregator);
+            int selectedIndex = ScoreMetrics.IndexOf(SelectedScoreMetric);
+
+            ScoreMetrics.Insert(selectedIndex + 1, metricModel);
+            ReRankMetrics();
+        }
+
+        private void DeleteMetric()
+        {
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to delete the ScoreMetric?", "Delete Metric", MessageBoxButton.YesNo);
+
+            if (result != MessageBoxResult.Yes)
+                return;
+
+            List<ScoreMetricModel> scoreMetrics = ScoreMetrics.ToList();
+            scoreMetrics.Remove(SelectedScoreMetric);
+
+            SelectedScoreMetric = scoreMetrics.FirstOrDefault();
+
+            ScoreMetrics.Clear();
+            foreach (ScoreMetricModel metric in scoreMetrics)
+                ScoreMetrics.Add(metric);
+
+            ReRankMetrics();
+            SelectedScoreMetric = ScoreMetrics.First();
         }
 
         // Populates the View / Binds Data
@@ -228,22 +382,24 @@ namespace PlanScoreCard.ViewModels
             TemplateAuthor = User.Id;
         }
 
-        private void ReRankMetrics(Dictionary<int, int> rankChange)
+        private void ReRankMetrics(Dictionary<int, int> rankChange = null)
         {
-            // Convert the One-Based Ranks from the UI or Zero-Based
-            int oldRank = rankChange.First().Key - 1;
-            int newRank = rankChange.First().Value - 1;
-            
-            // Checks to see if either the old or new Rank is outside the Indecies of the Collection 
-            if (newRank >= ScoreMetrics.Count())
-                newRank = ScoreMetrics.Count() - 1;
+            if (rankChange != null)
+            {
+                // Convert the One-Based Ranks from the UI or Zero-Based
+                int oldRank = rankChange.First().Key - 1;
+                int newRank = rankChange.First().Value - 1;
 
-            if (oldRank >= ScoreMetrics.Count())
-                oldRank = ScoreMetrics.Count() - 1;
+                // Checks to see if either the old or new Rank is outside the Indecies of the Collection 
+                if (newRank >= ScoreMetrics.Count())
+                    newRank = ScoreMetrics.Count() - 1;
 
+                if (oldRank >= ScoreMetrics.Count())
+                    oldRank = ScoreMetrics.Count() - 1;
 
-            // Move the Object in the Collection
-            ScoreMetrics.Move(oldRank, newRank);
+                // Move the Object in the Collection
+                ScoreMetrics.Move(oldRank, newRank);
+            }
 
             // Re-Rank in Collection Order
             int rankCounter = 1;
@@ -257,6 +413,19 @@ namespace PlanScoreCard.ViewModels
 
             ScoreMetrics.OrderBy(o => o.Id);
 
+        }
+
+        private void ReRankPoints()
+        {
+            // Re-Rank in Collection Order
+            int rankCounter = 1;
+            foreach (ScorePointModel metric in MetricPointModels)
+            {
+                metric.PointId = rankCounter;
+                rankCounter++;
+            }
+
+            ScoreMetrics.OrderBy(o => o.Id);
         }
 
         // Show Metric / Points 
@@ -288,7 +457,7 @@ namespace PlanScoreCard.ViewModels
                 MetricPointModels.Add(scorePoint);
 
             // Set the Selected ScorePoint
-            SelectedMetricPointModel = MetricPointModels.First();
+            SelectedMetricPointModel = MetricPointModels.FirstOrDefault();
         }
 
         private void UpdateMetricEditor(ScoreMetricModel scoreMetric)

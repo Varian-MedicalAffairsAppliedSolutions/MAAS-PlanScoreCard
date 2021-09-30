@@ -1,13 +1,22 @@
-﻿using System;
+﻿using Prism.Mvvm;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
 namespace PlanScoreCard.Models.Internals
 {
-    public class PlanScoreColorModel
+    public class PlanScoreColorModel : BindableBase
     {
-        public System.Windows.Media.Brush PlanScoreBackgroundColor { get; set; }
+
+        private System.Windows.Media.Brush planScoreBackgroundColor;
+
+        public System.Windows.Media.Brush PlanScoreBackgroundColor
+        {
+            get { return planScoreBackgroundColor; }
+            set { SetProperty(ref planScoreBackgroundColor , value); }
+        }
+
         public string ColorLabel { get; set; }
         public double ColorValue { get; set; }
         public List<double> Colors { get; set; }

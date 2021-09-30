@@ -14,6 +14,15 @@ namespace PlanScoreCard.Models
 {
     public class ScorePointModel : BindableBase
     {
+
+        private System.Windows.Media.Brush planScoreBackgroundColor;
+
+        public System.Windows.Media.Brush PlanScoreBackgroundColor
+        {
+            get { return planScoreBackgroundColor; }
+            set { SetProperty(ref planScoreBackgroundColor, value); }
+        }
+
         private decimal _pointX;
 
         public decimal PointX
@@ -23,6 +32,7 @@ namespace PlanScoreCard.Models
             {
                 SetProperty(ref _pointX, value);
                 _eventAggregator.GetEvent<AddScorePointEvent>().Publish(MetricId);
+                _eventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Publish();
             }
         }
 
@@ -36,7 +46,12 @@ namespace PlanScoreCard.Models
         public int PointId
         {
             get { return _pointId; }
-            set { SetProperty(ref _pointId, value); }
+            set 
+            { 
+                SetProperty(ref _pointId, value);
+                if(_eventAggregator != null)
+                    _eventAggregator.GetEvent<ReRankMetricPointsEvent>().Publish();
+            }
         }
         private double _score;
 
@@ -49,6 +64,7 @@ namespace PlanScoreCard.Models
             {
                 SetProperty(ref _score, value);
                 _eventAggregator.GetEvent<AddScorePointEvent>().Publish(MetricId);
+                _eventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Publish();
             }
         }
         private bool _bMidMetric;

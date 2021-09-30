@@ -89,7 +89,10 @@ namespace PlanScoreCard.Models
             ScoreMetricLevelSettings = new Dictionary<string, double>();
             CanReorder = true;
 
+            SetEvents();
+
             InititatePlot();
+
         }
 
         public void InititatePlot()
@@ -109,8 +112,11 @@ namespace PlanScoreCard.Models
             EventAggregator.GetEvent<ColorUpdateEvent>().Subscribe(OnColorUpdate);
         }
 
-        private void SetPlotProperties(MetricTypeEnum metricType)
+        public void SetPlotProperties(MetricTypeEnum metricType)
         {
+            ScoreMetricPlotModel.Axes.Clear();
+
+
             ScoreMetricPlotModel.Title = PlanScorePlottingServices.GetPlotTitle(metricType, this);// $"Score for Dose at {doseAtVolumeViewModel.Volume}{doseAtVolumeViewModel.SelectedVolumeUnit}";
             ScoreMetricPlotModel.LegendPlacement = LegendPlacement.Outside;
             ScoreMetricPlotModel.LegendPosition = LegendPosition.RightTop;
@@ -126,7 +132,7 @@ namespace PlanScoreCard.Models
             });
         }
 
-        private void OnAddPlotScorePoint(int obj)
+        public void OnAddPlotScorePoint(int obj)
         {
             SetVariation();//set the visibilty status again for when the score changes.
             if (Id == obj)
@@ -188,6 +194,7 @@ namespace PlanScoreCard.Models
                     ScoreMetricPlotModel.Series.Add(PointSeriesAllGreen);
                 }
                 ScoreMetricPlotModel.InvalidatePlot(true);
+                //EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Publish();
             }
         }
 
@@ -382,6 +389,10 @@ namespace PlanScoreCard.Models
                             byte byteC = Convert.ToByte(obj.Item4.Substring(7, 2), 16);
 
                             metric.Colors = new Models.Internals.PlanScoreColorModel(new List<double> { byteA, byteB, byteC }, $"{obj.Item3}[{metric.Score}]");
+
+                            System.Windows.Media.SolidColorBrush PlanScoreBackgroundColor = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(byteA,byteB,byteC));
+
+                            EventAggregator.GetEvent<UpdateScorePointGridEvent>().Publish(PlanScoreBackgroundColor);
                         }
                         catch (Exception ex)
                         {

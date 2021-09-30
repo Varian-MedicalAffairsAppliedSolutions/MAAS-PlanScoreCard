@@ -134,6 +134,8 @@
     <Compile Include="Events\Plugins\PluginVisibilityEvent.cs" />
     <Compile Include="Events\PointDownEvent.cs" />
     <Compile Include="Events\PointUpEvent.cs" />
+    <Compile Include="Events\ReRankMetricPointsEvent.cs" />
+    <Compile Include="Events\ScoreMetricPlotModelUpdatedEvent.cs" />
     <Compile Include="Events\ScorePlanEvent.cs" />
     <Compile Include="Events\ShowCIMetricEvent.cs" />
     <Compile Include="Events\ShowDoseAtVolumeMetricEvent.cs" />
@@ -142,6 +144,7 @@
     <Compile Include="Events\ShowPluginViewEvent.cs" />
     <Compile Include="Events\ShowVolumeAtDoseMetricEvent.cs" />
     <Compile Include="Events\StructureBuilderChangedEvent.cs" />
+    <Compile Include="Events\UpdateScorePointGridEvent.cs" />
     <Compile Include="Events\VariationCheckedEvent.cs" />
     <Compile Include="Models\Internals\EPeerReviewScoreModel.cs" />
     <Compile Include="Models\Internals\InternalTemplateModel.cs" />
