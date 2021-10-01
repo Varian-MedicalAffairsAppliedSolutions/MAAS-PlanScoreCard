@@ -1,4 +1,6 @@
-﻿using PlanScoreCard.Events;
+﻿using Microsoft.Win32;
+using Newtonsoft.Json;
+using PlanScoreCard.Events;
 using PlanScoreCard.Models;
 using PlanScoreCard.Models.Internals;
 using PlanScoreCard.Services;
@@ -10,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -178,6 +181,11 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand MetricDownCommand { get; private set; }
         public DelegateCommand AddPointCommand { get; private set; }
         public DelegateCommand DeletePointCommand { get; private set; }
+        public DelegateCommand PointUpCommand { get; private set; }
+        public DelegateCommand PointDownCommand { get; private set; }
+        public DelegateCommand ScorePlanCommand { get; private set; }
+        public DelegateCommand SaveTemplateCommand { get; private set; }
+        public DelegateCommand OrderPointsByValueCommand { get; private set; }
 
         // Constructor
         public EditScoreCardViewModel(IEventAggregator eventAggregator, ViewLauncherService viewLauncherService)
@@ -194,6 +202,7 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Subscribe(UpdateScoreMetricPlotModel);
             EventAggregator.GetEvent<ReRankMetricPointsEvent>().Subscribe(ReRankPoints);
             EventAggregator.GetEvent<UpdateScorePointGridEvent>().Subscribe(ReloadScorePoints);
+            EventAggregator.GetEvent<UpdateMetricEditorEvent>().Subscribe(ChangeMetricEditor);
 
             // Commands
             DeleteMetricCommand = new DelegateCommand(DeleteMetric);
@@ -203,7 +212,12 @@ namespace PlanScoreCard.ViewModels
             MetricDownCommand = new DelegateCommand(MetricDown);
             AddPointCommand = new DelegateCommand(AddPoint);
             DeletePointCommand = new DelegateCommand(DeletePoint);
-
+            PointUpCommand = new DelegateCommand(PointUp);
+            PointDownCommand = new DelegateCommand(PointDown);
+            ScorePlanCommand = new DelegateCommand(ScorePlan);
+            SaveTemplateCommand = new DelegateCommand(SaveTemplate);
+            OrderPointsByValueCommand = new DelegateCommand(OrderPointsByValue);
+            
             // Inititate Collections
             Structures = new ObservableCollection<StructureModel>();
             ScoreMetrics = new ObservableCollection<ScoreMetricModel>();
@@ -212,6 +226,66 @@ namespace PlanScoreCard.ViewModels
             MetricTypes = new ObservableCollection<MetricTypeEnum>();
 
             Bind();
+        }
+
+        private void OrderPointsByValue()
+        {
+            if (SelectedScoreMetric == null)
+                return;
+
+            MetricPointModels.Clear();
+
+            List<ScorePointModel> scorePoints = SelectedScoreMetric.ScorePoints.OrderBy(sm => sm.PointX).ToList();
+            foreach (ScorePointModel point in scorePoints)
+                MetricPointModels.Add(point);
+
+            ReRankPoints();
+
+        }
+
+        private void SaveTemplate()
+        {
+            List<ScoreTemplateModel> scoreTemplates = ScoreTemplateBuilder.Build(ScoreMetrics.ToList(), Structures.ToList());
+            InternalTemplateModel template = new InternalTemplateModel()
+            {
+                Creator = TemplateAuthor,
+                Site = String.IsNullOrEmpty(SelectedTreatmentSite) ? "Undefined" : SelectedTreatmentSite,
+                TemplateName = String.IsNullOrEmpty(TemplateName) ? "Undefined" : TemplateName
+            };
+            template.ScoreTemplates = scoreTemplates;
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "JSON Format (.json)|*.json";
+            sfd.Title = "Save as PlanSC format";
+            if (sfd.ShowDialog() == true)
+            {
+                File.WriteAllText(sfd.FileName, JsonConvert.SerializeObject(template));
+            }
+        }
+
+        private void ScorePlan()
+        {
+            var scoreTemplate = ScoreTemplateBuilder.Build(ScoreMetrics.ToList(), Structures.ToList());
+            EventAggregator.GetEvent<ScorePlanEvent>().Publish(scoreTemplate);
+        }
+
+        private void PointDown()
+        {
+            int selectedIndex = MetricPointModels.IndexOf(SelectedMetricPointModel);
+            int maxIndex = MetricPointModels.Count();
+            if (selectedIndex + 1 >= maxIndex)
+                return;
+            MetricPointModels.Move(selectedIndex, selectedIndex + 1);
+            ReRankPoints();
+        }
+
+        private void PointUp()
+        {
+            int selectedIndex = MetricPointModels.IndexOf(SelectedMetricPointModel);
+            int maxIndex = MetricPointModels.Count();
+            if (selectedIndex == 0)
+                return;
+            MetricPointModels.Move(selectedIndex, selectedIndex - 1);
+            ReRankPoints();
         }
 
         private void ReloadScorePoints(SolidColorBrush obj)
@@ -421,8 +495,10 @@ namespace PlanScoreCard.ViewModels
             int rankCounter = 1;
             foreach (ScorePointModel metric in MetricPointModels)
             {
+                metric.CanReOrder = false;
                 metric.PointId = rankCounter;
                 rankCounter++;
+                metric.CanReOrder = true;
             }
 
             ScoreMetrics.OrderBy(o => o.Id);
@@ -458,6 +534,16 @@ namespace PlanScoreCard.ViewModels
 
             // Set the Selected ScorePoint
             SelectedMetricPointModel = MetricPointModels.FirstOrDefault();
+        }
+
+        private void ChangeMetricEditor()
+        {
+            SelectedScoreMetric = ScoreMetrics.FirstOrDefault(s => s.Id == SelectedScoreMetric.Id);
+            
+            if (SelectedScoreMetric == null)
+                return;
+
+            UpdateMetricEditor(SelectedScoreMetric);
         }
 
         private void UpdateMetricEditor(ScoreMetricModel scoreMetric)

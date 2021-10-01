@@ -34,7 +34,7 @@ namespace PlanScoreCard
             {
                 var provider = new CultureInfo("en-US");
                 DateTime endDate = DateTime.Now;
-                if (DateTime.TryParse("10/31/2021", provider, DateTimeStyles.None, out endDate))
+                if (DateTime.TryParse("12/31/2021", provider, DateTimeStyles.None, out endDate))
                 {
                     if (DateTime.Now <= endDate)
                     {

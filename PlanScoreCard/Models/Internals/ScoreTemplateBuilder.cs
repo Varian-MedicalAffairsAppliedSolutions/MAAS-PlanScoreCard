@@ -47,6 +47,43 @@ namespace PlanScoreCard.Models.Internals
             return scoreTemplates;
         }
 
+        public static List<ScoreTemplateModel> Build(List<ScoreMetricModel> scoreMetrics,
+            List<StructureModel> structures)
+        {
+            List<ScoreTemplateModel> scoreTemplates = new List<ScoreTemplateModel>();
+            _structures = structures;
+            foreach (var scoreMetric in scoreMetrics)
+            {
+                if (scoreMetric != null)
+                {
+                    if (scoreMetric.MetricType == MetricTypeEnum.HomogeneityIndex)
+                    {
+                        scoreTemplates.Add(new ScoreTemplateModel(
+                            scoreMetric.Structure,
+                            scoreMetric.MetricType,
+                            Convert.ToDouble(scoreMetric.HI_Hi),
+                            Convert.ToDouble(scoreMetric.HI_Lo),
+                            String.IsNullOrEmpty(scoreMetric.HI_Target) ? 0.0 : Convert.ToDouble(scoreMetric.HI_Target),
+                            String.IsNullOrEmpty(scoreMetric.InputUnit) ? "cGy" : scoreMetric.InputUnit,
+                            GetInternalScorePoint(scoreMetric.ScorePoints)));
+                    }
+                    else
+                    {
+                        scoreTemplates.Add(new ScoreTemplateModel(
+                            scoreMetric.Structure,
+                            scoreMetric.MetricType,
+                            GetInputValue(scoreMetric),
+                            GetInputUnit(scoreMetric),
+                            GetOutputUnit(scoreMetric),
+                            GetInternalScorePoint(scoreMetric.ScorePoints)));
+                    }
+                }
+                //scoreMetric.ScoreMetric.ScorePoints.ToList()));
+            }
+            return scoreTemplates;
+        }
+
+
         private static List<ScorePointInternalModel> GetInternalScorePoint(ObservableCollection<ScorePointModel> scorePoints)
         {
             List<ScorePointInternalModel> scores = new List<ScorePointInternalModel>();
@@ -78,11 +115,45 @@ namespace PlanScoreCard.Models.Internals
             else { return String.Empty; }
         }
 
+        private static string GetOutputUnit(ScoreMetricModel scoreMetric)
+        {
+            if (scoreMetric != null)
+            {
+                return scoreMetric.OutputUnit;
+            }
+            //if (scoreMetric._doseAtVolumeViewModel != null)
+            //{
+            //    return scoreMetric._doseAtVolumeViewModel.SelectedDoseUnit;
+            //}
+            //if (scoreMetric._volumeAtDoseViewModel != null)
+            //{
+            //    return scoreMetric._volumeAtDoseViewModel.SelectedVolumeUnit;
+            //}
+            //if (scoreMetric._doseValueViewModel != null)
+            //{
+            //    return scoreMetric._doseValueViewModel.SelectedDoseUnit;
+            //}
+            else { return String.Empty; }
+        }
+
         private static string GetInputUnit(ScoreMetricViewModel scoreMetric)
         {
             if (scoreMetric.ScoreMetric != null)
             {
                 return scoreMetric.ScoreMetric.InputUnit;
+            }
+            //if (scoreMetric._volumeAtDoseViewModel != null)
+            //{
+            //    return scoreMetric._volumeAtDoseViewModel.SelectedDoseUnit;
+            //}
+            else { return String.Empty; }
+        }
+
+        private static string GetInputUnit(ScoreMetricModel scoreMetric)
+        {
+            if (scoreMetric != null)
+            {
+                return scoreMetric.InputUnit;
             }
             //if (scoreMetric._volumeAtDoseViewModel != null)
             //{
@@ -104,6 +175,21 @@ namespace PlanScoreCard.Models.Internals
                 return Double.NaN;
             }
         }
+
+        private static double GetInputValue(ScoreMetricModel scoreMetric)
+        {
+            //cannot use doseAtVolumeViewModel because it is the current setting in the navigation panel at the top
+            //instead use scoreMetric._scoreMetric.Volume.
+            if (scoreMetric != null)
+            {
+                return Convert.ToDouble(scoreMetric.InputValue);
+            }
+            else
+            {
+                return Double.NaN;
+            }
+        }
+
         public static List<ScoreMetricViewModel> GetScoreMetricsFromTemplate(List<ScoreTemplateModel> scoreTemplates,
             IEventAggregator _eventAggregator, int score_newId,
             List<StructureModel> structures)

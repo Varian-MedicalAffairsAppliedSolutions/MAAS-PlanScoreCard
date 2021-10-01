@@ -18,7 +18,18 @@ namespace PlanScoreCard.Models
         public IEventAggregator EventAggregator;
 
         // Metric Type
-        public MetricTypeEnum MetricType { get; set; }
+
+        private MetricTypeEnum metricType;
+
+        public MetricTypeEnum MetricType
+        {
+            get { return metricType; }
+            set 
+            { 
+                SetProperty(ref metricType , value);
+                EventAggregator.GetEvent<UpdateMetricEditorEvent>().Publish();
+            }
+        }
 
         // MetricName
         public string MetricText { get; set; }

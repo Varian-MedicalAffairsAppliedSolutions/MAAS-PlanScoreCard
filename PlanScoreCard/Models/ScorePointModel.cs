@@ -15,6 +15,8 @@ namespace PlanScoreCard.Models
     public class ScorePointModel : BindableBase
     {
 
+        public bool CanReOrder { get; set; }
+
         private System.Windows.Media.Brush planScoreBackgroundColor;
 
         public System.Windows.Media.Brush PlanScoreBackgroundColor
@@ -49,7 +51,7 @@ namespace PlanScoreCard.Models
             set 
             { 
                 SetProperty(ref _pointId, value);
-                if(_eventAggregator != null)
+                if(_eventAggregator != null && CanReOrder)
                     _eventAggregator.GetEvent<ReRankMetricPointsEvent>().Publish();
             }
         }
@@ -111,6 +113,7 @@ namespace PlanScoreCard.Models
         {
             MetricId = metricId;
             PointId = pointId;
+            CanReOrder = true;
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<ColorSelectedEvent>().Subscribe(OnColorSelected);
             DeletePointCommand = new DelegateCommand(OnDeletePoint);
