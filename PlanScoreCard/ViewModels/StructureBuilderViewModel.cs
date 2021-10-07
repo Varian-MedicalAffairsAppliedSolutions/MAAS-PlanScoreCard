@@ -137,20 +137,14 @@ namespace PlanScoreCard.ViewModels
         }
         public ObservableCollection<StructureModel> Structures { get; private set; }
 
-        public StructureBuilderViewModel(PlanModel planSetup, IEventAggregator eventAggregator)
+        public StructureBuilderViewModel(IEventAggregator eventAggregator)
         {
-            _planModel = planSetup;
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<StructureBuilderChangedEvent>().Subscribe(OnStructureBuilderChanged);
+            _eventAggregator.GetEvent<SetPlanModelEvent>().Subscribe(SetPlanModel);
             CancelStructureCommand = new DelegateCommand<Window>(OnCancelStructure);
             AddStructureCommand = new DelegateCommand<Window>(OnAddStructure, CanAddStructure);
-            StructureGroup1 = new StructureBuilderGroupViewModel(StructureModelNestingModel.None,
-                _planModel, _eventAggregator);
-            StructureGroup1.bIsNestable = true;
-            StructureGroup2 = new StructureBuilderGroupViewModel(StructureModelNestingModel.None,
-                _planModel, _eventAggregator);
-            StructureGroup2.bIsNestable = false;
-            StructureGroup2.bIsVisible = false;
+
             _eventAggregator.GetEvent<ChangeNestEvent>().Subscribe(OnNestChanged);
             Operations = new ObservableCollection<OperationModel>();
             NestingOperations = new ObservableCollection<OperationModel>();
@@ -163,16 +157,31 @@ namespace PlanScoreCard.ViewModels
             NestingOperations.Add(new OperationModel("SUB", StructureOperationEnum.SUB, "#"));
 
             Structures = new ObservableCollection<StructureModel>();
-            foreach (var structure in _planModel.Structures)
-            {
-                Structures.Add(structure);
-            }
+
             IncreaseMarginCommand = new DelegateCommand(OnIncreaseMargin, CanIncreaseMargin);
             DecreaseMarginCommand = new DelegateCommand(OnDecreaseMargin, CanIncreaseMargin);
             //set column defaults.
             NestingColumn = 0;
             NestingOperationColumn = 2;
             BaseColumn = 3;
+        }
+
+        public void SetPlanModel(PlanModel planSetup)
+        {
+            _planModel = planSetup;
+            _eventAggregator.GetEvent<SetPlanModelEvent>().Unsubscribe(SetPlanModel);
+
+            StructureGroup1 = new StructureBuilderGroupViewModel(StructureModelNestingModel.None, _planModel, _eventAggregator);
+            StructureGroup1.bIsNestable = true;
+
+            StructureGroup2 = new StructureBuilderGroupViewModel(StructureModelNestingModel.None, _planModel, _eventAggregator);
+            StructureGroup2.bIsNestable = false;
+            StructureGroup2.bIsVisible = false;
+
+            foreach (var structure in _planModel.Structures)
+            {
+                Structures.Add(structure);
+            }
         }
 
         private void OnNestChanged()
@@ -214,6 +223,9 @@ namespace PlanScoreCard.ViewModels
 
         private bool CanAddStructure(Window arg)
         {
+            if (StructureGroup1 == null)
+                return false;
+
             //todo determine when the structure add can be selected.
             if (StructureGroup1.Nesting == StructureModelNestingModel.None)
             {

@@ -225,24 +225,32 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="20"/>
                             <RowDefinition Height="40"/>
+                            <RowDefinition Height="80"/>
                             <RowDefinition Height="*"/>
-                            <RowDefinition Height="400"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
 
                         <Label Grid.Column="0" Grid.Row="0" FontSize="12" Content="Structure" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
-                        <ComboBox Height="25" Grid.Column="0" Grid.Row="1" DisplayMemberPath="StructureId" SelectedValuePath="Value" SelectedItem="{Binding SelectedScoreMetric.Structure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Structures}" Margin="5,0,5,0" Background="WhiteSmoke"/>
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="35"/>
+                            </Grid.ColumnDefinitions>
 
+                            <ComboBox Height="30" Grid.Column="0" DisplayMemberPath="StructureId" SelectedValuePath="Value" SelectedItem="{Binding SelectedScoreMetric.Structure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Structures}" Margin="5,0,5,0" Background="WhiteSmoke"/>
+                            <Button Command="{Binding AddNewStructureCommand}" Content="{icons:FontAwesome Kind=PlusCircleSolid}" Grid.Column="1" Height="30"  HorizontalAlignment="Left" Width="30" Margin="2"/>
+
+                        </Grid>
+                        
                         <Label Grid.Column="1" Grid.Row="0" FontSize="12" Content="Metric Type" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
-                        <ComboBox Height="25" Grid.Column="1" Grid.Row="1" SelectedItem="{Binding SelectedScoreMetric.MetricType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding MetricTypes}" Margin="5,0,5,0" />
+                        <ComboBox Height="30" Grid.Column="1" Grid.Row="1" SelectedItem="{Binding SelectedScoreMetric.MetricType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding MetricTypes}" Margin="5,0,5,0" />
 
-                        <Label Grid.Column="2" Grid.Row="0" FontSize="12" Content="Description" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
-                        <TextBox Height="25" Grid.Column="2" Text="{Binding SelectedScoreMetric.MetricText}" Grid.Row="1" Margin="5,0,5,0" IsReadOnly="True"/>
+                        <!--<Label Grid.Column="2" Grid.Row="0" FontSize="12" Content="Description" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
+                        <TextBox Height="25" Grid.Column="2" Text="{Binding SelectedScoreMetric.MetricText}" Grid.Row="1" Margin="5,0,5,0" IsReadOnly="True"/>-->
 
                         <GroupBox Header="Metric Builder"  Margin="5,0,5,5" FontSize="16" FontWeight="Bold" Background="WhiteSmoke" Grid.ColumnSpan="3" Grid.Row="2">
                             <UserControl Margin="-5" Content="{Binding MetricEditorControl , Mode=TwoWay, NotifyOnSourceUpdated=True}"/>

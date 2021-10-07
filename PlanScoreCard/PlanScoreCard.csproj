@@ -138,6 +138,7 @@
     <Compile Include="Events\ReRankMetricPointsEvent.cs" />
     <Compile Include="Events\ScoreMetricPlotModelUpdatedEvent.cs" />
     <Compile Include="Events\ScorePlanEvent.cs" />
+    <Compile Include="Events\SetPlanModelEvent.cs" />
     <Compile Include="Events\ShowCIMetricEvent.cs" />
     <Compile Include="Events\ShowDoseAtVolumeMetricEvent.cs" />
     <Compile Include="Events\ShowDoseValueMetricEvent.cs" />
@@ -200,6 +201,7 @@
     <Compile Include="ViewModels\ScoreMetricViewModel.cs" />
     <Compile Include="ViewModels\StructureBuilderGroupViewModel.cs" />
     <Compile Include="ViewModels\StructureBuilderViewModel.cs" />
+    <Compile Include="ViewModels\StructureGenerationViewModel.cs" />
     <Compile Include="ViewModels\VolumeAtDoseViewModel.cs" />
     <Compile Include="Views\CIView.xaml.cs">
       <DependentUpon>CIView.xaml</DependentUpon>
@@ -260,6 +262,9 @@
     </Compile>
     <Compile Include="Views\StructureBuilderView.xaml.cs">
       <DependentUpon>StructureBuilderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StructureGenerationVIew.xaml.cs">
+      <DependentUpon>StructureGenerationVIew.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\VolumeAtDoseView.xaml.cs">
       <DependentUpon>VolumeAtDoseView.xaml</DependentUpon>
@@ -371,6 +376,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\StructureBuilderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StructureGenerationVIew.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -60,6 +60,11 @@ namespace PlanScoreCard.Services
             return GetView<EditCIView>();
         }
 
+        public StructureBuilderView GetStructureBuilderView()
+        {
+            return GetView<StructureBuilderView>();
+        }
+
         /// <summary>
         /// Generate a generic view
         /// </summary>

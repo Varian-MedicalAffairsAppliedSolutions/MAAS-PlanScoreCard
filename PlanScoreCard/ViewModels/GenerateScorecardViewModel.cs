@@ -329,13 +329,13 @@ namespace PlanScoreCard.ViewModels
 
         private void OnLaunchStructureBuilder()
         {
-            SelectedStructure = null;
-            //Structures.Clear();
-            StructureBuilderView structureBuilderView = new StructureBuilderView()
-            {
-                DataContext = new StructureBuilderViewModel(_planModel, _eventAggregator)
-            };
-            structureBuilderView.ShowDialog();
+            //SelectedStructure = null;
+            ////Structures.Clear();
+            //StructureBuilderView structureBuilderView = new StructureBuilderView()
+            //{
+            //    DataContext = new StructureBuilderViewModel(_planModel, _eventAggregator)
+            //};
+            //structureBuilderView.ShowDialog();
             //launch viewmodel.
             //FillStructures();
         }

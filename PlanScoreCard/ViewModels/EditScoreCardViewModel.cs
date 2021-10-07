@@ -4,6 +4,7 @@ using PlanScoreCard.Events;
 using PlanScoreCard.Models;
 using PlanScoreCard.Models.Internals;
 using PlanScoreCard.Services;
+using PlanScoreCard.Views;
 using PlanScoreCard.Views.MetricEditors;
 using Prism.Commands;
 using Prism.Events;
@@ -186,6 +187,7 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand ScorePlanCommand { get; private set; }
         public DelegateCommand SaveTemplateCommand { get; private set; }
         public DelegateCommand OrderPointsByValueCommand { get; private set; }
+        public DelegateCommand AddNewStructureCommand { get; private set; }
 
         // Constructor
         public EditScoreCardViewModel(IEventAggregator eventAggregator, ViewLauncherService viewLauncherService)
@@ -203,7 +205,8 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<ReRankMetricPointsEvent>().Subscribe(ReRankPoints);
             EventAggregator.GetEvent<UpdateScorePointGridEvent>().Subscribe(ReloadScorePoints);
             EventAggregator.GetEvent<UpdateMetricEditorEvent>().Subscribe(ChangeMetricEditor);
-
+            EventAggregator.GetEvent<AddStructureEvent>().Subscribe(AddNewStructure);
+            
             // Commands
             DeleteMetricCommand = new DelegateCommand(DeleteMetric);
             AddMetricCommand = new DelegateCommand(AddMetric);
@@ -217,7 +220,8 @@ namespace PlanScoreCard.ViewModels
             ScorePlanCommand = new DelegateCommand(ScorePlan);
             SaveTemplateCommand = new DelegateCommand(SaveTemplate);
             OrderPointsByValueCommand = new DelegateCommand(OrderPointsByValue);
-            
+            AddNewStructureCommand = new DelegateCommand(OnAddNewStructure);
+
             // Inititate Collections
             Structures = new ObservableCollection<StructureModel>();
             ScoreMetrics = new ObservableCollection<ScoreMetricModel>();
@@ -228,6 +232,33 @@ namespace PlanScoreCard.ViewModels
             Bind();
         }
 
+        private void AddNewStructure(StructureModel structure)
+        {
+            Structures.Add(structure);
+            Structures.OrderBy(s => s.StructureId);
+            
+            //also add structures to each metric in case you want to change it.
+            foreach (var sm in ScoreMetrics)
+                sm.Structures.Add(structure);
+
+        }
+
+        private void OnAddNewStructure()
+        {
+
+            StructureBuilderView builderView = ViewLauncherService.GetStructureBuilderView();
+            EventAggregator.GetEvent<SetPlanModelEvent>().Publish(PlanModel);
+            builderView.ShowDialog();
+
+            //StructureBuilderView structureBuilderView = new StructureBuilderView()
+            //{
+            //    DataContext = new StructureBuilderViewModel(_planModel, _eventAggregator)
+            //};
+            //structureBuilderView.ShowDialog();
+            //launch viewmodel.
+            //FillStructures();
+        }
+
         private void OrderPointsByValue()
         {
             if (SelectedScoreMetric == null)
@@ -235,7 +266,7 @@ namespace PlanScoreCard.ViewModels
 
             MetricPointModels.Clear();
 
-            List<ScorePointModel> scorePoints = SelectedScoreMetric.ScorePoints.OrderBy(sm => sm.PointX).ToList();
+            List<ScorePointModel> scorePoints = SelectedScoreMetric.ScorePoints.OrderBy(sm => sm.Score).ToList();
             foreach (ScorePointModel point in scorePoints)
                 MetricPointModels.Add(point);
 
@@ -464,6 +495,7 @@ namespace PlanScoreCard.ViewModels
         {
             PlanModel = planModel;
             Structures = PlanModel.Structures;
+            Structures.OrderBy(s => s.StructureId);
         }
 
         private void SetUser(User user)
