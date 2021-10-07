@@ -347,6 +347,7 @@ namespace PlanScoreCard.ViewModels
             ScoreMetricPlotModel.InvalidatePlot(true);
         }
 
+        // Copy Metric
         private void CopyMetric()
         {
             int selectedIndex = ScoreMetrics.IndexOf(SelectedScoreMetric);
@@ -367,9 +368,22 @@ namespace PlanScoreCard.ViewModels
             metricModel.Structure = metricModel.Structures.FirstOrDefault(s => s.StructureId == SelectedScoreMetric.Structure.StructureId);
 
             // ScorePoints
-            foreach (ScorePointModel scorePoint in selectedMetric.ScorePoints)
-                metricModel.ScorePoints.Add(new ScorePointModel(scorePoint.MetricId, scorePoint.PointId, EventAggregator) { Score = scorePoint.Score, PointX = scorePoint.PointX, Colors = scorePoint.Colors ,  bMetricChecked = scorePoint.bMetricChecked, bMidMetric = scorePoint.bMidMetric});
+            foreach (ScorePointModel scorePoint in selectedMetric.ScorePoints) 
+            {
+                ScorePointModel point = new ScorePointModel(scorePoint.MetricId, scorePoint.PointId, EventAggregator);
+                point.Score = scorePoint.Score;
+                point.PointX = scorePoint.PointX;
 
+                PlanScoreColorModel colorModel = scorePoint.Colors;
+                point.PlanScoreBackgroundColor = scorePoint.PlanScoreBackgroundColor;
+                colorModel.PlanScoreBackgroundColor = scorePoint.PlanScoreBackgroundColor;
+                point.Colors = colorModel;
+                point.bMetricChecked = scorePoint.bMetricChecked;
+                point.bMidMetric = scorePoint.bMidMetric;
+
+                metricModel.ScorePoints.Add(point);
+
+            }
             metricModel.ScoreMetricPlotModel = new ViewResolvingPlotModel();
             metricModel.SetPlotProperties(metricModel.MetricType);
 
@@ -382,6 +396,7 @@ namespace PlanScoreCard.ViewModels
             ReRankMetrics();
         }
 
+        // Add Metric
         private void AddMetric()
         {
             ScoreMetricModel metricModel = new ScoreMetricModel(EventAggregator);
@@ -391,6 +406,7 @@ namespace PlanScoreCard.ViewModels
             ReRankMetrics();
         }
 
+        // Delete Metric
         private void DeleteMetric()
         {
             MessageBoxResult result = MessageBox.Show("Are you sure you want to delete the ScoreMetric?", "Delete Metric", MessageBoxButton.YesNo);

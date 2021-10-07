@@ -88,6 +88,7 @@ namespace PlanScoreCard.Models
                 _eventAggregator.GetEvent<VariationCheckedEvent>().Publish(new Tuple<int, int>(MetricId, PointId));
             }
         }
+
         //private System.Windows.Media.Brush _backGroundBrush;
 
         //public System.Windows.Media.Brush BackGroundBrush
@@ -100,7 +101,13 @@ namespace PlanScoreCard.Models
         public PlanScoreColorModel Colors
         {
             get { return _colors; }
-            set { SetProperty(ref _colors, value); }
+            set 
+            { 
+                SetProperty(ref _colors, value);
+                _colors.Colors = value.Colors;
+                _colors.ColorValue = value.ColorValue;
+                _colors.ColorLabel = value.ColorLabel;
+            }
         }
 
         //public PlanScoreColorModel Colors { get; set; }
@@ -121,6 +128,7 @@ namespace PlanScoreCard.Models
             PointDownCommand = new DelegateCommand(OnPointDown);
             LaunchColorPickerCommand = new DelegateCommand(OnLaunchColorPicker);
         }
+
         /// <summary>
         /// Converts the input object to a PlanScoreColorModel
         /// </summary>
