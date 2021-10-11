@@ -7,12 +7,14 @@ using Prism.Events;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Media;
 
 namespace PlanScoreCard.Models
 {
-    public class ScorePointModel : BindableBase
+    public class ScorePointModel : BindableBase , INotifyPropertyChanged
     {
 
         public bool CanReOrder { get; set; }
@@ -89,13 +91,6 @@ namespace PlanScoreCard.Models
             }
         }
 
-        //private System.Windows.Media.Brush _backGroundBrush;
-
-        //public System.Windows.Media.Brush BackGroundBrush
-        //{
-        //    get { return _backGroundBrush; }
-        //    set { SetProperty(ref _backGroundBrush, value); }
-        //}
         private PlanScoreColorModel _colors;
 
         public PlanScoreColorModel Colors
@@ -109,8 +104,6 @@ namespace PlanScoreCard.Models
                 _colors.ColorLabel = value.ColorLabel;
             }
         }
-
-        //public PlanScoreColorModel Colors { get; set; }
 
         public DelegateCommand DeletePointCommand { get; private set; }
         public DelegateCommand PointUpCommand { get; private set; }
@@ -176,6 +169,18 @@ namespace PlanScoreCard.Models
         private void OnDeletePoint()
         {
             _eventAggregator.GetEvent<DeleteScorePointEvent>().Publish(new Tuple<int, int>(MetricId, PointId));
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        // This method is called by the Set accessor of each property.
+        // The CallerMemberName attribute that is applied to the optional propertyName
+        // parameter causes the property name of the caller to be substituted as an argument.
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace PlanScoreCard.Models
 {
@@ -28,11 +29,60 @@ namespace PlanScoreCard.Models
             { 
                 SetProperty(ref metricType , value);
                 EventAggregator.GetEvent<UpdateMetricEditorEvent>().Publish();
+                UpdateMetricText();
+                NotifyPropertyChanged();
             }
         }
 
         // MetricName
-        public string MetricText { get; set; }
+        private string metricText;
+
+        public string MetricText
+        {
+            get { return metricText; }
+            set 
+            { 
+                SetProperty(ref metricText, value);
+                NotifyPropertyChanged();
+            }
+        }
+
+        private void UpdateMetricText()
+        {
+            switch (MetricType)
+            {
+                case MetricTypeEnum.DoseAtVolume:
+                    MetricText = $"Dose at {InputValue}{InputUnit}";
+                    return;
+                case MetricTypeEnum.VolumeAtDose:
+                    MetricText = $"Volume at {InputValue}{InputUnit}";
+                    return;
+                case MetricTypeEnum.MinDose:
+                    MetricText = $"Min Dose [{OutputUnit}]";
+                    return;
+                case MetricTypeEnum.MeanDose:
+                    MetricText = $"Mean Dose [{OutputUnit}]";
+                    return;
+                case MetricTypeEnum.MaxDose:
+                    MetricText = $"Max Dose [{OutputUnit}]";
+                    return;
+                case MetricTypeEnum.VolumeOfRegret:
+                    MetricText = $"Vol of regret at {InputValue}{InputUnit}";
+                    return;
+                case MetricTypeEnum.ConformationNumber:
+                    MetricText = $"Conf No. at {InputValue}{InputUnit}";
+                    return;
+                case MetricTypeEnum.HomogeneityIndex:
+                    MetricText = $"HI [D{HI_Hi}-D{HI_Lo}]/{HI_Target}";
+                    return;
+                case MetricTypeEnum.ConformityIndex:
+                    MetricText = $"CI [{InputValue} [{InputUnit}]]";
+                    return;
+                default:
+                    MetricText = "Undefined Metric";
+                    return;
+            }
+        }
 
         // Flag for the Rank Event of the ID - This is Gross.. Needs to Die
         public bool CanReorder;
@@ -56,6 +106,7 @@ namespace PlanScoreCard.Models
                 }
 
                 SetProperty(ref _id, value);
+                NotifyPropertyChanged();
             }
         }
 
@@ -68,7 +119,9 @@ namespace PlanScoreCard.Models
             set
             {
                 value = Structures.FirstOrDefault(s => s.StructureId == value.StructureId);
+                EventAggregator.GetEvent<MetricStructureChangedEvent>().Publish();
                 SetProperty(ref structure, value);
+                NotifyPropertyChanged();
             }
         }
 
@@ -79,12 +132,60 @@ namespace PlanScoreCard.Models
         public ObservableCollection<ScorePointModel> ScorePoints { get; set; }
 
         // ScorePoint Plot
-        public ViewResolvingPlotModel ScoreMetricPlotModel { get; set; }
+
+        private ViewResolvingPlotModel scoreMetricPlotModel;
+
+        public ViewResolvingPlotModel ScoreMetricPlotModel
+        {
+            get { return scoreMetricPlotModel; }
+            set 
+            { 
+                SetProperty(ref scoreMetricPlotModel , value);
+                NotifyPropertyChanged();
+            }
+        }
+
 
         // Metric Parameters
-        public string InputValue { get; internal set; }
-        public string InputUnit { get; internal set; }
-        public string OutputUnit { get; internal set; }
+        private string inputValue;
+
+        public string InputValue
+        {
+            get { return inputValue; }
+            set 
+            { 
+                SetProperty( ref inputValue , value);
+                UpdateMetricText();
+                NotifyPropertyChanged();
+            }
+        }
+
+        private string inputUnit;
+
+        public string InputUnit
+        {
+            get { return inputUnit; }
+            set 
+            { 
+                SetProperty( ref inputUnit , value);
+                UpdateMetricText();
+                NotifyPropertyChanged();
+            }
+        }
+
+        private string outputUnit;
+
+        public string OutputUnit
+        {
+            get { return outputUnit; }
+            set 
+            { 
+                SetProperty(ref outputUnit , value);
+                UpdateMetricText();
+                NotifyPropertyChanged();
+            }
+        }
+
         public string HI_Hi { get; internal set; }
         public string HI_Lo { get; internal set; }
         public string HI_Target { get; internal set; }
@@ -414,6 +515,14 @@ namespace PlanScoreCard.Models
             }
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
         public void SetEventAggregator(IEventAggregator eventAggregator)
         {
             EventAggregator = eventAggregator;

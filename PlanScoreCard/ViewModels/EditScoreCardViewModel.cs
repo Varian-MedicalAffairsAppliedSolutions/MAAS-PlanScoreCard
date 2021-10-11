@@ -38,11 +38,11 @@ namespace PlanScoreCard.ViewModels
         public object MetricEditorControl
         {
             get { return metricEdtiorControl; }
-            set { SetProperty( ref metricEdtiorControl , value); }
+            set { SetProperty(ref metricEdtiorControl, value); }
         }
 
-        public ObservableCollection<MetricTypeEnum> MetricTypes {  get; set; }
- 
+        public ObservableCollection<MetricTypeEnum> MetricTypes { get; set; }
+
         // Private Class Collections
 
         // ScoreCard Model
@@ -51,7 +51,7 @@ namespace PlanScoreCard.ViewModels
         public ScoreCardModel ScoreCard
         {
             get { return scoreCard; }
-            set 
+            set
             {
                 SetProperty(ref scoreCard, value);
 
@@ -76,16 +76,17 @@ namespace PlanScoreCard.ViewModels
         public ScoreMetricModel SelectedScoreMetric
         {
             get { return selectedMetric; }
-            set 
+            set
             {
                 SetProperty(ref selectedMetric, value);
                 ShowScorePointModels(selectedMetric);
 
                 if (selectedMetric == null)
                     return;
-                ScoreMetricPlotModel = selectedMetric.ScoreMetricPlotModel;
-                ScoreMetricPlotModel.InvalidatePlot(true);
+
+                UpdateScoreMetricPlotModel();
                 UpdateMetricEditor(selectedMetric);
+
             }
         }
 
@@ -95,11 +96,11 @@ namespace PlanScoreCard.ViewModels
         public ObservableCollection<ScorePointModel> MetricPointModels
         {
             get { return metricPointModels; }
-            set 
-            { 
+            set
+            {
                 metricPointModels = value;
-                
-                if(metricPointModels.Count() > 0)
+
+                if (metricPointModels.Count() > 0)
                     SelectedMetricPointModel = metricPointModels.First();
             }
         }
@@ -119,8 +120,10 @@ namespace PlanScoreCard.ViewModels
         public ObservableCollection<StructureModel> Structures
         {
             get { return strctures; }
-            set { SetProperty( ref strctures , value); }
+            set { SetProperty(ref strctures, value); }
         }
+
+
 
         // Template Author
         private string templateAuthor;
@@ -138,7 +141,7 @@ namespace PlanScoreCard.ViewModels
         public string TemplateName
         {
             get { return templateName; }
-            set { SetProperty(ref templateName , value); }
+            set { SetProperty(ref templateName, value); }
         }
 
         // Selected Treatment Site
@@ -148,7 +151,7 @@ namespace PlanScoreCard.ViewModels
         public string SelectedTreatmentSite
         {
             get { return selectedTreatmentSite; }
-            set { SetProperty( ref selectedTreatmentSite , value); }
+            set { SetProperty(ref selectedTreatmentSite, value); }
         }
 
         // Treatment Sites
@@ -166,10 +169,10 @@ namespace PlanScoreCard.ViewModels
         public ViewResolvingPlotModel ScoreMetricPlotModel
         {
             get { return scoreMetricPlotModel; }
-            
-            set 
-            { 
-                SetProperty( ref scoreMetricPlotModel , value);
+
+            set
+            {
+                SetProperty(ref scoreMetricPlotModel, value);
                 SelectedScoreMetric.SetPlotProperties(SelectedScoreMetric.MetricType);
             }
         }
@@ -206,7 +209,8 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<UpdateScorePointGridEvent>().Subscribe(ReloadScorePoints);
             EventAggregator.GetEvent<UpdateMetricEditorEvent>().Subscribe(ChangeMetricEditor);
             EventAggregator.GetEvent<AddStructureEvent>().Subscribe(AddNewStructure);
-            
+            EventAggregator.GetEvent<UpdateScroreMetricsEvent>().Subscribe(UpdateMetrics);
+
             // Commands
             DeleteMetricCommand = new DelegateCommand(DeleteMetric);
             AddMetricCommand = new DelegateCommand(AddMetric);
@@ -232,11 +236,23 @@ namespace PlanScoreCard.ViewModels
             Bind();
         }
 
+        private void UpdateMetrics()
+        {
+            if (SelectedScoreMetric == null)
+                return;
+
+            ScoreMetrics = ScoreMetrics;
+
+            //ScoreMetrics.Remove(ScoreMetrics.FirstOrDefault(s => s.Id == SelectedScoreMetric.Id));
+            //ScoreMetrics.Add(SelectedScoreMetric);
+            //ScoreMetrics.OrderBy(sm => sm.Id);
+        }
+
         private void AddNewStructure(StructureModel structure)
         {
             Structures.Add(structure);
             Structures.OrderBy(s => s.StructureId);
-            
+
             //also add structures to each metric in case you want to change it.
             foreach (var sm in ScoreMetrics)
                 sm.Structures.Add(structure);
@@ -364,12 +380,12 @@ namespace PlanScoreCard.ViewModels
 
         private void UpdateScoreMetricPlotModel()
         {
-            if(SelectedScoreMetric == null) 
-                    return;
+            if (SelectedScoreMetric == null)
+                return;
 
             ScoreMetricPlotModel = SelectedScoreMetric.ScoreMetricPlotModel;
             SelectedScoreMetric.SetPlotProperties(SelectedScoreMetric.MetricType);
-            
+
             foreach (ScorePointModel scorePoint in SelectedScoreMetric.ScorePoints.ToList())
             {
                 SelectedScoreMetric.OnAddPlotScorePoint(SelectedScoreMetric.Id);
@@ -399,7 +415,7 @@ namespace PlanScoreCard.ViewModels
             metricModel.Structure = metricModel.Structures.FirstOrDefault(s => s.StructureId == SelectedScoreMetric.Structure.StructureId);
 
             // ScorePoints
-            foreach (ScorePointModel scorePoint in selectedMetric.ScorePoints) 
+            foreach (ScorePointModel scorePoint in selectedMetric.ScorePoints)
             {
                 ScorePointModel point = new ScorePointModel(scorePoint.MetricId, scorePoint.PointId, EventAggregator);
                 point.Score = scorePoint.Score;
@@ -418,7 +434,7 @@ namespace PlanScoreCard.ViewModels
             metricModel.ScoreMetricPlotModel = new ViewResolvingPlotModel();
             metricModel.SetPlotProperties(metricModel.MetricType);
 
-            foreach  (ScorePointModel scorePoint in metricModel.ScorePoints.ToList())
+            foreach (ScorePointModel scorePoint in metricModel.ScorePoints.ToList())
             {
                 metricModel.OnAddPlotScorePoint(metricModel.Id);
             }
@@ -432,6 +448,10 @@ namespace PlanScoreCard.ViewModels
         {
             ScoreMetricModel metricModel = new ScoreMetricModel(EventAggregator);
             int selectedIndex = ScoreMetrics.IndexOf(SelectedScoreMetric);
+            metricModel.Structures = Structures;
+            metricModel.CanReorder = false;
+            metricModel.Id = selectedIndex + 1;
+            metricModel.CanReorder = true;
 
             ScoreMetrics.Insert(selectedIndex + 1, metricModel);
             ReRankMetrics();
@@ -586,8 +606,11 @@ namespace PlanScoreCard.ViewModels
 
         private void ChangeMetricEditor()
         {
+            if (SelectedScoreMetric == null)
+                return;
+
             SelectedScoreMetric = ScoreMetrics.FirstOrDefault(s => s.Id == SelectedScoreMetric.Id);
-            
+
             if (SelectedScoreMetric == null)
                 return;
 

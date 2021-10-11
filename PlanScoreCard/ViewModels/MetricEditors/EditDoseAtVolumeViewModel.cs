@@ -25,7 +25,7 @@ namespace PlanScoreCard.ViewModels.MetricEditors
             set 
             { 
                 SetProperty(ref volume , value);
-                ScoreMetric.InputValue = Volume;
+                ScoreMetric.InputValue = volume;
             }
         }
 
@@ -37,7 +37,7 @@ namespace PlanScoreCard.ViewModels.MetricEditors
             set 
             { 
                 SetProperty(ref doseUnit, value);
-                ScoreMetric.OutputUnit = DoseUnit;
+                ScoreMetric.OutputUnit = doseUnit;
             }
         }
 
@@ -57,7 +57,7 @@ namespace PlanScoreCard.ViewModels.MetricEditors
             set 
             { 
                 SetProperty(ref volumeUnit , value);
-                ScoreMetric.OutputUnit = DoseUnit;
+                ScoreMetric.InputUnit = volumeUnit;
             }
         }
 

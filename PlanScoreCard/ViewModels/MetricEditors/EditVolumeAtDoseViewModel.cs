@@ -5,6 +5,7 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace PlanScoreCard.ViewModels.MetricEditors
 {
-    public class EditVolumeAtDoseViewModel : BindableBase
+    public class EditVolumeAtDoseViewModel : BindableBase, INotifyPropertyChanged
     {
         private ScoreMetricModel ScoreMetric;
 
@@ -24,7 +25,7 @@ namespace PlanScoreCard.ViewModels.MetricEditors
             set
             {
                 SetProperty(ref dose, value);
-                ScoreMetric.InputValue = Dose;
+                ScoreMetric.InputValue = dose;
             }
         }
 
@@ -36,7 +37,7 @@ namespace PlanScoreCard.ViewModels.MetricEditors
             set
             {
                 SetProperty(ref doseUnit, value);
-                ScoreMetric.OutputUnit = DoseUnit;
+                ScoreMetric.InputUnit = doseUnit;
             }
         }
 
@@ -56,7 +57,7 @@ namespace PlanScoreCard.ViewModels.MetricEditors
             set
             {
                 SetProperty(ref volumeUnit, value);
-                ScoreMetric.OutputUnit = DoseUnit;
+                ScoreMetric.OutputUnit = volumeUnit;
             }
         }
 

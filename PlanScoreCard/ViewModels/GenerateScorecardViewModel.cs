@@ -242,12 +242,15 @@ namespace PlanScoreCard.ViewModels
         }
 
         public ObservableCollection<ScoreMetricViewModel> ScoreMetrics { get; set; }
+        
         private ScoreMetricViewModel _selectedScoreMetric;
-
         public ScoreMetricViewModel SelectedScoreMetric
         {
             get { return _selectedScoreMetric; }
-            set { SetProperty(ref _selectedScoreMetric, value); }
+            set 
+            { 
+                SetProperty(ref _selectedScoreMetric, value); 
+            }
         }
 
         public DelegateCommand ImportScorecardCommand { get; private set; }
@@ -258,6 +261,7 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand ImportEPRScorecardCommand { get; private set; }
         public DelegateCommand SetButtonVisibilityCommand { get; private set; }
         public DelegateCommand StructureBuilderCommand { get; private set; }
+
         public GenerateScorecardViewModel(PlanModel pm,
             List<ScoreTemplateModel> scoreTemplates,
             string templateName,

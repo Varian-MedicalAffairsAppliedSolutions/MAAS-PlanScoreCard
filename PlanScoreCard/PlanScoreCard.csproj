@@ -127,6 +127,7 @@
     <Compile Include="Events\LoadEditScoreCardViewEvent.cs" />
     <Compile Include="Events\MetricDownEvent.cs" />
     <Compile Include="Events\MetricRankChangedEvent.cs" />
+    <Compile Include="Events\MetricStructureChangedEvent.cs" />
     <Compile Include="Events\MetricUpEvent.cs" />
     <Compile Include="Events\PlanChangedEvent.cs" />
     <Compile Include="Events\PlanSelectedEvent.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="Events\StructureBuilderChangedEvent.cs" />
     <Compile Include="Events\UpdateMetricEditorEvent.cs" />
     <Compile Include="Events\UpdateScorePointGridEvent.cs" />
+    <Compile Include="Events\UpdateScroreMetricsEvent.cs" />
     <Compile Include="Events\VariationCheckedEvent.cs" />
     <Compile Include="Models\Internals\EPeerReviewScoreModel.cs" />
     <Compile Include="Models\Internals\InternalTemplateModel.cs" />

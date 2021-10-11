@@ -9,7 +9,7 @@
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:converters="clr-namespace:PlanScoreCard.Converters"
         mc:Ignorable="d"
-        Title="ScoreCard Editor" Height="750" Width="1400">
+        Title="ScoreCard Editor" Height="760" Width="1400">
     <metro:MetroWindow.Resources>
         <ResourceDictionary>
             <converters:BoolVisibilityConverter x:Key="localVisibilityConverter"/>
@@ -132,17 +132,17 @@
                             </StackPanel>
                         </ScrollViewer>-->
 
-                        <DataGrid Foreground="Black" SelectedItem="{Binding SelectedScoreMetric, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ScoreMetrics}" AutoGenerateColumns="False" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
+                        <DataGrid Foreground="Black" SelectedItem="{Binding SelectedScoreMetric, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ScoreMetrics, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
                             <DataGrid.Columns>
                                 <metro:DataGridNumericUpDownColumn Header="Rank" Binding="{Binding Id, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12"/>
-                                <DataGridTextColumn Header="Structure" Binding="{Binding Structure.StructureId}" FontWeight="Normal" FontSize="12" IsReadOnly="True">
+                                <DataGridTextColumn Header="Structure"   Binding="{Binding Structure.StructureId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" FontWeight="Normal" FontSize="12" IsReadOnly="True">
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="HorizontalAlignment" Value="Center" />
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
-                                <DataGridTextColumn Header="Metric" Binding="{Binding MetricText}" FontWeight="Normal" FontSize="12" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Metric" Binding="{Binding MetricText , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontWeight="Normal" FontSize="12" IsReadOnly="True"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Border>
@@ -182,7 +182,7 @@
                             <!--<Button Command="{Binding EditPointCommand}" Content="{icons:FontAwesome Kind=EditSolid}"  Height="30" Grid.Column="1" Grid.ColumnSpan="1" Margin="3"/>-->
 
                             <Button Command="{Binding DeletePointCommand}" Content="{icons:FontAwesome Kind=TrashAltSolid}" Width="30" Height="30" Grid.Column="1"/>
-                            <Button Command="{Binding OrderPointsByValueCommand}" Content="{icons:FontAwesome Kind=SortAmountUpSolid}" Width="30" Height="30" Grid.Column="2"/>
+                            <Button Command="{Binding OrderPointsByValueCommand}" Content="{icons:FontAwesome Kind=SortAmountUpSolid}" ToolTip="Order Points by Score" Width="30" Height="30" Grid.Column="2"/>
 
                             <Button Command="{Binding PointUpCommand}" Content="{icons:FontAwesome Kind=CaretUpSolid}" Width="30" Height="30" Grid.Column="11"/>
                             <Button Command="{Binding PointDownComand}" Content="{icons:FontAwesome Kind=CaretDownSolid}" Width="30" Height="30" Grid.Column="12"/>
@@ -193,14 +193,14 @@
                             <DataGrid SelectedItem="{Binding SelectedMetricPointModel}" ItemsSource="{Binding MetricPointModels}" Grid.Row="1" AutoGenerateColumns="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
                                 <DataGrid.Columns>
                                     <metro:DataGridNumericUpDownColumn Header="Rank" Binding="{Binding PointId}" FontWeight="Normal" FontSize="12"/>
-                                    <DataGridTextColumn Header="Value" Binding="{Binding PointX , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontWeight="Normal" FontSize="12">
+                                    <DataGridTextColumn Header="Value" Binding="{Binding PointX , Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="HorizontalAlignment" Value="Center" />
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Header="Score" Binding="{Binding Score, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontWeight="Normal" FontSize="12">
+                                    <DataGridTextColumn Header="Score" Binding="{Binding Score, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="HorizontalAlignment" Value="Center" />
@@ -225,7 +225,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="20"/>
                             <RowDefinition Height="40"/>
-                            <RowDefinition Height="80"/>
+                            <RowDefinition Height="90"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
@@ -269,7 +269,7 @@
                         <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" Content="Description" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
                         <TextBox Grid.Column="0" Text="{Binding SelectedScoreMetric.MetricText}"  Grid.Row="3" Grid.ColumnSpan="3" Margin="5" IsReadOnly="True"/>-->
 
-                        <Border Grid.Row="4" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="1" Margin="2,2,2,4" CornerRadius="3" Height="400">
+                        <Border Grid.Row="4" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="1" Margin="2,2,2,4" CornerRadius="3" Height="400">
                             <oxy:PlotView Model="{Binding ScoreMetricPlotModel, Mode=TwoWay}" Background="LightGray" Height="400"/>
                         </Border>
                     </Grid>
