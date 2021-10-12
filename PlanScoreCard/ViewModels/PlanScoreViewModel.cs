@@ -36,8 +36,6 @@ namespace PlanScoreCard.ViewModels
         public ObservableCollection<PlanScoreModel> PlanScores { get; set; }
         public ObservableCollection<PlanningItem> Plans { get; private set; }
 
-
-
         public PlanScoreViewModel(Application app, Patient patient, Course course, PlanSetup plan, IEventAggregator eventAggregator)
         {
             _patientId = patient.Id;
@@ -49,8 +47,10 @@ namespace PlanScoreCard.ViewModels
             _app = app;
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<PlanChangedEvent>().Subscribe(OnPlanChanged);
+            
             PlanScores = new ObservableCollection<PlanScoreModel>();
             Plans = new ObservableCollection<PlanningItem>();
+            
             if (_plan != null)
             {
                 OnPlanChanged(new List<PlanModel> { new PlanModel(_plan as PlanningItem, _eventAggregator) { PlanId = _plan.Id, CourseId = _course.Id, bSelected = true } });
@@ -59,12 +59,15 @@ namespace PlanScoreCard.ViewModels
         }
 
 
+        // Updates the PlanModel
         public void UpdatePlanModel(Patient patient, Course course, PlanSetup plan)
         {
             _patient = patient;
             _course = course;
             _plan = plan;
         }
+        
+        // Changes the Plans Collection anytime a selection is made
         private void OnPlanChanged(List<PlanModel> plans)
         {
             if (plans != null)
@@ -90,9 +93,11 @@ namespace PlanScoreCard.ViewModels
             }
         }
 
+        // Scores the Loaded Plan
         public void ScorePlan(List<ScoreTemplateModel> templates)
         {
             _currentTemplate = templates;
+            
             // _eventAggregator.GetEvent<UpdateTemplatesEvent>().Publish(_currentTemplate);
             PlanScores.Clear();
             int metric_id = 0;

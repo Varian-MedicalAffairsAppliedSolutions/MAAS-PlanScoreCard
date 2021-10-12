@@ -51,7 +51,7 @@ namespace PlanScoreCard.Models
         }
 
 
-        private PlanningItem _plan;
+        public PlanningItem _plan;
         private IEventAggregator _eventAggregator;
 
         public ObservableCollection<StructureModel> Structures { get; set; }

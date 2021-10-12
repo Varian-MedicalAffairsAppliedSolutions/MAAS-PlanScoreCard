@@ -123,8 +123,6 @@ namespace PlanScoreCard.ViewModels
             set { SetProperty(ref strctures, value); }
         }
 
-
-
         // Template Author
         private string templateAuthor;
 
