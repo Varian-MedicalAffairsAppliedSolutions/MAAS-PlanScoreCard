@@ -58,7 +58,6 @@ namespace PlanScoreCard.ViewModels
            
         }
 
-
         // Updates the PlanModel
         public void UpdatePlanModel(Patient patient, Course course, PlanSetup plan)
         {

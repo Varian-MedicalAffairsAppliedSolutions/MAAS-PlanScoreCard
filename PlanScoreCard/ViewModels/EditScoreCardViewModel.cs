@@ -310,7 +310,7 @@ namespace PlanScoreCard.ViewModels
         private void ScorePlan()
         {
             var scoreTemplate = ScoreTemplateBuilder.Build(ScoreMetrics.ToList(), Structures.ToList());
-            EventAggregator.GetEvent<ScorePlanEvent>().Publish(scoreTemplate);
+            //EventAggregator.GetEvent<ScorePlanEvent>().Publish(scoreTemplate);
         }
 
         private void PointDown()

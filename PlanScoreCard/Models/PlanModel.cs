@@ -13,9 +13,25 @@ namespace PlanScoreCard.Models
 {
     public class PlanModel : BindableBase
     {
-        public string PlanId { get; set; }
-        public string CourseId { get; set; }
+
+        private string planId;
+
+        public string PlanId
+        {
+            get { return planId; }
+            set { SetProperty(ref planId , value); }
+        }
+
+        private string courseId;
+
+        public string CourseId
+        {
+            get { return courseId; }
+            set { SetProperty(ref courseId , value); }
+        }
+
         public string DisplayTxt { get; set; }
+        
         private bool _bselected;
 
         public bool bSelected
@@ -24,7 +40,11 @@ namespace PlanScoreCard.Models
             set
             {
                 SetProperty(ref _bselected, value);
-                _eventAggregator.GetEvent<PlanSelectedEvent>().Publish(this);
+
+                if (!bSelected && bPrimary)
+                    bSelected = true;
+
+                _eventAggregator.GetEvent<PlanSelectedEvent>().Publish();
             }
         }
         private bool _bPrimary;
@@ -35,10 +55,14 @@ namespace PlanScoreCard.Models
             set
             {
                 SetProperty(ref _bPrimary, value);
+
+                if (bPrimary)
+                    bSelected = bPrimary;
+
                 _eventAggregator.GetEvent<FreePrimarySelectionEvent>().Publish(bPrimary);
                 if (bPrimary)
                 {
-                    _eventAggregator.GetEvent<PlanSelectedEvent>().Publish(this);
+                    _eventAggregator.GetEvent<PlanSelectedEvent>().Publish();
                 }
             }
         }
@@ -50,24 +74,34 @@ namespace PlanScoreCard.Models
             set { SetProperty(ref _bPrimaryEnabled, value); }
         }
 
+        public PlanSetup Plan;
 
-        public PlanningItem _plan;
         private IEventAggregator _eventAggregator;
 
         public ObservableCollection<StructureModel> Structures { get; set; }
         public PlanModel(PlanningItem plan, IEventAggregator eventAggregator)
         {
-            _plan = plan;
+            Plan = plan as PlanSetup;
             _eventAggregator = eventAggregator;
             Structures = new ObservableCollection<StructureModel>();
             GenerateStructures();
+            SetParameters();
         }
+
+        private void SetParameters()
+        {
+            PlanId = Plan.Id;
+            CourseId = Plan.Course.Id;
+            bPrimary = false;
+            bSelected = false;
+        }
+
         /// <summary>
         /// Add structures to plan.
         /// </summary>
         private void GenerateStructures()
         {
-            foreach (var structure in _plan.StructureSet.Structures.Where(x => x.DicomType != "SUPPORT" && x.DicomType != "MARKER"))
+            foreach (var structure in Plan.StructureSet.Structures.Where(x => x.DicomType != "SUPPORT" && x.DicomType != "MARKER"))
             {
                 //TODO work on filters for structures
                 Structures.Add(new StructureModel

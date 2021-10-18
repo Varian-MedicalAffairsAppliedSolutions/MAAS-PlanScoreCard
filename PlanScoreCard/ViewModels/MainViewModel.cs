@@ -48,7 +48,7 @@ namespace PlanScoreCard.ViewModels
             PluginViewModel = pluginViewModel;
             bPluginVisibility = false;
             _eventAggregator = eventAggregator;
-            _eventAggregator.GetEvent<ScorePlanEvent>().Subscribe(OnScorePlan);
+            //_eventAggregator.GetEvent<ScorePlanEvent>().Subscribe(OnScorePlan);
             _eventAggregator.GetEvent<PluginVisibilityEvent>().Subscribe(OnPluginVisible);
         }
 

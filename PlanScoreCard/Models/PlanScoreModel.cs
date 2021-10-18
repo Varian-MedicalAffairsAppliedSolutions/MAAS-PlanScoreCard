@@ -101,7 +101,16 @@ namespace PlanScoreCard.Models
         }
 
         public ViewResolvingPlotModel ScorePlotModel { get; set; }
-        public ObservableCollection<ScoreValueModel> ScoreValues { get; private set; }
+
+
+        private ObservableCollection<ScoreValueModel> scoreValues;
+
+        public ObservableCollection<ScoreValueModel> ScoreValues
+        {
+            get { return scoreValues; }
+            set { SetProperty(ref scoreValues, value); }
+        }
+
         public ObservableCollection<PlanScoreColorModel> Colors { get; private set; }
         public PlanScoreModel(VMS.TPS.Common.Model.API.Application app)
         {
@@ -438,7 +447,6 @@ namespace PlanScoreCard.Models
             }
             ScorePlotModel.InvalidatePlot(true);
         }
-
 
         /// <summary>
         /// Set up plot from template

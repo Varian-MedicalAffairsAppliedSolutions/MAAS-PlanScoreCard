@@ -33,6 +33,8 @@ namespace PlanScoreCard.Startup
             container.RegisterType<EditHIViewModel>().AsSelf();
             container.RegisterType<EditCIViewModel>().AsSelf();
             container.RegisterType<StructureBuilderViewModel>().AsSelf();
+            container.RegisterType<ScoreCardViewModel>().AsSelf();
+
 
             // views
             container.RegisterType<MainView>().AsSelf();
@@ -44,6 +46,7 @@ namespace PlanScoreCard.Startup
             container.RegisterType<EditHIView>().AsSelf();
             container.RegisterType<EditCIView>().AsSelf();
             container.RegisterType<StructureBuilderView>().AsSelf();
+            container.RegisterType<ScoreCardView>().AsSelf();
 
             //events
             container.RegisterType<EventAggregator>().As<IEventAggregator>().SingleInstance();

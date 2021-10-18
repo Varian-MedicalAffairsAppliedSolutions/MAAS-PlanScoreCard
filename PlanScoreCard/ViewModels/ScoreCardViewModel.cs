@@ -1,12 +1,19 @@
-﻿using PlanScoreCard.Events;
+﻿using Microsoft.Win32;
+using Newtonsoft.Json;
+using PlanScoreCard.Events;
 using PlanScoreCard.Events.Plugin;
 using PlanScoreCard.Models;
+using PlanScoreCard.Models.Internals;
+using PlanScoreCard.Models.Proknow;
 using PlanScoreCard.Services;
+using PlanScoreCard.Views;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,16 +24,27 @@ namespace PlanScoreCard.ViewModels
     public class ScoreCardViewModel : BindableBase
     {
 
+        // Class Variables 
+
         private Application Application;
         private Patient Patient;
         private Course Course;
         private PlanningItem Plan;
         private IEventAggregator EventAggregator;
+        private ViewLauncherService ViewLauncherService;
 
+        private ScoreCardModel scoreCard;
+        public ScoreCardModel ScoreCard
+        {
+            get { return scoreCard; }
+            set { SetProperty(ref scoreCard, value); }
+        }
 
-        private ScoreCardModel ScoreCard;
-        private PatientSelectService PatientSelectService;
-
+        private List<ScoreTemplateModel> ScoreTemplates;
+        private string TemplateName;
+        private string TemplateSite;
+        
+        // Full Properties
 
         private string scoreTotalText;
         public string ScoreTotalText
@@ -49,11 +67,54 @@ namespace PlanScoreCard.ViewModels
             set { SetProperty(ref pluginWidth, value); }
         }
 
+        private string patientId;
 
-        ObservableCollection<PlanScoreModel> PlanScores { get; set; }
-        ObservableCollection<PlanModel> Plans { get; set; }
+        public string PatientId
+        {
+            get { return patientId; }
+            set { SetProperty(ref patientId , value); }
+        }
 
-        public ScoreCardViewModel(Application app, Patient patient, Course course, PlanSetup plan, IEventAggregator eventAggregator)
+        private PlanModel selectedPlan;
+
+        public PlanModel SelectedPlan
+        {
+            get { return selectedPlan; }
+            set { SetProperty(ref selectedPlan , value); }
+        }
+
+        private string scoreCardName;
+
+        public string ScoreCardName
+        {
+            get { return scoreCardName; }
+            set { SetProperty(ref scoreCardName, value); }
+        }
+
+        // Observable Collections
+        private ObservableCollection<PlanScoreModel> planScores;
+
+        public ObservableCollection<PlanScoreModel> PlanScores
+        {
+            get { return planScores; }
+            set { SetProperty( ref planScores , value); }
+        }
+
+        private ObservableCollection<PlanModel> plans;
+
+        public ObservableCollection<PlanModel> Plans
+        {
+            get { return plans; }
+            set { SetProperty(ref plans , value); }
+        }
+
+        // Delegate Commands
+        public DelegateCommand ScorePlanCommand { get; set;  }
+        public DelegateCommand ImportScoreCardCommand { get; set; }
+        public DelegateCommand EditScoreCardCommand { get; set; }
+
+        // Constructor
+        public ScoreCardViewModel(Application app, Patient patient, Course course, PlanSetup plan, IEventAggregator eventAggregator, ViewLauncherService viewLauncherService)
         {
             // Set the Initial Variables Passed In
             Application  = app;
@@ -62,62 +123,129 @@ namespace PlanScoreCard.ViewModels
             Plan = plan;
             EventAggregator = eventAggregator;
 
+            // Initiate Service
+            ViewLauncherService = viewLauncherService;
+
             // Need to change this event to take in a ScoreCardModel as the payload
             //EventAggregator.GetEvent<ScorePlanEvent>().Subscribe(OnScorePlan);
             EventAggregator.GetEvent<PluginVisibilityEvent>().Subscribe(OnPluginVisible);
             EventAggregator.GetEvent<PlanChangedEvent>().Subscribe(OnPlanChanged);
+            EventAggregator.GetEvent<ScorePlanEvent>().Subscribe(ScorePlan);
+            EventAggregator.GetEvent<PlanSelectedEvent>().Subscribe(ScorePlan);
             
-            
+            // Initiate Collections
             PlanScores = new ObservableCollection<PlanScoreModel>();
             Plans = new ObservableCollection<PlanModel>();
-            
+
+            // Delegate Commands
+            ScorePlanCommand = new DelegateCommand(ScorePlan);
+            ImportScoreCardCommand = new DelegateCommand(ImportScoreCard);
+            EditScoreCardCommand = new DelegateCommand(EditScoreCard);
+
+            // Sets If no Plan is Passed In
             if (Plan != null)
-            {
                 OnPlanChanged(new List<PlanModel> { new PlanModel(Plan as PlanningItem, eventAggregator) { PlanId = Plan.Id, CourseId = Course.Id, bSelected = true } });
-            }
 
             InitializeClass();
         }
 
-        private void InitializeClass()
+        private void ScorePlan()
         {
+            if (ScoreCard !=  null)
+                ScorePlan(ScoreCard);
 
-            // Add the Plans
-            // Clear the Collection of Plans
-            Plans.Clear();
+        }
 
-            // For each course, add all the Plans
-            foreach (Course course in Patient.Courses)
+
+        private void EditScoreCard()
+        {
+            ScoreCardModel scoreCard = new ScoreCardModel(TemplateName, TemplateSite, ScoreTemplates);
+
+            EditScoreCardView editScoreCardView = ViewLauncherService.GetEditScoreCardView();
+            EventAggregator.GetEvent<EditScoreCardSetPlanEvent>().Publish(SelectedPlan); // Push the SelectedPlan
+            EventAggregator.GetEvent<EditScoreCardSetUserEvent>().Publish(Application.CurrentUser); // Push the User
+            EventAggregator.GetEvent<LoadEditScoreCardViewEvent>().Publish(scoreCard); // Push the ScoreCardModel to the ViewModel
+
+            editScoreCardView.ShowDialog();
+        }
+
+        private void ImportScoreCard()
+        {
+            //ScoreMetrics.Clear();//
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "JSON Template (*.json)|*.json|ePeer Review(*.csv)|*.csv";
+            ofd.Title = "Open Planscore Template";
+            int score_newId = 0;// ScoreMetrics.Count();
+            bool importSuccess = false;
+
+
+            if (ofd.ShowDialog() == true)
             {
-                foreach (PlanSetup plan in course.PlanSetups)
-                    Plans.Add(new PlanModel(plan, EventAggregator));
+
+                if (!String.IsNullOrEmpty(ofd.FileName))
+                    ScoreCardName = ofd.SafeFileName;
+
+                if (ofd.FileName.EndsWith(".csv"))
+                {
+                    try
+                    {
+                        ScoreTemplates = EPeerReviewScoreModel.GetScoreTemplateFromCSV(ofd.FileName);
+                        importSuccess = true;
+                    }
+                    catch
+                    {
+                        importSuccess = false;
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        InternalTemplateModel template = JsonConvert.DeserializeObject<InternalTemplateModel>(File.ReadAllText(ofd.FileName));
+                        TemplateName = template.TemplateName;
+                        TemplateSite = template.Site;
+                        ScoreTemplates = template.ScoreTemplates;
+                        if (ScoreTemplates.Count() == 0)
+                        {
+                            PKModel pk_scoreTemplates = JsonConvert.DeserializeObject<PKModel>(File.ReadAllText(ofd.FileName));
+                            ScoreTemplates = pk_scoreTemplates.ConvertToTemplate();
+                        }
+                        importSuccess = true;
+                    }
+                    catch
+                    {
+                        try
+                        {
+                            ScoreTemplates = JsonConvert.DeserializeObject<List<ScoreTemplateModel>>(File.ReadAllText(ofd.FileName));
+                            importSuccess = true;
+                        }
+                        catch
+                        {
+                            try
+                            {
+                                PKModel pk_scoreTemplates = JsonConvert.DeserializeObject<PKModel>(File.ReadAllText(ofd.FileName));
+                                ScoreTemplates = pk_scoreTemplates.ConvertToTemplate();
+
+                                importSuccess = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new ApplicationException(ex.Message);
+                            }
+                        }
+                    }
+
+
+                    ScoreCard = new ScoreCardModel(TemplateName,TemplateSite,ScoreTemplates);
+
+                }
+                if (importSuccess)
+                {
+                    EventAggregator.GetEvent<ScorePlanEvent>().Publish(ScoreCard);
+                }
             }
         }
 
-        private void OnPlanChanged(List<PlanModel> obj)
-        {
-            if (Plans != null)
-            {
-                Plans.Clear();
-                foreach (var plan in obj.OrderByDescending(x => x.bPrimary))
-                {
-                    Plan = Patient.Courses.FirstOrDefault(x => x.Id == plan.CourseId).PlanSetups.FirstOrDefault(x => x.Id == plan.PlanId && x.Course.Id == plan.CourseId);
-                    if (Plan == null)
-                    {
-                        Plan = Patient.Courses.FirstOrDefault(x => x.Id == plan.CourseId).PlanSums.FirstOrDefault(x => x.Id == plan.PlanId && x.Course.Id == plan.CourseId);
-                    }
-                    if (Plan != null)
-                    {
-                        Plans.Add(plan);
-                    }
-                }
-                PlanScores.Clear();
-                if (ScoreCard != null)
-                {
-                    ScorePlan(ScoreCard);
-                }
-            }
-        }
 
         public void ScorePlan(ScoreCardModel scoreCard)
         {
@@ -125,7 +253,7 @@ namespace PlanScoreCard.ViewModels
             PlanScores.Clear();
 
             // Get Collection of SelectedPlans
-            List<PlanningItem> selectedPlans = Plans.Where(p => p.bSelected == true).Select(s => s._plan).ToList();
+            List<PlanningItem> selectedPlans = Plans.Where(p => p.bSelected == true).Select(s => s.Plan as PlanningItem).ToList();
             ObservableCollection<PlanningItem> selectedPlanCollection = new ObservableCollection<PlanningItem>();
             foreach (PlanningItem plan in selectedPlans)
                 selectedPlanCollection.Add(plan);
@@ -153,6 +281,53 @@ namespace PlanScoreCard.ViewModels
                         double planTotal = planScores.Sum(x => x.ScoreValues.FirstOrDefault(y => y.PlanId == pc.planId && y.CourseId == pc.courseId).Score);
                         ScoreTotalText += $"\n\t\t[{cid}] {pid}: {planTotal:F2}/{planScores.Sum(x => x.ScoreMax):F2} ({planTotal / planScores.Sum(x => x.ScoreMax) * 100.0:F2}%)";
                     }
+                }
+            }
+        }
+
+        // Methods
+        private void InitializeClass()
+        {
+
+            // Set the PatientID
+            PatientId = Patient.Id;
+
+            // Add the Plans
+            // Clear the Collection of Plans
+            Plans.Clear();
+
+            // For each course, add all the Plans
+            foreach (Course course in Patient.Courses)
+            {
+                foreach (PlanSetup plan in course.PlanSetups)
+                    Plans.Add(new PlanModel(plan, EventAggregator));
+            }
+
+        }
+
+        private void OnPlanChanged(List<PlanModel> obj)
+        {
+            if (Plans != null)
+            {
+                Plans.Clear();
+                foreach (var plan in obj.OrderByDescending(x => x.bPrimary))
+                {
+                    Plan = Patient.Courses.FirstOrDefault(x => x.Id == plan.CourseId).PlanSetups.FirstOrDefault(x => x.Id == plan.PlanId && x.Course.Id == plan.CourseId);
+                    if (Plan == null)
+                    {
+                        Plan = Patient.Courses.FirstOrDefault(x => x.Id == plan.CourseId).PlanSums.FirstOrDefault(x => x.Id == plan.PlanId && x.Course.Id == plan.CourseId);
+                    }
+                    if (Plan != null)
+                    {
+                        Plans.Add(plan);
+                    }
+                }
+                PlanScores.Clear();
+
+
+                if (ScoreCard != null)
+                {
+                    ScorePlan(ScoreCard);
                 }
             }
         }

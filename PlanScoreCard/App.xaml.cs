@@ -83,9 +83,8 @@ namespace PlanScoreCard
 
                                 var bootstrap = new Bootstrapper();
                                 var container = bootstrap.Bootstrap(_patient, _course, _plan, _app.CurrentUser, _app);
-                                MV = container.Resolve<MainView>();
-                                MV.DataContext = container.Resolve<MainViewModel>();
-                                MV.ShowDialog();
+                                ScoreCardView view = container.Resolve<ScoreCardView>();
+                                view.ShowDialog();
                                 _app.ClosePatient();
                             }
                         }

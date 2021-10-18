@@ -220,8 +220,8 @@ namespace PlanScoreCard.ViewModels
             _user = user;
             ViewLauncher = viewLauncherService;
 
-            _eventAggregator = eventAggregator;
-            _eventAggregator.GetEvent<PlanSelectedEvent>().Subscribe(OnPlanSelectionChanged);
+            //_eventAggregator = eventAggregator;
+            //_eventAggregator.GetEvent<PlanSelectedEvent>().Subscribe(OnPlanSelectionChanged);
             _eventAggregator.GetEvent<FreePrimarySelectionEvent>().Subscribe(SetPrimarySelections);
             //_eventAggregator.GetEvent<UpdateTemplatesEvent>().Subscribe(OnTemplateUpdated);
             _scoreTemplates = new List<ScoreTemplateModel>();
@@ -458,7 +458,7 @@ namespace PlanScoreCard.ViewModels
                 }
                 if (importSuccess)
                 {
-                    _eventAggregator.GetEvent<ScorePlanEvent>().Publish(_scoreTemplates);
+                    //_eventAggregator.GetEvent<ScorePlanEvent>().Publish(_scoreTemplates);
                 }
             }
         }
