@@ -112,6 +112,8 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand ScorePlanCommand { get; set;  }
         public DelegateCommand ImportScoreCardCommand { get; set; }
         public DelegateCommand EditScoreCardCommand { get; set; }
+        public DelegateCommand NormalizePlanCommand { get; set; }
+        public DelegateCommand ExportScoreCardCommand { get; set; }
 
         // Constructor
         public ScoreCardViewModel(Application app, Patient patient, Course course, PlanSetup plan, IEventAggregator eventAggregator, ViewLauncherService viewLauncherService)
@@ -155,7 +157,6 @@ namespace PlanScoreCard.ViewModels
                 ScorePlan(ScoreCard);
 
         }
-
 
         private void EditScoreCard()
         {
@@ -246,7 +247,6 @@ namespace PlanScoreCard.ViewModels
             }
         }
 
-
         public void ScorePlan(ScoreCardModel scoreCard)
         {
             // _eventAggregator.GetEvent<UpdateTemplatesEvent>().Publish(_currentTemplate);
@@ -302,6 +302,8 @@ namespace PlanScoreCard.ViewModels
                 foreach (PlanSetup plan in course.PlanSetups)
                     Plans.Add(new PlanModel(plan, EventAggregator));
             }
+
+            Plans.First().bPrimary = true; 
 
         }
 

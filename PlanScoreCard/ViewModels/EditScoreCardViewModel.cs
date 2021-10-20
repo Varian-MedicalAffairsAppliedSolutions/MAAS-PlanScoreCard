@@ -511,6 +511,9 @@ namespace PlanScoreCard.ViewModels
 
         private void SetPlan(PlanModel planModel)
         {
+            if (planModel == null)
+                return;
+
             PlanModel = planModel;
             Structures = PlanModel.Structures;
             Structures.OrderBy(s => s.StructureId);

@@ -624,7 +624,6 @@ namespace PlanScoreCard.Models
         }
 
       
-
         /// <summary>
         /// Find structure based on templated structure model
         /// </summary>
