@@ -212,7 +212,7 @@
                                                                     </ItemsControl.ItemTemplate>
                                                                 </ItemsControl>
                                                             </Grid>
-                                                            <icons:PackIconFontAwesome Kind="CaretUpSolid" Foreground="Purple" Margin="{Binding PKPosition}"
+                                                            <icons:PackIconFontAwesome Kind="CaretUpSolid" Foreground="DarkGray" Margin="{Binding PKPosition}"
                                                                Visibility="{Binding bPKColor,Converter={StaticResource localVisibilityConverter}}"
                                                                HorizontalAlignment="Left"/>
                                                         </StackPanel>
@@ -248,16 +248,54 @@
                                                     </StackPanel>
                                                 </Border>
                                                 <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 1" Grid.Column="7">
-                                                    <StackPanel>
-                                                        <oxy:PlotView Model="{Binding ScorePlotModel}" Background="Gray" Height="55" Foreground="Black"/>
-                                                        <Grid>
+
+                                                    <Grid>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="3*"/>
+                                                            <RowDefinition Height="*"/>
+                                                        </Grid.RowDefinitions>
+
+                                                        <oxy:PlotView Model="{Binding ScorePlotModel}" Background="LightGray" Height="55" Foreground="Black" Grid.Row="0"/>
+
+
+                                                        <Grid Grid.Row="0">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="4*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="*"/>
+                                                                <RowDefinition Height="2*"/>
+                                                            </Grid.RowDefinitions>
+
+                                                            <Canvas Margin="12,10,0,0" Grid.Row="0" Grid.Column="0" Visibility="{Binding OutsideMin}">
+                                                                <icons:FontAwesome Kind="ArrowLeftSolid" Height="10"/>
+                                                            </Canvas>
+
+                                                            <TextBlock Margin="0,6,0,0" Grid.Row="0" Grid.Column="1" Text="{Binding CountBelowMin}" Visibility="{Binding OutsideMin}" HorizontalAlignment="Left"/>
+
+                                                            <Canvas Margin="2,10,0,4" Grid.Row="0" Grid.Column="4" Visibility="{Binding OutsideMax}">
+                                                                <icons:FontAwesome Kind="ArrowRightSolid" Height="10"/>
+                                                            </Canvas>
+
+                                                            <TextBlock Grid.Row="0" Margin="0,6,0,0" Grid.Column="3" Text="{Binding CountAboveMax}" Visibility="{Binding OutsideMax}" HorizontalAlignment="Right"/>
+
+                                                        </Grid>
+
+
+                                                        <Grid Grid.Row="1">
                                                             <TextBlock Text="{Binding MinXValue}" HorizontalAlignment="Left" FontSize="10" Foreground="Black"/>
                                                             <TextBlock Text="{Binding XAxisLabel}" HorizontalAlignment="Center" FontSize="10" Foreground="Black"/>
                                                             <TextBlock Text="{Binding MaxXValue}" HorizontalAlignment="Right" FontSize="10" Foreground="Black"/>
                                                         </Grid>
-                                                    </StackPanel>
+                                                        
+                                                    </Grid>
                                                 </Border>
                                             </Grid>
+                                            
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>

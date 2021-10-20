@@ -12,6 +12,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using VMS.TPS.Common.Model.API;
 using VMS.TPS.Common.Model.Types;
 
@@ -19,7 +20,7 @@ namespace PlanScoreCard.Models
 {
     public class PlanScoreModel : BindableBase
     {
-        private Application _app;
+        private VMS.TPS.Common.Model.API.Application _app;
         private double _dvhResolution;
 
         public string StructureId { get; set; }
@@ -32,21 +33,34 @@ namespace PlanScoreCard.Models
         public double MinXValue
         {
             get { return _minXValue; }
-            set { _minXValue = value; }
+            set 
+            { 
+                _minXValue = value;
+                //CheckOutsideBounds();
+            }
         }
         private double _maxXValue;
 
         public double MaxXValue
         {
             get { return _maxXValue; }
-            set { _maxXValue = value; }
+            set 
+            { 
+                _maxXValue = value;
+                //CheckOutsideBounds();
+            }
         }
+
         private string _xAxisLabel;
 
         public string XAxisLabel
         {
             get { return _xAxisLabel; }
-            set { _xAxisLabel = value; }
+            set 
+            { 
+                _xAxisLabel = value;
+                //CheckOutsideBounds();
+            }
         }
         private bool _bPKColor;
 
@@ -100,8 +114,79 @@ namespace PlanScoreCard.Models
             set { fontSize = value; }
         }
 
-        public ViewResolvingPlotModel ScorePlotModel { get; set; }
+        private int countBelowMin;
 
+        public int CountBelowMin
+        {
+            get { return countBelowMin; }
+            set { SetProperty( ref countBelowMin , value); }
+        }
+
+        private int countAboveMax;
+
+        public int CountAboveMax
+        {
+            get { return countAboveMax; }
+            set { SetProperty( ref countAboveMax , value); }
+        }
+
+        private Visibility outsideMax;
+
+        public Visibility OutsideMax
+        {
+            get { return outsideMax; }
+            set { SetProperty( ref outsideMax , value); }
+        }
+
+        private Visibility outsideMin;
+
+        public Visibility OutsideMin
+        {
+            get { return outsideMin; }
+            set { SetProperty(ref outsideMin, value); }
+        }
+
+        private ViewResolvingPlotModel scorePlotModel;
+
+        public ViewResolvingPlotModel ScorePlotModel
+        {
+            get { return scorePlotModel; }
+            set 
+            { 
+                SetProperty( ref scorePlotModel , value);
+                //CheckOutsideBounds();
+            }
+        }
+
+        private void CheckOutsideBounds()
+        {
+            // First get the max and the min of the plot
+            if (ScorePlotModel == null)
+                return;
+
+            double max = MaxXValue;
+            double min = MinXValue;
+
+
+            foreach (ScoreValueModel scoreValue in ScoreValues)
+            {
+                // See if the point is above the max
+                if (scoreValue.Value > max)
+                {
+                    CountAboveMax++;
+                    OutsideMax = Visibility.Visible;
+                }
+
+                // See if the point is below the min
+                if (scoreValue.Value < min)
+                {
+                    CountBelowMin++;
+                    OutsideMin = Visibility.Visible;
+                }
+
+            }
+
+        }
 
         private ObservableCollection<ScoreValueModel> scoreValues;
 
@@ -119,6 +204,12 @@ namespace PlanScoreCard.Models
             ScoreValues = new ObservableCollection<ScoreValueModel>();
             Colors = new ObservableCollection<PlanScoreColorModel>();
             ScorePlotModel = new ViewResolvingPlotModel();
+
+            OutsideMax = Visibility.Hidden;
+            OutsideMin = Visibility.Hidden;
+            CountBelowMin = 0;
+            CountAboveMax = 0;
+
         }
         public void BuildPlanScoreFromTemplate(ObservableCollection<PlanningItem> plans, ScoreTemplateModel template, int metricId)
         {
@@ -438,6 +529,9 @@ namespace PlanScoreCard.Models
                 }
                 ScoreValues.Add(scoreValue);
             }
+
+            CheckOutsideBounds();
+
             if (ScoreValues.Count() > 1)
             {
                 bStatsVis = true;
@@ -459,6 +553,7 @@ namespace PlanScoreCard.Models
             {
                 MinXValue = template.ScorePoints.Min(x => x.PointX);
                 MaxXValue = template.ScorePoints.Max(x => x.PointX);
+                CheckOutsideBounds();
                 XAxisLabel = $"{MetricText.Split(' ').FirstOrDefault()} {template.OutputUnit}";
             }
             ScorePlotModel.Series.Clear();

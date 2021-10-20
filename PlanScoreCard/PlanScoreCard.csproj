@@ -210,29 +210,11 @@
     <Compile Include="ViewModels\StructureBuilderViewModel.cs" />
     <Compile Include="ViewModels\StructureGenerationViewModel.cs" />
     <Compile Include="ViewModels\VolumeAtDoseViewModel.cs" />
-    <Compile Include="Views\CIView.xaml.cs">
-      <DependentUpon>CIView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ColorPickerView.xaml.cs">
       <DependentUpon>ColorPickerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\DoseAtVolumeView.xaml.cs">
-      <DependentUpon>DoseAtVolumeView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\DoseValueView.xaml.cs">
-      <DependentUpon>DoseValueView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\EditScoreCardView.xaml.cs">
       <DependentUpon>EditScoreCardView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\GenerateScorecardView.xaml.cs">
-      <DependentUpon>GenerateScorecardView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\HIView.xaml.cs">
-      <DependentUpon>HIView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\MainView.xaml.cs">
-      <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MetricEditors\EditCIView.xaml.cs">
       <DependentUpon>EditCIView.xaml</DependentUpon>
@@ -258,9 +240,6 @@
     <Compile Include="Views\PluginView.xaml.cs">
       <DependentUpon>PluginView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PointPlotView.xaml.cs">
-      <DependentUpon>PointPlotView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ScoreCardView.xaml.cs">
       <DependentUpon>ScoreCardView.xaml</DependentUpon>
     </Compile>
@@ -275,9 +254,6 @@
     </Compile>
     <Compile Include="Views\StructureGenerationVIew.xaml.cs">
       <DependentUpon>StructureGenerationVIew.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\VolumeAtDoseView.xaml.cs">
-      <DependentUpon>VolumeAtDoseView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -309,35 +285,11 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Page Include="Views\CIView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\ColorPickerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\DoseAtVolumeView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\DoseValueView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\EditScoreCardView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\GenerateScorecardView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\HIView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\MainView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -373,10 +325,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PointPlotView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\ScoreCardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -394,10 +342,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\StructureGenerationVIew.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\VolumeAtDoseView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

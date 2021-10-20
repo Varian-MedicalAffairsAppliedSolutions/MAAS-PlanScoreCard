@@ -68,12 +68,12 @@ namespace PlanScoreCard.ViewModels
 
         private void OnScorePlan(List<ScoreTemplateModel> templates)
         {
-            if (NavigationViewModel.GenScoreCardView != null)
-            {
-                NavigationViewModel.UpdateScoreTemplates(templates);
-                NavigationViewModel.GenScoreCardView.Close();
-            }
-            PlanScoreViewModel.ScorePlan(templates);
+            //if (NavigationViewModel.GenScoreCardView != null)
+            //{
+            //    NavigationViewModel.UpdateScoreTemplates(templates);
+            //    NavigationViewModel.GenScoreCardView.Close();
+            //}
+            //PlanScoreViewModel.ScorePlan(templates);
         }
 
         private string _patientId;

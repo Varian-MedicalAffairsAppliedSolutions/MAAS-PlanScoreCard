@@ -37,7 +37,6 @@ namespace PlanScoreCard.Startup
 
 
             // views
-            container.RegisterType<MainView>().AsSelf();
             container.RegisterType<PluginView>().AsSelf();
             container.RegisterType<EditScoreCardView>().AsSelf();
             container.RegisterType<EditDoseAtVolumeView>().AsSelf();

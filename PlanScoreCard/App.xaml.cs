@@ -27,7 +27,6 @@ namespace PlanScoreCard
         private Patient _patient;
         private Course _course;
         private PlanSetup _plan;
-        private MainView MV;
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             try

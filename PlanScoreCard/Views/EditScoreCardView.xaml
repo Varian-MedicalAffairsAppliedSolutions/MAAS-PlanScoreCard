@@ -12,8 +12,7 @@
         Title="ScoreCard Editor" Height="760" Width="1400">
     <metro:MetroWindow.Resources>
         <ResourceDictionary>
-            <converters:BoolVisibilityConverter x:Key="localVisibilityConverter"/>
-            <converters:MetricIdConverter x:Key="localMetricIdConverter"/>
+
         </ResourceDictionary>
     </metro:MetroWindow.Resources>
     <Grid>

@@ -196,7 +196,6 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand GenerateScorecardCommand { get; private set; }
         public DelegateCommand EditScorecardCommand { get; private set; }
         public DelegateCommand ImportScorecardCommand { get; private set; }
-        public GenerateScorecardView GenScoreCardView { get; private set; }
         public EditScoreCardView EditScoreCardView { get; private set; }
         public DelegateCommand ImportPKScorecardCommand { get; private set; }
         public DelegateCommand ImportEPRScorecardCommand { get; private set; }
@@ -372,9 +371,7 @@ namespace PlanScoreCard.ViewModels
 
         private void OnGenerateScorecard()
         {
-            GenScoreCardView = new GenerateScorecardView();
-            GenScoreCardView.DataContext = new GenerateScorecardViewModel(SelectedPlan, _scoreTemplates, _templateName, _templateSite, _user, _eventAggregator);
-            GenScoreCardView.ShowDialog();
+
         }
 
         private void OnEditScoreCard()
