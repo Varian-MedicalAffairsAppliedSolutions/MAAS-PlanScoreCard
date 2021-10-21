@@ -161,11 +161,12 @@ namespace PlanScoreCard.ViewModels
         private void EditScoreCard()
         {
             ScoreCardModel scoreCard = new ScoreCardModel(TemplateName, TemplateSite, ScoreTemplates);
-
+            
             EditScoreCardView editScoreCardView = ViewLauncherService.GetEditScoreCardView();
-            EventAggregator.GetEvent<EditScoreCardSetPlanEvent>().Publish(SelectedPlan); // Push the SelectedPlan
-            EventAggregator.GetEvent<EditScoreCardSetUserEvent>().Publish(Application.CurrentUser); // Push the User
+
+            EventAggregator.GetEvent<EditScoreCardSetPlanEvent>().Publish(new PlanModel(Plan, EventAggregator)); // Push the SelectedPlan
             EventAggregator.GetEvent<LoadEditScoreCardViewEvent>().Publish(scoreCard); // Push the ScoreCardModel to the ViewModel
+            EventAggregator.GetEvent<EditScoreCardSetUserEvent>().Publish(Application.CurrentUser); // Push the User
 
             editScoreCardView.ShowDialog();
         }
