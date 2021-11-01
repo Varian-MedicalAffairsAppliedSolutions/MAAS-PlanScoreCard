@@ -112,6 +112,7 @@
     <Compile Include="Converters\DoubleF2Converter.cs" />
     <Compile Include="Converters\MetricEditorConverter.cs" />
     <Compile Include="Converters\MetricIdConverter.cs" />
+    <Compile Include="Converters\ScoreToTextConverter.cs" />
     <Compile Include="Events\AddScorePointEvent.cs" />
     <Compile Include="Events\AddStructureEvent.cs" />
     <Compile Include="Events\ChangeNestEvent.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="Events\EditScoreCardSetPlanEvent.cs" />
     <Compile Include="Events\EditScoreCardSetUserEvent.cs" />
     <Compile Include="Events\FreePrimarySelectionEvent.cs" />
+    <Compile Include="Events\HelperWindows\CancelEvent.cs" />
     <Compile Include="Events\LoadEditScoreCardViewEvent.cs" />
     <Compile Include="Events\MetricDownEvent.cs" />
     <Compile Include="Events\MetricRankChangedEvent.cs" />
@@ -181,6 +183,7 @@
     <Compile Include="Services\PlanScoreCalculationServices.cs" />
     <Compile Include="Services\PlanScorePlottingServices.cs" />
     <Compile Include="Services\PluginViewService.cs" />
+    <Compile Include="Services\ProgressViewService.cs" />
     <Compile Include="Services\SmartSearchService.cs" />
     <Compile Include="Services\StructureGenerationService.cs" />
     <Compile Include="Services\ViewLauncherService.cs" />
@@ -215,6 +218,9 @@
     </Compile>
     <Compile Include="Views\EditScoreCardView.xaml.cs">
       <DependentUpon>EditScoreCardView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HelperWindows\ProgressView.xaml.cs">
+      <DependentUpon>ProgressView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MetricEditors\EditCIView.xaml.cs">
       <DependentUpon>EditCIView.xaml</DependentUpon>
@@ -290,6 +296,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EditScoreCardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\HelperWindows\ProgressView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

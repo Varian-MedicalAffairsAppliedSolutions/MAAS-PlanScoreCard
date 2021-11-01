@@ -171,7 +171,9 @@ namespace PlanScoreCard.ViewModels
             set
             {
                 SetProperty(ref scoreMetricPlotModel, value);
-                SelectedScoreMetric.SetPlotProperties(SelectedScoreMetric.MetricType);
+                
+                if (SelectedScoreMetric != null)
+                    SelectedScoreMetric.SetPlotProperties(SelectedScoreMetric.MetricType);
             }
         }
 
@@ -310,7 +312,7 @@ namespace PlanScoreCard.ViewModels
         private void ScorePlan()
         {
             var scoreTemplate = ScoreTemplateBuilder.Build(ScoreMetrics.ToList(), Structures.ToList());
-            //EventAggregator.GetEvent<ScorePlanEvent>().Publish(scoreTemplate);
+            EventAggregator.GetEvent<ScorePlanEvent>().Publish(ScoreCard);
         }
 
         private void PointDown()
@@ -473,7 +475,18 @@ namespace PlanScoreCard.ViewModels
                 ScoreMetrics.Add(metric);
 
             ReRankMetrics();
-            SelectedScoreMetric = ScoreMetrics.First();
+            if (ScoreMetrics.Count() == 0)
+            {
+                SelectedScoreMetric = null;
+                MetricPointModels.Clear();
+                ScoreMetricPlotModel = null;
+                MetricEditorControl = null;
+            }
+            else
+            {
+                SelectedScoreMetric = ScoreMetrics.First();
+             
+            }
         }
 
         // Populates the View / Binds Data
@@ -587,7 +600,14 @@ namespace PlanScoreCard.ViewModels
             }
 
             // Set the Selected ScoreMetric
-            SelectedScoreMetric = ScoreMetrics.First();
+            if (ScoreMetrics.Count() == 0)
+            {
+                SelectedScoreMetric = null;
+            }
+            else
+            {
+                SelectedScoreMetric = ScoreMetrics.First();
+            }
         }
 
         private void ShowScorePointModels(ScoreMetricModel selectedMetric)

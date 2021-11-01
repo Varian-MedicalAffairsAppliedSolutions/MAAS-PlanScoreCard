@@ -151,6 +151,28 @@ namespace PlanScoreCard.ViewModels
             InitializeClass();
         }
 
+        // Initialize 
+        private void InitializeClass()
+        {
+
+            // Set the PatientID
+            PatientId = Patient.Id;
+
+            // Add the Plans
+            // Clear the Collection of Plans
+            Plans.Clear();
+
+            // For each course, add all the Plans
+            foreach (Course course in Patient.Courses)
+            {
+                foreach (PlanSetup plan in course.PlanSetups)
+                    Plans.Add(new PlanModel(plan, EventAggregator));
+            }
+
+            Plans.First().bPrimary = true;
+
+        }
+
         private void ScorePlan()
         {
             if (ScoreCard !=  null)
@@ -279,35 +301,24 @@ namespace PlanScoreCard.ViewModels
                     {
                         string cid = pc.courseId;
                         string pid = pc.planId;
+
                         double planTotal = planScores.Sum(x => x.ScoreValues.FirstOrDefault(y => y.PlanId == pc.planId && y.CourseId == pc.courseId).Score);
                         ScoreTotalText += $"\n\t\t[{cid}] {pid}: {planTotal:F2}/{planScores.Sum(x => x.ScoreMax):F2} ({planTotal / planScores.Sum(x => x.ScoreMax) * 100.0:F2}%)";
+
+                        PlanModel plan = Plans.FirstOrDefault(p => p.PlanId == pid);
+                        if (plan != null)
+                        {
+                            plan.PlanScore = Math.Round(planTotal / planScores.Sum(x => x.ScoreMax) * 100.0 , 2);
+                        }
                     }
                 }
             }
-        }
 
-        // Methods
-        private void InitializeClass()
-        {
-
-            // Set the PatientID
-            PatientId = Patient.Id;
-
-            // Add the Plans
-            // Clear the Collection of Plans
-            Plans.Clear();
-
-            // For each course, add all the Plans
-            foreach (Course course in Patient.Courses)
-            {
-                foreach (PlanSetup plan in course.PlanSetups)
-                    Plans.Add(new PlanModel(plan, EventAggregator));
-            }
-
-            Plans.First().bPrimary = true; 
+            ScoreTotalText = ScoreTotalText;
 
         }
-
+        
+        // Event Methods
         private void OnPlanChanged(List<PlanModel> obj)
         {
             if (Plans != null)

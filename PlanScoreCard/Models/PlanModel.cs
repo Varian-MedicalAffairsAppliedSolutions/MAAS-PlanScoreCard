@@ -74,6 +74,15 @@ namespace PlanScoreCard.Models
             set { SetProperty(ref _bPrimaryEnabled, value); }
         }
 
+
+        private double planScore;
+
+        public double PlanScore
+        {
+            get { return planScore; }
+            set { SetProperty( ref planScore , value); }
+        }
+
         public PlanSetup Plan;
 
         private IEventAggregator _eventAggregator;

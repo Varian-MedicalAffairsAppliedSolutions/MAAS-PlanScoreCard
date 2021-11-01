@@ -15,13 +15,14 @@
             <converters:BoolVisibilityConverter x:Key="localVisibilityConverter"/>
             <converters:MetricIdConverter x:Key="localMetricIdConverter"/>
             <converters:DoubleF2Converter x:Key="localDoubleConverter"/>
+            <converters:ScoreToTextConverter x:Key="localScoreTextConverter"/>
         </ResourceDictionary>
     </metro:MetroWindow.Resources>
     <Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="5*"/>
             </Grid.ColumnDefinitions>
             <Grid>
                 <Grid.RowDefinitions>
@@ -93,14 +94,21 @@
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
+                                    <DataGridCheckBoxColumn Header="Selected" Binding="{Binding bSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                     <DataGridTemplateColumn Header="Primary">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <RadioButton  Height="20" GroupName="Primary" IsChecked="{Binding bPrimary, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" HorizontalAlignment="Center" />
+                                                <RadioButton  Height="20" GroupName="Primary" IsChecked="{Binding bPrimary, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" HorizontalAlignment="Center"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridCheckBoxColumn Header="Selected" Binding="{Binding bSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <DataGridTextColumn Header="Score" Binding="{Binding PlanScore, Converter={StaticResource localScoreTextConverter}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12" Width="75" IsReadOnly="True">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Center" />
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Border>

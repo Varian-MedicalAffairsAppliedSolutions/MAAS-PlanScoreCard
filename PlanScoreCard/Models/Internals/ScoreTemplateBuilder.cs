@@ -301,6 +301,9 @@ namespace PlanScoreCard.Models.Internals
                     pointModel.Score = scorepoint.Score;
                     pointModel.bMetricChecked = scorepoint.Variation;
 
+                    if (scorepoint.Colors.Count() == 0)
+                        continue;
+
                     pointModel.PlanScoreBackgroundColor = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(Convert.ToByte(scorepoint.Colors.ElementAt(0)),
                         Convert.ToByte(scorepoint.Colors.ElementAt(1)),
                         Convert.ToByte(scorepoint.Colors.ElementAt(2))));

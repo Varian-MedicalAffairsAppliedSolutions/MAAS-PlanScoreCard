@@ -118,6 +118,9 @@ namespace PlanScoreCard.Models
             get { return structure; }
             set
             {
+                if (value == null)
+                    return;
+                
                 value = Structures.FirstOrDefault(s => s.StructureId == value.StructureId);
                 EventAggregator.GetEvent<MetricStructureChangedEvent>().Publish();
                 SetProperty(ref structure, value);

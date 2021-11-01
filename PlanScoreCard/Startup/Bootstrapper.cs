@@ -1,8 +1,10 @@
 ﻿using Autofac;
+using PlanScoreCard.Events.HelperWindows;
 using PlanScoreCard.Services;
 using PlanScoreCard.ViewModels;
 using PlanScoreCard.ViewModels.MetricEditors;
 using PlanScoreCard.Views;
+using PlanScoreCard.Views.HelperWindows;
 using PlanScoreCard.Views.MetricEditors;
 using Prism.Events;
 using VMS.TPS.Common.Model.API;
@@ -46,13 +48,16 @@ namespace PlanScoreCard.Startup
             container.RegisterType<EditCIView>().AsSelf();
             container.RegisterType<StructureBuilderView>().AsSelf();
             container.RegisterType<ScoreCardView>().AsSelf();
+            container.RegisterType<ProgressView>().AsSelf().SingleInstance();
 
             //events
             container.RegisterType<EventAggregator>().As<IEventAggregator>().SingleInstance();
+            container.RegisterType<CancelEvent>().AsSelf();
 
             // services
             container.RegisterType<PluginViewService>().AsSelf();
             container.RegisterType<ViewLauncherService>().AsSelf();
+            
 
             return container.Build();
         }
