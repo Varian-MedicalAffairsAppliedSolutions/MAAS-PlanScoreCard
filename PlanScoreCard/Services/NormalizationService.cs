@@ -23,7 +23,7 @@ namespace PlanScoreCard.Services
         private Application _app;
         private Patient _patient;
 
-        public NormalizationService(Application app,Patient patient, PlanModel plan, 
+        public NormalizationService(Application app, Patient patient, PlanModel plan,
             List<ScoreTemplateModel> templates, IEventAggregator eventAggregator)
         {
             _patient = patient;
@@ -50,7 +50,7 @@ namespace PlanScoreCard.Services
 
             //copy plan.
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish("Copying Plan");
-            
+
             _patient.BeginModifications();
 
             Course _newCourse = null;
@@ -63,26 +63,20 @@ namespace PlanScoreCard.Services
                 _newCourse = _patient.AddCourse();
                 _newCourse.Id = "N-Opt";
             }
+
             var _newPlan = _newCourse.CopyPlanSetup(plan);
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\n* New Plan Generated * \n - CourseID : {_newCourse.Id} \n - PlanID : { _newPlan.Id}\n");
-            
+
             TestNormalization(_newPlan);
-            
+
             var newPlanModel = new PlanModel(_newPlan, _eventAggregator)
             {
                 CourseId = _newPlan.Course.Id,
                 PlanId = _newPlan.Id
             };
 
-            try
-            {
-                _app.SaveModifications();
-            }
-            catch (Exception ex)
-            {
+            _app.SaveModifications();
 
-            }
-            
             //_app.ClosePatient();
             //_app.Dispose();
             return newPlanModel;
@@ -94,21 +88,21 @@ namespace PlanScoreCard.Services
             double initial_norm = newPlan.PlanNormalizationValue;
             for (double i = -20; i < 20; i += 2)
             {
-                 ScorePlanAtNormValue(newPlan, planScores, initial_norm, i);
+                ScorePlanAtNormValue(newPlan, planScores, initial_norm, i);
             }
             var maxScore = planScores.Max(x => x.Item2);
             var maxNorm = planScores.FirstOrDefault(x => x.Item2 == maxScore).Item1;
             planScores.Clear();
             for (double i = -2; i < 2; i += 0.2)
             {
-                 ScorePlanAtNormValue(newPlan, planScores, maxNorm, i);
+                ScorePlanAtNormValue(newPlan, planScores, maxNorm, i);
             }
             maxScore = planScores.Max(x => x.Item2);
             maxNorm = planScores.FirstOrDefault(x => x.Item2 == maxScore).Item1;
             planScores.Clear();
             for (double i = -0.2; i < 0.2; i += 0.01)
             {
-                 ScorePlanAtNormValue(newPlan, planScores, maxNorm, i);
+                ScorePlanAtNormValue(newPlan, planScores, maxNorm, i);
             }
             maxScore = planScores.Max(x => x.Item2);
             maxNorm = planScores.FirstOrDefault(x => x.Item2 == maxScore).Item1;
@@ -141,7 +135,7 @@ namespace PlanScoreCard.Services
                 }
             }
             planScores.Add(new Tuple<double, double>(planNorm, score));
-            _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\tScore at {planNorm} = {Math.Round(score,2)}");
+            _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\tScore at {planNorm} = {Math.Round(score, 2)}");
             _eventAggregator.GetEvent<PlotUpdateEvent>().Publish($"PlotPoint:<{newPlan.Id};{planNorm};{Math.Round(score, 2)}>");
         }
     }

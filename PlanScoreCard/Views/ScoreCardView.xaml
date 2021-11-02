@@ -286,17 +286,17 @@
                                                                 <RowDefinition Height="2*"/>
                                                             </Grid.RowDefinitions>
 
-                                                            <Label Margin="5,5,0,0" Grid.Row="0" Grid.Column="0" Visibility="{Binding OutsideMin}" Foreground="Red">
+                                                            <Label Margin="5,18,0,0" Grid.Row="0" Grid.Column="0" Visibility="{Binding OutsideMin}" Foreground="Red">
                                                                 <icons:FontAwesome Kind="ArrowLeftSolid" Height="10"/>
                                                             </Label>
 
-                                                            <TextBlock Margin="0,6,0,0" Grid.Row="0" Grid.Column="1" Text="{Binding CountBelowMin}" Visibility="{Binding OutsideMin}" HorizontalAlignment="Left" Foreground="Red"/>
+                                                            <TextBlock Margin="0,19,0,0" Grid.Row="0" Grid.Column="1" Text="{Binding CountBelowMin}" Visibility="{Binding OutsideMin}" HorizontalAlignment="Left" Foreground="Red"/>
 
-                                                            <Label Margin="0,5,0,4" Grid.Row="0" Grid.Column="4" Visibility="{Binding OutsideMax}" Foreground="Green">
+                                                            <Label Margin="0,18,0,4" Grid.Row="0" Grid.Column="4" Visibility="{Binding OutsideMax}" Foreground="Green">
                                                                 <icons:FontAwesome Kind="ArrowRightSolid" Height="10"/>
                                                             </Label>
 
-                                                            <TextBlock Grid.Row="0" Margin="0,6,0,0" Grid.Column="3" Text="{Binding CountAboveMax}" Visibility="{Binding OutsideMax}" HorizontalAlignment="Right" Foreground="Green"/>
+                                                            <TextBlock Grid.Row="0" Margin="0,19,0,0" Grid.Column="3" Text="{Binding CountAboveMax}" Visibility="{Binding OutsideMax}" HorizontalAlignment="Right" Foreground="Green"/>
 
                                                         </Grid>
 

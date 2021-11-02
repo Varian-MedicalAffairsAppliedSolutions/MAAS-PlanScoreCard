@@ -181,7 +181,7 @@
                             <!--<Button Command="{Binding EditPointCommand}" Content="{icons:FontAwesome Kind=EditSolid}"  Height="30" Grid.Column="1" Grid.ColumnSpan="1" Margin="3"/>-->
 
                             <Button Command="{Binding DeletePointCommand}" Content="{icons:FontAwesome Kind=TrashAltSolid}" Width="30" Height="30" Grid.Column="1"/>
-                            <Button Command="{Binding OrderPointsByValueCommand}" Content="{icons:FontAwesome Kind=SortAmountUpSolid}" ToolTip="Order Points by Score" Width="30" Height="30" Grid.Column="2"/>
+                            <Button Command="{Binding OrderPointsByValueCommand}" Content="{icons:FontAwesome Kind=SortAmountUpSolid}" ToolTip="Order Points by Value" Width="30" Height="30" Grid.Column="2"/>
 
                             <Button Command="{Binding PointUpCommand}" Content="{icons:FontAwesome Kind=CaretUpSolid}" Width="30" Height="30" Grid.Column="11"/>
                             <Button Command="{Binding PointDownComand}" Content="{icons:FontAwesome Kind=CaretDownSolid}" Width="30" Height="30" Grid.Column="12"/>

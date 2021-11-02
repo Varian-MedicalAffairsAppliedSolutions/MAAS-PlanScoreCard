@@ -284,7 +284,7 @@ namespace PlanScoreCard.ViewModels
 
             MetricPointModels.Clear();
 
-            List<ScorePointModel> scorePoints = SelectedScoreMetric.ScorePoints.OrderBy(sm => sm.Score).ToList();
+            List<ScorePointModel> scorePoints = SelectedScoreMetric.ScorePoints.OrderBy(sm => sm.PointX).ToList();
             foreach (ScorePointModel point in scorePoints)
                 MetricPointModels.Add(point);
 
