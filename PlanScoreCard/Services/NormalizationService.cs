@@ -66,15 +66,16 @@ namespace PlanScoreCard.Services
             var _newPlan = _newCourse.CopyPlanSetup(plan);
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\n* New Plan Generated * \n - CourseID : {_newCourse.Id} \n - PlanID : { _newPlan.Id}\n");
             TestNormalization(_newPlan);
-            var newPlanModel = new PlanModel(_newPlan, _eventAggregator)
-            {
-                CourseId = _newPlan.Course.Id,
-                PlanId = _newPlan.Id
-            };
+            //var newPlanModel = new PlanModel(_newPlan, _eventAggregator)
+            //{
+            //    CourseId = _newPlan.Course.Id,
+            //    PlanId = _newPlan.Id
+            //};
             _app.SaveModifications();
             //_app.ClosePatient();
             //_app.Dispose();
-            return newPlanModel;
+            //return newPlanModel;
+            return null;
         }
 
         private void TestNormalization(PlanSetup newPlan)

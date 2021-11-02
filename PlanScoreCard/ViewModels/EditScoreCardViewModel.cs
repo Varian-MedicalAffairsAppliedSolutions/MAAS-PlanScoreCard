@@ -32,6 +32,7 @@ namespace PlanScoreCard.ViewModels
         private IEventAggregator EventAggregator;
 
         private ViewLauncherService ViewLauncherService;
+        private ProgressViewService ProgressViewService;
 
         private object metricEdtiorControl;
 
@@ -193,10 +194,11 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand AddNewStructureCommand { get; private set; }
 
         // Constructor
-        public EditScoreCardViewModel(IEventAggregator eventAggregator, ViewLauncherService viewLauncherService)
+        public EditScoreCardViewModel(IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService)
         {
 
             ViewLauncherService = viewLauncherService;
+            ProgressViewService = progressViewService;
 
             // Events
             EventAggregator = eventAggregator;
@@ -510,7 +512,6 @@ namespace PlanScoreCard.ViewModels
             MetricTypes.Add(MetricTypeEnum.VolumeAtDose);
             MetricTypes.Add(MetricTypeEnum.VolumeOfRegret);
             MetricTypes.Add(MetricTypeEnum.Undefined);
-
         }
 
         // Event Methods

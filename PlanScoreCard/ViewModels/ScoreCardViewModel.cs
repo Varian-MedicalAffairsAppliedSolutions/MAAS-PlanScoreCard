@@ -32,6 +32,7 @@ namespace PlanScoreCard.ViewModels
         private PlanningItem Plan;
         private IEventAggregator EventAggregator;
         private ViewLauncherService ViewLauncherService;
+        private ProgressViewService ProgressViewService;
 
         private ScoreCardModel scoreCard;
         public ScoreCardModel ScoreCard
@@ -116,7 +117,7 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand ExportScoreCardCommand { get; set; }
 
         // Constructor
-        public ScoreCardViewModel(Application app, Patient patient, Course course, PlanSetup plan, IEventAggregator eventAggregator, ViewLauncherService viewLauncherService)
+        public ScoreCardViewModel(Application app, Patient patient, Course course, PlanSetup plan, IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService)
         {
             // Set the Initial Variables Passed In
             Application  = app;
@@ -125,8 +126,9 @@ namespace PlanScoreCard.ViewModels
             Plan = plan;
             EventAggregator = eventAggregator;
 
-            // Initiate Service
+            // Initiate Services
             ViewLauncherService = viewLauncherService;
+            ProgressViewService = progressViewService;
 
             // Need to change this event to take in a ScoreCardModel as the payload
             //EventAggregator.GetEvent<ScorePlanEvent>().Subscribe(OnScorePlan);
@@ -178,18 +180,26 @@ namespace PlanScoreCard.ViewModels
             if (ScoreCard !=  null)
                 ScorePlan(ScoreCard);
 
+            ProgressViewService.Close();
         }
 
         private void EditScoreCard()
         {
-            ScoreCardModel scoreCard = new ScoreCardModel(TemplateName, TemplateSite, ScoreTemplates);
+            // Show the Progress Bar
+            ProgressViewService.ShowProgress("Loading Scorecard", 100, true);
             
+            ScoreCardModel scoreCard = new ScoreCardModel(TemplateName, TemplateSite, ScoreTemplates);
             EditScoreCardView editScoreCardView = ViewLauncherService.GetEditScoreCardView();
 
+            // Events
             EventAggregator.GetEvent<EditScoreCardSetPlanEvent>().Publish(new PlanModel(Plan, EventAggregator)); // Push the SelectedPlan
             EventAggregator.GetEvent<LoadEditScoreCardViewEvent>().Publish(scoreCard); // Push the ScoreCardModel to the ViewModel
             EventAggregator.GetEvent<EditScoreCardSetUserEvent>().Publish(Application.CurrentUser); // Push the User
+            
+            // Close the Progress Bar
+            ProgressViewService.Close();
 
+            //Show the View
             editScoreCardView.ShowDialog();
         }
 
@@ -272,6 +282,10 @@ namespace PlanScoreCard.ViewModels
 
         public void ScorePlan(ScoreCardModel scoreCard)
         {
+
+            ProgressViewService.ShowProgress("Scoring Plans", 100, true);
+            ProgressViewService.SendToFront();
+
             // _eventAggregator.GetEvent<UpdateTemplatesEvent>().Publish(_currentTemplate);
             PlanScores.Clear();
 
@@ -315,12 +329,15 @@ namespace PlanScoreCard.ViewModels
             }
 
             ScoreTotalText = ScoreTotalText;
-
+            // Will delay for 3 seconds
+            System.Threading.Thread.Sleep(700);
+            ProgressViewService.Close();
         }
         
         // Event Methods
         private void OnPlanChanged(List<PlanModel> obj)
         {
+
             if (Plans != null)
             {
                 Plans.Clear();
@@ -344,6 +361,8 @@ namespace PlanScoreCard.ViewModels
                     ScorePlan(ScoreCard);
                 }
             }
+
+
         }
 
         private void OnPluginVisible(bool obj)

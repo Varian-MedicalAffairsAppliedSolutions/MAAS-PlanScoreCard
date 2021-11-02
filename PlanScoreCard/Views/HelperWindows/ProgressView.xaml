@@ -9,7 +9,7 @@
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:converters="clr-namespace:PlanScoreCard.Converters"
         mc:Ignorable="d"
-        Title="{Binding }" Height="100" Width="400" ResizeMode="NoResize">
+        Title="{Binding }" Height="150" WindowStartupLocation="CenterScreen" Width="400" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>

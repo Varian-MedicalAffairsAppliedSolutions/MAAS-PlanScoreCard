@@ -498,14 +498,14 @@ namespace PlanScoreCard.ViewModels
         /// <param name="course"></param>
         private void AddPlansFromCourse(Course course)
         {
-            foreach (var ps in course.PlanSums.Where(x => x.StructureSet != null && x.Dose != null))
-            {
-                Plans.Add(new PlanModel(ps, _eventAggregator) { PlanId = ps.Id, CourseId = course.Id, DisplayTxt = $"{course.Id}: {ps.Id}" });
-            }
-            foreach (var ps in course.PlanSetups.Where(x => x.StructureSet != null && x.Dose != null))
-            {
-                Plans.Add(new PlanModel(ps, _eventAggregator) { PlanId = ps.Id, CourseId = course.Id, DisplayTxt = $"{course.Id}: {ps.Id}" });
-            }
+            //foreach (var ps in course.PlanSums.Where(x => x.StructureSet != null && x.Dose != null))
+            //{
+            //    Plans.Add(new PlanModel(ps, _eventAggregator) { PlanId = ps.Id, CourseId = course.Id, DisplayTxt = $"{course.Id}: {ps.Id}" });
+            //}
+            //foreach (var ps in course.PlanSetups.Where(x => x.StructureSet != null && x.Dose != null))
+            //{
+            //    Plans.Add(new PlanModel(ps, _eventAggregator) { PlanId = ps.Id, CourseId = course.Id, DisplayTxt = $"{course.Id}: {ps.Id}" });
+            //}
         }
         /// <summary>
         /// Method called from MainView when a new template gets saved from the GenerateScoreCardViewModel.

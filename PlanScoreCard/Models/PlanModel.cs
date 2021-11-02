@@ -1,4 +1,5 @@
 ﻿using PlanScoreCard.Events;
+using PlanScoreCard.Services;
 using Prism.Events;
 using Prism.Mvvm;
 using System;
@@ -12,8 +13,7 @@ using VMS.TPS.Common.Model.API;
 namespace PlanScoreCard.Models
 {
     public class PlanModel : BindableBase
-    {
-
+    { 
         private string planId;
 
         public string PlanId

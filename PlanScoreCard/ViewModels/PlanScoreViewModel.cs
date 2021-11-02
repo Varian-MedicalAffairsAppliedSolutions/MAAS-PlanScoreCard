@@ -51,10 +51,10 @@ namespace PlanScoreCard.ViewModels
             PlanScores = new ObservableCollection<PlanScoreModel>();
             Plans = new ObservableCollection<PlanningItem>();
             
-            if (_plan != null)
-            {
-                OnPlanChanged(new List<PlanModel> { new PlanModel(_plan as PlanningItem, _eventAggregator) { PlanId = _plan.Id, CourseId = _course.Id, bSelected = true } });
-            }
+            //if (_plan != null)
+            //{
+            //    OnPlanChanged(new List<PlanModel> { new PlanModel(_plan as PlanningItem, _eventAggregator) { PlanId = _plan.Id, CourseId = _course.Id, bSelected = true } });
+            //}
            
         }
 
