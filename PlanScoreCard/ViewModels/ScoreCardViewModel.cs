@@ -147,12 +147,19 @@ namespace PlanScoreCard.ViewModels
             ImportScoreCardCommand = new DelegateCommand(ImportScoreCard);
             EditScoreCardCommand = new DelegateCommand(EditScoreCard);
             NormalizePlanCommand = new DelegateCommand(NormalizePlan);
+            ExportScoreCardCommand = new DelegateCommand(ExportScoreCard);
 
             // Sets If no Plan is Passed In
             if (Plan != null)
                 OnPlanChanged(new List<PlanModel> { new PlanModel(Plan as PlanningItem, eventAggregator) { PlanId = Plan.Id, CourseId = Course.Id, bSelected = true } });
 
             InitializeClass();
+        }
+
+        // Button Click Commands
+        private void ExportScoreCard()
+        {
+            throw new NotImplementedException();
         }
 
         private void NormalizePlan()
