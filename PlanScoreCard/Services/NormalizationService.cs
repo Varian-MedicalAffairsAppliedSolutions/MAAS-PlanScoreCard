@@ -30,16 +30,14 @@ namespace PlanScoreCard.Services
             _templates = templates;
             _eventAggregator = eventAggregator;
             _app = app;
-            //_patient = patient;
+
             PlanScores = new ObservableCollection<PlanScoreModel>();
             _planModel = plan;
-            //GetPlan(plan);
-            //_app.SaveModifications();
+
         }
+
         public PlanModel GetPlan()
         {
-            //_app = VMS.TPS.Common.Model.API.Application.CreateApplication();
-            //_patient = _app.OpenPatientById(_patientId);
 
             var course = _patient.Courses.FirstOrDefault(x => x.Id == _planModel.CourseId);
             var plan = course.PlanSetups.FirstOrDefault(x => x.Id == _planModel.PlanId);
@@ -52,7 +50,9 @@ namespace PlanScoreCard.Services
 
             //copy plan.
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish("Copying Plan");
+            
             _patient.BeginModifications();
+
             Course _newCourse = null;
             if (_patient.Courses.Any(x => x.Id == "N-Opt"))
             {
@@ -65,17 +65,27 @@ namespace PlanScoreCard.Services
             }
             var _newPlan = _newCourse.CopyPlanSetup(plan);
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\n* New Plan Generated * \n - CourseID : {_newCourse.Id} \n - PlanID : { _newPlan.Id}\n");
+            
             TestNormalization(_newPlan);
-            //var newPlanModel = new PlanModel(_newPlan, _eventAggregator)
-            //{
-            //    CourseId = _newPlan.Course.Id,
-            //    PlanId = _newPlan.Id
-            //};
-            _app.SaveModifications();
+            
+            var newPlanModel = new PlanModel(_newPlan, _eventAggregator)
+            {
+                CourseId = _newPlan.Course.Id,
+                PlanId = _newPlan.Id
+            };
+
+            try
+            {
+                _app.SaveModifications();
+            }
+            catch (Exception ex)
+            {
+
+            }
+            
             //_app.ClosePatient();
             //_app.Dispose();
-            //return newPlanModel;
-            return null;
+            return newPlanModel;
         }
 
         private void TestNormalization(PlanSetup newPlan)

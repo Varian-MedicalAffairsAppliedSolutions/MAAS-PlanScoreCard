@@ -197,6 +197,7 @@
     <Compile Include="ViewModels\EditScoreCardViewModel.cs" />
     <Compile Include="ViewModels\GenerateScorecardViewModel.cs" />
     <Compile Include="ViewModels\HIViewModel.cs" />
+    <Compile Include="ViewModels\INofityPropertyChanged.cs" />
     <Compile Include="ViewModels\Interfaces\IScoreMetricViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MetricEditors\EditCIViewModel.cs" />

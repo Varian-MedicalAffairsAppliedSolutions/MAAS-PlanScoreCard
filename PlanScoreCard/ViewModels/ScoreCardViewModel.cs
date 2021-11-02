@@ -136,6 +136,7 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<PlanChangedEvent>().Subscribe(OnPlanChanged);
             EventAggregator.GetEvent<ScorePlanEvent>().Subscribe(ScorePlan);
             EventAggregator.GetEvent<PlanSelectedEvent>().Subscribe(ScorePlan);
+
             
             // Initiate Collections
             PlanScores = new ObservableCollection<PlanScoreModel>();
@@ -145,12 +146,30 @@ namespace PlanScoreCard.ViewModels
             ScorePlanCommand = new DelegateCommand(ScorePlan);
             ImportScoreCardCommand = new DelegateCommand(ImportScoreCard);
             EditScoreCardCommand = new DelegateCommand(EditScoreCard);
+            NormalizePlanCommand = new DelegateCommand(NormalizePlan);
 
             // Sets If no Plan is Passed In
             if (Plan != null)
                 OnPlanChanged(new List<PlanModel> { new PlanModel(Plan as PlanningItem, eventAggregator) { PlanId = Plan.Id, CourseId = Course.Id, bSelected = true } });
 
             InitializeClass();
+        }
+
+        private void NormalizePlan()
+        {
+            if (Plans.Any(x => x.bPrimary) && ScoreTemplates.Count() > 0)
+            {
+                PluginViewService pluginViewService = new PluginViewService(EventAggregator);
+                PluginViewModel pluginViewModel = new PluginViewModel(EventAggregator, pluginViewService);
+
+                EventAggregator.GetEvent<ShowPluginViewEvent>().Publish();
+
+                NormalizationService normService = new NormalizationService(Application, Patient, Plans.FirstOrDefault(x => x.bPrimary), ScoreTemplates, EventAggregator);
+
+                var newplan = normService.GetPlan();
+                Plans.Add(newplan);
+                Plans.FirstOrDefault(x => x.CourseId == newplan.CourseId && x.PlanId == newplan.PlanId).bSelected = true;
+            }
         }
 
         // Initialize 

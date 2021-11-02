@@ -50,8 +50,8 @@ namespace PlanScoreCard.Views
         public string ConsoleOutput
         {
             get { return consoleOutput; }
-            set 
-            { 
+            set
+            {
                 consoleOutput = value;
                 OnPropertyChanged();
             }
@@ -62,8 +62,8 @@ namespace PlanScoreCard.Views
         public PlotModel PlotModel
         {
             get { return plotModel; }
-            set 
-            { 
+            set
+            {
                 plotModel = value;
                 OnPropertyChanged();
             }
@@ -74,8 +74,8 @@ namespace PlanScoreCard.Views
         public string XAxisLabel
         {
             get { return xAxisLabel; }
-            set 
-            { 
+            set
+            {
                 xAxisLabel = value;
                 OnPropertyChanged();
             }
@@ -110,24 +110,24 @@ namespace PlanScoreCard.Views
             YAxisLabel = "Plan Score";
 
             PlotModel = new PlotModel();
-            PlotModel.Axes.Add(new LinearAxis 
-                                        { 
-                                            Title = XAxisLabel, 
-                                            Position = AxisPosition.Bottom,
-                                            FontSize = 18,
-                                            TitleFontWeight = 200
-                                        });
+            PlotModel.Axes.Add(new LinearAxis
+            {
+                Title = XAxisLabel,
+                Position = AxisPosition.Bottom,
+                FontSize = 18,
+                TitleFontWeight = 200
+            });
 
-            PlotModel.Axes.Add(new LinearAxis 
-                                        { 
-                                            Title = YAxisLabel, 
-                                            Position = AxisPosition.Left,
-                                            FontSize = 18,
-                                            TitleFontWeight = 200
-                                        });
+            PlotModel.Axes.Add(new LinearAxis
+            {
+                Title = YAxisLabel,
+                Position = AxisPosition.Left,
+                FontSize = 18,
+                TitleFontWeight = 200
+            });
 
             LineSeries series = new LineSeries();
-            series.Color = OxyColor.FromArgb(255,16,161,211);
+            series.Color = OxyColor.FromArgb(255, 16, 161, 211);
             series.StrokeThickness = 1.2;
             PlotModel.Series.Add(series);
         }
@@ -169,5 +169,6 @@ namespace PlanScoreCard.Views
             YAxisLabel = yAxisLabel;
             PlotModel.InvalidatePlot(true);
         }
+
     }
 }

@@ -31,6 +31,11 @@ namespace PlanScoreCard.Services
             return GetView<EditScoreCardView>();
         }
 
+        public PluginView GetPluginView()
+        {
+            return GetView<PluginView>();
+        }
+
 
         /// <summary>
         /// Generate a home view
