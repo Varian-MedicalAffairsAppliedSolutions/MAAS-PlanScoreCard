@@ -346,9 +346,13 @@ namespace PlanScoreCard.ViewModels
                         ScoreTotalText += $"\n\t\t[{cid}] {pid}: {planTotal:F2}/{planScores.Sum(x => x.ScoreMax):F2} ({planTotal / planScores.Sum(x => x.ScoreMax) * 100.0:F2}%)";
 
                         PlanModel plan = Plans.FirstOrDefault(p => p.PlanId == pid);
+
+                        if (plan.PlanScore == null)
+                            plan.PlanScore = 0;
+
                         if (plan != null)
                         {
-                            plan.PlanScore = Math.Round(planTotal / planScores.Sum(x => x.ScoreMax) * 100.0 , 2);
+                            plan.PlanScore = planTotal;
                         }
                     }
                 }

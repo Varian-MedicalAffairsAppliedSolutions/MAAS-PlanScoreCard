@@ -21,7 +21,8 @@ namespace PlanScoreCard.Converters
                 return "";
             }
 
-            return value.ToString() + "%";
+            string outputString = Math.Round((double)value,2).ToString();
+            return outputString;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -102,7 +102,7 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTextColumn Header="Score" Binding="{Binding PlanScore, Converter={StaticResource localScoreTextConverter}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12" Width="75" IsReadOnly="True">
+                                    <DataGridTextColumn Header="Score" Binding="{Binding PlanScore, Converter={StaticResource localScoreTextConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontWeight="Normal" FontSize="12" Width="75" IsReadOnly="True">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="HorizontalAlignment" Value="Center" />
@@ -167,11 +167,33 @@
                 <GroupBox Grid.Row="1" Margin="5" FontWeight="Bold" Background="WhiteSmoke">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="0"/>
+                            <RowDefinition Height="30"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
+                        <Grid Grid.Row="0" Margin="3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.5*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="3*"/>
+                            </Grid.ColumnDefinitions>
 
+                            <Label Grid.Column="0" Content="Rank" HorizontalAlignment="Center"/>
+                            <Label Grid.Column="1" Content="Structure" HorizontalAlignment="Center"/>
+                            <Label Grid.Column="2" Content="Score Metric" HorizontalAlignment="Center"/>
+                            <Label Grid.Column="3" Content="Plan Id" HorizontalAlignment="Center"/>
+                            <Label Grid.Column="4" Content="Value" HorizontalAlignment="Center"/>
+                            <Label Grid.Column="5" Content="Score" HorizontalAlignment="Center"/>
+                            <Label Grid.Column="6" Content="Max. Score" HorizontalAlignment="Center"/>
+                            <Label Grid.Column="7" Content="Metric Plot" HorizontalAlignment="Center"/>
+
+                        </Grid>
+                        
                         <Border Grid.Row="1" BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" Margin="3">
                             <ScrollViewer Grid.Row="1">
                                 <ItemsControl ItemsSource="{Binding PlanScores, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontWeight="DemiBold">

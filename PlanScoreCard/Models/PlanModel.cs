@@ -75,9 +75,9 @@ namespace PlanScoreCard.Models
         }
 
 
-        private double planScore;
+        private double? planScore;
 
-        public double PlanScore
+        public double? PlanScore
         {
             get { return planScore; }
             set { SetProperty( ref planScore , value); }
