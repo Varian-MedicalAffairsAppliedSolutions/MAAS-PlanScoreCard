@@ -99,10 +99,10 @@ namespace PlanScoreCard.ViewModels
             get { return metricPointModels; }
             set
             {
-                metricPointModels = value;
+                SetProperty(ref metricPointModels , value);
 
-                if (metricPointModels.Count() > 0)
-                    SelectedMetricPointModel = metricPointModels.First();
+                //if (metricPointModels.Count() > 0)
+                //    SelectedMetricPointModel = metricPointModels.First();
             }
         }
 
@@ -112,7 +112,7 @@ namespace PlanScoreCard.ViewModels
         public ScorePointModel SelectedMetricPointModel
         {
             get { return selectedMetricPointModel; }
-            set { selectedMetricPointModel = value; }
+            set { SetProperty(ref selectedMetricPointModel, value); }
         }
 
         // Structures Collection
@@ -209,6 +209,7 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Subscribe(UpdateScoreMetricPlotModel);
             EventAggregator.GetEvent<ReRankMetricPointsEvent>().Subscribe(ReRankPoints);
             EventAggregator.GetEvent<UpdateScorePointGridEvent>().Subscribe(ReloadScorePoints);
+            //EventAggregator.GetEvent<UpdateScorePointGridEvent>().Subscribe(ReloadScorePoints);
             EventAggregator.GetEvent<UpdateMetricEditorEvent>().Subscribe(ChangeMetricEditor);
             EventAggregator.GetEvent<AddStructureEvent>().Subscribe(AddNewStructure);
             EventAggregator.GetEvent<UpdateScroreMetricsEvent>().Subscribe(UpdateMetrics);
@@ -340,6 +341,7 @@ namespace PlanScoreCard.ViewModels
         private void ReloadScorePoints(SolidColorBrush obj)
         {
             SelectedMetricPointModel.PlanScoreBackgroundColor = obj;
+            ScoreMetrics.FirstOrDefault(s => s.Id == SelectedScoreMetric.Id).ScorePoints.FirstOrDefault(p => p.MetricId == SelectedMetricPointModel.MetricId).PlanScoreBackgroundColor = obj;
         }
 
         private void DeletePoint()
@@ -357,7 +359,13 @@ namespace PlanScoreCard.ViewModels
         {
             int selectedIndex = MetricPointModels.IndexOf(SelectedMetricPointModel);
             ScorePointModel metricModel = new ScorePointModel(selectedIndex + 1, selectedIndex + 1, EventAggregator);
+            SelectedMetricPointModel = metricModel;
             MetricPointModels.Insert(selectedIndex + 1, metricModel);
+            //SelectedScoreMetric.ScorePoints = MetricPointModels;
+
+            ScoreMetrics.FirstOrDefault(s => s.Id == SelectedScoreMetric.Id).ScorePoints.Insert(selectedIndex + 1, metricModel);
+            
+            // THIS WORKS ^^
             ReRankPoints();
         }
 

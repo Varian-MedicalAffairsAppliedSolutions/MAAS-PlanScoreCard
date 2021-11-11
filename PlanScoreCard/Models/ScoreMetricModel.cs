@@ -132,7 +132,13 @@ namespace PlanScoreCard.Models
         public ObservableCollection<StructureModel> Structures { get; set; }
 
         // ScorePoints
-        public ObservableCollection<ScorePointModel> ScorePoints { get; set; }
+        private ObservableCollection<ScorePointModel> scorePoints;
+
+        public ObservableCollection<ScorePointModel> ScorePoints
+        {
+            get { return scorePoints; }
+            set { SetProperty(ref scorePoints , value); }
+        }
 
         // ScorePoint Plot
 
