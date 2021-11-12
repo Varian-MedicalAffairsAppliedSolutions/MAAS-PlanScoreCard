@@ -30,6 +30,7 @@ namespace PlanScoreCard.Models
                 SetProperty(ref metricType , value);
                 EventAggregator.GetEvent<UpdateMetricEditorEvent>().Publish();
                 UpdateMetricText();
+                ScoreMetricPlotModel.Title = PlanScorePlottingServices.GetPlotTitle(metricType, this);
                 NotifyPropertyChanged();
             }
         }
@@ -165,6 +166,7 @@ namespace PlanScoreCard.Models
             { 
                 SetProperty( ref inputValue , value);
                 UpdateMetricText();
+                ScoreMetricPlotModel.Title = PlanScorePlottingServices.GetPlotTitle(metricType, this);
                 NotifyPropertyChanged();
             }
         }
@@ -178,6 +180,7 @@ namespace PlanScoreCard.Models
             { 
                 SetProperty( ref inputUnit , value);
                 UpdateMetricText();
+                ScoreMetricPlotModel.Title = PlanScorePlottingServices.GetPlotTitle(metricType, this);
                 NotifyPropertyChanged();
             }
         }
@@ -191,6 +194,7 @@ namespace PlanScoreCard.Models
             { 
                 SetProperty(ref outputUnit , value);
                 UpdateMetricText();
+                ScoreMetricPlotModel.Title = PlanScorePlottingServices.GetPlotTitle(metricType, this);
                 NotifyPropertyChanged();
             }
         }
