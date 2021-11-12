@@ -83,6 +83,14 @@ namespace PlanScoreCard.Models
             set { SetProperty( ref planScore , value); }
         }
 
+        private double maxScore;
+
+        public double MaxScore
+        {
+            get { return maxScore; }
+            set { SetProperty(ref maxScore, value); }
+        }
+
         public PlanSetup Plan;
 
         private IEventAggregator _eventAggregator;

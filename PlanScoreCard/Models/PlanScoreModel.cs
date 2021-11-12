@@ -146,6 +146,26 @@ namespace PlanScoreCard.Models
             set { SetProperty(ref outsideMin, value); }
         }
 
+        // These indicate the colours of the out of range indicators.
+
+        private bool isLeftZero;
+
+        public bool IsLeftZero
+        {
+            get { return isLeftZero; }
+            set { SetProperty(ref isLeftZero , value); }
+        }
+
+        private bool isRightZero;
+
+        public bool IsRightZero
+        {
+            get { return isRightZero; }
+            set { SetProperty( ref isRightZero , value) ; }
+        }
+
+
+
         private ViewResolvingPlotModel scorePlotModel;
 
         public ViewResolvingPlotModel ScorePlotModel
@@ -167,7 +187,7 @@ namespace PlanScoreCard.Models
             double max = MaxXValue;
             double min = MinXValue;
 
-
+            // This loops through to see the outside Bounds
             foreach (ScoreValueModel scoreValue in ScoreValues)
             {
                 // See if the point is above the max
@@ -184,6 +204,26 @@ namespace PlanScoreCard.Models
                     OutsideMin = Visibility.Visible;
                 }
 
+            }
+
+            if (ScoreValues.Count() == 0)
+            {
+                return;
+            }
+
+            // Set Colours 
+            ScoreValueModel minScore = ScoreValues.FirstOrDefault(v => v.Score == ScoreValues.Min(s => s.Score));
+            ScoreValueModel maxScore = ScoreValues.FirstOrDefault(v => v.Score == ScoreValues.Max(s => s.Score));
+
+            if (maxScore.Value > minScore.Value)
+            {
+                IsLeftZero = true;
+                IsRightZero = false;
+            }
+            else
+            {
+                IsLeftZero = false;
+                IsRightZero = true;
             }
 
         }

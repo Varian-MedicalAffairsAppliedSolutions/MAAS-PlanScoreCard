@@ -107,9 +107,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converters\BoolToColorConverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
     <Compile Include="Converters\DoubleDecimalConverter.cs" />
     <Compile Include="Converters\DoubleF2Converter.cs" />
+    <Compile Include="Converters\MaxScoreToHeaderConverter.cs" />
     <Compile Include="Converters\MetricEditorConverter.cs" />
     <Compile Include="Converters\MetricIdConverter.cs" />
     <Compile Include="Converters\ScoreToTextConverter.cs" />

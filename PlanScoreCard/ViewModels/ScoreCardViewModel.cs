@@ -92,9 +92,17 @@ namespace PlanScoreCard.ViewModels
             set { SetProperty(ref scoreCardName, value); }
         }
 
+
+        private double maxScore;
+
+        public double MaxScore
+        {
+            get { return maxScore; }
+            set { SetProperty(ref maxScore , value); }
+        }
+
         // Observable Collections
         private ObservableCollection<PlanScoreModel> planScores;
-
         public ObservableCollection<PlanScoreModel> PlanScores
         {
             get { return planScores; }
@@ -102,7 +110,6 @@ namespace PlanScoreCard.ViewModels
         }
 
         private ObservableCollection<PlanModel> plans;
-
         public ObservableCollection<PlanModel> Plans
         {
             get { return plans; }
@@ -137,7 +144,9 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<ScorePlanEvent>().Subscribe(ScorePlan);
             EventAggregator.GetEvent<PlanSelectedEvent>().Subscribe(ScorePlan);
 
-            
+
+            MaxScore = 0;
+
             // Initiate Collections
             PlanScores = new ObservableCollection<PlanScoreModel>();
             Plans = new ObservableCollection<PlanModel>();
@@ -354,6 +363,8 @@ namespace PlanScoreCard.ViewModels
                         {
                             plan.PlanScore = planTotal;
                         }
+                        MaxScore = planScores.Sum(x => x.ScoreMax);
+                        plan.MaxScore = MaxScore;
                     }
                 }
             }

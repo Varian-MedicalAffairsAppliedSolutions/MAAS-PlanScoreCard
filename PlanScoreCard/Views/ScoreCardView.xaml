@@ -16,12 +16,14 @@
             <converters:MetricIdConverter x:Key="localMetricIdConverter"/>
             <converters:DoubleF2Converter x:Key="localDoubleConverter"/>
             <converters:ScoreToTextConverter x:Key="localScoreTextConverter"/>
+            <converters:MaxScoreToHeaderConverter x:Key="localScoreHeaderConverter"/>
+            <converters:BoolToColorConverter x:Key="localBoolToColorConverter"/>
         </ResourceDictionary>
     </metro:MetroWindow.Resources>
     <Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="2.*"/>
                 <ColumnDefinition Width="5*"/>
             </Grid.ColumnDefinitions>
             <Grid>
@@ -80,29 +82,55 @@
                         <Border Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="DarkGray" BorderThickness="1" Margin="2" CornerRadius="3">
                             <DataGrid SelectedItem="{Binding SelectedPlan}" ItemsSource="{Binding Plans, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" AutoGenerateColumns="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Course" Binding="{Binding CourseId , Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12" Width="75">
+                                    <DataGridTextColumn Binding="{Binding CourseId , Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12" Width="75">
+                                        <DataGridTextColumn.HeaderTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="Course"/>
+                                            </DataTemplate>
+                                        </DataGridTextColumn.HeaderTemplate>
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="HorizontalAlignment" Value="Center" />
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Header="Plan" Binding="{Binding PlanId , Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12" Width="75">
+                                    <DataGridTextColumn Binding="{Binding PlanId , Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12" Width="75">
+                                        <DataGridTextColumn.HeaderTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="Plan"/>
+                                            </DataTemplate>
+                                        </DataGridTextColumn.HeaderTemplate>
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="HorizontalAlignment" Value="Center" />
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
-                                    <DataGridCheckBoxColumn Header="Selected" Binding="{Binding bSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    <DataGridTemplateColumn Header="Primary">
+                                    <DataGridCheckBoxColumn Binding="{Binding bSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <DataGridCheckBoxColumn.HeaderTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="Selected"/>
+                                            </DataTemplate>
+                                        </DataGridCheckBoxColumn.HeaderTemplate>
+                                    </DataGridCheckBoxColumn>
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.HeaderTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="Primary"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.HeaderTemplate>
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <RadioButton  Height="20" GroupName="Primary" IsChecked="{Binding bPrimary, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" HorizontalAlignment="Center"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTextColumn Header="Score" Binding="{Binding PlanScore, Converter={StaticResource localScoreTextConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontWeight="Normal" FontSize="12" Width="75" IsReadOnly="True">
+                                    <DataGridTextColumn Binding="{Binding PlanScore, Converter={StaticResource localScoreTextConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontWeight="Normal" FontSize="12" Width="95" IsReadOnly="True">
+                                        <DataGridTextColumn.HeaderTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding DataContext.MaxScore, Converter={StaticResource localScoreHeaderConverter}, RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                                            </DataTemplate>
+                                        </DataGridTextColumn.HeaderTemplate>
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="HorizontalAlignment" Value="Center" />
@@ -183,7 +211,8 @@
                                 <ColumnDefinition Width="3*"/>
                             </Grid.ColumnDefinitions>
 
-                            <Label Grid.Column="0" Content="Rank" HorizontalAlignment="Center"/>
+                            <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" Grid.Row="0" Grid.ColumnSpan="8" BorderThickness="0,0,0,2"/>
+                            <Label Grid.Column="0" Content="Metric Id" Grid.ColumnSpan="2" HorizontalAlignment="Left"/>
                             <Label Grid.Column="1" Content="Structure" HorizontalAlignment="Center"/>
                             <Label Grid.Column="2" Content="Score Metric" HorizontalAlignment="Center"/>
                             <Label Grid.Column="3" Content="Plan Id" HorizontalAlignment="Center"/>
@@ -308,17 +337,17 @@
                                                                 <RowDefinition Height="2*"/>
                                                             </Grid.RowDefinitions>
 
-                                                            <Label Margin="5,18,0,0" Grid.Row="0" Grid.Column="0" Visibility="{Binding OutsideMin}" Foreground="Red">
+                                                            <Label Margin="5,18,0,0" Grid.Row="0" Grid.Column="0" Visibility="{Binding OutsideMin}" Foreground="{Binding IsLeftZero, Converter={StaticResource localBoolToColorConverter}}">
                                                                 <icons:FontAwesome Kind="ArrowLeftSolid" Height="10"/>
                                                             </Label>
 
-                                                            <TextBlock Margin="0,19,0,0" Grid.Row="0" Grid.Column="1" Text="{Binding CountBelowMin}" Visibility="{Binding OutsideMin}" HorizontalAlignment="Left" Foreground="Red"/>
+                                                            <TextBlock Margin="0,19,0,0" Grid.Row="0" Grid.Column="1" Text="{Binding CountBelowMin}" Visibility="{Binding OutsideMin}" HorizontalAlignment="Left" Foreground="{Binding IsLeftZero, Converter={StaticResource localBoolToColorConverter}}"/>
 
-                                                            <Label Margin="0,18,0,4" Grid.Row="0" Grid.Column="4" Visibility="{Binding OutsideMax}" Foreground="Green">
+                                                            <Label Margin="0,18,0,4" Grid.Row="0" Grid.Column="4" Visibility="{Binding OutsideMax}" Foreground="{Binding IsRightZero, Converter={StaticResource localBoolToColorConverter}}">
                                                                 <icons:FontAwesome Kind="ArrowRightSolid" Height="10"/>
                                                             </Label>
 
-                                                            <TextBlock Grid.Row="0" Margin="0,19,0,0" Grid.Column="3" Text="{Binding CountAboveMax}" Visibility="{Binding OutsideMax}" HorizontalAlignment="Right" Foreground="Green"/>
+                                                            <TextBlock Grid.Row="0" Margin="0,19,0,0" Grid.Column="3" Text="{Binding CountAboveMax}" Visibility="{Binding OutsideMax}" HorizontalAlignment="Right" Foreground="{Binding IsRightZero, Converter={StaticResource localBoolToColorConverter}}"/>
 
                                                         </Grid>
 

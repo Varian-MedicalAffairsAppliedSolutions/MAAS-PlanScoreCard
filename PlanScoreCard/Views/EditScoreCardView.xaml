@@ -9,7 +9,7 @@
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:converters="clr-namespace:PlanScoreCard.Converters"
         mc:Ignorable="d"
-        Title="ScoreCard Editor" Height="760" Width="1400">
+        Title="ScoreCard Editor" Height="820" Width="1400">
     <metro:MetroWindow.Resources>
         <ResourceDictionary>
 
@@ -224,7 +224,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="20"/>
                             <RowDefinition Height="40"/>
-                            <RowDefinition Height="90"/>
+                            <RowDefinition Height="150"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
