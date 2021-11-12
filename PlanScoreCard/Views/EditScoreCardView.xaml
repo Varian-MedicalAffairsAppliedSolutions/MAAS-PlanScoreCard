@@ -184,7 +184,7 @@
                             <Button Command="{Binding OrderPointsByValueCommand}" Content="{icons:FontAwesome Kind=SortAmountUpSolid}" ToolTip="Order Points by Value" Width="30" Height="30" Grid.Column="2"/>
 
                             <Button Command="{Binding PointUpCommand}" Content="{icons:FontAwesome Kind=CaretUpSolid}" Width="30" Height="30" Grid.Column="11"/>
-                            <Button Command="{Binding PointDownComand}" Content="{icons:FontAwesome Kind=CaretDownSolid}" Width="30" Height="30" Grid.Column="12"/>
+                            <Button Command="{Binding PointDownCommand}" Content="{icons:FontAwesome Kind=CaretDownSolid}" Width="30" Height="30" Grid.Column="12"/>
 
                         </Grid>
 
