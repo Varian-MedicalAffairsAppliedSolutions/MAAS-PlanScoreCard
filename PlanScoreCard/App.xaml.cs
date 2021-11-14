@@ -71,6 +71,9 @@ namespace PlanScoreCard
                                     return;
                                 }
                                 _patient = _app.OpenPatientById(_patientId);
+
+                                
+
                                 if (!String.IsNullOrWhiteSpace(_courseId))
                                 {
                                     _course = _patient.Courses.FirstOrDefault(x => x.Id == _courseId);

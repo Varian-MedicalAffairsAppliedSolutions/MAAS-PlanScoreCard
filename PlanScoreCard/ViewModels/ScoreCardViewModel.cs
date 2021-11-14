@@ -34,6 +34,8 @@ namespace PlanScoreCard.ViewModels
         private ViewLauncherService ViewLauncherService;
         private ProgressViewService ProgressViewService;
 
+        // ScoreCard Object (Template)
+
         private ScoreCardModel scoreCard;
         public ScoreCardModel ScoreCard
         {
@@ -41,7 +43,10 @@ namespace PlanScoreCard.ViewModels
             set { SetProperty(ref scoreCard, value); }
         }
 
+        // ScoreTemplates - Legacy?
         private List<ScoreTemplateModel> ScoreTemplates;
+        
+        // Template Information
         private string TemplateName;
         private string TemplateSite;
         
@@ -53,21 +58,8 @@ namespace PlanScoreCard.ViewModels
             get { return scoreTotalText; }
             set { SetProperty(ref scoreTotalText, value); }
         }
-        
-        private bool bpluginVisibility;
-        public bool bPluginVisibility
-        {
-            get { return bpluginVisibility; }
-            set { SetProperty(ref bpluginVisibility, value); }
-        }
-        
-        private int pluginWidth;
-        public int PluginWidth
-        {
-            get { return pluginWidth; }
-            set { SetProperty(ref pluginWidth, value); }
-        }
 
+        // Patient ID
         private string patientId;
 
         public string PatientId
@@ -76,14 +68,7 @@ namespace PlanScoreCard.ViewModels
             set { SetProperty(ref patientId , value); }
         }
 
-        private PlanModel selectedPlan;
-
-        public PlanModel SelectedPlan
-        {
-            get { return selectedPlan; }
-            set { SetProperty(ref selectedPlan , value); }
-        }
-
+        // Score Card Name 
         private string scoreCardName;
 
         public string ScoreCardName
@@ -92,7 +77,7 @@ namespace PlanScoreCard.ViewModels
             set { SetProperty(ref scoreCardName, value); }
         }
 
-
+        // Max Score (Shown in Score Header)
         private double maxScore;
 
         public double MaxScore
@@ -101,7 +86,16 @@ namespace PlanScoreCard.ViewModels
             set { SetProperty(ref maxScore , value); }
         }
 
-        // Observable Collections
+        // Selected Plan
+        private PlanModel selectedPlan;
+
+        public PlanModel SelectedPlan
+        {
+            get { return selectedPlan; }
+            set { SetProperty(ref selectedPlan, value); }
+        }
+
+        // Plan Scores
         private ObservableCollection<PlanScoreModel> planScores;
         public ObservableCollection<PlanScoreModel> PlanScores
         {
@@ -109,6 +103,7 @@ namespace PlanScoreCard.ViewModels
             set { SetProperty( ref planScores , value); }
         }
 
+        // Plan Models
         private ObservableCollection<PlanModel> plans;
         public ObservableCollection<PlanModel> Plans
         {
@@ -122,6 +117,23 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand EditScoreCardCommand { get; set; }
         public DelegateCommand NormalizePlanCommand { get; set; }
         public DelegateCommand ExportScoreCardCommand { get; set; }
+
+        // Plugin Visibility
+
+        private bool bpluginVisibility;
+        public bool bPluginVisibility
+        {
+            get { return bpluginVisibility; }
+            set { SetProperty(ref bpluginVisibility, value); }
+        }
+
+        // Plugin Width
+        private int pluginWidth;
+        public int PluginWidth
+        {
+            get { return pluginWidth; }
+            set { SetProperty(ref pluginWidth, value); }
+        }
 
         // Constructor
         public ScoreCardViewModel(Application app, Patient patient, Course course, PlanSetup plan, IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService)
@@ -210,11 +222,78 @@ namespace PlanScoreCard.ViewModels
 
         }
 
+        // Score Plan
         private void ScorePlan()
         {
             if (ScoreCard !=  null)
                 ScorePlan(ScoreCard);
 
+            ProgressViewService.Close();
+        }
+
+        public void ScorePlan(ScoreCardModel scoreCard)
+        {
+
+            ProgressViewService.ShowProgress("Scoring Plans", 100, true);
+            ProgressViewService.SendToFront();
+
+            // _eventAggregator.GetEvent<UpdateTemplatesEvent>().Publish(_currentTemplate);
+            PlanScores.Clear();
+
+            // Get Collection of SelectedPlans
+            List<PlanningItem> selectedPlans = Plans.Where(p => p.bSelected == true).Select(s => s.Plan as PlanningItem).ToList();
+            
+            // Convert the List to an Observable Collection
+            ObservableCollection<PlanningItem> selectedPlanCollection = new ObservableCollection<PlanningItem>();
+            foreach (PlanningItem plan in selectedPlans)
+                selectedPlanCollection.Add(plan);
+
+            // Initiate the MetricId Counter
+            int metric_id = 0;
+                            
+            // Loop through each Metric (ScoreTemplateModel)
+            foreach (ScoreTemplateModel template in scoreCard.ScoreMetrics)
+            {
+                // PlanScoreModel
+                PlanScoreModel psm = new PlanScoreModel(Application);
+                psm.BuildPlanScoreFromTemplate(selectedPlanCollection, template, metric_id);
+                PlanScores.Add(psm);
+                metric_id++;
+            }
+
+            //remove score points from metrics that didn't have the
+            if (PlanScores.Any(x => x.ScoreValues.Count() > 0))
+            {
+                var planScores = PlanScores.Where(x => x.ScoreValues.First().Value > -999);
+                ScoreTotalText = $"Plan Scores: ";
+                if (planScores.Count() != 0)
+                {
+                    foreach (var pc in planScores.FirstOrDefault().ScoreValues.Select(x => new { planId = x.PlanId, courseId = x.CourseId }))
+                    {
+                        string cid = pc.courseId;
+                        string pid = pc.planId;
+
+                        double planTotal = planScores.Sum(x => x.ScoreValues.FirstOrDefault(y => y.PlanId == pc.planId && y.CourseId == pc.courseId).Score);
+                        ScoreTotalText += $"\n\t\t[{cid}] {pid}: {planTotal:F2}/{planScores.Sum(x => x.ScoreMax):F2} ({planTotal / planScores.Sum(x => x.ScoreMax) * 100.0:F2}%)";
+
+                        PlanModel plan = Plans.FirstOrDefault(p => p.PlanId == pid);
+
+                        if (plan.PlanScore == null)
+                            plan.PlanScore = 0;
+
+                        if (plan != null)
+                        {
+                            plan.PlanScore = planTotal;
+                        }
+                        MaxScore = planScores.Sum(x => x.ScoreMax);
+                        plan.MaxScore = MaxScore;
+                    }
+                }
+            }
+
+            ScoreTotalText = ScoreTotalText;
+            // Will delay for 3 seconds
+            System.Threading.Thread.Sleep(700);
             ProgressViewService.Close();
         }
 
@@ -313,66 +392,6 @@ namespace PlanScoreCard.ViewModels
                     EventAggregator.GetEvent<ScorePlanEvent>().Publish(ScoreCard);
                 }
             }
-        }
-
-        public void ScorePlan(ScoreCardModel scoreCard)
-        {
-
-            ProgressViewService.ShowProgress("Scoring Plans", 100, true);
-            ProgressViewService.SendToFront();
-
-            // _eventAggregator.GetEvent<UpdateTemplatesEvent>().Publish(_currentTemplate);
-            PlanScores.Clear();
-
-            // Get Collection of SelectedPlans
-            List<PlanningItem> selectedPlans = Plans.Where(p => p.bSelected == true).Select(s => s.Plan as PlanningItem).ToList();
-            ObservableCollection<PlanningItem> selectedPlanCollection = new ObservableCollection<PlanningItem>();
-            foreach (PlanningItem plan in selectedPlans)
-                selectedPlanCollection.Add(plan);
-
-            int metric_id = 0;
-            foreach (var template in scoreCard.ScoreMetrics)
-            {
-                var psm = new PlanScoreModel(Application);
-                psm.BuildPlanScoreFromTemplate(selectedPlanCollection, template, metric_id);
-                PlanScores.Add(psm);
-                metric_id++;
-            }
-
-            //remove score points from metrics that didn't have the
-            if (PlanScores.Any(x => x.ScoreValues.Count() > 0))
-            {
-                var planScores = PlanScores.Where(x => x.ScoreValues.First().Value > -999);
-                ScoreTotalText = $"Plan Scores: ";
-                if (planScores.Count() != 0)
-                {
-                    foreach (var pc in planScores.FirstOrDefault().ScoreValues.Select(x => new { planId = x.PlanId, courseId = x.CourseId }))
-                    {
-                        string cid = pc.courseId;
-                        string pid = pc.planId;
-
-                        double planTotal = planScores.Sum(x => x.ScoreValues.FirstOrDefault(y => y.PlanId == pc.planId && y.CourseId == pc.courseId).Score);
-                        ScoreTotalText += $"\n\t\t[{cid}] {pid}: {planTotal:F2}/{planScores.Sum(x => x.ScoreMax):F2} ({planTotal / planScores.Sum(x => x.ScoreMax) * 100.0:F2}%)";
-
-                        PlanModel plan = Plans.FirstOrDefault(p => p.PlanId == pid);
-
-                        if (plan.PlanScore == null)
-                            plan.PlanScore = 0;
-
-                        if (plan != null)
-                        {
-                            plan.PlanScore = planTotal;
-                        }
-                        MaxScore = planScores.Sum(x => x.ScoreMax);
-                        plan.MaxScore = MaxScore;
-                    }
-                }
-            }
-
-            ScoreTotalText = ScoreTotalText;
-            // Will delay for 3 seconds
-            System.Threading.Thread.Sleep(700);
-            ProgressViewService.Close();
         }
         
         // Event Methods
