@@ -156,7 +156,6 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<ScorePlanEvent>().Subscribe(ScorePlan);
             EventAggregator.GetEvent<PlanSelectedEvent>().Subscribe(ScorePlan);
 
-
             MaxScore = 0;
 
             // Initiate Collections
@@ -317,6 +316,7 @@ namespace PlanScoreCard.ViewModels
             editScoreCardView.ShowDialog();
         }
 
+        // Load ScoreCard (Calls ScorePlan)
         private void ImportScoreCard()
         {
             //ScoreMetrics.Clear();//

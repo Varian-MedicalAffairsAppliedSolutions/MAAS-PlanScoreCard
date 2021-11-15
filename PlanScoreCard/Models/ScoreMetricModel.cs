@@ -267,18 +267,12 @@ namespace PlanScoreCard.Models
                 //this one sets marker color.
                 foreach (ScorePointModel spoint in ScorePoints.OrderBy(x => x.PointX))
                 {
-                    var ScorePointSeries = new LineSeries
-                    {
-                        //Color = OxyColors.Orange,
-                        Color = GetColorFromMetric(spoint),
-                        MarkerType = MarkerType.Diamond,
-                        //MarkerFill = GetColorFromMetric(spoint),
-                        MarkerSize = 8
-                    };
+                    var ScorePointSeries = new LineSeries { Color = GetColorFromMetric(spoint), MarkerType = MarkerType.Diamond, MarkerSize = 8};
                     //add to the plot
                     ScorePointSeries.Points.Add(new DataPoint(Convert.ToDouble(spoint.PointX), spoint.Score));
                     ScoreMetricPlotModel.Series.Add(ScorePointSeries);
                 }
+
                 if (ScorePoints.Any(x => x.bMetricChecked))
                 {
                     var PointSeriesAbove = new LineSeries

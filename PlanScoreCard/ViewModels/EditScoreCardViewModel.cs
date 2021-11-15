@@ -239,6 +239,29 @@ namespace PlanScoreCard.ViewModels
             Bind();
         }
 
+        // Populates the View / Binds Data
+        private void Bind()
+        {
+            // Treatment Sites
+            TreatmentSites = new ObservableCollection<string>();
+
+            foreach (var site in ConfigurationManager.AppSettings["TreatmentSites"].Split(';'))
+                TreatmentSites.Add(site);
+
+            // Add the MetricTypes
+            MetricTypes.Add(MetricTypeEnum.ConformationNumber);
+            MetricTypes.Add(MetricTypeEnum.ConformityIndex);
+            MetricTypes.Add(MetricTypeEnum.DoseAtVolume);
+            MetricTypes.Add(MetricTypeEnum.HomogeneityIndex);
+            MetricTypes.Add(MetricTypeEnum.MaxDose);
+            MetricTypes.Add(MetricTypeEnum.MeanDose);
+            MetricTypes.Add(MetricTypeEnum.MinDose);
+            MetricTypes.Add(MetricTypeEnum.Volume);
+            MetricTypes.Add(MetricTypeEnum.VolumeAtDose);
+            MetricTypes.Add(MetricTypeEnum.VolumeOfRegret);
+            MetricTypes.Add(MetricTypeEnum.Undefined);
+        }
+
         private void UpdateMetrics()
         {
             if (SelectedScoreMetric == null)
@@ -499,36 +522,10 @@ namespace PlanScoreCard.ViewModels
             }
         }
 
-        // Populates the View / Binds Data
-        private void Bind()
-        {
-            // Treatment Sites
-            TreatmentSites = new ObservableCollection<string>();
-
-            foreach (var site in ConfigurationManager.AppSettings["TreatmentSites"].Split(';'))
-                TreatmentSites.Add(site);
-
-            // Add the MetricTypes
-            MetricTypes.Add(MetricTypeEnum.ConformationNumber);
-            MetricTypes.Add(MetricTypeEnum.ConformityIndex);
-            MetricTypes.Add(MetricTypeEnum.DoseAtVolume);
-            MetricTypes.Add(MetricTypeEnum.HomogeneityIndex);
-            MetricTypes.Add(MetricTypeEnum.MaxDose);
-            MetricTypes.Add(MetricTypeEnum.MeanDose);
-            MetricTypes.Add(MetricTypeEnum.MinDose);
-            MetricTypes.Add(MetricTypeEnum.Volume);
-            MetricTypes.Add(MetricTypeEnum.VolumeAtDose);
-            MetricTypes.Add(MetricTypeEnum.VolumeOfRegret);
-            MetricTypes.Add(MetricTypeEnum.Undefined);
-        }
-
         // Event Methods
         private void LoadScoreCard(ScoreCardModel scoreCardModel)
         {
             ScoreCard = scoreCardModel;
-            //TemplateName = ScoreCard.Name;
-            //SelectedTreatmentSite = ScoreCard.SiteGroup;
-            //ShowScoreCardMetrics(ScoreCard.ScoreMetrics);
         }
 
         private void SetPlan(PlanModel planModel)

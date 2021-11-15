@@ -240,6 +240,8 @@ namespace PlanScoreCard.Models.Internals
             return ScoreMetrics;
         }
 
+
+        // Called from the ScoreCard Editor 
         public static List<ScoreMetricModel> GetScoreCardMetricsFromTemplate(List<ScoreTemplateModel> scoreTemplates, IEventAggregator _eventAggregator, int score_newId, List<StructureModel> structures)
         {
             _structures = structures;
@@ -301,16 +303,16 @@ namespace PlanScoreCard.Models.Internals
                     pointModel.Score = scorepoint.Score;
                     pointModel.bMetricChecked = scorepoint.Variation;
 
-                    if (scorepoint.Colors.Count() == 0)
-                        continue;
+                    if (scorepoint.Colors.Count() > 0)
+                    {
+                        pointModel.PlanScoreBackgroundColor = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(Convert.ToByte(scorepoint.Colors.ElementAt(0)),
+                            Convert.ToByte(scorepoint.Colors.ElementAt(1)),
+                            Convert.ToByte(scorepoint.Colors.ElementAt(2))));
 
-                    pointModel.PlanScoreBackgroundColor = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(Convert.ToByte(scorepoint.Colors.ElementAt(0)),
-                        Convert.ToByte(scorepoint.Colors.ElementAt(1)),
-                        Convert.ToByte(scorepoint.Colors.ElementAt(2))));
-
-                    if (scorepoint.Colors.Count() > 2)
-                        pointModel.Colors = new PlanScoreColorModel(new List<double>{scorepoint.Colors.First(),scorepoint.Colors.ElementAt(1), scorepoint.Colors.ElementAt(2) }, scorepoint.Label);
-
+                        if (scorepoint.Colors.Count() > 2)
+                            pointModel.Colors = new PlanScoreColorModel(new List<double> { scorepoint.Colors.First(), scorepoint.Colors.ElementAt(1), scorepoint.Colors.ElementAt(2) }, scorepoint.Label);
+                    }
+                    
                     scoreMetric.ScorePoints.Add(pointModel);
                     scorePointId++;
                 }
