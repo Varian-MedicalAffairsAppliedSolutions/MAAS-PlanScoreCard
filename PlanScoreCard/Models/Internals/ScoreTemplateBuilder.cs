@@ -266,6 +266,8 @@ namespace PlanScoreCard.Models.Internals
 
                 // Structure
                 scoreMetric.Structure = template.Structure;
+                scoreMetric.Structure.TemplateStructureId = template.Structure.TemplateStructureId;
+
 
                 // Metric Type - Dependant Variables
                 if (scoreMetric.MetricType == MetricTypeEnum.DoseAtVolume || scoreMetric.MetricType == MetricTypeEnum.VolumeAtDose)

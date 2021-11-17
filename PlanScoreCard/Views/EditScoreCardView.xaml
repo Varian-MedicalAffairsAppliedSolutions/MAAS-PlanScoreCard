@@ -12,7 +12,8 @@
         Title="ScoreCard Editor" Height="820" Width="1400">
     <metro:MetroWindow.Resources>
         <ResourceDictionary>
-
+            <converters:StructureToStructureDisplayNameConverter x:Key="structureNameConverter"/>
+            <converters:StructureToBoldConverter x:Key="structureBoldConverter"/>
         </ResourceDictionary>
     </metro:MetroWindow.Resources>
     <Grid>
@@ -134,13 +135,24 @@
                         <DataGrid Foreground="Black" SelectedItem="{Binding SelectedScoreMetric, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ScoreMetrics, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
                             <DataGrid.Columns>
                                 <metro:DataGridNumericUpDownColumn Header="Rank" Binding="{Binding Id, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12"/>
-                                <DataGridTextColumn Header="Structure"   Binding="{Binding Structure.StructureId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" FontWeight="Normal" FontSize="12" IsReadOnly="True">
+                                <DataGridTextColumn Header="Structure" Binding="{Binding Structure, Converter={StaticResource structureNameConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}"  FontSize="12" IsReadOnly="True">
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="HorizontalAlignment" Value="Center" />
+                                            <Setter Property="FontWeight" Value="{Binding Structure , Converter={StaticResource structureBoldConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" />
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
+                                <!--<DataGridTemplateColumn Header="Structure">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <TextBox Text="{Binding Structure.StructureComment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" Background="{Binding PlanScoreBackgroundColor, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                                                <ComboBox SelectedItem="{Binding Structure.StructureId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" ItemsSource="{Binding StructureIds, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>-->
                                 <DataGridTextColumn Header="Metric" Binding="{Binding MetricText , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontWeight="Normal" FontSize="12" IsReadOnly="True"/>
                             </DataGrid.Columns>
                         </DataGrid>
@@ -230,11 +242,15 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
 
-                        <Label Grid.Column="0" Grid.Row="0" FontSize="12" Content="Structure" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
-                        <Grid Grid.Row="1">
+                        <Label Grid.Column="0" Grid.Row="0" FontSize="12" Content="Metric Structure Id" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
+                        <TextBox Height="30" Grid.Column="0" Grid.Row="1" Text="{Binding SelectedScoreMetric.Structure.TemplateStructureId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,0,5,0" />
+
+                        <Label Grid.Column="1" Grid.Row="0" FontSize="12" Content="Plan Structure" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
+                        <Grid Grid.Row="1" Grid.Column="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="35"/>
@@ -245,8 +261,8 @@
 
                         </Grid>
                         
-                        <Label Grid.Column="1" Grid.Row="0" FontSize="12" Content="Metric Type" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
-                        <ComboBox Height="30" Grid.Column="1" Grid.Row="1" SelectedItem="{Binding SelectedScoreMetric.MetricType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding MetricTypes}" Margin="5,0,5,0" />
+                        <Label Grid.Column="2" Grid.Row="0" FontSize="12" Content="Metric Type" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
+                        <ComboBox Height="30" Grid.Column="2" Grid.Row="1" SelectedItem="{Binding SelectedScoreMetric.MetricType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding MetricTypes}" Margin="5,0,5,0" />
 
                         <!--<Label Grid.Column="2" Grid.Row="0" FontSize="12" Content="Description" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
                         <TextBox Height="25" Grid.Column="2" Text="{Binding SelectedScoreMetric.MetricText}" Grid.Row="1" Margin="5,0,5,0" IsReadOnly="True"/>-->

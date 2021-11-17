@@ -602,6 +602,7 @@ namespace PlanScoreCard.ViewModels
             {
                 //sm.SetEventAggregator(EventAggregator);
                 //sm.InititatePlot();
+                sm.IsLoaded = true;
                 ScoreMetrics.Add(sm);
             }
 

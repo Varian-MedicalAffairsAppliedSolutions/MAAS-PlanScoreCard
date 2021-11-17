@@ -115,6 +115,8 @@
     <Compile Include="Converters\MetricEditorConverter.cs" />
     <Compile Include="Converters\MetricIdConverter.cs" />
     <Compile Include="Converters\ScoreToTextConverter.cs" />
+    <Compile Include="Converters\StructureToBoldConverter.cs" />
+    <Compile Include="Converters\StructureToStructureDisplayNameConverter.cs" />
     <Compile Include="Events\AddScorePointEvent.cs" />
     <Compile Include="Events\AddStructureEvent.cs" />
     <Compile Include="Events\ChangeNestEvent.cs" />
@@ -264,6 +266,9 @@
     <Compile Include="Views\StructureGenerationVIew.xaml.cs">
       <DependentUpon>StructureGenerationVIew.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\testView.xaml.cs">
+      <DependentUpon>testView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -355,6 +360,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\StructureGenerationVIew.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\testView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

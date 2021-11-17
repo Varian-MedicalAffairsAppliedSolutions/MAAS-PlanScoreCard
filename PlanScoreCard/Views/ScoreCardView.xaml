@@ -255,7 +255,7 @@
                                                         <TextBlock Foreground="Black" HorizontalAlignment="Center" TextWrapping="Wrap">
                                     <Run Text="{Binding StructureId}"/>
                                     <LineBreak/>
-                                    <Run Text="{Binding StructureComment}" FontSize="8"/>
+                                    <Run Text="{Binding TemplateStructureId}" FontSize="8"/>
                                                         </TextBlock>
                                                         <TextBlock Text="{Binding MetricText}" Foreground="Black" HorizontalAlignment="Center" Grid.Column="1"/>
 

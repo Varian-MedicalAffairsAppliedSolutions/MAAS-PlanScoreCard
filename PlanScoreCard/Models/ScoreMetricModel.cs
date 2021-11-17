@@ -16,6 +16,8 @@ namespace PlanScoreCard.Models
 {
     public class ScoreMetricModel : BindableBase, INotifyPropertyChanged
     {
+        public bool IsLoaded { get; set; }
+
         public IEventAggregator EventAggregator;
 
         // Metric Type
@@ -123,8 +125,23 @@ namespace PlanScoreCard.Models
                     return;
                 
                 value = Structures.FirstOrDefault(s => s.StructureId == value.StructureId);
+
+                if (value == null) // Try matching based off of Structure Code
+                { 
+                    value = Structures.FirstOrDefault(s => s.StructureCode == value.StructureCode);
+
+                    if (value == null)
+                    {
+                        value = new StructureModel { TemplateStructureId = value.TemplateStructureId };
+                    }
+                }
+
                 EventAggregator.GetEvent<MetricStructureChangedEvent>().Publish();
                 SetProperty(ref structure, value);
+                
+                if(IsLoaded)
+                    Structure.TemplateStructureId = value.StructureId;
+                
                 NotifyPropertyChanged();
             }
         }
@@ -154,7 +171,6 @@ namespace PlanScoreCard.Models
                 NotifyPropertyChanged();
             }
         }
-
 
         // Metric Parameters
         private string inputValue;
@@ -213,6 +229,7 @@ namespace PlanScoreCard.Models
             Structures = new ObservableCollection<StructureModel>();
             ScoreMetricLevelSettings = new Dictionary<string, double>();
             CanReorder = true;
+            IsLoaded = false;
 
             SetEvents();
 
