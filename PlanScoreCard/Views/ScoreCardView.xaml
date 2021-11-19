@@ -249,17 +249,16 @@
                                                             <ColumnDefinition Width="3*"/>
                                                         </Grid.ColumnDefinitions>
                                                         <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="25"/>
+                                                            <RowDefinition Height="25"/>
                                                             <RowDefinition Height="Auto"/>
                                                         </Grid.RowDefinitions>
-                                                        <TextBlock Foreground="Black" HorizontalAlignment="Center" TextWrapping="Wrap">
-                                    <Run Text="{Binding StructureId}"/>
-                                    <LineBreak/>
-                                    <Run Text="{Binding TemplateStructureId}" FontSize="8"/>
-                                                        </TextBlock>
+                                                        <TextBlock Foreground="Black" Text="{Binding StructureId}" Grid.Row="0" HorizontalAlignment="Center" TextWrapping="Wrap"/>
+                                                        <TextBlock Foreground="Black" Text="{Binding TemplateStructureId}" Grid.Row="1" HorizontalAlignment="Center" TextWrapping="Wrap" Visibility="{Binding TemplateStructureVisibility}"/>
+
                                                         <TextBlock Text="{Binding MetricText}" Foreground="Black" HorizontalAlignment="Center" Grid.Column="1"/>
 
-                                                        <StackPanel Grid.ColumnSpan="2" Grid.Row="1">
+                                                        <StackPanel Grid.ColumnSpan="2" Grid.Row="2">
                                                             <Grid>
                                                                 <ItemsControl ItemsSource="{Binding Colors}">
                                                                     <ItemsControl.ItemsPanel>

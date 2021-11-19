@@ -124,23 +124,29 @@ namespace PlanScoreCard.Models
                 if (value == null)
                     return;
                 
-                value = Structures.FirstOrDefault(s => s.StructureId == value.StructureId);
+                StructureModel structureModel = Structures.FirstOrDefault(s => s.StructureId == value.StructureId);
 
-                if (value == null) // Try matching based off of Structure Code
-                { 
-                    value = Structures.FirstOrDefault(s => s.StructureCode == value.StructureCode);
+                if (structureModel == null) // Try matching based off of Structure Code
+                {
+                    if(value.StructureCode != null)
+                        structureModel = Structures.FirstOrDefault(s => s.StructureCode == value.StructureCode);
 
-                    if (value == null)
+                    if (structureModel == null && !String.IsNullOrWhiteSpace(value.TemplateStructureId))
                     {
-                        value = new StructureModel { TemplateStructureId = value.TemplateStructureId };
+                        structureModel = new StructureModel { TemplateStructureId = value.TemplateStructureId };
+                    }
+                    else
+                    {
+                        structureModel = new StructureModel { TemplateStructureId = value.StructureId };
                     }
                 }
 
+                value = structureModel;
                 EventAggregator.GetEvent<MetricStructureChangedEvent>().Publish();
                 SetProperty(ref structure, value);
                 
-                if(IsLoaded)
-                    Structure.TemplateStructureId = value.StructureId;
+                //if(IsLoaded)
+                //    Structure.TemplateStructureId = value.StructureId;
                 
                 NotifyPropertyChanged();
             }

@@ -34,6 +34,8 @@ namespace PlanScoreCard.ViewModels
         private ViewLauncherService ViewLauncherService;
         private ProgressViewService ProgressViewService;
 
+        private EditScoreCardView EditScoreCardView;
+
         // ScoreCard Object (Template)
 
         private ScoreCardModel scoreCard;
@@ -232,6 +234,13 @@ namespace PlanScoreCard.ViewModels
 
         public void ScorePlan(ScoreCardModel scoreCard)
         {
+            if (EditScoreCardView != null)
+            {
+                if (EditScoreCardView.IsVisible)
+                { EditScoreCardView.Hide(); }
+            }
+
+            ScoreCard = scoreCard;
 
             ProgressViewService.ShowProgress("Scoring Plans", 100, true);
             ProgressViewService.SendToFront();
@@ -301,8 +310,8 @@ namespace PlanScoreCard.ViewModels
             // Show the Progress Bar
             ProgressViewService.ShowProgress("Loading Scorecard", 100, true);
             
-            ScoreCardModel scoreCard = new ScoreCardModel(TemplateName, TemplateSite, ScoreTemplates);
-            EditScoreCardView editScoreCardView = ViewLauncherService.GetEditScoreCardView();
+            ScoreCardModel scoreCard = new ScoreCardModel(TemplateName, TemplateSite, ScoreCard.ScoreMetrics);
+            EditScoreCardView = ViewLauncherService.GetEditScoreCardView();
 
             // Events
             EventAggregator.GetEvent<EditScoreCardSetPlanEvent>().Publish(new PlanModel(Plan, EventAggregator)); // Push the SelectedPlan
@@ -313,7 +322,8 @@ namespace PlanScoreCard.ViewModels
             ProgressViewService.Close();
 
             //Show the View
-            editScoreCardView.ShowDialog();
+            //EditScoreCardView.ShowDialog();
+            EditScoreCardView.Visibility = System.Windows.Visibility.Visible;
         }
 
         // Load ScoreCard (Calls ScorePlan)

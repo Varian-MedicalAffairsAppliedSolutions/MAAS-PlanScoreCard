@@ -21,6 +21,11 @@ namespace PlanScoreCard.Converters
             string templateName = structure.TemplateStructureId;
             string structureName = structure.StructureId;
 
+            if (String.IsNullOrWhiteSpace(templateName))
+            {
+             return structureName;
+            }
+
             if (String.IsNullOrEmpty(structureName))
             {
                 return templateName;

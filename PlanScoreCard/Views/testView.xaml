@@ -30,13 +30,15 @@
                         <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="20"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <TextBlock Foreground="Black" HorizontalAlignment="Center" TextWrapping="Wrap">
                                     <Run Text="StructureId"/>
-                                    <LineBreak/>
-                                    <Run Text="StructureComment" FontSize="8"/>
+                    </TextBlock>
+                    <TextBlock Foreground="Black" HorizontalAlignment="Center" TextWrapping="Wrap">
+                                    <Run Text="StructureId"/>
                     </TextBlock>
                     <TextBlock Text="MetricText" Foreground="Black" HorizontalAlignment="Center" Grid.Column="1"/>
 

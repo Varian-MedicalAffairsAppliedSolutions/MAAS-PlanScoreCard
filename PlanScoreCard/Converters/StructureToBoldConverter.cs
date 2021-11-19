@@ -22,6 +22,8 @@ namespace PlanScoreCard.Converters
             string templateName = structure.TemplateStructureId;
             string structureName = structure.StructureId;
 
+            if (String.IsNullOrWhiteSpace(templateName))
+                return FontWeights.Normal;
 
             if (!templateName.Equals(structureName))
             {
