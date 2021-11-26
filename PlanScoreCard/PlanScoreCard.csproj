@@ -178,6 +178,7 @@
     <Compile Include="Models\ScoreMetricModel.cs" />
     <Compile Include="Models\ScorePointModel.cs" />
     <Compile Include="Models\ScoreValueModel.cs" />
+    <Compile Include="Models\StructureDictionaryModel.cs" />
     <Compile Include="Models\StructureModel.cs" />
     <Compile Include="Models\StructureModelNestingModel.cs" />
     <Compile Include="Models\StructureOperationEnum.cs" />
@@ -189,6 +190,7 @@
     <Compile Include="Services\PluginViewService.cs" />
     <Compile Include="Services\ProgressViewService.cs" />
     <Compile Include="Services\SmartSearchService.cs" />
+    <Compile Include="Services\StructureDictionaryService.cs" />
     <Compile Include="Services\StructureGenerationService.cs" />
     <Compile Include="Services\ViewLauncherService.cs" />
     <Compile Include="Services\ViewResolvingPlotModel.cs" />
@@ -367,6 +369,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="StructureDictionary\StructureDictionary.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

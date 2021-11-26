@@ -247,7 +247,7 @@
 
 
                         <Label Grid.Column="0" Grid.Row="0" FontSize="12" Content="Metric Structure Id" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
-                        <TextBox Height="30" Grid.Column="0" Grid.Row="1" Text="{Binding SelectedScoreMetric.Structure.TemplateStructureId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,0,5,0" />
+                        <TextBox Height="30" IsReadOnly="True" Grid.Column="0" Grid.Row="1" Text="{Binding SelectedScoreMetric.Structure.TemplateStructureId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,0,5,0" />
 
                         <Label Grid.Column="1" Grid.Row="0" FontSize="12" Content="Plan Structure" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
                         <Grid Grid.Row="1" Grid.Column="1">

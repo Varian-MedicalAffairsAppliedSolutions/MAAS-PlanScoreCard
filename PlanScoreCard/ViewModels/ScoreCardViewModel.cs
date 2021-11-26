@@ -33,6 +33,7 @@ namespace PlanScoreCard.ViewModels
         private IEventAggregator EventAggregator;
         private ViewLauncherService ViewLauncherService;
         private ProgressViewService ProgressViewService;
+        private StructureDictionaryService StructureDictionaryService;
 
         private EditScoreCardView EditScoreCardView;
 
@@ -138,7 +139,7 @@ namespace PlanScoreCard.ViewModels
         }
 
         // Constructor
-        public ScoreCardViewModel(Application app, Patient patient, Course course, PlanSetup plan, IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService)
+        public ScoreCardViewModel(Application app, Patient patient, Course course, PlanSetup plan, IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService, StructureDictionaryService structureDictionaryService)
         {
             // Set the Initial Variables Passed In
             Application  = app;
@@ -150,6 +151,7 @@ namespace PlanScoreCard.ViewModels
             // Initiate Services
             ViewLauncherService = viewLauncherService;
             ProgressViewService = progressViewService;
+            StructureDictionaryService = structureDictionaryService;
 
             // Need to change this event to take in a ScoreCardModel as the payload
             //EventAggregator.GetEvent<ScorePlanEvent>().Subscribe(OnScorePlan);
@@ -263,7 +265,7 @@ namespace PlanScoreCard.ViewModels
             foreach (ScoreTemplateModel template in scoreCard.ScoreMetrics)
             {
                 // PlanScoreModel
-                PlanScoreModel psm = new PlanScoreModel(Application);
+                PlanScoreModel psm = new PlanScoreModel(Application, StructureDictionaryService);
                 psm.BuildPlanScoreFromTemplate(selectedPlanCollection, template, metric_id);
                 PlanScores.Add(psm);
                 metric_id++;

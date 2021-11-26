@@ -1,0 +1,2 @@
+StructureA:synonym1,synonym2,synonym3,synonym4,synonym5,synonym6,synonym7,synonym8,synonym9,synonym10
+StructureB:synonym11,synonym12,synonym13,synonym14,synonym15,synonym16,synonym17,synonym18,synonym19,synonym20

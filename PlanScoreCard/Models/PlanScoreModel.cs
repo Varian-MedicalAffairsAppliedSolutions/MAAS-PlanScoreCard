@@ -22,12 +22,14 @@ namespace PlanScoreCard.Models
     {
         private VMS.TPS.Common.Model.API.Application _app;
         private double _dvhResolution;
+        private StructureDictionaryService StructureDictionaryService;
+
 
         public Dictionary<string, string> structureMatch;
 
         public string StructureId { get; set; }
         public string StructureComment { get; set; }
-        public string TemplateStructureId { get; set;  }
+        public string TemplateStructureId { get; set; }
         public string MetricText { get; set; }
         public double ScoreMax { get; set; }
         public int MetricId { get; set; }
@@ -36,8 +38,8 @@ namespace PlanScoreCard.Models
         public double MinXValue
         {
             get { return _minXValue; }
-            set 
-            { 
+            set
+            {
                 _minXValue = value;
                 //CheckOutsideBounds();
             }
@@ -47,8 +49,8 @@ namespace PlanScoreCard.Models
         public double MaxXValue
         {
             get { return _maxXValue; }
-            set 
-            { 
+            set
+            {
                 _maxXValue = value;
                 //CheckOutsideBounds();
             }
@@ -59,15 +61,15 @@ namespace PlanScoreCard.Models
         public string XAxisLabel
         {
             get { return _xAxisLabel; }
-            set 
-            { 
+            set
+            {
                 _xAxisLabel = value;
                 //CheckOutsideBounds();
             }
         }
         private bool _bPKColor;
 
-        public bool bPKColor    
+        public bool bPKColor
         {
             get { return _bPKColor; }
             set { _bPKColor = value; }
@@ -122,7 +124,7 @@ namespace PlanScoreCard.Models
         public int CountBelowMin
         {
             get { return countBelowMin; }
-            set { SetProperty( ref countBelowMin , value); }
+            set { SetProperty(ref countBelowMin, value); }
         }
 
         private int countAboveMax;
@@ -130,7 +132,7 @@ namespace PlanScoreCard.Models
         public int CountAboveMax
         {
             get { return countAboveMax; }
-            set { SetProperty( ref countAboveMax , value); }
+            set { SetProperty(ref countAboveMax, value); }
         }
 
 
@@ -139,7 +141,7 @@ namespace PlanScoreCard.Models
         public Visibility TemplateStructureVisibility
         {
             get { return templateStructureVisibility; }
-            set { SetProperty(ref templateStructureVisibility , value); }
+            set { SetProperty(ref templateStructureVisibility, value); }
         }
 
 
@@ -148,7 +150,7 @@ namespace PlanScoreCard.Models
         public Visibility OutsideMax
         {
             get { return outsideMax; }
-            set { SetProperty( ref outsideMax , value); }
+            set { SetProperty(ref outsideMax, value); }
         }
 
         private Visibility outsideMin;
@@ -166,7 +168,7 @@ namespace PlanScoreCard.Models
         public bool IsLeftZero
         {
             get { return isLeftZero; }
-            set { SetProperty(ref isLeftZero , value); }
+            set { SetProperty(ref isLeftZero, value); }
         }
 
         private bool isRightZero;
@@ -174,7 +176,7 @@ namespace PlanScoreCard.Models
         public bool IsRightZero
         {
             get { return isRightZero; }
-            set { SetProperty( ref isRightZero , value) ; }
+            set { SetProperty(ref isRightZero, value); }
         }
 
         private ViewResolvingPlotModel scorePlotModel;
@@ -182,9 +184,9 @@ namespace PlanScoreCard.Models
         public ViewResolvingPlotModel ScorePlotModel
         {
             get { return scorePlotModel; }
-            set 
-            { 
-                SetProperty( ref scorePlotModel , value);
+            set
+            {
+                SetProperty(ref scorePlotModel, value);
                 //CheckOutsideBounds();
             }
         }
@@ -250,13 +252,15 @@ namespace PlanScoreCard.Models
         }
 
         public ObservableCollection<PlanScoreColorModel> Colors { get; private set; }
-        public PlanScoreModel(VMS.TPS.Common.Model.API.Application app)
+        public PlanScoreModel(VMS.TPS.Common.Model.API.Application app, StructureDictionaryService structureDictionaryService)
         {
             _app = app;
             _dvhResolution = Convert.ToDouble(ConfigurationManager.AppSettings["DVHResolution"]);
             ScoreValues = new ObservableCollection<ScoreValueModel>();
             Colors = new ObservableCollection<PlanScoreColorModel>();
             ScorePlotModel = new ViewResolvingPlotModel();
+
+            StructureDictionaryService = structureDictionaryService;
 
             OutsideMax = Visibility.Hidden;
             OutsideMin = Visibility.Hidden;
@@ -292,16 +296,17 @@ namespace PlanScoreCard.Models
 
             foreach (var plan in plans)
             {
+                // The id and the code are from the template Structure
                 Structure structure = GetStructureFromTemplate(id, code, auto, comment, plan);
                 ScoreValueModel scoreValue = new ScoreValueModel();
-                
+
                 scoreValue.PlanId = plan.Id;
 
-                if(plan is PlanSetup)
+                if (plan is PlanSetup)
                 {
                     scoreValue.CourseId = (plan as PlanSetup).Course.Id;
                 }
-                else if(plan is PlanSum)
+                else if (plan is PlanSum)
                 {
                     scoreValue.CourseId = (plan as PlanSum).Course.Id;
                 }
@@ -309,7 +314,7 @@ namespace PlanScoreCard.Models
                 StructureId = structure == null ? " - " : structure.Id;
                 StructureComment = structure == null ? " - " : comment;
                 TemplateStructureId = template.Structure.TemplateStructureId;
-               
+
 
                 if (String.IsNullOrWhiteSpace(template.Structure.TemplateStructureId))
                 {
@@ -405,8 +410,8 @@ namespace PlanScoreCard.Models
                             System.Windows.MessageBox.Show("No Single Body Structure Found");
                             scoreValue.Value = ScoreMax = scoreValue.Score = -1000; return;
                         }
-                        var dvh_body = PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, body,_dvhResolution);
-                        var dvh = PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, structure,_dvhResolution);
+                        var dvh_body = PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, body, _dvhResolution);
+                        var dvh = PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, structure, _dvhResolution);
                         var body_vol = 0.0;
                         var target_vol = 0.0;
                         PlanScoreCalculationServices.GetVolumesFromDVH(template, dvh_body, dvh, out body_vol, out target_vol);
@@ -430,7 +435,7 @@ namespace PlanScoreCard.Models
                                     else
                                     {
                                         //plan is in Gy and template is in cgy. 
-                                        dTarget = template.HI_Target/100.0;
+                                        dTarget = template.HI_Target / 100.0;
                                     }
                                 }
                                 else
@@ -475,8 +480,8 @@ namespace PlanScoreCard.Models
                             System.Windows.MessageBox.Show("No single body structure found.");
                             scoreValue.Value = ScoreMax = scoreValue.Score = -1000; return;
                         }
-                        var dvh_body = PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, body,_dvhResolution);
-                        var dvh = PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, structure,_dvhResolution);
+                        var dvh_body = PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, body, _dvhResolution);
+                        var dvh = PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, structure, _dvhResolution);
                         var body_vol = 0.0;
                         var target_vol = 0.0;
                         PlanScoreCalculationServices.GetVolumesFromDVH(template, dvh_body, dvh, out body_vol, out target_vol);
@@ -518,7 +523,7 @@ namespace PlanScoreCard.Models
                     scoreValue.Value = -1000;
                 }
 
-                if (scoreValue.Value != -1000 && template.ScorePoints.Count()>0)
+                if (scoreValue.Value != -1000 && template.ScorePoints.Count() > 0)
                 {
                     //break scorepoints into 2 groups, before and after the variation.
                     //this one sets marker color.
@@ -538,7 +543,10 @@ namespace PlanScoreCard.Models
                     //get colors frm pk template if it exists.
                     switch (template.ScorePoints.Where(x => x.Colors.Count() > 2).Count())
                     {
-                        case 1: case 2: case 3: case 4:
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
                             BlockWidth = 100.0;
                             FontSize = 10;
                             break;
@@ -546,7 +554,7 @@ namespace PlanScoreCard.Models
                             BlockWidth = 80.0;
                             FontSize = 9;
                             break;
-                        case 6: 
+                        case 6:
                         case 7:
                             BlockWidth = 60.0;
                             FontSize = 7;
@@ -597,7 +605,7 @@ namespace PlanScoreCard.Models
                         }
                         if (template.ScorePoints.Any(x => x.Colors.Count() > 0))
                         {
-                            PKPosition = new System.Windows.Thickness(PlanScoreCalculationServices.CalculatePKPosition(Colors.Where(x=>x.Colors.Count()>0).ToList(), increasing, scoreValue.Score,BlockWidth), 0, 0, 0);
+                            PKPosition = new System.Windows.Thickness(PlanScoreCalculationServices.CalculatePKPosition(Colors.Where(x => x.Colors.Count() > 0).ToList(), increasing, scoreValue.Score, BlockWidth), 0, 0, 0);
                         }
                     }
 
@@ -698,7 +706,7 @@ namespace PlanScoreCard.Models
             // ScorePlotModel.InvalidatePlot(true);
         }
 
-      
+
         /// <summary>
         /// Find structure based on templated structure model
         /// </summary>
@@ -715,6 +723,7 @@ namespace PlanScoreCard.Models
             // - Case Insensitive (Overwrite string.Compare() to automatically do this)
 
             bool writeable = ConfigurationManager.AppSettings["WriteEnabled"] == "true";
+            // FIRST: Check for an exact Match
             if (id != null && code != null)
             {
                 foreach (var s in plan.StructureSet.Structures)
@@ -727,12 +736,32 @@ namespace PlanScoreCard.Models
                 }
             }
 
-            // Check for structure existence
-            if (plan.StructureSet.Structures.Any(x => x.Id == id))
-            {
+            // SECOND: If exact match is not there, check to see if it is part of the Structure Dictionary
+            StructureDictionaryModel structureDictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower().Equals(id.ToLower()));
 
-                var structure = plan.StructureSet.Structures.FirstOrDefault(x => x.Id == id);
-                
+            if (structureDictionary == null)
+            {
+                // This checks to see if it is a structure
+                string structureID = StructureDictionaryService.FindMatch(id);
+
+                if (!String.IsNullOrEmpty(structureID))
+                    structureDictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower() == structureID.ToLower());
+            }
+
+            if (structureDictionary != null)
+            {
+                // Get a collection of all acceptable Structures
+                List<string> acceptedStructures = new List<string>();
+                acceptedStructures.Add(structureDictionary.StructureID);
+                acceptedStructures.AddRange(structureDictionary.StructureSynonyms);
+
+                // Gets the Plan Structures
+                List<string> planStructrues = plan.StructureSet.Structures.Select(s => s.Id.ToLower()).ToList();
+
+                // Finds any matches between the PlanStructures and All Accepted PlanIDs
+                string matchedStructureID = planStructrues.Intersect(acceptedStructures).First();
+                Structure structure = plan.StructureSet.Structures.FirstOrDefault(s => s.Id.ToLower() == matchedStructureID.ToLower());
+
                 if (structure != null && !structure.IsEmpty)
                 {
                     return structure;
@@ -747,22 +776,23 @@ namespace PlanScoreCard.Models
                     //what do do with an empty structure.
                     return structure;
                 }
+            }
 
-            }//If no structure found, try to find structure based on code.
-            else if (plan.StructureSet.Structures.Where(x => x.StructureCodeInfos.Any()).Any(y => y.StructureCodeInfos.FirstOrDefault().Code == code) && !autoGenerate)
+            // See if you can find it based on just stucture Code
+            if (plan.StructureSet.Structures.Where(x => x.StructureCodeInfos.Any()).Any(y => y.StructureCodeInfos.FirstOrDefault().Code == code) && !autoGenerate)
             {
                 return plan.StructureSet.Structures.Where(x => x.StructureCodeInfos.Any()).FirstOrDefault(x => x.StructureCodeInfos.FirstOrDefault().Code == code);
             }
-            else
-            {//if structure doesn't exist, create it. 
-                if (autoGenerate && writeable)
-                {
-                    var structure = StructureGenerationService.BuildStructureWithESAPI(_app, id, comment, false, plan);
-                    return structure;
-                }
-                return null;
+
+            // If no match, create it. 
+            if (autoGenerate && writeable)
+            {
+                var structure = StructureGenerationService.BuildStructureWithESAPI(_app, id, comment, false, plan);
+                return structure;
             }
 
+            // No match at all.
+            return null;
 
         }
 
