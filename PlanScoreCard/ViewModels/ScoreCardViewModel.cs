@@ -195,7 +195,7 @@ namespace PlanScoreCard.ViewModels
 
                 EventAggregator.GetEvent<ShowPluginViewEvent>().Publish();
 
-                NormalizationService normService = new NormalizationService(Application, Patient, Plans.FirstOrDefault(x => x.bPrimary), ScoreTemplates, EventAggregator);
+                NormalizationService normService = new NormalizationService(Application, Patient, Plans.FirstOrDefault(x => x.bPrimary), ScoreTemplates, EventAggregator, StructureDictionaryService);
 
                 var newplan = normService.GetPlan();
                 Plans.Add(newplan);

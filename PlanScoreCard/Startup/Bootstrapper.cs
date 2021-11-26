@@ -59,6 +59,7 @@ namespace PlanScoreCard.Startup
             container.RegisterType<PluginViewService>().AsSelf();
             container.RegisterType<ViewLauncherService>().AsSelf();
             container.RegisterType<ProgressViewService>().AsSelf();
+            container.RegisterType<StructureDictionaryService>().SingleInstance();
 
 
             return container.Build();

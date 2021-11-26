@@ -15,7 +15,7 @@ namespace PlanScoreCard.Services
     public class NormalizationService
     {
         public ObservableCollection<PlanScoreModel> PlanScores { get; private set; }
-
+        private StructureDictionaryService StructureDictionaryService;
         private PlanModel _planModel;
         private String _patientId;
         private List<ScoreTemplateModel> _templates;
@@ -24,8 +24,9 @@ namespace PlanScoreCard.Services
         private Patient _patient;
 
         public NormalizationService(Application app, Patient patient, PlanModel plan,
-            List<ScoreTemplateModel> templates, IEventAggregator eventAggregator)
+            List<ScoreTemplateModel> templates, IEventAggregator eventAggregator, StructureDictionaryService structureDictionaryService)
         {
+            StructureDictionaryService = structureDictionaryService;
             _patient = patient;
             _templates = templates;
             _eventAggregator = eventAggregator;
@@ -121,7 +122,7 @@ namespace PlanScoreCard.Services
             PlanScores.Clear();
             foreach (var template in _templates)
             {
-                var psm = new PlanScoreModel(_app);
+                var psm = new PlanScoreModel(_app, StructureDictionaryService);
                 psm.BuildPlanScoreFromTemplate(new ObservableCollection<PlanningItem> { newPlan }, template, metricId);
                 metricId++;
                 PlanScores.Add(psm);

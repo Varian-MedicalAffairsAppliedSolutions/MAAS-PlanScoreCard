@@ -21,6 +21,8 @@ namespace PlanScoreCard.Services
             // Read in the StructureDictionaryPath (Set in the App.config)
             string structureDictionaryPath = ConfigurationManager.AppSettings["StructureDictionaryPath"].ToString();
 
+            StructureDictionary = new List<StructureDictionaryModel>();
+
             // Populates Structure Dictionary Models
             PopulateStructureModels(structureDictionaryPath);
         }
@@ -45,7 +47,7 @@ namespace PlanScoreCard.Services
                 StructureDictionaryModel structureDictionaryModel = new StructureDictionaryModel(structureID,synonyms);
                 StructureDictionary.Add(structureDictionaryModel);
             }
-
+            reader.Close();
         }
 
         // Methods
@@ -64,7 +66,7 @@ namespace PlanScoreCard.Services
         public bool AddSynonym(string structureID, string newSynonym)
         {
             // Checks to see if the synonym already exists in the Dictionary
-            StructureDictionaryModel structureMatch = StructureDictionary.FirstOrDefault(s => s.StructureSynonyms.FirstOrDefault(ss => ss.ToLower() == potentialSynonm.ToLower()) != null);
+            StructureDictionaryModel structureMatch = StructureDictionary.FirstOrDefault(s => s.StructureSynonyms.FirstOrDefault(ss => ss.ToLower() == newSynonym.ToLower()) != null);
             if (structureMatch != null)
                 return false;
 
@@ -75,6 +77,7 @@ namespace PlanScoreCard.Services
 
             // Adds the new synonym
             dictionaryModel.StructureSynonyms.Add(newSynonym);
+            UpdateStructureDictionaryConfig();
             return true;
 
         }
@@ -83,11 +86,12 @@ namespace PlanScoreCard.Services
         {
             // Checks to see if the StructureID exists in the Dictionary
             StructureDictionaryModel dictionaryModel = StructureDictionary.FirstOrDefault(s => s.StructureID == structureID);
-            if (dictionaryModel == null)
+            if (dictionaryModel != null)
                 return false;
 
             List<string> synonyms  = new List<string>();
             StructureDictionary.Add(new StructureDictionaryModel(structureID, synonyms));
+            UpdateStructureDictionaryConfig();
             return true;
         }
 
@@ -99,6 +103,7 @@ namespace PlanScoreCard.Services
                 return false;
 
             StructureDictionary.Remove(dictionaryModel);
+            UpdateStructureDictionaryConfig();
             return true;
         }
 
@@ -126,8 +131,10 @@ namespace PlanScoreCard.Services
                 configFileLines.Add(configLine);
             
             }
+            string thing = @"C:\Users\jlovis.swim\Documents\GitHub\PlanScoreCard_CORE\PlanScoreCard\" + ConfigurationManager.AppSettings["StructureDictionaryPath"].ToString();
+            reader.Close();
 
-            File.WriteAllLines(ConfigurationManager.AppSettings["StructureDictionaryPath"].ToString(), configFileLines.ToArray());
+            File.WriteAllLines(thing, configFileLines);
 
         }
 

@@ -33,6 +33,7 @@ namespace PlanScoreCard.ViewModels
 
         private ViewLauncherService ViewLauncherService;
         private ProgressViewService ProgressViewService;
+        private StructureDictionaryService StructureDictionaryService;
 
         private object metricEdtiorControl;
 
@@ -113,8 +114,32 @@ namespace PlanScoreCard.ViewModels
                 //&& String.IsNullOrWhiteSpace(SelectedScoreMetric.Structure.StructureId)
 
                 //if (SelectedScoreMetric.Structure == null)
+                if(SelectedStructure != null)
+                    if (SelectedStructure.TemplateStructureId == null)
+                        SelectedStructure.TemplateStructureId = SelectedStructure.StructureId;
 
-                SelectedScoreMetric.Structure = selectedStructure;
+                SelectedScoreMetric.Structure = SelectedStructure;
+
+                if (SelectedStructure == null)
+                    return;
+
+                StructureDictionaryModel dictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower() == SelectedStructure.StructureId.ToLower());
+
+                // Check to see if it is a synonym of a structure
+                if (dictionary == null)
+                {
+                    string structureID = StructureDictionaryService.FindMatch(selectedStructure.StructureId);
+                    dictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower() == structureID.ToLower());
+                }
+
+                if (dictionary == null)
+                {
+                    MessageBoxResult result = MessageBox.Show("This structure is not contained within the Structure Dictionary, would you like to add it?", "New StructureId", MessageBoxButton.YesNo);
+
+                    if (result == MessageBoxResult.Yes)
+                        StructureDictionaryService.AddStructure(selectedStructure.StructureId);
+                }
+
 
                 //if (SelectedStructure != null)
                 //{
@@ -231,11 +256,12 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand AddNewStructureCommand { get; private set; }
 
         // Constructor
-        public EditScoreCardViewModel(IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService)
+        public EditScoreCardViewModel(IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService, StructureDictionaryService structureDictionaryService)
         {
 
             ViewLauncherService = viewLauncherService;
             ProgressViewService = progressViewService;
+            StructureDictionaryService = structureDictionaryService;
 
             // Events
             EventAggregator = eventAggregator;

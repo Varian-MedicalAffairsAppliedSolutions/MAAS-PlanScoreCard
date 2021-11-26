@@ -102,10 +102,10 @@ namespace PlanScoreCard.ViewModels
             int metric_id = 0;
             foreach (var template in templates)
             {
-                var psm = new PlanScoreModel(_app);
-                psm.BuildPlanScoreFromTemplate(Plans, template, metric_id);
-                PlanScores.Add(psm);
-                metric_id++;
+                //var psm = new PlanScoreModel(_app);
+                //psm.BuildPlanScoreFromTemplate(Plans, template, metric_id);
+                //PlanScores.Add(psm);
+                //metric_id++;
             }
 
             //remove score points from metrics that didn't have the

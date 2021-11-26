@@ -247,14 +247,14 @@ namespace PlanScoreCard.ViewModels
             {
                 _eventAggregator.GetEvent<ShowPluginViewEvent>().Publish();
 
-                NormalizationService normService = new NormalizationService( _app, _patient, Plans.FirstOrDefault(x => x.bPrimary), _scoreTemplates, _eventAggregator);
-                //_app.ClosePatient();
-                //_app.Dispose();
-                //new Thread(new ThreadStart(normService.GetPlan)).Start();
-                //var newplan = Task.Run(()=>normService.GetPlan());
-                var newplan = normService.GetPlan();
-                Plans.Add(newplan);
-                Plans.FirstOrDefault(x => x.CourseId == newplan.CourseId && x.PlanId == newplan.PlanId).bSelected = true;
+                //NormalizationService normService = new NormalizationService( _app, _patient, Plans.FirstOrDefault(x => x.bPrimary), _scoreTemplates, _eventAggregator);
+                ////_app.ClosePatient();
+                ////_app.Dispose();
+                ////new Thread(new ThreadStart(normService.GetPlan)).Start();
+                ////var newplan = Task.Run(()=>normService.GetPlan());
+                //var newplan = normService.GetPlan();
+                //Plans.Add(newplan);
+                //Plans.FirstOrDefault(x => x.CourseId == newplan.CourseId && x.PlanId == newplan.PlanId).bSelected = true;
             }
         }
 
