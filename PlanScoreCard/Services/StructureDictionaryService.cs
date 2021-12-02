@@ -138,5 +138,95 @@ namespace PlanScoreCard.Services
 
         }
 
+        private void MergeDictionary(string dictionaryPath)
+        {
+            StreamReader reader = File.OpenText(dictionaryPath);
+            string line;
+
+            List<StructureDictionaryModel> userDictionary = new List<StructureDictionaryModel>();
+            // Populate a Collection from the User-Input Dictionary
+            while ((line = reader.ReadLine()) != null)
+            {
+                // If a line does not have a colon, assume that it is an improper entry and move to the next row.
+                if (!line.Contains(':'))
+                    continue;
+
+                string[] items = line.Split(':');
+                string structureID = items[0];   // Here's your integer.
+                List<string> synonyms = items[1].Split(',').ToList();
+
+                StructureDictionaryModel structureDictionaryModel = new StructureDictionaryModel(structureID, synonyms);
+                userDictionary.Add(structureDictionaryModel);
+            }
+
+            List<StructureDictionaryModel> newDictionary = new List<StructureDictionaryModel>();
+
+            // Compare the two collections and Merge. 
+            foreach (StructureDictionaryModel newStructure in userDictionary)
+            {
+                // Check to see if the StructureDictionary contains this Structure
+                StructureDictionaryModel structure = StructureDictionary.FirstOrDefault(d => d.StructureID.ToLower().Equals(newStructure.StructureID.ToLower()));
+                
+                // If So, Merge Synonyms
+                if (structure != null)
+                {
+                    if (newStructure.StructureSynonyms == null)
+                        continue;
+
+                    List<string> newSynonyms = newStructure.StructureSynonyms;
+                    foreach (string newSnynonym in newSynonyms)
+                    {
+                        if (structure.StructureSynonyms == null)
+                        {
+                            structure.StructureSynonyms.Add(newSnynonym);
+                            continue;
+                        }
+
+                        if (!structure.StructureSynonyms.Contains(newSnynonym))
+                        {
+                            structure.StructureSynonyms.Add(newSnynonym);
+                            continue;
+                        }
+                    }
+
+                }
+                else                // If Not, Add It
+                {
+                    StructureDictionary.Add(newStructure);
+                }
+ 
+
+            }
+            reader.Close();
+
+            UpdateStructureDictionaryConfig();
+        }
+
+        private void OverwriteDictionary(string dictionaryPath)
+        {
+            StreamReader reader = File.OpenText(dictionaryPath);
+            string line;
+
+            List<StructureDictionaryModel> userDictionary = new List<StructureDictionaryModel>();
+            // Populate a Collection from the User-Input Dictionary
+            while ((line = reader.ReadLine()) != null)
+            {
+                // If a line does not have a colon, assume that it is an improper entry and move to the next row.
+                if (!line.Contains(':'))
+                    continue;
+
+                string[] items = line.Split(':');
+                string structureID = items[0];   // Here's your integer.
+                List<string> synonyms = items[1].Split(',').ToList();
+
+                StructureDictionaryModel structureDictionaryModel = new StructureDictionaryModel(structureID, synonyms);
+                userDictionary.Add(structureDictionaryModel);
+            }
+
+            reader.Close();
+
+            StructureDictionary = userDictionary;
+            UpdateStructureDictionaryConfig();
+        }
     }
 }
