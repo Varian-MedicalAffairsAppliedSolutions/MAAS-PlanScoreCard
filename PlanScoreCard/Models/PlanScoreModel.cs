@@ -737,6 +737,30 @@ namespace PlanScoreCard.Models
                 }
             }
 
+
+            // Check for structure existence
+            if (plan.StructureSet.Structures.Any(x => x.Id == id))
+            {
+
+                var structure = plan.StructureSet.Structures.FirstOrDefault(x => x.Id == id);
+
+                if (structure != null && !structure.IsEmpty)
+                {
+                    return structure;
+                }
+                else if (structure.IsEmpty && autoGenerate && writeable)//generate structure if empty.
+                {
+                    var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan);
+                    return new_structure;
+                }
+                else//return empty structure. 
+                {
+                    //what do do with an empty structure.
+                    return structure;
+                }
+
+            }//If no structure found, try to find structure based on code.
+
             // SECOND: If exact match is not there, check to see if it is part of the Structure Dictionary
             StructureDictionaryModel structureDictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower().Equals(id.ToLower()));
 
@@ -755,14 +779,14 @@ namespace PlanScoreCard.Models
             {
                 // Get a collection of all acceptable Structures
                 List<string> acceptedStructures = new List<string>();
-                acceptedStructures.Add(structureDictionary.StructureID);
-                acceptedStructures.AddRange(structureDictionary.StructureSynonyms);
+                acceptedStructures.Add(structureDictionary.StructureID.ToLower());
+                acceptedStructures.AddRange(structureDictionary.StructureSynonyms.Select(s => s.ToLower()));
 
                 // Gets the Plan Structures
                 List<string> planStructrues = plan.StructureSet.Structures.Select(s => s.Id.ToLower()).ToList();
 
                 // Finds any matches between the PlanStructures and All Accepted StructIDs
-                string matchedStructureID = planStructrues.Intersect(acceptedStructures).First();
+                string matchedStructureID = planStructrues.Intersect(acceptedStructures).FirstOrDefault();
                 Structure structure = plan.StructureSet.Structures.FirstOrDefault(s => s.Id.ToLower() == matchedStructureID.ToLower());
 
                 if (structure != null && !structure.IsEmpty)
@@ -773,10 +797,6 @@ namespace PlanScoreCard.Models
                 {
                     var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan);
                     return new_structure;
-                }
-                else
-                {
-                    return structure;
                 }
             }
 
@@ -793,41 +813,19 @@ namespace PlanScoreCard.Models
                 return structure;
             }
 
-            //// Check for structure existence
-            //if (plan.StructureSet.Structures.Any(x => x.Id == id))
-            //{
-
-            //    var structure = plan.StructureSet.Structures.FirstOrDefault(x => x.Id == id);
-
-            //    if (structure != null && !structure.IsEmpty)
-            //    {
-            //        return structure;
-            //    }
-            //    else if (structure.IsEmpty && autoGenerate && writeable)//generate structure if empty.
-            //    {
-            //        var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan);
-            //        return new_structure;
-            //    }
-            //    else//return empty structure. 
-            //    {
-            //        //what do do with an empty structure.
-            //        return structure;
-            //    }
-
-            //}//If no structure found, try to find structure based on code.
-            //else if (plan.StructureSet.Structures.Where(x => x.StructureCodeInfos.Any()).Any(y => y.StructureCodeInfos.FirstOrDefault().Code == code) && !autoGenerate)
-            //{
-            //    return plan.StructureSet.Structures.Where(x => x.StructureCodeInfos.Any()).FirstOrDefault(x => x.StructureCodeInfos.FirstOrDefault().Code == code);
-            //}
-            //else
-            //{//if structure doesn't exist, create it. 
-            //    if (autoGenerate && writeable)
-            //    {
-            //        var structure = StructureGenerationService.BuildStructureWithESAPI(_app, id, comment, false, plan);
-            //        return structure;
-            //    }
-            //    return null;
-            //}
+            if (plan.StructureSet.Structures.Where(x => x.StructureCodeInfos.Any()).Any(y => y.StructureCodeInfos.FirstOrDefault().Code == code) && !autoGenerate)
+            {
+                return plan.StructureSet.Structures.Where(x => x.StructureCodeInfos.Any()).FirstOrDefault(x => x.StructureCodeInfos.FirstOrDefault().Code == code);
+            }
+            else
+            {//if structure doesn't exist, create it. 
+                if (autoGenerate && writeable)
+                {
+                    var structure = StructureGenerationService.BuildStructureWithESAPI(_app, id, comment, false, plan);
+                    return structure;
+                }
+                return null;
+            }
 
             // No match at all.
             return null;

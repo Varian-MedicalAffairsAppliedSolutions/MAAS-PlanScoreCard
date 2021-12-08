@@ -15,6 +15,7 @@ namespace PlanScoreCard.Services
         // Structure Dictionary Collection
         public List<StructureDictionaryModel> StructureDictionary { get; private set; }
 
+
         public StructureDictionaryService()
         {
 
@@ -106,6 +107,12 @@ namespace PlanScoreCard.Services
             UpdateStructureDictionaryConfig();
             return true;
         }
+
+        // Exclusion Functionality
+        // - Will need to add something for this within the dictionary file itself
+        // - Just have a collection here within this service which contains the exclusions
+        // - Add a method which checks the exclusions before each item is added. 
+
 
         // Update StructureDictionaryConfig
 

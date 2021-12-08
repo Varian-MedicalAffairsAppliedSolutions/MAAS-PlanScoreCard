@@ -150,6 +150,7 @@
     <Compile Include="Events\EditScoreCardSetUserEvent.cs" />
     <Compile Include="Events\FreePrimarySelectionEvent.cs" />
     <Compile Include="Events\HelperWindows\CancelEvent.cs" />
+    <Compile Include="Events\HelperWindows\StructureDictionaryAddedEvent.cs" />
     <Compile Include="Events\LoadEditScoreCardViewEvent.cs" />
     <Compile Include="Events\MetricDownEvent.cs" />
     <Compile Include="Events\MetricRankChangedEvent.cs" />
@@ -249,6 +250,9 @@
     <Compile Include="Views\HelperWindows\ProgressView.xaml.cs">
       <DependentUpon>ProgressView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\HelperWindows\StructureDictionarySelectorView.xaml.cs">
+      <DependentUpon>StructureDictionarySelectorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MetricEditors\EditCIView.xaml.cs">
       <DependentUpon>EditCIView.xaml</DependentUpon>
     </Compile>
@@ -315,6 +319,9 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Content Include="StructureDictionary\InitialStructureDictionary.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -330,6 +337,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\HelperWindows\ProgressView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\HelperWindows\StructureDictionarySelectorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

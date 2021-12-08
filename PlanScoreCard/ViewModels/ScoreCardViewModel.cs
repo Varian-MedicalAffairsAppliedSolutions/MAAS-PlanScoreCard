@@ -312,7 +312,7 @@ namespace PlanScoreCard.ViewModels
             // Show the Progress Bar
             ProgressViewService.ShowProgress("Loading Scorecard", 100, true);
             
-            ScoreCardModel scoreCard = new ScoreCardModel(TemplateName, TemplateSite, ScoreCard.ScoreMetrics);
+            ScoreCardModel scoreCard = new ScoreCardModel(TemplateName, TemplateSite, ScoreCard?.ScoreMetrics);
             EditScoreCardView = ViewLauncherService.GetEditScoreCardView();
 
             // Events

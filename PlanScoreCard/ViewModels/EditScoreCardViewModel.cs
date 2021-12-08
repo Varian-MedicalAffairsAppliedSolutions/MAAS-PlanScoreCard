@@ -5,6 +5,7 @@ using PlanScoreCard.Models;
 using PlanScoreCard.Models.Internals;
 using PlanScoreCard.Services;
 using PlanScoreCard.Views;
+using PlanScoreCard.Views.HelperWindows;
 using PlanScoreCard.Views.MetricEditors;
 using Prism.Commands;
 using Prism.Events;
@@ -123,9 +124,10 @@ namespace PlanScoreCard.ViewModels
                 if (SelectedStructure == null)
                     return;
 
+                // This checks to match a key
                 StructureDictionaryModel dictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower() == SelectedStructure.StructureId.ToLower());
 
-                // Check to see if it is a synonym of a structure
+                // This matches values (syn)
                 if (dictionary == null)
                 {
                     string structureID = StructureDictionaryService.FindMatch(selectedStructure.StructureId);
@@ -137,7 +139,11 @@ namespace PlanScoreCard.ViewModels
                     MessageBoxResult result = MessageBox.Show("This structure is not contained within the Structure Dictionary, would you like to add it?", "New StructureId", MessageBoxButton.YesNo);
 
                     if (result == MessageBoxResult.Yes)
-                        StructureDictionaryService.AddStructure(selectedStructure.StructureId);
+                    {
+                        StructureDictionarySelectorView structureSelector = new StructureDictionarySelectorView(StructureDictionaryService, selectedStructure.StructureId, EventAggregator);
+                        structureSelector.ShowDialog();
+                    }
+
                 }
 
 
