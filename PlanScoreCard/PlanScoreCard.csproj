@@ -150,7 +150,9 @@
     <Compile Include="Events\EditScoreCardSetUserEvent.cs" />
     <Compile Include="Events\FreePrimarySelectionEvent.cs" />
     <Compile Include="Events\HelperWindows\CancelEvent.cs" />
+    <Compile Include="Events\HelperWindows\NoEvent.cs" />
     <Compile Include="Events\HelperWindows\StructureDictionaryAddedEvent.cs" />
+    <Compile Include="Events\HelperWindows\YesEvent.cs" />
     <Compile Include="Events\LoadEditScoreCardViewEvent.cs" />
     <Compile Include="Events\MetricDownEvent.cs" />
     <Compile Include="Events\MetricRankChangedEvent.cs" />
@@ -240,12 +242,17 @@
     <Compile Include="ViewModels\StructureBuilderGroupViewModel.cs" />
     <Compile Include="ViewModels\StructureBuilderViewModel.cs" />
     <Compile Include="ViewModels\StructureGenerationViewModel.cs" />
+    <Compile Include="ViewModels\VMHelpers\AskAddDictionaryStructureViewModel.cs" />
+    <Compile Include="ViewModels\VMHelpers\StructureDictionarySelectorViewModel.cs" />
     <Compile Include="ViewModels\VolumeAtDoseViewModel.cs" />
     <Compile Include="Views\ColorPickerView.xaml.cs">
       <DependentUpon>ColorPickerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditScoreCardView.xaml.cs">
       <DependentUpon>EditScoreCardView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HelperWindows\AskAddDictionaryStructureView.xaml.cs">
+      <DependentUpon>AskAddDictionaryStructureView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\HelperWindows\ProgressView.xaml.cs">
       <DependentUpon>ProgressView.xaml</DependentUpon>
@@ -320,7 +327,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <Content Include="StructureDictionary\InitialStructureDictionary.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -333,6 +340,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EditScoreCardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\HelperWindows\AskAddDictionaryStructureView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

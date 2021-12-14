@@ -1,9 +1,11 @@
 ﻿using Microsoft.Win32;
 using Newtonsoft.Json;
 using PlanScoreCard.Events;
+using PlanScoreCard.Events.HelperWindows;
 using PlanScoreCard.Models;
 using PlanScoreCard.Models.Internals;
 using PlanScoreCard.Services;
+using PlanScoreCard.ViewModels.VMHelpers;
 using PlanScoreCard.Views;
 using PlanScoreCard.Views.HelperWindows;
 using PlanScoreCard.Views.MetricEditors;
@@ -82,7 +84,7 @@ namespace PlanScoreCard.ViewModels
                 SetProperty(ref selectedMetric, value);
                 ShowScorePointModels(SelectedScoreMetric);
 
-                if (selectedMetric == null)
+                if (SelectedScoreMetric == null)
                     return;
 
                 UpdateScoreMetricPlotModel();
@@ -97,11 +99,38 @@ namespace PlanScoreCard.ViewModels
                 }
                 else
                 {
+                    
                     SelectedStructure = SelectedScoreMetric.Structure;
+                    readyEdit = true;
                 }
             }
         }
+        private bool readyEdit = false;
+        private void KeepDictionaryStructure(StructureModel structureModel)
+        {
+            bool structureExcluded = false;
+            var excludeStructures = ConfigurationManager.AppSettings["DictionaryExclusions"].Split(';');
+            if (excludeStructures != null && excludeStructures.Length > 0)
+            {
+                if (excludeStructures.Contains(structureModel.StructureId))
+                {
+                    structureExcluded = true;
+                }
+            }
+            if (!structureExcluded)
+            {
+                //MessageBoxResult result = MessageBox.Show("This structure is not contained within the Structure Dictionary, would you like to add it?", "New StructureId", MessageBoxButton.YesNo);
+                AskAddDictionaryStructureView = new AskAddDictionaryStructureView();
+                AskAddDictionaryStructureView.DataContext = new AskAddDictionaryStructureViewModel(EventAggregator, structureModel.StructureId);
+                AskAddDictionaryStructureView.ShowDialog();
+                if (_askEditDictionary)
+                {
+                    StructureSelectorView = new StructureDictionarySelectorView(StructureDictionaryService, structureModel.StructureId, structureModel.TemplateStructureId, EventAggregator);
 
+                    StructureSelectorView.ShowDialog();
+                }
+            }
+        }
         // Selected Structure
         private StructureModel selectedStructure;
 
@@ -110,31 +139,49 @@ namespace PlanScoreCard.ViewModels
             get { return selectedStructure; }
             set
             {
+                if (readyEdit && SelectedStructure == null && value!=null && !String.IsNullOrWhiteSpace(value.StructureId))
+                {
+                    KeepDictionaryStructure(SelectedScoreMetric.Structure);
+                }
                 SetProperty(ref selectedStructure, value);
 
                 //&& String.IsNullOrWhiteSpace(SelectedScoreMetric.Structure.StructureId)
 
                 //if (SelectedScoreMetric.Structure == null)
-                if(SelectedStructure != null)
+                if (SelectedStructure != null)
+                {
                     if (SelectedStructure.TemplateStructureId == null)
+                    {
                         SelectedStructure.TemplateStructureId = SelectedStructure.StructureId;
-
-                SelectedScoreMetric.Structure = SelectedStructure;
+                    }
+                    if (!String.IsNullOrWhiteSpace(SelectedStructure.StructureId) && String.IsNullOrWhiteSpace(SelectedScoreMetric.Structure.StructureId))
+                    {
+                        SelectedScoreMetric.Structure.StructureId = SelectedStructure.StructureId;
+                    }
+                }
+                //do not change the selected score metric. This should be unique to the scorecard. 
+                //SelectedScoreMetric.Structure = SelectedStructure;
 
                 if (SelectedStructure == null)
                     return;
-
-                // This checks to match a key
-                StructureDictionaryModel dictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower() == SelectedStructure.StructureId.ToLower());
+                
+                // This checks to match a key to a template structure id.
+                //StructureDictionaryModel dictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower() == SelectedStructure.TemplateStructureId.ToLower());
 
                 // This matches values (syn)
-                if (dictionary == null)
-                {
-                    string structureID = StructureDictionaryService.FindMatch(selectedStructure.StructureId);
-                    dictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower() == structureID.ToLower());
-                }
+                //if (dictionary != null)
+                //{
 
-                if (dictionary == null)
+                //}
+                //if (dictionary == null)
+                //{
+                //    string structureID = StructureDictionaryService.FindMatch(selectedStructure.TemplateStructureId);
+                //    dictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower() == structureID.ToLower());
+                //}
+
+
+                //move to structure selection. 
+                /*if (dictionary == null)
                 {
                     MessageBoxResult result = MessageBox.Show("This structure is not contained within the Structure Dictionary, would you like to add it?", "New StructureId", MessageBoxButton.YesNo);
 
@@ -144,7 +191,7 @@ namespace PlanScoreCard.ViewModels
                         structureSelector.ShowDialog();
                     }
 
-                }
+                }*/
 
 
                 //if (SelectedStructure != null)
@@ -185,13 +232,8 @@ namespace PlanScoreCard.ViewModels
         }
 
         // Structures Collection
-        private ObservableCollection<StructureModel> strctures;
 
-        public ObservableCollection<StructureModel> Structures
-        {
-            get { return strctures; }
-            set { SetProperty(ref strctures, value); }
-        }
+        public ObservableCollection<StructureModel> Structures { get; private set; }
 
         // Template Author
         private string templateAuthor;
@@ -260,7 +302,10 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand SaveTemplateCommand { get; private set; }
         public DelegateCommand OrderPointsByValueCommand { get; private set; }
         public DelegateCommand AddNewStructureCommand { get; private set; }
-
+        public StructureDictionarySelectorView StructureSelectorView { get; private set; }
+        //this property is used to determine whether to open the structure dictionary editor.
+        private bool _askEditDictionary { get; set; }
+        public AskAddDictionaryStructureView AskAddDictionaryStructureView { get; set; }
         // Constructor
         public EditScoreCardViewModel(IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService, StructureDictionaryService structureDictionaryService)
         {
@@ -282,6 +327,8 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<UpdateMetricEditorEvent>().Subscribe(ChangeMetricEditor);
             EventAggregator.GetEvent<AddStructureEvent>().Subscribe(AddNewStructure);
             EventAggregator.GetEvent<UpdateScroreMetricsEvent>().Subscribe(UpdateMetrics);
+            EventAggregator.GetEvent<YesEvent>().Subscribe(OnDictionaryYes);
+            EventAggregator.GetEvent<NoEvent>().Subscribe(OnDictionaryNo);
 
             // Commands
             DeleteMetricCommand = new DelegateCommand(DeleteMetric);
@@ -306,6 +353,18 @@ namespace PlanScoreCard.ViewModels
             MetricTypes = new ObservableCollection<MetricTypeEnum>();
 
             Bind();
+        }
+
+        private void OnDictionaryNo()
+        {
+            _askEditDictionary = false;
+            AskAddDictionaryStructureView.DialogResult = false;
+        }
+
+        private void OnDictionaryYes()
+        {
+            _askEditDictionary = true;
+            AskAddDictionaryStructureView.DialogResult = true;
         }
 
         // Populates the View / Binds Data
@@ -614,8 +673,10 @@ namespace PlanScoreCard.ViewModels
                 return;
 
             PlanModel = planModel;
-            Structures = PlanModel.Structures;
-            Structures.OrderBy(s => s.StructureId);
+            foreach(var structure in PlanModel.Structures.OrderBy(s=>s.StructureId))
+            {
+                Structures.Add(structure);
+            }
         }
 
         private void SetUser(User user)
@@ -678,7 +739,7 @@ namespace PlanScoreCard.ViewModels
         private void ShowScoreCardMetrics(List<ScoreTemplateModel> scoreMetrics)
         {
             ScoreMetrics.Clear();
-
+            //SelectedScoreMetric = null;
             foreach (var sm in ScoreTemplateBuilder.GetScoreCardMetricsFromTemplate(scoreMetrics, EventAggregator, 0, Structures.ToList()))
             {
                 //sm.SetEventAggregator(EventAggregator);

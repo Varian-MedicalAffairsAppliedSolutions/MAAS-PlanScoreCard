@@ -1,16 +1,18 @@
-﻿using PlanScoreCard.Models;
+﻿using Newtonsoft.Json;
+using PlanScoreCard.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace PlanScoreCard.Services
 {
     public class StructureDictionaryService
-    { 
+    {
 
         // Structure Dictionary Collection
         public List<StructureDictionaryModel> StructureDictionary { get; private set; }
@@ -21,17 +23,17 @@ namespace PlanScoreCard.Services
 
             // Read in the StructureDictionaryPath (Set in the App.config)
             string structureDictionaryPath = ConfigurationManager.AppSettings["StructureDictionaryPath"].ToString();
-
-            StructureDictionary = new List<StructureDictionaryModel>();
+            string sDictionaryFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), structureDictionaryPath);
+            StructureDictionary = JsonConvert.DeserializeObject<List<StructureDictionaryModel>>(File.ReadAllText(sDictionaryFile));
 
             // Populates Structure Dictionary Models
-            PopulateStructureModels(structureDictionaryPath);
+            //PopulateStructureModels(structureDictionaryPath);
         }
 
         // Initialization
         public void PopulateStructureModels(string structureDictionaryPath)
         {
-
+            /*
             StreamReader reader = File.OpenText(structureDictionaryPath);
             string line;
 
@@ -49,6 +51,7 @@ namespace PlanScoreCard.Services
                 StructureDictionary.Add(structureDictionaryModel);
             }
             reader.Close();
+            */
         }
 
         // Methods
@@ -82,7 +85,7 @@ namespace PlanScoreCard.Services
             return true;
 
         }
-        
+
         public bool AddStructure(string structureID)
         {
             // Checks to see if the StructureID exists in the Dictionary
@@ -90,7 +93,7 @@ namespace PlanScoreCard.Services
             if (dictionaryModel != null)
                 return false;
 
-            List<string> synonyms  = new List<string>();
+            List<string> synonyms = new List<string>();
             StructureDictionary.Add(new StructureDictionaryModel(structureID, synonyms));
             UpdateStructureDictionaryConfig();
             return true;
@@ -118,11 +121,14 @@ namespace PlanScoreCard.Services
 
         public void UpdateStructureDictionaryConfig()
         {
-            StreamReader reader = File.OpenText(ConfigurationManager.AppSettings["StructureDictionaryPath"].ToString());
+            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ConfigurationManager.AppSettings["StructureDictionary"]);
+            
+            File.WriteAllText(path, JsonConvert.SerializeObject(StructureDictionary));
+            //StreamReader reader = File.OpenText(ConfigurationManager.AppSettings["StructureDictionaryPath"].ToString());
 
-            List<string> configFileLines = new List<string>();
+            //List<string> configFileLines = new List<string>();
 
-            foreach (StructureDictionaryModel structure in StructureDictionary)
+            /*foreach (StructureDictionaryModel structure in StructureDictionary)
             {
                 string configLine = "";
 
@@ -134,14 +140,14 @@ namespace PlanScoreCard.Services
                     if (!synonym.Equals(structure.StructureSynonyms.Last()))
                         configLine += ",";
                 }
-                
+
                 configFileLines.Add(configLine);
-            
+
             }
             string thing = @"C:\Users\jlovis.swim\Documents\GitHub\PlanScoreCard_CORE\PlanScoreCard\" + ConfigurationManager.AppSettings["StructureDictionaryPath"].ToString();
             reader.Close();
 
-            File.WriteAllLines(thing, configFileLines);
+            File.WriteAllLines(thing, configFileLines);*/
 
         }
 
@@ -173,7 +179,7 @@ namespace PlanScoreCard.Services
             {
                 // Check to see if the StructureDictionary contains this Structure
                 StructureDictionaryModel structure = StructureDictionary.FirstOrDefault(d => d.StructureID.ToLower().Equals(newStructure.StructureID.ToLower()));
-                
+
                 // If So, Merge Synonyms
                 if (structure != null)
                 {
@@ -201,7 +207,7 @@ namespace PlanScoreCard.Services
                 {
                     StructureDictionary.Add(newStructure);
                 }
- 
+
 
             }
             reader.Close();

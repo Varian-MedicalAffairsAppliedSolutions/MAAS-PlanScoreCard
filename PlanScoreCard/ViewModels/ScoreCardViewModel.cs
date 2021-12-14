@@ -314,7 +314,7 @@ namespace PlanScoreCard.ViewModels
             
             ScoreCardModel scoreCard = new ScoreCardModel(TemplateName, TemplateSite, ScoreCard?.ScoreMetrics);
             EditScoreCardView = ViewLauncherService.GetEditScoreCardView();
-
+            
             // Events
             EventAggregator.GetEvent<EditScoreCardSetPlanEvent>().Publish(new PlanModel(Plan, EventAggregator)); // Push the SelectedPlan
             EventAggregator.GetEvent<LoadEditScoreCardViewEvent>().Publish(scoreCard); // Push the ScoreCardModel to the ViewModel
@@ -370,6 +370,18 @@ namespace PlanScoreCard.ViewModels
                             PKModel pk_scoreTemplates = JsonConvert.DeserializeObject<PKModel>(File.ReadAllText(ofd.FileName));
                             ScoreTemplates = pk_scoreTemplates.ConvertToTemplate();
                         }
+                        //this is done in BuildPlanScoreFromTemplate when parsing structure the templateId is set here. 
+                        //else
+                        //{
+                        //    foreach (var scoreTemplate in template.ScoreTemplates)
+                        //    {
+                        //        //set template structure if it isn't set already. 
+                        //        if (scoreTemplate.Structure.TemplateStructureId == null)
+                        //        {
+                        //            scoreTemplate.Structure.TemplateStructureId = scoreTemplate.Structure.StructureId;
+                        //        }
+                        //    }
+                        //}
                         importSuccess = true;
                     }
                     catch

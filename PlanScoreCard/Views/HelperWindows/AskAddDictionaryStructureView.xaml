@@ -1,0 +1,26 @@
+﻿<metro:MetroWindow x:Class="PlanScoreCard.Views.HelperWindows.AskAddDictionaryStructureView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PlanScoreCard.Views.HelperWindows"
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d"
+        Title="Add Structure To Dictionary" Height="150" Width="400">
+    <Grid>
+        <StackPanel>
+            <TextBlock Text="Structure is not currently in Dictionary"/>
+            <TextBlock Text="Would you like to add it?"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="Yes" Margin="10" Command="{Binding YesCommand}"/>
+                <Button Content="No" Margin="10" Grid.Column="1" Command="{Binding NoCommand}"/>
+                <Button Content="Do not ask again" Margin="10" Grid.Column="2" Command="{Binding ExcludeCommand}"/>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</metro:MetroWindow>

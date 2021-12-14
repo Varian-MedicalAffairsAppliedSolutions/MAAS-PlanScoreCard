@@ -28,7 +28,7 @@ namespace PlanScoreCard.Startup
             container.RegisterType<PlanScoreViewModel>().AsSelf();
             container.RegisterType<PluginViewModel>().AsSelf();
             container.RegisterType<MainViewModel>().AsSelf();
-            container.RegisterType<EditScoreCardViewModel>().AsSelf();
+            container.RegisterType<EditScoreCardViewModel>().AsSelf().SingleInstance();
             container.RegisterType<EditDoseAtVolumeViewModel>().AsSelf();
             container.RegisterType<EditVolumeAtDoseViewModel>().AsSelf();
             container.RegisterType<EditDoseValueViewModel>().AsSelf();

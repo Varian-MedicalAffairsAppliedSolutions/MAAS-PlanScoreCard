@@ -256,7 +256,7 @@
                                 <ColumnDefinition Width="35"/>
                             </Grid.ColumnDefinitions>
 
-                            <ComboBox Height="30" Grid.Column="0" DisplayMemberPath="StructureId" SelectedValuePath="Value" SelectedItem="{Binding SelectedStructure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Structures}" Margin="5,0,5,0" Background="WhiteSmoke"/>
+                            <ComboBox Height="30" Grid.Column="0" DisplayMemberPath="StructureId" SelectedValuePath="Value" SelectedItem="{Binding SelectedStructure}" ItemsSource="{Binding Structures}" Margin="5,0,5,0" Background="WhiteSmoke"/>
                             <Button Command="{Binding AddNewStructureCommand}" Content="{icons:FontAwesome Kind=PlusCircleSolid}" Grid.Column="1" Height="30"  HorizontalAlignment="Left" Width="30" Margin="2"/>
 
                         </Grid>

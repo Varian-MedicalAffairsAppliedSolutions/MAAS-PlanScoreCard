@@ -10,7 +10,8 @@ namespace PlanScoreCard.Models
     {
 
         // Idea: Use this as a flag for if something is an exclusion, that way we don't need to have multiple collections, this way you can filter the collection down to the exclusions.
-        public bool isExclusion { get; set; }
+        //public bool isExclusion { get; set; }
+        public bool TG263 { get; set; }
 
         public string StructureID { get; set; }
 
@@ -20,6 +21,10 @@ namespace PlanScoreCard.Models
         {
             StructureID = structureID;
             StructureSynonyms = structureSynonyms;
+        }
+        public StructureDictionaryModel()
+        {
+            StructureSynonyms = new List<string>();
         }
     }
 }

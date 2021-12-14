@@ -31,9 +31,10 @@ namespace PlanScoreCard
         {
             try
             {
+                this.ShutdownMode = ShutdownMode.OnMainWindowClose;
                 var provider = new CultureInfo("en-US");
                 DateTime endDate = DateTime.Now;
-                if (DateTime.TryParse("12/31/2021", provider, DateTimeStyles.None, out endDate))
+                if (DateTime.TryParse("03/31/2022", provider, DateTimeStyles.None, out endDate))
                 {
                     if (DateTime.Now <= endDate)
                     {

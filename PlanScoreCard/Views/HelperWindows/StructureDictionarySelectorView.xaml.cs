@@ -2,6 +2,7 @@
 using PlanScoreCard.Events.HelperWindows;
 using PlanScoreCard.Models;
 using PlanScoreCard.Services;
+using PlanScoreCard.ViewModels.VMHelpers;
 using Prism.Events;
 using System;
 using System.Collections.Generic;
@@ -24,99 +25,19 @@ namespace PlanScoreCard.Views.HelperWindows
     /// <summary>
     /// Interaction logic for StructureDictionarySelectorView.xaml
     /// </summary>
-    public partial class StructureDictionarySelectorView : MetroWindow, INotifyPropertyChanged
+    public partial class StructureDictionarySelectorView : MetroWindow
     {
-
-        private readonly IEventAggregator EventAggregator;
-
-        private StructureDictionaryService StructureDictionaryService;
-
-        private string NewStructureId;
-
-        private List<string> dictionaryStructures;
-
-        public List<string> DictionaryStructures
+        public StructureDictionarySelectorView(StructureDictionaryService structureDictionaryService, string newStructureId, string templateStructureId, IEventAggregator eventAggregator)
         {
-            get { return dictionaryStructures; }
-            set
+            InitializeComponent();
+            StructureDictionarySelectorViewModel SSVM = new StructureDictionarySelectorViewModel(structureDictionaryService, newStructureId, templateStructureId, eventAggregator);
+            this.DataContext = SSVM;
+            if(SSVM.CloseAction == null)
             {
-                if (dictionaryStructures != value)
-                {
-                    dictionaryStructures = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private string selectedDictionaryStructure;
-
-        public string SelectedDictionaryStructure
-        {
-            get { return selectedDictionaryStructure; }
-            set
-            {
-                if (selectedDictionaryStructure != value)
-                {
-                    selectedDictionaryStructure = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public StructureDictionarySelectorView(StructureDictionaryService structureDictionaryService, string newStructureId, IEventAggregator eventAggregator)
-        {
-            EventAggregator = eventAggregator;
-            NewStructureId = newStructureId; 
-
-            StructureDictionaryService = structureDictionaryService;
-            DictionaryStructures = new List<string>();
-            Bind();
-        }
-
-        private void Bind()
-        {
-            foreach (StructureDictionaryModel structure in StructureDictionaryService.StructureDictionary)
-            {
-                DictionaryStructures.Add(structure.StructureID);
-            }
-
-            DictionaryStructures.Add("'Add New Structure'");
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (SelectedDictionaryStructure == null)
-            {
-                MessageBox.Show("No Structure Selected. Please Select A Structure to Match to.");
-                return;
-            }
-            else if (SelectedDictionaryStructure.Equals(DictionaryStructures.Last()))
-            {
-                MessageBoxResult result = MessageBox.Show("This structure is not a TG-263 structure, are you SURE you like to add it?", "New StructureId", MessageBoxButton.YesNo);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    StructureDictionaryService.AddStructure(NewStructureId);
-                    Close();
-                }
-            }
-            else
-            {
-                StructureDictionaryService.AddSynonym(SelectedDictionaryStructure, NewStructureId);
-                Close();
+                SSVM.CloseAction = new Action(this.Close);
             }
 
         }
 
-        private void CancelClicked(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
     }
 }
