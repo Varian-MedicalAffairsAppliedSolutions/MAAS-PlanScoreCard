@@ -1,7 +1,9 @@
 ﻿using Autofac;
+using PlanScoreCard.Events;
 using PlanScoreCard.Startup;
 using PlanScoreCard.ViewModels;
 using PlanScoreCard.Views;
+using Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -20,21 +22,47 @@ namespace PlanScoreCard
     /// </summary>
     public partial class App : System.Windows.Application
     {
-        private VMS.TPS.Common.Model.API.Application _app;
+        //private VMS.TPS.Common.Model.API.Application _app;
+
+        public void Application_Startup(object sender, StartupEventArgs e)
+        {
+            try
+            {
+                this.ShutdownMode = ShutdownMode.OnMainWindowClose;
+                IEventAggregator eventAggregator = new EventAggregator();
+                var startup = new StartupCore();
+                startup.StartupApp(sender, e, eventAggregator);
+            }
+            catch (Exception ex)
+            {
+                //throw new ApplicationException(ex.Message);
+                if (ConfigurationManager.AppSettings["Debug"] == "true")
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+                //_app.ClosePatient();
+                //_app.Dispose();
+                App.Current.Shutdown();
+            }
+        }
+    }
+    public class StartupCore
+    {
         private string _patientId;
         private string _courseId;
         private string _planId;
-        private Patient _patient;
-        private Course _course;
-        private PlanSetup _plan;
-        private MainView MV;
-        private void Application_Startup(object sender, StartupEventArgs e)
+        public Patient _patient;
+        public Course _course;
+        public PlanSetup _plan;
+        public ScoreCardView view;
+        public VMS.TPS.Common.Model.API.Application _app;
+        public void StartupApp(object sender, StartupEventArgs e, IEventAggregator eventAggregator)
         {
             try
             {
                 var provider = new CultureInfo("en-US");
                 DateTime endDate = DateTime.Now;
-                if (DateTime.TryParse("12/31/2021", provider, DateTimeStyles.None, out endDate))
+                if (DateTime.TryParse("03/31/2022", provider, DateTimeStyles.None, out endDate))
                 {
                     if (DateTime.Now <= endDate)
                     {
@@ -72,6 +100,9 @@ namespace PlanScoreCard
                                     return;
                                 }
                                 _patient = _app.OpenPatientById(_patientId);
+
+
+
                                 if (!String.IsNullOrWhiteSpace(_courseId))
                                 {
                                     _course = _patient.Courses.FirstOrDefault(x => x.Id == _courseId);
@@ -82,10 +113,10 @@ namespace PlanScoreCard
                                 }
 
                                 var bootstrap = new Bootstrapper();
-                                var container = bootstrap.Bootstrap(_patient, _course, _plan, _app.CurrentUser, _app);
-                                MV = container.Resolve<MainView>();
-                                MV.DataContext = container.Resolve<MainViewModel>();
-                                MV.ShowDialog();
+                                var container = bootstrap.Bootstrap(_patient, _course, _plan, _app.CurrentUser, _app, eventAggregator);
+                                view = container.Resolve<ScoreCardView>();
+                                eventAggregator.GetEvent<UILaunchedEvent>().Publish();
+                                view.ShowDialog();
                                 _app.ClosePatient();
                             }
                         }
@@ -111,6 +142,7 @@ namespace PlanScoreCard
                 _app.Dispose();
                 App.Current.Shutdown();
             }
+
         }
     }
 }

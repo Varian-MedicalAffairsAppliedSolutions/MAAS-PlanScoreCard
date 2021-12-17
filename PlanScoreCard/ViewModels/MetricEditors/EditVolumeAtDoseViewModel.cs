@@ -26,6 +26,7 @@ namespace PlanScoreCard.ViewModels.MetricEditors
             {
                 SetProperty(ref dose, value);
                 ScoreMetric.InputValue = dose;
+                EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Publish();
             }
         }
 
@@ -38,6 +39,7 @@ namespace PlanScoreCard.ViewModels.MetricEditors
             {
                 SetProperty(ref doseUnit, value);
                 ScoreMetric.InputUnit = doseUnit;
+                EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Publish();
             }
         }
 
@@ -58,6 +60,7 @@ namespace PlanScoreCard.ViewModels.MetricEditors
             {
                 SetProperty(ref volumeUnit, value);
                 ScoreMetric.OutputUnit = volumeUnit;
+                EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Publish();
             }
         }
 
@@ -66,7 +69,12 @@ namespace PlanScoreCard.ViewModels.MetricEditors
         public ObservableCollection<string> VolumeUnits
         {
             get { return volumeUnits; }
-            set { SetProperty(ref volumeUnits, value); }
+            set 
+            { 
+                SetProperty(ref volumeUnits, value);
+                EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Publish();
+            }
+
         }
 
         private IEventAggregator EventAggregator;

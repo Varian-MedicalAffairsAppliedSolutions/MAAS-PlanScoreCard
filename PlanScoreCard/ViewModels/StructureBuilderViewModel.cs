@@ -143,7 +143,8 @@ namespace PlanScoreCard.ViewModels
             _eventAggregator.GetEvent<StructureBuilderChangedEvent>().Subscribe(OnStructureBuilderChanged);
             _eventAggregator.GetEvent<SetPlanModelEvent>().Subscribe(SetPlanModel);
             CancelStructureCommand = new DelegateCommand<Window>(OnCancelStructure);
-            AddStructureCommand = new DelegateCommand<Window>(OnAddStructure, CanAddStructure);
+            //AddStructureCommand = new DelegateCommand<Window>(OnAddStructure, CanAddStructure); // THis is the original
+            AddStructureCommand = new DelegateCommand<Window>(OnAddStructure);
 
             _eventAggregator.GetEvent<ChangeNestEvent>().Subscribe(OnNestChanged);
             Operations = new ObservableCollection<OperationModel>();

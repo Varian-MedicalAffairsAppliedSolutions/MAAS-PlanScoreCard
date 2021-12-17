@@ -1,8 +1,10 @@
 ﻿using Autofac;
+using PlanScoreCard.Events.HelperWindows;
 using PlanScoreCard.Services;
 using PlanScoreCard.ViewModels;
 using PlanScoreCard.ViewModels.MetricEditors;
 using PlanScoreCard.Views;
+using PlanScoreCard.Views.HelperWindows;
 using PlanScoreCard.Views.MetricEditors;
 using Prism.Events;
 using VMS.TPS.Common.Model.API;
@@ -11,7 +13,7 @@ namespace PlanScoreCard.Startup
 {
     public class Bootstrapper
     {
-        public IContainer Bootstrap(Patient patient, Course course, PlanSetup plan, User user, Application app)
+        public IContainer Bootstrap(Patient patient, Course course, PlanSetup plan, User user, Application app, IEventAggregator eventAggregator)
         {
             var container = new ContainerBuilder();
             //esapi components.
@@ -26,16 +28,16 @@ namespace PlanScoreCard.Startup
             container.RegisterType<PlanScoreViewModel>().AsSelf();
             container.RegisterType<PluginViewModel>().AsSelf();
             container.RegisterType<MainViewModel>().AsSelf();
-            container.RegisterType<EditScoreCardViewModel>().AsSelf();
+            container.RegisterType<EditScoreCardViewModel>().AsSelf().SingleInstance();
             container.RegisterType<EditDoseAtVolumeViewModel>().AsSelf();
             container.RegisterType<EditVolumeAtDoseViewModel>().AsSelf();
             container.RegisterType<EditDoseValueViewModel>().AsSelf();
             container.RegisterType<EditHIViewModel>().AsSelf();
             container.RegisterType<EditCIViewModel>().AsSelf();
             container.RegisterType<StructureBuilderViewModel>().AsSelf();
+            container.RegisterType<ScoreCardViewModel>().AsSelf();
 
             // views
-            container.RegisterType<MainView>().AsSelf();
             container.RegisterType<PluginView>().AsSelf();
             container.RegisterType<EditScoreCardView>().AsSelf();
             container.RegisterType<EditDoseAtVolumeView>().AsSelf();
@@ -44,13 +46,21 @@ namespace PlanScoreCard.Startup
             container.RegisterType<EditHIView>().AsSelf();
             container.RegisterType<EditCIView>().AsSelf();
             container.RegisterType<StructureBuilderView>().AsSelf();
+            container.RegisterType<ScoreCardView>().AsSelf();
+            container.RegisterType<ProgressView>().AsSelf().SingleInstance();
+            container.RegisterType<EditVolumeAtDoseView>().AsSelf();
+
 
             //events
-            container.RegisterType<EventAggregator>().As<IEventAggregator>().SingleInstance();
+            container.RegisterInstance<IEventAggregator>(eventAggregator);
+            container.RegisterType<CancelEvent>().AsSelf();
 
             // services
             container.RegisterType<PluginViewService>().AsSelf();
             container.RegisterType<ViewLauncherService>().AsSelf();
+            container.RegisterType<ProgressViewService>().AsSelf();
+            container.RegisterType<StructureDictionaryService>().SingleInstance();
+
 
             return container.Build();
         }

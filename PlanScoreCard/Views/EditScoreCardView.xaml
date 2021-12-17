@@ -9,11 +9,11 @@
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:converters="clr-namespace:PlanScoreCard.Converters"
         mc:Ignorable="d"
-        Title="ScoreCard Editor" Height="760" Width="1400">
+        Title="ScoreCard Editor" Height="820" Width="1400">
     <metro:MetroWindow.Resources>
         <ResourceDictionary>
-            <converters:BoolVisibilityConverter x:Key="localVisibilityConverter"/>
-            <converters:MetricIdConverter x:Key="localMetricIdConverter"/>
+            <converters:StructureToStructureDisplayNameConverter x:Key="structureNameConverter"/>
+            <converters:StructureToBoldConverter x:Key="structureBoldConverter"/>
         </ResourceDictionary>
     </metro:MetroWindow.Resources>
     <Grid>
@@ -135,13 +135,24 @@
                         <DataGrid Foreground="Black" SelectedItem="{Binding SelectedScoreMetric, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ScoreMetrics, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
                             <DataGrid.Columns>
                                 <metro:DataGridNumericUpDownColumn Header="Rank" Binding="{Binding Id, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12"/>
-                                <DataGridTextColumn Header="Structure"   Binding="{Binding Structure.StructureId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" FontWeight="Normal" FontSize="12" IsReadOnly="True">
+                                <DataGridTextColumn Header="Structure" Binding="{Binding Structure, Converter={StaticResource structureNameConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}"  FontSize="12" IsReadOnly="True">
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="HorizontalAlignment" Value="Center" />
+                                            <Setter Property="FontWeight" Value="{Binding Structure , Converter={StaticResource structureBoldConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" />
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
+                                <!--<DataGridTemplateColumn Header="Structure">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <TextBox Text="{Binding Structure.StructureComment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" Background="{Binding PlanScoreBackgroundColor, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                                                <ComboBox SelectedItem="{Binding Structure.StructureId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" ItemsSource="{Binding StructureIds, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>-->
                                 <DataGridTextColumn Header="Metric" Binding="{Binding MetricText , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontWeight="Normal" FontSize="12" IsReadOnly="True"/>
                             </DataGrid.Columns>
                         </DataGrid>
@@ -182,10 +193,10 @@
                             <!--<Button Command="{Binding EditPointCommand}" Content="{icons:FontAwesome Kind=EditSolid}"  Height="30" Grid.Column="1" Grid.ColumnSpan="1" Margin="3"/>-->
 
                             <Button Command="{Binding DeletePointCommand}" Content="{icons:FontAwesome Kind=TrashAltSolid}" Width="30" Height="30" Grid.Column="1"/>
-                            <Button Command="{Binding OrderPointsByValueCommand}" Content="{icons:FontAwesome Kind=SortAmountUpSolid}" ToolTip="Order Points by Score" Width="30" Height="30" Grid.Column="2"/>
+                            <Button Command="{Binding OrderPointsByValueCommand}" Content="{icons:FontAwesome Kind=SortAmountUpSolid}" ToolTip="Order Points by Value" Width="30" Height="30" Grid.Column="2"/>
 
                             <Button Command="{Binding PointUpCommand}" Content="{icons:FontAwesome Kind=CaretUpSolid}" Width="30" Height="30" Grid.Column="11"/>
-                            <Button Command="{Binding PointDownComand}" Content="{icons:FontAwesome Kind=CaretDownSolid}" Width="30" Height="30" Grid.Column="12"/>
+                            <Button Command="{Binding PointDownCommand}" Content="{icons:FontAwesome Kind=CaretDownSolid}" Width="30" Height="30" Grid.Column="12"/>
 
                         </Grid>
 
@@ -225,29 +236,33 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="20"/>
                             <RowDefinition Height="40"/>
-                            <RowDefinition Height="90"/>
+                            <RowDefinition Height="150"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
 
-                        <Label Grid.Column="0" Grid.Row="0" FontSize="12" Content="Structure" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
-                        <Grid Grid.Row="1">
+                        <Label Grid.Column="0" Grid.Row="0" FontSize="12" Content="Metric Structure Id" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
+                        <TextBox Height="30" IsReadOnly="True" Grid.Column="0" Grid.Row="1" Text="{Binding SelectedScoreMetric.Structure.TemplateStructureId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,0,5,0" />
+
+                        <Label Grid.Column="1" Grid.Row="0" FontSize="12" Content="Plan Structure" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
+                        <Grid Grid.Row="1" Grid.Column="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="35"/>
                             </Grid.ColumnDefinitions>
 
-                            <ComboBox Height="30" Grid.Column="0" DisplayMemberPath="StructureId" SelectedValuePath="Value" SelectedItem="{Binding SelectedScoreMetric.Structure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Structures}" Margin="5,0,5,0" Background="WhiteSmoke"/>
+                            <ComboBox Height="30" Grid.Column="0" DisplayMemberPath="StructureId" SelectedValuePath="Value" SelectedItem="{Binding SelectedStructure}" ItemsSource="{Binding Structures}" Margin="5,0,5,0" Background="WhiteSmoke"/>
                             <Button Command="{Binding AddNewStructureCommand}" Content="{icons:FontAwesome Kind=PlusCircleSolid}" Grid.Column="1" Height="30"  HorizontalAlignment="Left" Width="30" Margin="2"/>
 
                         </Grid>
                         
-                        <Label Grid.Column="1" Grid.Row="0" FontSize="12" Content="Metric Type" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
-                        <ComboBox Height="30" Grid.Column="1" Grid.Row="1" SelectedItem="{Binding SelectedScoreMetric.MetricType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding MetricTypes}" Margin="5,0,5,0" />
+                        <Label Grid.Column="2" Grid.Row="0" FontSize="12" Content="Metric Type" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
+                        <ComboBox Height="30" Grid.Column="2" Grid.Row="1" SelectedItem="{Binding SelectedScoreMetric.MetricType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding MetricTypes}" Margin="5,0,5,0" />
 
                         <!--<Label Grid.Column="2" Grid.Row="0" FontSize="12" Content="Description" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
                         <TextBox Height="25" Grid.Column="2" Text="{Binding SelectedScoreMetric.MetricText}" Grid.Row="1" Margin="5,0,5,0" IsReadOnly="True"/>-->
@@ -270,7 +285,7 @@
                         <TextBox Grid.Column="0" Text="{Binding SelectedScoreMetric.MetricText}"  Grid.Row="3" Grid.ColumnSpan="3" Margin="5" IsReadOnly="True"/>-->
 
                         <Border Grid.Row="4" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="1" Margin="2,2,2,4" CornerRadius="3" Height="400">
-                            <oxy:PlotView Model="{Binding ScoreMetricPlotModel, Mode=TwoWay}" Background="LightGray" Height="400"/>
+                            <oxy:PlotView Model="{Binding SelectedScoreMetric.ScoreMetricPlotModel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="LightGray" Height="400"/>
                         </Border>
                     </Grid>
 

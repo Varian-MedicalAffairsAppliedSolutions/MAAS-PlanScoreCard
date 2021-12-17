@@ -48,7 +48,7 @@ namespace PlanScoreCard.ViewModels
             PluginViewModel = pluginViewModel;
             bPluginVisibility = false;
             _eventAggregator = eventAggregator;
-            _eventAggregator.GetEvent<ScorePlanEvent>().Subscribe(OnScorePlan);
+            //_eventAggregator.GetEvent<ScorePlanEvent>().Subscribe(OnScorePlan);
             _eventAggregator.GetEvent<PluginVisibilityEvent>().Subscribe(OnPluginVisible);
         }
 
@@ -68,12 +68,12 @@ namespace PlanScoreCard.ViewModels
 
         private void OnScorePlan(List<ScoreTemplateModel> templates)
         {
-            if (NavigationViewModel.GenScoreCardView != null)
-            {
-                NavigationViewModel.UpdateScoreTemplates(templates);
-                NavigationViewModel.GenScoreCardView.Close();
-            }
-            PlanScoreViewModel.ScorePlan(templates);
+            //if (NavigationViewModel.GenScoreCardView != null)
+            //{
+            //    NavigationViewModel.UpdateScoreTemplates(templates);
+            //    NavigationViewModel.GenScoreCardView.Close();
+            //}
+            //PlanScoreViewModel.ScorePlan(templates);
         }
 
         private string _patientId;

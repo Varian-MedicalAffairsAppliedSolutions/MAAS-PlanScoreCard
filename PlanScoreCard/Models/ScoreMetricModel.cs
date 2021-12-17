@@ -16,6 +16,8 @@ namespace PlanScoreCard.Models
 {
     public class ScoreMetricModel : BindableBase, INotifyPropertyChanged
     {
+        public bool IsLoaded { get; set; }
+
         public IEventAggregator EventAggregator;
 
         // Metric Type
@@ -30,6 +32,7 @@ namespace PlanScoreCard.Models
                 SetProperty(ref metricType , value);
                 EventAggregator.GetEvent<UpdateMetricEditorEvent>().Publish();
                 UpdateMetricText();
+                ScoreMetricPlotModel.Title = PlanScorePlottingServices.GetPlotTitle(metricType, this);
                 NotifyPropertyChanged();
             }
         }
@@ -118,9 +121,33 @@ namespace PlanScoreCard.Models
             get { return structure; }
             set
             {
-                value = Structures.FirstOrDefault(s => s.StructureId == value.StructureId);
+                if (value == null)
+                    return;
+                
+                StructureModel structureModel = Structures.FirstOrDefault(s => s.StructureId == value.StructureId);
+
+                if (structureModel == null) // Try matching based off of Structure Code
+                {
+                    if(value.StructureCode != null)
+                        structureModel = Structures.FirstOrDefault(s => s.StructureCode == value.StructureCode);
+
+                    if (structureModel == null && !String.IsNullOrWhiteSpace(value.TemplateStructureId))
+                    {
+                        structureModel = new StructureModel { TemplateStructureId = value.TemplateStructureId };
+                    }
+                    else
+                    {
+                        structureModel = new StructureModel { TemplateStructureId = value.StructureId };
+                    }
+                }
+
+                value = structureModel;
                 EventAggregator.GetEvent<MetricStructureChangedEvent>().Publish();
                 SetProperty(ref structure, value);
+                
+                //if(IsLoaded)
+                //    Structure.TemplateStructureId = value.StructureId;
+                
                 NotifyPropertyChanged();
             }
         }
@@ -129,7 +156,13 @@ namespace PlanScoreCard.Models
         public ObservableCollection<StructureModel> Structures { get; set; }
 
         // ScorePoints
-        public ObservableCollection<ScorePointModel> ScorePoints { get; set; }
+        private ObservableCollection<ScorePointModel> scorePoints;
+
+        public ObservableCollection<ScorePointModel> ScorePoints
+        {
+            get { return scorePoints; }
+            set { SetProperty(ref scorePoints , value); }
+        }
 
         // ScorePoint Plot
 
@@ -145,7 +178,6 @@ namespace PlanScoreCard.Models
             }
         }
 
-
         // Metric Parameters
         private string inputValue;
 
@@ -156,6 +188,7 @@ namespace PlanScoreCard.Models
             { 
                 SetProperty( ref inputValue , value);
                 UpdateMetricText();
+                ScoreMetricPlotModel.Title = PlanScorePlottingServices.GetPlotTitle(metricType, this);
                 NotifyPropertyChanged();
             }
         }
@@ -169,6 +202,7 @@ namespace PlanScoreCard.Models
             { 
                 SetProperty( ref inputUnit , value);
                 UpdateMetricText();
+                ScoreMetricPlotModel.Title = PlanScorePlottingServices.GetPlotTitle(metricType, this);
                 NotifyPropertyChanged();
             }
         }
@@ -182,6 +216,7 @@ namespace PlanScoreCard.Models
             { 
                 SetProperty(ref outputUnit , value);
                 UpdateMetricText();
+                ScoreMetricPlotModel.Title = PlanScorePlottingServices.GetPlotTitle(metricType, this);
                 NotifyPropertyChanged();
             }
         }
@@ -200,6 +235,7 @@ namespace PlanScoreCard.Models
             Structures = new ObservableCollection<StructureModel>();
             ScoreMetricLevelSettings = new Dictionary<string, double>();
             CanReorder = true;
+            IsLoaded = false;
 
             SetEvents();
 
@@ -254,18 +290,12 @@ namespace PlanScoreCard.Models
                 //this one sets marker color.
                 foreach (ScorePointModel spoint in ScorePoints.OrderBy(x => x.PointX))
                 {
-                    var ScorePointSeries = new LineSeries
-                    {
-                        //Color = OxyColors.Orange,
-                        Color = GetColorFromMetric(spoint),
-                        MarkerType = MarkerType.Diamond,
-                        //MarkerFill = GetColorFromMetric(spoint),
-                        MarkerSize = 8
-                    };
+                    var ScorePointSeries = new LineSeries { Color = GetColorFromMetric(spoint), MarkerType = MarkerType.Diamond, MarkerSize = 8};
                     //add to the plot
                     ScorePointSeries.Points.Add(new DataPoint(Convert.ToDouble(spoint.PointX), spoint.Score));
                     ScoreMetricPlotModel.Series.Add(ScorePointSeries);
                 }
+
                 if (ScorePoints.Any(x => x.bMetricChecked))
                 {
                     var PointSeriesAbove = new LineSeries

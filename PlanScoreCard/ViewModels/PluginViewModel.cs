@@ -9,9 +9,11 @@ using Prism.Events;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,9 +22,8 @@ using System.Windows.Threading;
 
 namespace PlanScoreCard.ViewModels
 {
-    public class PluginViewModel : BindableBase
+    public class PluginViewModel : BindableBase, INotifyPropertyChanged
     {
-        private string _consoleOutput;
         private IEventAggregator _eventAggregator;
         private PluginViewService PluginViewService;
 
@@ -30,11 +31,6 @@ namespace PlanScoreCard.ViewModels
         private readonly IEventAggregator ViewEventAggregator;
         private Dispatcher ViewDispatcher;
 
-        public string ConsoleOutput
-        {
-            get { return _consoleOutput; }
-            set { SetProperty(ref _consoleOutput, value); }
-        }
         private bool _breloadAvailable;
 
         public bool bReloadAvailable
@@ -77,6 +73,62 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand OptimizeCommand { get; private set; }
         public DelegateCommand FinalizeCommand { get; private set; }
         public PlotModel PlotData { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        // ConsoleOutput Binding Proeperty
+        private string consoleOutput;
+        public string ConsoleOutput
+        {
+            get { return consoleOutput; }
+            set
+            {
+                consoleOutput = value;
+                OnPropertyChanged();
+            }
+        }
+
+        // PlotModel Binding Proerty
+        private PlotModel plotModel;
+        public PlotModel PlotModel
+        {
+            get { return plotModel; }
+            set
+            {
+                plotModel = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private string xAxisLabel;
+        public string XAxisLabel
+        {
+            get { return xAxisLabel; }
+            set
+            {
+                xAxisLabel = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string yAxisLabel;
+        public string YAxisLabel
+        {
+            get { return yAxisLabel; }
+            set
+            {
+                yAxisLabel = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public PluginViewModel(IEventAggregator eventAggregator , PluginViewService pluginViewService)
         {
             _eventAggregator = eventAggregator;

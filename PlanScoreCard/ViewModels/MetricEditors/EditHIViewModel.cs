@@ -25,6 +25,7 @@ namespace PlanScoreCard.ViewModels.MetricEditors
 			{ 
 				SetProperty(ref _hi_highValue, value);
 				ScoreMetric.HI_Hi = HI_HiValue.ToString();
+				EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Publish();
 			}
 		}
 		private double _hi_lowValue;
@@ -36,6 +37,7 @@ namespace PlanScoreCard.ViewModels.MetricEditors
 			{ 
 				SetProperty(ref _hi_lowValue, value);
 				ScoreMetric.HI_Lo = HI_LowValue.ToString();
+				EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Publish();
 			}
 		}
 		private double _targetValue;
@@ -47,6 +49,7 @@ namespace PlanScoreCard.ViewModels.MetricEditors
 			{ 
 				SetProperty(ref _targetValue, value);
 				ScoreMetric.HI_Target = TargetValue.ToString();
+				EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Publish();
 			}
 		}
 		private string _selectedDoseUnit;
@@ -56,6 +59,7 @@ namespace PlanScoreCard.ViewModels.MetricEditors
 			set
 			{
 				SetProperty(ref _selectedDoseUnit, value);
+				EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Publish();
 			}
 		}
 		public ObservableCollection<string> DoseUnits { get; set; }

@@ -160,6 +160,6 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
-        <TextBlock Text="{Binding ScoreTotalText}" Grid.Row="2" Foreground="Black" FontWeight="Bold" HorizontalAlignment="Center" FontSize="14"/>
+        <TextBlock Text="{Binding PlanScore}" Grid.Row="2" Foreground="Black" FontWeight="Bold" HorizontalAlignment="Center" FontSize="14"/>
     </Grid>
 </UserControl>

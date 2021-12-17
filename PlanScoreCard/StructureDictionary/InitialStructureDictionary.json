@@ -1,0 +1,4909 @@
+[
+	{
+		"StructureID": "A_Aorta",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Aorta_A"
+		]
+	},
+	{
+		"StructureID": "A_Aorta_Asc",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Asc_Aorta_A"
+		]
+	},
+	{
+		"StructureID": "A_Brachiocephls",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Brachiocephls_A"
+		]
+	},
+	{
+		"StructureID": "A_Carotid",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Carotid_A"
+		]
+	},
+	{
+		"StructureID": "A_Carotid_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Carotid_A"
+		]
+	},
+	{
+		"StructureID": "A_Carotid_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Carotid_A"
+		]
+	},
+	{
+		"StructureID": "A_Celiac",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Celiac_A"
+		]
+	},
+	{
+		"StructureID": "A_Coronary",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Coronary_A"
+		]
+	},
+	{
+		"StructureID": "A_Coronary_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Coronary_A"
+		]
+	},
+	{
+		"StructureID": "A_Coronary_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Coronary_A"
+		]
+	},
+	{
+		"StructureID": "A_Femoral_Cflx_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Cflx_Femoral_A"
+		]
+	},
+	{
+		"StructureID": "A_Femoral_Cflx_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Cflx_Femoral_A"
+		]
+	},
+	{
+		"StructureID": "A_Femoral_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Femoral_A"
+		]
+	},
+	{
+		"StructureID": "A_Femoral_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Femoral_A"
+		]
+	},
+	{
+		"StructureID": "A_Humeral_Cflx_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Cflx_Humeral_A"
+		]
+	},
+	{
+		"StructureID": "A_Humeral_Cflx_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Cflx_Humeral_A"
+		]
+	},
+	{
+		"StructureID": "A_Humeral_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Humeral_A"
+		]
+	},
+	{
+		"StructureID": "A_Humeral_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Humeral_A"
+		]
+	},
+	{
+		"StructureID": "A_Hypophyseal_I",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"I_Hypophyseal_A"
+		]
+	},
+	{
+		"StructureID": "A_Hypophyseal_S",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"S_Hypophyseal_A"
+		]
+	},
+	{
+		"StructureID": "A_Iliac_Cflx_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Cflx_Iliac_A"
+		]
+	},
+	{
+		"StructureID": "A_Iliac_Cflx_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Cflx_Iliac_A"
+		]
+	},
+	{
+		"StructureID": "A_Iliac_Ext_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Ext_Iliac_A"
+		]
+	},
+	{
+		"StructureID": "A_Iliac_Ext_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Ext_Iliac_A"
+		]
+	},
+	{
+		"StructureID": "A_Iliac_Int_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Int_Iliac_A"
+		]
+	},
+	{
+		"StructureID": "A_Iliac_Int_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Int_Iliac_A"
+		]
+	},
+	{
+		"StructureID": "A_Iliac_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Iliac_A"
+		]
+	},
+	{
+		"StructureID": "A_Iliac_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Iliac_A"
+		]
+	},
+	{
+		"StructureID": "A_LAD",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"LAD_A"
+		]
+	},
+	{
+		"StructureID": "A_Mesenteric_I",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"I_Mesenteric_A"
+		]
+	},
+	{
+		"StructureID": "A_Mesenteric_S",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"S_Mesenteric_A"
+		]
+	},
+	{
+		"StructureID": "A_Pulmonary",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Pulmonary_A"
+		]
+	},
+	{
+		"StructureID": "A_Subclavian",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Subclavian_A"
+		]
+	},
+	{
+		"StructureID": "A_Subclavian_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Subclavian_A"
+		]
+	},
+	{
+		"StructureID": "A_Subclavian_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Subclavian_A"
+		]
+	},
+	{
+		"StructureID": "A_Vertebral",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Vertebral_A"
+		]
+	},
+	{
+		"StructureID": "A_Vertebral_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Vertebral_A"
+		]
+	},
+	{
+		"StructureID": "A_Vertebral_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Vertebral_A"
+		]
+	},
+	{
+		"StructureID": "Acetabulum_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Acetabulum"
+		]
+	},
+	{
+		"StructureID": "Acetabulum_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Acetabulum"
+		]
+	},
+	{
+		"StructureID": "Acetabulums",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Acetabulums"
+		]
+	},
+	{
+		"StructureID": "AirWay_Dist",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Dist_AirWay"
+		]
+	},
+	{
+		"StructureID": "AirWay_Prox",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Prox_AirWay"
+		]
+	},
+	{
+		"StructureID": "Anus",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Anus"
+		]
+	},
+	{
+		"StructureID": "Appendix",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Appendix"
+		]
+	},
+	{
+		"StructureID": "Arytenoid",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Arytenoid"
+		]
+	},
+	{
+		"StructureID": "Arytenoid_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Arytenoid"
+		]
+	},
+	{
+		"StructureID": "Arytenoid_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Arytenoid"
+		]
+	},
+	{
+		"StructureID": "Atrium",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Atrium"
+		]
+	},
+	{
+		"StructureID": "Atrium_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Atrium"
+		]
+	},
+	{
+		"StructureID": "Atrium_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Atrium"
+		]
+	},
+	{
+		"StructureID": "Bag_Bowel",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Bowel_Bag"
+		]
+	},
+	{
+		"StructureID": "Bag_Ostomy",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Ostomy_Bag"
+		]
+	},
+	{
+		"StructureID": "BileDuct_Common",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Common_BileDuct"
+		]
+	},
+	{
+		"StructureID": "Bladder",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Bladder"
+		]
+	},
+	{
+		"StructureID": "Bladder_Wall",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Bladder_Wall"
+		]
+	},
+	{
+		"StructureID": "Bladder-CTV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Bladder-CTV"
+		]
+	},
+	{
+		"StructureID": "Body",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Body"
+		]
+	},
+	{
+		"StructureID": "Body-PTV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Body-PTV"
+		]
+	},
+	{
+		"StructureID": "Bolus",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Bolus"
+		]
+	},
+	{
+		"StructureID": "Bone",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Ethmoid",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Ethmoid_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Frontal",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Frontal_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Hyoid",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Hyoid_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Ilium",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Ilium_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Ilium_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Ilium_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Ilium_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Ilium_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Incus",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Incus_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Incus_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Incus_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Incus_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Incus_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Ischium_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Ischium_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Ischium_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Ischium_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Lacrimal",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Lacrimal_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Lacrimal_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Lacrimal_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Lacrimal_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Lacrimal_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Mandible",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Mandible_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Mastoid",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Mastoid_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Mastoid_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Mastoid_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Mastoid_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Mastoid_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Nasal",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Nasal_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Nasal_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Nasal_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Nasal_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Nasal_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Occipital",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Occipital_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Palatine",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Palatine_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Palatine_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Palatine_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Palatine_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Palatine_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Parietal",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Parietal_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Parietal_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Parietal_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Parietal_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Parietal_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Pelvic",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Pelvic_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Pelvic_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Pelvic_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Pelvic_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Pelvic_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Sphenoid",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Sphenoid_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Temporal",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Temporal_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Temporal_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Temporal_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Temporal_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Temporal_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Zygomatic_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Zygomatic_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Zygomatic_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Zygomatic_Bone"
+		]
+	},
+	{
+		"StructureID": "Bone_Zygomatics",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Zygomatics_Bone"
+		]
+	},
+	{
+		"StructureID": "BoneMarrow",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"BoneMarrow"
+		]
+	},
+	{
+		"StructureID": "BoneMarrow_Act",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Act_BoneMarrow"
+		]
+	},
+	{
+		"StructureID": "Boost",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Boost"
+		]
+	},
+	{
+		"StructureID": "Bowel",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Bowel"
+		]
+	},
+	{
+		"StructureID": "Bowel_Large",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Large_Bowel"
+		]
+	},
+	{
+		"StructureID": "Bowel_Small",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Small_Bowel"
+		]
+	},
+	{
+		"StructureID": "BrachialPlex_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_BrachialPlex"
+		]
+	},
+	{
+		"StructureID": "BrachialPlex_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_BrachialPlex"
+		]
+	},
+	{
+		"StructureID": "BrachialPlexs",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"BrachialPlexs"
+		]
+	},
+	{
+		"StructureID": "Brain",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Brain"
+		]
+	},
+	{
+		"StructureID": "Brain-CTV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Brain-CTV"
+		]
+	},
+	{
+		"StructureID": "Brain-GTV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Brain-GTV"
+		]
+	},
+	{
+		"StructureID": "Brain-PTV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Brain-PTV"
+		]
+	},
+	{
+		"StructureID": "Brainstem",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Brainstem"
+		]
+	},
+	{
+		"StructureID": "Brainstem_Core",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Core_Brainstem"
+		]
+	},
+	{
+		"StructureID": "Brainstem_PRV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"PRV_Brainstem"
+		]
+	},
+	{
+		"StructureID": "Brainstem_Surf",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Surf_Brainstem"
+		]
+	},
+	{
+		"StructureID": "Breast_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Breast"
+		]
+	},
+	{
+		"StructureID": "Breast_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Breast"
+		]
+	},
+	{
+		"StructureID": "Breasts",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Breasts"
+		]
+	},
+	{
+		"StructureID": "Bronchus",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Bronchus"
+		]
+	},
+	{
+		"StructureID": "Bronchus_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Bronchus"
+		]
+	},
+	{
+		"StructureID": "Bronchus_Main",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Main_Bronchus"
+		]
+	},
+	{
+		"StructureID": "Bronchus_Main_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Main_Bronchus"
+		]
+	},
+	{
+		"StructureID": "Bronchus_Main_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Main_Bronchus"
+		]
+	},
+	{
+		"StructureID": "Bronchus_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Bronchus"
+		]
+	},
+	{
+		"StructureID": "Canal_Anal",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Anal_Canal"
+		]
+	},
+	{
+		"StructureID": "Carina",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Carina"
+		]
+	},
+	{
+		"StructureID": "Cartlg_Thyroid",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Thyroid_Cartlg"
+		]
+	},
+	{
+		"StructureID": "CaudaEquina",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"CaudaEquina"
+		]
+	},
+	{
+		"StructureID": "Cavernosum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Cavernosum"
+		]
+	},
+	{
+		"StructureID": "Cavity_Nasal",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Nasal_Cavity"
+		]
+	},
+	{
+		"StructureID": "Cavity_Oral",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Oral_Cavity"
+		]
+	},
+	{
+		"StructureID": "Cecum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Cecum"
+		]
+	},
+	{
+		"StructureID": "Cerebellum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Cerebellum"
+		]
+	},
+	{
+		"StructureID": "Cerebrum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Cerebrum"
+		]
+	},
+	{
+		"StructureID": "Cerebrum_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Cerebrum"
+		]
+	},
+	{
+		"StructureID": "Cerebrum_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Cerebrum"
+		]
+	},
+	{
+		"StructureID": "Cervix",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Cervix"
+		]
+	},
+	{
+		"StructureID": "Chestwall",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Chestwall"
+		]
+	},
+	{
+		"StructureID": "Chestwall_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Chestwall"
+		]
+	},
+	{
+		"StructureID": "Chestwall_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Chestwall"
+		]
+	},
+	{
+		"StructureID": "Cist_Pontine",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Pontine_Cist"
+		]
+	},
+	{
+		"StructureID": "Cist_Suprasellar",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Suprasellar_Cist"
+		]
+	},
+	{
+		"StructureID": "Clavicle_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Clavicle"
+		]
+	},
+	{
+		"StructureID": "Clavicle_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Clavicle"
+		]
+	},
+	{
+		"StructureID": "CN_III",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"III_CN"
+		]
+	},
+	{
+		"StructureID": "CN_III_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_III_CN"
+		]
+	},
+	{
+		"StructureID": "CN_III_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_III_CN"
+		]
+	},
+	{
+		"StructureID": "CN_IX",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"IX_CN"
+		]
+	},
+	{
+		"StructureID": "CN_IX_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_IX_CN"
+		]
+	},
+	{
+		"StructureID": "CN_IX_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_IX_CN"
+		]
+	},
+	{
+		"StructureID": "CN_V",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"V_CN"
+		]
+	},
+	{
+		"StructureID": "CN_V_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_V_CN"
+		]
+	},
+	{
+		"StructureID": "CN_V_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_V_CN"
+		]
+	},
+	{
+		"StructureID": "CN_VI",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"VI_CN"
+		]
+	},
+	{
+		"StructureID": "CN_VI_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_VI_CN"
+		]
+	},
+	{
+		"StructureID": "CN_VI_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_VI_CN"
+		]
+	},
+	{
+		"StructureID": "CN_VII",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"VII_CN"
+		]
+	},
+	{
+		"StructureID": "CN_VII_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_VII_CN"
+		]
+	},
+	{
+		"StructureID": "CN_VII_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_VII_CN"
+		]
+	},
+	{
+		"StructureID": "CN_VIII",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"VIII_CN"
+		]
+	},
+	{
+		"StructureID": "CN_VIII_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_VIII_CN"
+		]
+	},
+	{
+		"StructureID": "CN_VIII_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_VIII_CN"
+		]
+	},
+	{
+		"StructureID": "CN_XI",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"XI_CN"
+		]
+	},
+	{
+		"StructureID": "CN_XI_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_XI_CN"
+		]
+	},
+	{
+		"StructureID": "CN_XI_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_XI_CN"
+		]
+	},
+	{
+		"StructureID": "CN_XII",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"XII_CN"
+		]
+	},
+	{
+		"StructureID": "CN_XII_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_XII_CN"
+		]
+	},
+	{
+		"StructureID": "CN_XII_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_XII_CN"
+		]
+	},
+	{
+		"StructureID": "Cochlea",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Cochlea"
+		]
+	},
+	{
+		"StructureID": "Cochlea_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Cochlea"
+		]
+	},
+	{
+		"StructureID": "Cochlea_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Cochlea"
+		]
+	},
+	{
+		"StructureID": "Colon",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Colon"
+		]
+	},
+	{
+		"StructureID": "Colon_Ascending",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Ascending_Colon"
+		]
+	},
+	{
+		"StructureID": "Colon_Decending",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Decending_Colon"
+		]
+	},
+	{
+		"StructureID": "Colon_Sigmoid",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Sigmoid_Colon"
+		]
+	},
+	{
+		"StructureID": "Colon_Transverse",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Transverse_Colon"
+		]
+	},
+	{
+		"StructureID": "Cornea",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Cornea"
+		]
+	},
+	{
+		"StructureID": "Cornea_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Cornea"
+		]
+	},
+	{
+		"StructureID": "Cornea_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Cornea"
+		]
+	},
+	{
+		"StructureID": "CribriformPlate",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"CribriformPlate"
+		]
+	},
+	{
+		"StructureID": "Cricoid",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Cricoid"
+		]
+	},
+	{
+		"StructureID": "Cricopharyngeus",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Cricopharyngeus"
+		]
+	},
+	{
+		"StructureID": "Dens",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Dens"
+		]
+	},
+	{
+		"StructureID": "Diaphragm",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Diaphragm"
+		]
+	},
+	{
+		"StructureID": "Duodenum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Duodenum"
+		]
+	},
+	{
+		"StructureID": "Ear_External_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_External_Ear"
+		]
+	},
+	{
+		"StructureID": "Ear_External_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_External_Ear"
+		]
+	},
+	{
+		"StructureID": "Ear_Externals",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Externals_Ear"
+		]
+	},
+	{
+		"StructureID": "Ear_Internal_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Internal_Ear"
+		]
+	},
+	{
+		"StructureID": "Ear_Internal_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Internal_Ear"
+		]
+	},
+	{
+		"StructureID": "Ear_Internals",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Internals_Ear"
+		]
+	},
+	{
+		"StructureID": "Ear_Middle",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Middle_Ear"
+		]
+	},
+	{
+		"StructureID": "Ear_Middle_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Middle_Ear"
+		]
+	},
+	{
+		"StructureID": "Ear_Middle_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Middle_Ear"
+		]
+	},
+	{
+		"StructureID": "Edema",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Edema"
+		]
+	},
+	{
+		"StructureID": "Elbow",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Elbow"
+		]
+	},
+	{
+		"StructureID": "Elbow_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Elbow"
+		]
+	},
+	{
+		"StructureID": "Elbow_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Elbow"
+		]
+	},
+	{
+		"StructureID": "Esophagus",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Esophagus"
+		]
+	},
+	{
+		"StructureID": "Esophagus_I",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"I_Esophagus"
+		]
+	},
+	{
+		"StructureID": "Esophagus_M",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"M_Esophagus"
+		]
+	},
+	{
+		"StructureID": "Esophagus_NAdj",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"NAdj_Esophagus"
+		]
+	},
+	{
+		"StructureID": "Esophagus_S",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"S_Esophagus"
+		]
+	},
+	{
+		"StructureID": "Eval",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Eval"
+		]
+	},
+	{
+		"StructureID": "External",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"External"
+		]
+	},
+	{
+		"StructureID": "Eye_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Eye"
+		]
+	},
+	{
+		"StructureID": "Eye_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Eye"
+		]
+	},
+	{
+		"StructureID": "Eyes",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Eyes"
+		]
+	},
+	{
+		"StructureID": "Femur_Base_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Base_Femur"
+		]
+	},
+	{
+		"StructureID": "Femur_Base_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Base_Femur"
+		]
+	},
+	{
+		"StructureID": "Femur_Head_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Head_Femur"
+		]
+	},
+	{
+		"StructureID": "Femur_Head_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Head_Femur"
+		]
+	},
+	{
+		"StructureID": "Femur_Joint_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Joint_Femur"
+		]
+	},
+	{
+		"StructureID": "Femur_Joint_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Joint_Femur"
+		]
+	},
+	{
+		"StructureID": "Femur_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Femur"
+		]
+	},
+	{
+		"StructureID": "Femur_Neck_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Neck_Femur"
+		]
+	},
+	{
+		"StructureID": "Femur_Neck_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Neck_Femur"
+		]
+	},
+	{
+		"StructureID": "Femur_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Femur"
+		]
+	},
+	{
+		"StructureID": "Femur_Shaft_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Shaft_Femur"
+		]
+	},
+	{
+		"StructureID": "Femur_Shaft_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Shaft_Femur"
+		]
+	},
+	{
+		"StructureID": "Femurs",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Femurs"
+		]
+	},
+	{
+		"StructureID": "Fibula",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Fibula"
+		]
+	},
+	{
+		"StructureID": "Fibula_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Fibula"
+		]
+	},
+	{
+		"StructureID": "Fibula_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Fibula"
+		]
+	},
+	{
+		"StructureID": "Foley",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Foley"
+		]
+	},
+	{
+		"StructureID": "Fossa_Jugular",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Jugular_Fossa"
+		]
+	},
+	{
+		"StructureID": "Fossa_Posterior",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Posterior_Fossa"
+		]
+	},
+	{
+		"StructureID": "Gallbladder",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Gallbladder"
+		]
+	},
+	{
+		"StructureID": "Genitals",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Genitals"
+		]
+	},
+	{
+		"StructureID": "Glnd_Adrenal_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Adrenal_Glnd"
+		]
+	},
+	{
+		"StructureID": "Glnd_Adrenal_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Adrenal_Glnd"
+		]
+	},
+	{
+		"StructureID": "Glnd_Lacrimal",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Lacrimal_Glnd"
+		]
+	},
+	{
+		"StructureID": "Glnd_Lacrimal_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Lacrimal_Glnd"
+		]
+	},
+	{
+		"StructureID": "Glnd_Lacrimal_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Lacrimal_Glnd"
+		]
+	},
+	{
+		"StructureID": "Glnd_Parathyroid",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Parathyroid_Glnd"
+		]
+	},
+	{
+		"StructureID": "Glnd_Subling_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Subling_Glnd"
+		]
+	},
+	{
+		"StructureID": "Glnd_Subling_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Subling_Glnd"
+		]
+	},
+	{
+		"StructureID": "Glnd_Sublings",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Sublings_Glnd"
+		]
+	},
+	{
+		"StructureID": "Glnd_Submand_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Submand_Glnd"
+		]
+	},
+	{
+		"StructureID": "Glnd_Submand_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Submand_Glnd"
+		]
+	},
+	{
+		"StructureID": "Glnd_Submands",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Submands_Glnd"
+		]
+	},
+	{
+		"StructureID": "Glnd_Thymus",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Thymus_Glnd"
+		]
+	},
+	{
+		"StructureID": "Glnd_Thyroid",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Thyroid_Glnd"
+		]
+	},
+	{
+		"StructureID": "Glottis",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Glottis"
+		]
+	},
+	{
+		"StructureID": "GreatVes",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"GreatVes"
+		]
+	},
+	{
+		"StructureID": "GreatVes_NAdj",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"NAdj_GreatVes"
+		]
+	},
+	{
+		"StructureID": "GrowthPlate_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_GrowthPlate"
+		]
+	},
+	{
+		"StructureID": "GrowthPlate_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_GrowthPlate"
+		]
+	},
+	{
+		"StructureID": "Hardpalate",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Hardpalate"
+		]
+	},
+	{
+		"StructureID": "Heart",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Heart"
+		]
+	},
+	{
+		"StructureID": "Hemisphere_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Hemisphere"
+		]
+	},
+	{
+		"StructureID": "Hemisphere_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Hemisphere"
+		]
+	},
+	{
+		"StructureID": "Hemispheres",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Hemispheres"
+		]
+	},
+	{
+		"StructureID": "Hippocampi",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Hippocampi"
+		]
+	},
+	{
+		"StructureID": "Hippocampus_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Hippocampus"
+		]
+	},
+	{
+		"StructureID": "Hippocampus_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Hippocampus"
+		]
+	},
+	{
+		"StructureID": "Humerus_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Humerus"
+		]
+	},
+	{
+		"StructureID": "Humerus_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Humerus"
+		]
+	},
+	{
+		"StructureID": "Hypothalmus",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Hypothalmus"
+		]
+	},
+	{
+		"StructureID": "Hypothalmus_PRV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"PRV_Hypothalmus"
+		]
+	},
+	{
+		"StructureID": "Hypothalmus_PRVx",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"PRVx_Hypothalmus"
+		]
+	},
+	{
+		"StructureID": "IDL",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"IDL"
+		]
+	},
+	{
+		"StructureID": "Ileum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Ileum"
+		]
+	},
+	{
+		"StructureID": "ITV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"ITV"
+		]
+	},
+	{
+		"StructureID": "Jejunum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Jejunum"
+		]
+	},
+	{
+		"StructureID": "Jejunum_Ileum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Jejunum_Ileum"
+		]
+	},
+	{
+		"StructureID": "Joint_Elbow",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Elbow_Joint"
+		]
+	},
+	{
+		"StructureID": "Joint_Elbow_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Elbow_Joint"
+		]
+	},
+	{
+		"StructureID": "Joint_Elbow_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Elbow_Joint"
+		]
+	},
+	{
+		"StructureID": "Joint_Glenohum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Glenohum_Joint"
+		]
+	},
+	{
+		"StructureID": "Joint_Glenohum_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Glenohum_Joint"
+		]
+	},
+	{
+		"StructureID": "Joint_Glenohum_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Glenohum_Joint"
+		]
+	},
+	{
+		"StructureID": "Joint_Surface",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Surface_Joint"
+		]
+	},
+	{
+		"StructureID": "Joint_TM",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"TM_Joint"
+		]
+	},
+	{
+		"StructureID": "Joint_TM_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_TM_Joint"
+		]
+	},
+	{
+		"StructureID": "Joint_TM_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_TM_Joint"
+		]
+	},
+	{
+		"StructureID": "Kidney_Cortex",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Cortex_Kidney"
+		]
+	},
+	{
+		"StructureID": "Kidney_Cortex_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Cortex_Kidney"
+		]
+	},
+	{
+		"StructureID": "Kidney_Cortex_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Cortex_Kidney"
+		]
+	},
+	{
+		"StructureID": "Kidney_Hilum_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Hilum_Kidney"
+		]
+	},
+	{
+		"StructureID": "Kidney_Hilum_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Hilum_Kidney"
+		]
+	},
+	{
+		"StructureID": "Kidney_Hilums",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Hilums_Kidney"
+		]
+	},
+	{
+		"StructureID": "Kidney_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Kidney"
+		]
+	},
+	{
+		"StructureID": "Kidney_L-GTV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Kidney-GTV"
+		]
+	},
+	{
+		"StructureID": "Kidney_Pelvis_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Pelvis_Kidney"
+		]
+	},
+	{
+		"StructureID": "Kidney_Pelvis_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Pelvis_Kidney"
+		]
+	},
+	{
+		"StructureID": "Kidney_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Kidney"
+		]
+	},
+	{
+		"StructureID": "Kidney_R-GTV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Kidney-GTV"
+		]
+	},
+	{
+		"StructureID": "Kidney-GTV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Kidney-GTV"
+		]
+	},
+	{
+		"StructureID": "Kidneys",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Kidneys"
+		]
+	},
+	{
+		"StructureID": "Knee",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Knee"
+		]
+	},
+	{
+		"StructureID": "Knee_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Knee"
+		]
+	},
+	{
+		"StructureID": "Knee_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Knee"
+		]
+	},
+	{
+		"StructureID": "Laryngl_Pharynx",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Pharynx_Laryngl"
+		]
+	},
+	{
+		"StructureID": "Larynx",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Larynx"
+		]
+	},
+	{
+		"StructureID": "Larynx_SG",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"SG_Larynx"
+		]
+	},
+	{
+		"StructureID": "Leads",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Leads"
+		]
+	},
+	{
+		"StructureID": "Lens",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Lens"
+		]
+	},
+	{
+		"StructureID": "Lens_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Lens"
+		]
+	},
+	{
+		"StructureID": "Lens_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Lens"
+		]
+	},
+	{
+		"StructureID": "Lig_Hepatogastrc",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Hepatogastrc_Lig"
+		]
+	},
+	{
+		"StructureID": "Lips",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Lips"
+		]
+	},
+	{
+		"StructureID": "Liver",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Liver"
+		]
+	},
+	{
+		"StructureID": "Liver-CTV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Liver-CTV"
+		]
+	},
+	{
+		"StructureID": "Liver-GTV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Liver-GTV"
+		]
+	},
+	{
+		"StructureID": "LN",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_Apical",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Apical_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_Apical_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Apical_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_Apical_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Apical_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_Central_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Central_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_Central_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Central_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_Centrals",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Centrals_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_L1_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_L1_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_L1_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_L1_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_L2_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_L2_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_L2_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_L2_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_L3_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_L3_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_L3_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_L3_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_Lateral_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Lateral_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_Lateral_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Lateral_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_Laterals",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Laterals_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_Pectoral_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Pectoral_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_Pectoral_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Pectoral_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_Pectorals",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Pectorals_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_Subscap_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Subscap_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_Subscap_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Subscap_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ax_Subscaps",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Subscaps_Ax_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Brachioceph_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Brachioceph_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Brachioceph_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Brachioceph_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Brachiocephs",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Brachiocephs_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Bronchpulm_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Bronchpulm_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Bronchpulm_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Bronchpulm_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Bronchpulms",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Bronchpulms_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Diaphragmatic",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Diaphragmatic_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Iliac_Ext_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Ext_Iliac_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Iliac_Ext_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Ext_Iliac_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Iliac_Int_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Int_Iliac_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Iliac_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Iliac_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Iliac_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Iliac_LN"
+		]
+	},
+	{
+		"StructureID": "LN_IMN_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_IMN_LN"
+		]
+	},
+	{
+		"StructureID": "LN_IMN_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_IMN_LN"
+		]
+	},
+	{
+		"StructureID": "LN_IMNs",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"IMNs_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Inguinofem",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Inguinofem_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Inguinofem_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Inguinofem_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Inguinofem_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Inguinofem_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Intercostals",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Intercostals_LN"
+		]
+	},
+	{
+		"StructureID": "LN_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Ligamentarter",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Ligamentarter_LN"
+		]
+	},
+	{
+		"StructureID": "LN_lliac_Int_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Int_Iliac_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Mediastinals",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Mediastinals_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_IA_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_IA_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_IA_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_IA_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_IB_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_IB_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_IB_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_IB_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_II_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_II_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_II_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_II_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_IIA_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_IIA_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_IIA_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_IIA_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_IIB_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_IIB_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_IIB_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_IIB_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_III_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_III_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_III_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_III_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_IV_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_IV_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_IV_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_IV_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_V_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_V_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_V_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_V_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_VA_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_VA_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_VA_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_VA_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_VB_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_VB_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_VB_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_VB_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_VC_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_VC_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_VC_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_VC_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_VI_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_VI_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_VI_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_VI_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_VII_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_VII_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Neck_VII_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_VII_Neck_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Obturator_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Obturator_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Obturator_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Obturator_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Paraaortic",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Paraaortic_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Paramammary_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Paramammary_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Paramammary_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Paramammary_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Paramammarys",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Paramammarys_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Parasternal_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Parasternal_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Parasternal_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Parasternal_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Parasternals",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Parasternals_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Pelvic_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Pelvic_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Pelvic_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Pelvic_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Pelvics",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Pelvics_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Portahepatis",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Portahepatis_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Presacral_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Presacral_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Presacral_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Presacral_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Pulmonary_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Pulmonary_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Pulmonary_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Pulmonary_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Pulmonarys",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Pulmonarys_LN"
+		]
+	},
+	{
+		"StructureID": "LN_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Sclav_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Sclav_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Sclav_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Sclav_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Supmammary_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Supmammary_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Supmammary_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Supmammary_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Supmammarys",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Supmammarys_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Trachbrnchs",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Trachbronchs_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Trachbrnchs_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Trachbronchs_LN"
+		]
+	},
+	{
+		"StructureID": "LN_Trachbrnchs_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Trachbronchs_LN"
+		]
+	},
+	{
+		"StructureID": "Lobe_Frontal",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Frontal_Lobe"
+		]
+	},
+	{
+		"StructureID": "Lobe_Frontal_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Frontal_Lobe"
+		]
+	},
+	{
+		"StructureID": "Lobe_Frontal_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Frontal_Lobe"
+		]
+	},
+	{
+		"StructureID": "Lobe_Occipital",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Occipital_Lobe"
+		]
+	},
+	{
+		"StructureID": "Lobe_Occipital_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Occipital_Lobe"
+		]
+	},
+	{
+		"StructureID": "Lobe_Occipital_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Occipital_Lobe"
+		]
+	},
+	{
+		"StructureID": "Lobe_Parietal",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Parietal_Lobe"
+		]
+	},
+	{
+		"StructureID": "Lobe_Parietal_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Parietal_Lobe"
+		]
+	},
+	{
+		"StructureID": "Lobe_Parietal_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Parietal_Lobe"
+		]
+	},
+	{
+		"StructureID": "Lobe_Temporal",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Temporal_Lobe"
+		]
+	},
+	{
+		"StructureID": "Lobe_Temporal_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Temporal_Lobe"
+		]
+	},
+	{
+		"StructureID": "Lobe_Temporal_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Temporal_Lobe"
+		]
+	},
+	{
+		"StructureID": "Lung_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Lung"
+		]
+	},
+	{
+		"StructureID": "Lung_LLL",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"LLL_Lung"
+		]
+	},
+	{
+		"StructureID": "Lung_LUL",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"LUL_Lung"
+		]
+	},
+	{
+		"StructureID": "Lung_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Lung"
+		]
+	},
+	{
+		"StructureID": "Lung_RLL",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"RLL_Lung"
+		]
+	},
+	{
+		"StructureID": "Lung_RML",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"RML_Lung"
+		]
+	},
+	{
+		"StructureID": "Lung_RUL",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"RUL_Lung"
+		]
+	},
+	{
+		"StructureID": "Lungs",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Lungs"
+		]
+	},
+	{
+		"StructureID": "Lungs-CTV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Lungs-CTV"
+		]
+	},
+	{
+		"StructureID": "Lungs-GTV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Lungs-GTV"
+		]
+	},
+	{
+		"StructureID": "Lungs-ITV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Lungs-ITV"
+		]
+	},
+	{
+		"StructureID": "Lungs-PTV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Lungs-PTV"
+		]
+	},
+	{
+		"StructureID": "Malleus",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Malleus"
+		]
+	},
+	{
+		"StructureID": "Malleus_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Malleus"
+		]
+	},
+	{
+		"StructureID": "Malleus_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Malleus"
+		]
+	},
+	{
+		"StructureID": "Markers",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Markers"
+		]
+	},
+	{
+		"StructureID": "Maxilla",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Maxilla"
+		]
+	},
+	{
+		"StructureID": "Maxilla_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Maxilla"
+		]
+	},
+	{
+		"StructureID": "Maxilla_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Maxilla"
+		]
+	},
+	{
+		"StructureID": "Mediastinum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Mediastinum"
+		]
+	},
+	{
+		"StructureID": "Musc",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Musc"
+		]
+	},
+	{
+		"StructureID": "Musc_Constrict",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Constrict_Musc"
+		]
+	},
+	{
+		"StructureID": "Musc_Constrict_I",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"I_Constrict_Musc"
+		]
+	},
+	{
+		"StructureID": "Musc_Constrict_M",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"M_Constrict_Musc"
+		]
+	},
+	{
+		"StructureID": "Musc_Constrict_S",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"S_Constrict_Musc"
+		]
+	},
+	{
+		"StructureID": "Musc_Digastric_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Digastric_Musc"
+		]
+	},
+	{
+		"StructureID": "Musc_Digastric_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Digastric_Musc"
+		]
+	},
+	{
+		"StructureID": "Musc_Masseter",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Masseter_Musc"
+		]
+	},
+	{
+		"StructureID": "Musc_Masseter_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Masseter_Musc"
+		]
+	},
+	{
+		"StructureID": "Musc_Masseter_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Masseter_Musc"
+		]
+	},
+	{
+		"StructureID": "Musc_Platysma_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Platysma_Musc"
+		]
+	},
+	{
+		"StructureID": "Musc_Platysma_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Platysma_Musc"
+		]
+	},
+	{
+		"StructureID": "Musc_Pterygoid_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Pterygoid_Musc"
+		]
+	},
+	{
+		"StructureID": "Musc_Pterygoid_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Pterygoid_Musc"
+		]
+	},
+	{
+		"StructureID": "Musc_Sclmast_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Sclmast_Musc"
+		]
+	},
+	{
+		"StructureID": "Musc_Sclmast_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Sclmast_Musc"
+		]
+	},
+	{
+		"StructureID": "Musc_Temporal_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Temporal_Musc"
+		]
+	},
+	{
+		"StructureID": "Musc_Temporal_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Temporal_Musc"
+		]
+	},
+	{
+		"StructureID": "Nasalconcha_LI",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"LI_Nasalconcha"
+		]
+	},
+	{
+		"StructureID": "Nasalconcha_RI",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"RI_Nasalconcha"
+		]
+	},
+	{
+		"StructureID": "Nasopharynx",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Nasopharynx"
+		]
+	},
+	{
+		"StructureID": "Nose",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Nose"
+		]
+	},
+	{
+		"StructureID": "Nrv_Peripheral",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Peripheral_Nrv"
+		]
+	},
+	{
+		"StructureID": "Nrv_Root",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Root_Nrv"
+		]
+	},
+	{
+		"StructureID": "OpticChiasm",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"OpticChiasm"
+		]
+	},
+	{
+		"StructureID": "OpticChiasm_PRV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"PRV_OpticChiasm"
+		]
+	},
+	{
+		"StructureID": "OpticChiasm_PRVx",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"PRVx_OpticChiasm"
+		]
+	},
+	{
+		"StructureID": "OpticNrv",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"OpticNrv"
+		]
+	},
+	{
+		"StructureID": "OpticNrv_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_OpticNrv"
+		]
+	},
+	{
+		"StructureID": "OpticNrv_PRV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"PRV_OpticNrv"
+		]
+	},
+	{
+		"StructureID": "OpticNrv_PRV_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_PRV_OpticNrv"
+		]
+	},
+	{
+		"StructureID": "OpticNrv_PRV_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_PRV_OpticNrv"
+		]
+	},
+	{
+		"StructureID": "OpticNrv_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_OpticNrv"
+		]
+	},
+	{
+		"StructureID": "Orbit_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Orbit"
+		]
+	},
+	{
+		"StructureID": "Orbit_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Orbit"
+		]
+	},
+	{
+		"StructureID": "Oropharynx",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Oropharynx"
+		]
+	},
+	{
+		"StructureID": "Ovaries",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Ovaries"
+		]
+	},
+	{
+		"StructureID": "Ovary_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Ovary"
+		]
+	},
+	{
+		"StructureID": "Ovary_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Ovary"
+		]
+	},
+	{
+		"StructureID": "Pacemaker",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Pacemaker"
+		]
+	},
+	{
+		"StructureID": "Palate_Soft",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Soft_Palate"
+		]
+	},
+	{
+		"StructureID": "PancJejuno",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"PancJejuno"
+		]
+	},
+	{
+		"StructureID": "Pancreas",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Pancreas"
+		]
+	},
+	{
+		"StructureID": "Pancreas_Head",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Head_Pancreas"
+		]
+	},
+	{
+		"StructureID": "Pancreas_Tail",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Tail_Pancreas"
+		]
+	},
+	{
+		"StructureID": "Parametrium",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Parametrium"
+		]
+	},
+	{
+		"StructureID": "Parotid_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Parotid"
+		]
+	},
+	{
+		"StructureID": "Parotid_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Parotid"
+		]
+	},
+	{
+		"StructureID": "Parotids",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Parotids"
+		]
+	},
+	{
+		"StructureID": "PenileBulb",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"PenileBulb"
+		]
+	},
+	{
+		"StructureID": "Penis",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Penis"
+		]
+	},
+	{
+		"StructureID": "Pericardium",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Pericardium"
+		]
+	},
+	{
+		"StructureID": "Perineum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Perineum"
+		]
+	},
+	{
+		"StructureID": "Peritoneum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Peritoneum"
+		]
+	},
+	{
+		"StructureID": "Pharynx",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Pharynx"
+		]
+	},
+	{
+		"StructureID": "Pineal",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Pineal"
+		]
+	},
+	{
+		"StructureID": "Pituitary",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Pituitary"
+		]
+	},
+	{
+		"StructureID": "Pons",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Pons"
+		]
+	},
+	{
+		"StructureID": "Postop",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Postop"
+		]
+	},
+	{
+		"StructureID": "Preop",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Preop"
+		]
+	},
+	{
+		"StructureID": "Proc_Condyloid_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Condyloid_Proc"
+		]
+	},
+	{
+		"StructureID": "Proc_Condyloid_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Condyloid_Proc"
+		]
+	},
+	{
+		"StructureID": "Proc_Coronoid_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Coronoid_Proc"
+		]
+	},
+	{
+		"StructureID": "Proc_Coronoid_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Coronoid_Proc"
+		]
+	},
+	{
+		"StructureID": "Prostate",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Prostate"
+		]
+	},
+	{
+		"StructureID": "ProstateBed",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"ProstateBed"
+		]
+	},
+	{
+		"StructureID": "Prosthesis",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Prosthesis"
+		]
+	},
+	{
+		"StructureID": "Pterygoid_Lat_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Lat_Pterygoid"
+		]
+	},
+	{
+		"StructureID": "Pterygoid_Lat_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Lat_Pterygoid"
+		]
+	},
+	{
+		"StructureID": "Pterygoid_Med_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Med_Pterygoid"
+		]
+	},
+	{
+		"StructureID": "Pterygoid_Med_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Med_Pterygoid"
+		]
+	},
+	{
+		"StructureID": "PubicSymphys",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"PubicSymphys"
+		]
+	},
+	{
+		"StructureID": "PubicSymphys_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_PubicSymphys"
+		]
+	},
+	{
+		"StructureID": "PubicSymphys_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_PubicSymphys"
+		]
+	},
+	{
+		"StructureID": "Radius_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Radius"
+		]
+	},
+	{
+		"StructureID": "Radius_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Radius"
+		]
+	},
+	{
+		"StructureID": "Rectal_Wall",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Rectal_Wall"
+		]
+	},
+	{
+		"StructureID": "Rectum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Rectum"
+		]
+	},
+	{
+		"StructureID": "Retina_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Retina"
+		]
+	},
+	{
+		"StructureID": "Retina_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Retina"
+		]
+	},
+	{
+		"StructureID": "Retinas",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Retinas"
+		]
+	},
+	{
+		"StructureID": "Rib",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Rib"
+		]
+	},
+	{
+		"StructureID": "Rib01_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Rib01"
+		]
+	},
+	{
+		"StructureID": "Rib01_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Rib01"
+		]
+	},
+	{
+		"StructureID": "Rib02_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Rib02"
+		]
+	},
+	{
+		"StructureID": "Rib02_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Rib02"
+		]
+	},
+	{
+		"StructureID": "Rib03_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Rib03"
+		]
+	},
+	{
+		"StructureID": "Rib03_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Rib03"
+		]
+	},
+	{
+		"StructureID": "Rib04_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Rib04"
+		]
+	},
+	{
+		"StructureID": "Rib04_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Rib04"
+		]
+	},
+	{
+		"StructureID": "Rib05_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Rib05"
+		]
+	},
+	{
+		"StructureID": "Rib05_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Rib05"
+		]
+	},
+	{
+		"StructureID": "Rib06_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Rib06"
+		]
+	},
+	{
+		"StructureID": "Rib06_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Rib06"
+		]
+	},
+	{
+		"StructureID": "Rib07_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Rib07"
+		]
+	},
+	{
+		"StructureID": "Rib07_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Rib07"
+		]
+	},
+	{
+		"StructureID": "Rib08_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Rib08"
+		]
+	},
+	{
+		"StructureID": "Rib08_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Rib08"
+		]
+	},
+	{
+		"StructureID": "Rib09_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Rib09"
+		]
+	},
+	{
+		"StructureID": "Rib09_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Rib09"
+		]
+	},
+	{
+		"StructureID": "Rib10_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Rib10"
+		]
+	},
+	{
+		"StructureID": "Rib10_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Rib10"
+		]
+	},
+	{
+		"StructureID": "Rib11_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Rib11"
+		]
+	},
+	{
+		"StructureID": "Rib11_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Rib11"
+		]
+	},
+	{
+		"StructureID": "Rib12_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Rib12"
+		]
+	},
+	{
+		"StructureID": "Rib12_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Rib12"
+		]
+	},
+	{
+		"StructureID": "SacralPlex",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"SacralPlex"
+		]
+	},
+	{
+		"StructureID": "Sacrum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Sacrum"
+		]
+	},
+	{
+		"StructureID": "Scalp",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Scalp"
+		]
+	},
+	{
+		"StructureID": "Scapula_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Scapula"
+		]
+	},
+	{
+		"StructureID": "Scapula_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Scapula"
+		]
+	},
+	{
+		"StructureID": "Scar",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Scar"
+		]
+	},
+	{
+		"StructureID": "Scar_Boost",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Boost_Scar"
+		]
+	},
+	{
+		"StructureID": "Scrotum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Scrotum"
+		]
+	},
+	{
+		"StructureID": "SeminalVes",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"SeminalVes"
+		]
+	},
+	{
+		"StructureID": "SeminalVes_Dist",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Dist_SeminalVes"
+		]
+	},
+	{
+		"StructureID": "SeminalVes_Prox",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Prox_SeminalVes"
+		]
+	},
+	{
+		"StructureID": "Sinus_Ethmoid",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Ethmoid_Sinus"
+		]
+	},
+	{
+		"StructureID": "Sinus_Frontal",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Frontal_Sinus"
+		]
+	},
+	{
+		"StructureID": "Sinus_Frontal_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Frontal_Sinus"
+		]
+	},
+	{
+		"StructureID": "Sinus_Frontal_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Frontal_Sinus"
+		]
+	},
+	{
+		"StructureID": "Sinus_Maxilry",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Maxilry_Sinus"
+		]
+	},
+	{
+		"StructureID": "Sinus_Maxilry_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Maxilry_Sinus"
+		]
+	},
+	{
+		"StructureID": "Sinus_Maxilry_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Maxilry_Sinus"
+		]
+	},
+	{
+		"StructureID": "Sinus_Sphenoid",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Sphenoid_Sinus"
+		]
+	},
+	{
+		"StructureID": "Sinus_Sphenoid_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Sphenoid_Sinus"
+		]
+	},
+	{
+		"StructureID": "Sinus_Sphenoid_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Sphenoid_Sinus"
+		]
+	},
+	{
+		"StructureID": "Skin",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Skin"
+		]
+	},
+	{
+		"StructureID": "Skin_Perineum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Perineum_Skin"
+		]
+	},
+	{
+		"StructureID": "Skin_Peritoneum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Peritoneum_Skin"
+		]
+	},
+	{
+		"StructureID": "Skull",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Skull"
+		]
+	},
+	{
+		"StructureID": "Spc",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Spc"
+		]
+	},
+	{
+		"StructureID": "Spc_Bowel ",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Bowel_Spc"
+		]
+	},
+	{
+		"StructureID": "Spc_Bowel_Small",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Small_Bowel_Spc"
+		]
+	},
+	{
+		"StructureID": "Spc_Retrophar_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Retrophar_Spc"
+		]
+	},
+	{
+		"StructureID": "Spc_Retrophar_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Retrophar_Spc"
+		]
+	},
+	{
+		"StructureID": "Spc_Retrophars",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Retrophars_Spc"
+		]
+	},
+	{
+		"StructureID": "Spc_Retrosty",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Retrosty_Spc"
+		]
+	},
+	{
+		"StructureID": "Spc_Retrosty_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Retrosty_Spc"
+		]
+	},
+	{
+		"StructureID": "Spc_Retrosty_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Retrosty_Spc"
+		]
+	},
+	{
+		"StructureID": "Spc_Supraclav_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Supraclav_Spc"
+		]
+	},
+	{
+		"StructureID": "Spc_Supraclav_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Supraclav_Spc"
+		]
+	},
+	{
+		"StructureID": "Sphincter_Anal",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Anal_Sphincter"
+		]
+	},
+	{
+		"StructureID": "SpinalCanal",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"SpinalCanal"
+		]
+	},
+	{
+		"StructureID": "SpinalCanal_PRV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"PRV_SpinalCanal"
+		]
+	},
+	{
+		"StructureID": "SpinalCanal_PRVx",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"PRVx_SpinalCanal"
+		]
+	},
+	{
+		"StructureID": "SpinalCord",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"SpinalCord"
+		]
+	},
+	{
+		"StructureID": "SpinalCord_Cerv",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Cerv_SpinalCord"
+		]
+	},
+	{
+		"StructureID": "SpinalCord_Lum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Lum_SpinalCord"
+		]
+	},
+	{
+		"StructureID": "SpinalCord_PRV",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"PRV_SpinalCord"
+		]
+	},
+	{
+		"StructureID": "SpinalCord_Sac",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Sac_SpinalCord"
+		]
+	},
+	{
+		"StructureID": "SpinalCord_Thor",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Thor_SpinalCord"
+		]
+	},
+	{
+		"StructureID": "Spleen",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Spleen"
+		]
+	},
+	{
+		"StructureID": "Spleen_Hilum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Hilum_Spleen"
+		]
+	},
+	{
+		"StructureID": "Spongiosum",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Spongiosum"
+		]
+	},
+	{
+		"StructureID": "Stapes",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Stapes"
+		]
+	},
+	{
+		"StructureID": "Stapes_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Stapes"
+		]
+	},
+	{
+		"StructureID": "Stapes_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Stapes"
+		]
+	},
+	{
+		"StructureID": "Stomach",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Stomach"
+		]
+	},
+	{
+		"StructureID": "Strct ",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Strct"
+		]
+	},
+	{
+		"StructureID": "Strct_Suprapatel",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Suprapatel_Strct"
+		]
+	},
+	{
+		"StructureID": "Surf_Eye",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Eye_Surf"
+		]
+	},
+	{
+		"StructureID": "SurgicalBed",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"SurgicalBed"
+		]
+	},
+	{
+		"StructureID": "Sys_Ventricular",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Ventricular_Sys"
+		]
+	},
+	{
+		"StructureID": "Tendon ",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Tendon"
+		]
+	},
+	{
+		"StructureID": "Tendon_Quad",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Quad_Tendon"
+		]
+	},
+	{
+		"StructureID": "Testis",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Testis"
+		]
+	},
+	{
+		"StructureID": "Testis_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Testis"
+		]
+	},
+	{
+		"StructureID": "Testis_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Testis"
+		]
+	},
+	{
+		"StructureID": "ThecalSac",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"ThecalSac"
+		]
+	},
+	{
+		"StructureID": "Thoracic_Duct",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Duct_Thoracic"
+		]
+	},
+	{
+		"StructureID": "Tongue",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Tongue"
+		]
+	},
+	{
+		"StructureID": "Tongue_All",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"All_Tongue"
+		]
+	},
+	{
+		"StructureID": "Tongue_Base",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Base_Tongue"
+		]
+	},
+	{
+		"StructureID": "Tongue_Base_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Base_Tongue"
+		]
+	},
+	{
+		"StructureID": "Tongue_Base_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Base_Tongue"
+		]
+	},
+	{
+		"StructureID": "Tongue_Oral",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Oral_Tongue"
+		]
+	},
+	{
+		"StructureID": "Tongue_Oral_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Oral_Tongue"
+		]
+	},
+	{
+		"StructureID": "Tongue_Oral_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Oral_Tongue"
+		]
+	},
+	{
+		"StructureID": "Tonsil",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Tonsil"
+		]
+	},
+	{
+		"StructureID": "Trachea",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Trachea"
+		]
+	},
+	{
+		"StructureID": "Trachea_NAdj",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"NAdj_Trachea"
+		]
+	},
+	{
+		"StructureID": "TumorBed",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"TumorBed"
+		]
+	},
+	{
+		"StructureID": "Ureter_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Ureter"
+		]
+	},
+	{
+		"StructureID": "Ureter_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Ureter"
+		]
+	},
+	{
+		"StructureID": "UreterDivert",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"UreterDivert"
+		]
+	},
+	{
+		"StructureID": "Ureters",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Ureters"
+		]
+	},
+	{
+		"StructureID": "Urethra",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Urethra"
+		]
+	},
+	{
+		"StructureID": "Urethra_Prostatc",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Prostatc_Urethra"
+		]
+	},
+	{
+		"StructureID": "Uterus",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Uterus"
+		]
+	},
+	{
+		"StructureID": "V_Azygos",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Azygos_V"
+		]
+	},
+	{
+		"StructureID": "V_Brachioceph_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Brachioceph_V"
+		]
+	},
+	{
+		"StructureID": "V_Brachioceph_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Brachioceph_V"
+		]
+	},
+	{
+		"StructureID": "V_Iliac_Ext_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Ext_Iliac_V"
+		]
+	},
+	{
+		"StructureID": "V_Iliac_Ext_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Ext_Iliac_V"
+		]
+	},
+	{
+		"StructureID": "V_Iliac_Int_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Int_Iliac_V"
+		]
+	},
+	{
+		"StructureID": "V_Iliac_Int_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Int_Iliac_V"
+		]
+	},
+	{
+		"StructureID": "V_Iliac_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Iliac_V"
+		]
+	},
+	{
+		"StructureID": "V_Iliac_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Iliac_V"
+		]
+	},
+	{
+		"StructureID": "V_Jugular",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Jugular_V"
+		]
+	},
+	{
+		"StructureID": "V_Jugular_Ext_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Ext_Jugular_V"
+		]
+	},
+	{
+		"StructureID": "V_Jugular_Ext_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Ext_Jugular_V"
+		]
+	},
+	{
+		"StructureID": "V_Jugular_Int_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Int_Jugular_V"
+		]
+	},
+	{
+		"StructureID": "V_Jugular_Int_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Int_Jugular_V"
+		]
+	},
+	{
+		"StructureID": "V_Portal",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Portal_V"
+		]
+	},
+	{
+		"StructureID": "V_Pulmonary",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Pulmonary_V"
+		]
+	},
+	{
+		"StructureID": "V_Subclavian_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Subclavian_V"
+		]
+	},
+	{
+		"StructureID": "V_Subclavian_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Subclavian_V"
+		]
+	},
+	{
+		"StructureID": "V_Subclavians",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Subclavians_V"
+		]
+	},
+	{
+		"StructureID": "V_Venacava_I",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"I_Venacava_V"
+		]
+	},
+	{
+		"StructureID": "V_Venacava_S",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"S_Venacava_V"
+		]
+	},
+	{
+		"StructureID": "Vagina",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Vagina"
+		]
+	},
+	{
+		"StructureID": "Vagina_Surf",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Surf_Vagina"
+		]
+	},
+	{
+		"StructureID": "VaginalCuff",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"VaginalCuff"
+		]
+	},
+	{
+		"StructureID": "Valve",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Valve"
+		]
+	},
+	{
+		"StructureID": "Valve_Aortic",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Aortic_Valve"
+		]
+	},
+	{
+		"StructureID": "Valve_Mitral",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Mitral_Valve"
+		]
+	},
+	{
+		"StructureID": "Valve_Pulmonic",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Pulmonic_Valve"
+		]
+	},
+	{
+		"StructureID": "Valve_Tricuspid",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Tricuspid_Valve"
+		]
+	},
+	{
+		"StructureID": "VB",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"VB"
+		]
+	},
+	{
+		"StructureID": "VB_C",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"C_VB"
+		]
+	},
+	{
+		"StructureID": "VB_C1",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"C1_VB"
+		]
+	},
+	{
+		"StructureID": "VB_C2",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"C2_VB"
+		]
+	},
+	{
+		"StructureID": "VB_C3",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"C3_VB"
+		]
+	},
+	{
+		"StructureID": "VB_C4",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"C4_VB"
+		]
+	},
+	{
+		"StructureID": "VB_C5",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"C5_VB"
+		]
+	},
+	{
+		"StructureID": "VB_C6",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"C6_VB"
+		]
+	},
+	{
+		"StructureID": "VB_C7",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"C7_VB"
+		]
+	},
+	{
+		"StructureID": "VB_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_VB"
+		]
+	},
+	{
+		"StructureID": "VB_L1",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L1_VB"
+		]
+	},
+	{
+		"StructureID": "VB_L2",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L2_VB"
+		]
+	},
+	{
+		"StructureID": "VB_L3",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L3_VB"
+		]
+	},
+	{
+		"StructureID": "VB_L4",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L4_VB"
+		]
+	},
+	{
+		"StructureID": "VB_L5",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L5_VB"
+		]
+	},
+	{
+		"StructureID": "VB_S",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"S_VB"
+		]
+	},
+	{
+		"StructureID": "VB_S1",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"S1_VB"
+		]
+	},
+	{
+		"StructureID": "VB_S2",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"S2_VB"
+		]
+	},
+	{
+		"StructureID": "VB_S3",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"S3_VB"
+		]
+	},
+	{
+		"StructureID": "VB_S4",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"S4_VB"
+		]
+	},
+	{
+		"StructureID": "VB_S5",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"S5_VB"
+		]
+	},
+	{
+		"StructureID": "VB_T",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"T_VB"
+		]
+	},
+	{
+		"StructureID": "VB_T01",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"T01_VB"
+		]
+	},
+	{
+		"StructureID": "VB_T02",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"T02_VB"
+		]
+	},
+	{
+		"StructureID": "VB_T03",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"T03_VB"
+		]
+	},
+	{
+		"StructureID": "VB_T04",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"T04_VB"
+		]
+	},
+	{
+		"StructureID": "VB_T05",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"T05_VB"
+		]
+	},
+	{
+		"StructureID": "VB_T06",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"T06_VB"
+		]
+	},
+	{
+		"StructureID": "VB_T07",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"T07_VB"
+		]
+	},
+	{
+		"StructureID": "VB_T08",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"T08_VB"
+		]
+	},
+	{
+		"StructureID": "VB_T09",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"T09_VB"
+		]
+	},
+	{
+		"StructureID": "VB_T10",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"T10_VB"
+		]
+	},
+	{
+		"StructureID": "VB_T11",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"T11_VB"
+		]
+	},
+	{
+		"StructureID": "VB_T12",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"T12_VB"
+		]
+	},
+	{
+		"StructureID": "VBs",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"VBs"
+		]
+	},
+	{
+		"StructureID": "Ventricle",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Ventricle"
+		]
+	},
+	{
+		"StructureID": "Ventricle_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_Ventricle"
+		]
+	},
+	{
+		"StructureID": "Ventricle_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_Ventricle"
+		]
+	},
+	{
+		"StructureID": "VocalCord_L",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"L_VocalCord"
+		]
+	},
+	{
+		"StructureID": "VocalCord_R",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"R_VocalCord"
+		]
+	},
+	{
+		"StructureID": "VocalCords",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"VocalCords"
+		]
+	},
+	{
+		"StructureID": "Vomer",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Vomer"
+		]
+	},
+	{
+		"StructureID": "Vulva",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Vulva"
+		]
+	},
+	{
+		"StructureID": "Wall_Vagina",
+		"TG263": true,
+		"StructureSynonoyms": [
+			"Vagina_Wall"
+		]
+	}
+]

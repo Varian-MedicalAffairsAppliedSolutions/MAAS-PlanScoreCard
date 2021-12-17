@@ -196,7 +196,6 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand GenerateScorecardCommand { get; private set; }
         public DelegateCommand EditScorecardCommand { get; private set; }
         public DelegateCommand ImportScorecardCommand { get; private set; }
-        public GenerateScorecardView GenScoreCardView { get; private set; }
         public EditScoreCardView EditScoreCardView { get; private set; }
         public DelegateCommand ImportPKScorecardCommand { get; private set; }
         public DelegateCommand ImportEPRScorecardCommand { get; private set; }
@@ -220,8 +219,8 @@ namespace PlanScoreCard.ViewModels
             _user = user;
             ViewLauncher = viewLauncherService;
 
-            _eventAggregator = eventAggregator;
-            _eventAggregator.GetEvent<PlanSelectedEvent>().Subscribe(OnPlanSelectionChanged);
+            //_eventAggregator = eventAggregator;
+            //_eventAggregator.GetEvent<PlanSelectedEvent>().Subscribe(OnPlanSelectionChanged);
             _eventAggregator.GetEvent<FreePrimarySelectionEvent>().Subscribe(SetPrimarySelections);
             //_eventAggregator.GetEvent<UpdateTemplatesEvent>().Subscribe(OnTemplateUpdated);
             _scoreTemplates = new List<ScoreTemplateModel>();
@@ -248,14 +247,14 @@ namespace PlanScoreCard.ViewModels
             {
                 _eventAggregator.GetEvent<ShowPluginViewEvent>().Publish();
 
-                NormalizationService normService = new NormalizationService( _app, _patient, Plans.FirstOrDefault(x => x.bPrimary), _scoreTemplates, _eventAggregator);
-                //_app.ClosePatient();
-                //_app.Dispose();
-                //new Thread(new ThreadStart(normService.GetPlan)).Start();
-                //var newplan = Task.Run(()=>normService.GetPlan());
-                var newplan = normService.GetPlan();
-                Plans.Add(newplan);
-                Plans.FirstOrDefault(x => x.CourseId == newplan.CourseId && x.PlanId == newplan.PlanId).bSelected = true;
+                //NormalizationService normService = new NormalizationService( _app, _patient, Plans.FirstOrDefault(x => x.bPrimary), _scoreTemplates, _eventAggregator);
+                ////_app.ClosePatient();
+                ////_app.Dispose();
+                ////new Thread(new ThreadStart(normService.GetPlan)).Start();
+                ////var newplan = Task.Run(()=>normService.GetPlan());
+                //var newplan = normService.GetPlan();
+                //Plans.Add(newplan);
+                //Plans.FirstOrDefault(x => x.CourseId == newplan.CourseId && x.PlanId == newplan.PlanId).bSelected = true;
             }
         }
 
@@ -372,9 +371,7 @@ namespace PlanScoreCard.ViewModels
 
         private void OnGenerateScorecard()
         {
-            GenScoreCardView = new GenerateScorecardView();
-            GenScoreCardView.DataContext = new GenerateScorecardViewModel(SelectedPlan, _scoreTemplates, _templateName, _templateSite, _user, _eventAggregator);
-            GenScoreCardView.ShowDialog();
+
         }
 
         private void OnEditScoreCard()
@@ -458,7 +455,7 @@ namespace PlanScoreCard.ViewModels
                 }
                 if (importSuccess)
                 {
-                    _eventAggregator.GetEvent<ScorePlanEvent>().Publish(_scoreTemplates);
+                    //_eventAggregator.GetEvent<ScorePlanEvent>().Publish(_scoreTemplates);
                 }
             }
         }
@@ -501,14 +498,14 @@ namespace PlanScoreCard.ViewModels
         /// <param name="course"></param>
         private void AddPlansFromCourse(Course course)
         {
-            foreach (var ps in course.PlanSums.Where(x => x.StructureSet != null && x.Dose != null))
-            {
-                Plans.Add(new PlanModel(ps, _eventAggregator) { PlanId = ps.Id, CourseId = course.Id, DisplayTxt = $"{course.Id}: {ps.Id}" });
-            }
-            foreach (var ps in course.PlanSetups.Where(x => x.StructureSet != null && x.Dose != null))
-            {
-                Plans.Add(new PlanModel(ps, _eventAggregator) { PlanId = ps.Id, CourseId = course.Id, DisplayTxt = $"{course.Id}: {ps.Id}" });
-            }
+            //foreach (var ps in course.PlanSums.Where(x => x.StructureSet != null && x.Dose != null))
+            //{
+            //    Plans.Add(new PlanModel(ps, _eventAggregator) { PlanId = ps.Id, CourseId = course.Id, DisplayTxt = $"{course.Id}: {ps.Id}" });
+            //}
+            //foreach (var ps in course.PlanSetups.Where(x => x.StructureSet != null && x.Dose != null))
+            //{
+            //    Plans.Add(new PlanModel(ps, _eventAggregator) { PlanId = ps.Id, CourseId = course.Id, DisplayTxt = $"{course.Id}: {ps.Id}" });
+            //}
         }
         /// <summary>
         /// Method called from MainView when a new template gets saved from the GenerateScoreCardViewModel.

@@ -19,10 +19,10 @@
         </Grid.ColumnDefinitions>
 
         <Label FontSize="12" Grid.Column="1" Grid.Row="0" Content="Target Dose" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
-        <TextBox Height="25" Grid.Column="1" Text="{Binding Dose}" Grid.Row="1" Margin="5,0,5,0" IsReadOnly="True"/>
+        <TextBox Height="25" Grid.Column="1" Text="{Binding Dose}" Grid.Row="1" Margin="5,0,5,0"/>
 
         <Label FontSize="12" Grid.Column="2" Grid.Row="0" Content="Dose Units" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
-        <ComboBox Height="25" Grid.Column="2" SelectedItem="{Binding DoseUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding DoseUnits}" Grid.Row="1" Margin="5,0,5,0" IsReadOnly="True"/>
+        <ComboBox Height="25" Grid.Column="2" SelectedItem="{Binding DoseUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding DoseUnits}" Grid.Row="1" Margin="5,0,5,0"/>
         
     </Grid>
 </UserControl>

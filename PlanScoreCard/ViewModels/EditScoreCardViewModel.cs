@@ -1,10 +1,13 @@
 ﻿using Microsoft.Win32;
 using Newtonsoft.Json;
 using PlanScoreCard.Events;
+using PlanScoreCard.Events.HelperWindows;
 using PlanScoreCard.Models;
 using PlanScoreCard.Models.Internals;
 using PlanScoreCard.Services;
+using PlanScoreCard.ViewModels.VMHelpers;
 using PlanScoreCard.Views;
+using PlanScoreCard.Views.HelperWindows;
 using PlanScoreCard.Views.MetricEditors;
 using Prism.Commands;
 using Prism.Events;
@@ -32,6 +35,8 @@ namespace PlanScoreCard.ViewModels
         private IEventAggregator EventAggregator;
 
         private ViewLauncherService ViewLauncherService;
+        private ProgressViewService ProgressViewService;
+        private StructureDictionaryService StructureDictionaryService;
 
         private object metricEdtiorControl;
 
@@ -42,8 +47,6 @@ namespace PlanScoreCard.ViewModels
         }
 
         public ObservableCollection<MetricTypeEnum> MetricTypes { get; set; }
-
-        // Private Class Collections
 
         // ScoreCard Model
         private ScoreCardModel scoreCard;
@@ -79,13 +82,127 @@ namespace PlanScoreCard.ViewModels
             set
             {
                 SetProperty(ref selectedMetric, value);
-                ShowScorePointModels(selectedMetric);
+                ShowScorePointModels(SelectedScoreMetric);
 
-                if (selectedMetric == null)
+                if (SelectedScoreMetric == null)
                     return;
 
                 UpdateScoreMetricPlotModel();
-                UpdateMetricEditor(selectedMetric);
+                UpdateMetricEditor(SelectedScoreMetric);
+
+                if (SelectedScoreMetric.Structure == null)
+                    return;
+
+                if (String.IsNullOrWhiteSpace(SelectedScoreMetric.Structure.StructureId))
+                {
+                    SelectedStructure = null;
+                }
+                else
+                {
+                    
+                    SelectedStructure = SelectedScoreMetric.Structure;
+                    readyEdit = true;
+                }
+            }
+        }
+        private bool readyEdit = false;
+        private void KeepDictionaryStructure(StructureModel structureModel)
+        {
+            bool structureExcluded = false;
+            var excludeStructures = ConfigurationManager.AppSettings["DictionaryExclusions"].Split(';');
+            if (excludeStructures != null && excludeStructures.Length > 0)
+            {
+                if (excludeStructures.Contains(structureModel.StructureId))
+                {
+                    structureExcluded = true;
+                }
+            }
+            if (!structureExcluded)
+            {
+                //MessageBoxResult result = MessageBox.Show("This structure is not contained within the Structure Dictionary, would you like to add it?", "New StructureId", MessageBoxButton.YesNo);
+                AskAddDictionaryStructureView = new AskAddDictionaryStructureView();
+                AskAddDictionaryStructureView.DataContext = new AskAddDictionaryStructureViewModel(EventAggregator, structureModel.StructureId);
+                AskAddDictionaryStructureView.ShowDialog();
+                if (_askEditDictionary)
+                {
+                    StructureSelectorView = new StructureDictionarySelectorView(StructureDictionaryService, structureModel.StructureId, structureModel.TemplateStructureId, EventAggregator);
+
+                    StructureSelectorView.ShowDialog();
+                }
+            }
+        }
+        // Selected Structure
+        private StructureModel selectedStructure;
+
+        public StructureModel SelectedStructure
+        {
+            get { return selectedStructure; }
+            set
+            {
+                if (readyEdit && SelectedStructure == null && value!=null && !String.IsNullOrWhiteSpace(value.StructureId))
+                {
+                    KeepDictionaryStructure(SelectedScoreMetric.Structure);
+                }
+                SetProperty(ref selectedStructure, value);
+
+                //&& String.IsNullOrWhiteSpace(SelectedScoreMetric.Structure.StructureId)
+
+                //if (SelectedScoreMetric.Structure == null)
+                if (SelectedStructure != null)
+                {
+                    if (SelectedStructure.TemplateStructureId == null)
+                    {
+                        SelectedStructure.TemplateStructureId = SelectedStructure.StructureId;
+                    }
+                    if (!String.IsNullOrWhiteSpace(SelectedStructure.StructureId) && String.IsNullOrWhiteSpace(SelectedScoreMetric.Structure.StructureId))
+                    {
+                        SelectedScoreMetric.Structure.StructureId = SelectedStructure.StructureId;
+                    }
+                }
+                //do not change the selected score metric. This should be unique to the scorecard. 
+                //SelectedScoreMetric.Structure = SelectedStructure;
+
+                if (SelectedStructure == null)
+                    return;
+                
+                // This checks to match a key to a template structure id.
+                //StructureDictionaryModel dictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower() == SelectedStructure.TemplateStructureId.ToLower());
+
+                // This matches values (syn)
+                //if (dictionary != null)
+                //{
+
+                //}
+                //if (dictionary == null)
+                //{
+                //    string structureID = StructureDictionaryService.FindMatch(selectedStructure.TemplateStructureId);
+                //    dictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower() == structureID.ToLower());
+                //}
+
+
+                //move to structure selection. 
+                /*if (dictionary == null)
+                {
+                    MessageBoxResult result = MessageBox.Show("This structure is not contained within the Structure Dictionary, would you like to add it?", "New StructureId", MessageBoxButton.YesNo);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        StructureDictionarySelectorView structureSelector = new StructureDictionarySelectorView(StructureDictionaryService, selectedStructure.StructureId, EventAggregator);
+                        structureSelector.ShowDialog();
+                    }
+
+                }*/
+
+
+                //if (SelectedStructure != null)
+                //{
+                //    if (String.IsNullOrWhiteSpace(SelectedScoreMetric.Structure.StructureId))
+                //        SelectedScoreMetric.Structure.StructureId = SelectedStructure.StructureId;
+
+                //    SelectedStructure.TemplateStructureId = selectedStructure.StructureId;
+                //    SelectedStructure.AutoGenerated = SelectedScoreMetric.Structure.AutoGenerated;
+                //    SelectedStructure.StructureCode = SelectedScoreMetric.Structure.StructureCode;  
+                //}
 
             }
         }
@@ -98,10 +215,10 @@ namespace PlanScoreCard.ViewModels
             get { return metricPointModels; }
             set
             {
-                metricPointModels = value;
+                SetProperty(ref metricPointModels, value);
 
-                if (metricPointModels.Count() > 0)
-                    SelectedMetricPointModel = metricPointModels.First();
+                //if (metricPointModels.Count() > 0)
+                //    SelectedMetricPointModel = metricPointModels.First();
             }
         }
 
@@ -111,17 +228,12 @@ namespace PlanScoreCard.ViewModels
         public ScorePointModel SelectedMetricPointModel
         {
             get { return selectedMetricPointModel; }
-            set { selectedMetricPointModel = value; }
+            set { SetProperty(ref selectedMetricPointModel, value); }
         }
 
         // Structures Collection
-        private ObservableCollection<StructureModel> strctures;
 
-        public ObservableCollection<StructureModel> Structures
-        {
-            get { return strctures; }
-            set { SetProperty(ref strctures, value); }
-        }
+        public ObservableCollection<StructureModel> Structures { get; private set; }
 
         // Template Author
         private string templateAuthor;
@@ -133,7 +245,6 @@ namespace PlanScoreCard.ViewModels
         }
 
         // Template Name
-
         private string templateName;
 
         public string TemplateName
@@ -171,7 +282,9 @@ namespace PlanScoreCard.ViewModels
             set
             {
                 SetProperty(ref scoreMetricPlotModel, value);
-                SelectedScoreMetric.SetPlotProperties(SelectedScoreMetric.MetricType);
+
+                if (SelectedScoreMetric != null)
+                    SelectedScoreMetric.SetPlotProperties(SelectedScoreMetric.MetricType);
             }
         }
 
@@ -189,12 +302,17 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand SaveTemplateCommand { get; private set; }
         public DelegateCommand OrderPointsByValueCommand { get; private set; }
         public DelegateCommand AddNewStructureCommand { get; private set; }
-
+        public StructureDictionarySelectorView StructureSelectorView { get; private set; }
+        //this property is used to determine whether to open the structure dictionary editor.
+        private bool _askEditDictionary { get; set; }
+        public AskAddDictionaryStructureView AskAddDictionaryStructureView { get; set; }
         // Constructor
-        public EditScoreCardViewModel(IEventAggregator eventAggregator, ViewLauncherService viewLauncherService)
+        public EditScoreCardViewModel(IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService, StructureDictionaryService structureDictionaryService)
         {
 
             ViewLauncherService = viewLauncherService;
+            ProgressViewService = progressViewService;
+            StructureDictionaryService = structureDictionaryService;
 
             // Events
             EventAggregator = eventAggregator;
@@ -205,9 +323,12 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Subscribe(UpdateScoreMetricPlotModel);
             EventAggregator.GetEvent<ReRankMetricPointsEvent>().Subscribe(ReRankPoints);
             EventAggregator.GetEvent<UpdateScorePointGridEvent>().Subscribe(ReloadScorePoints);
+            //EventAggregator.GetEvent<UpdateScorePointGridEvent>().Subscribe(ReloadScorePoints);
             EventAggregator.GetEvent<UpdateMetricEditorEvent>().Subscribe(ChangeMetricEditor);
             EventAggregator.GetEvent<AddStructureEvent>().Subscribe(AddNewStructure);
             EventAggregator.GetEvent<UpdateScroreMetricsEvent>().Subscribe(UpdateMetrics);
+            EventAggregator.GetEvent<YesEvent>().Subscribe(OnDictionaryYes);
+            EventAggregator.GetEvent<NoEvent>().Subscribe(OnDictionaryNo);
 
             // Commands
             DeleteMetricCommand = new DelegateCommand(DeleteMetric);
@@ -232,6 +353,41 @@ namespace PlanScoreCard.ViewModels
             MetricTypes = new ObservableCollection<MetricTypeEnum>();
 
             Bind();
+        }
+
+        private void OnDictionaryNo()
+        {
+            _askEditDictionary = false;
+            AskAddDictionaryStructureView.DialogResult = false;
+        }
+
+        private void OnDictionaryYes()
+        {
+            _askEditDictionary = true;
+            AskAddDictionaryStructureView.DialogResult = true;
+        }
+
+        // Populates the View / Binds Data
+        private void Bind()
+        {
+            // Treatment Sites
+            TreatmentSites = new ObservableCollection<string>();
+
+            foreach (var site in ConfigurationManager.AppSettings["TreatmentSites"].Split(';'))
+                TreatmentSites.Add(site);
+
+            // Add the MetricTypes
+            MetricTypes.Add(MetricTypeEnum.ConformationNumber);
+            MetricTypes.Add(MetricTypeEnum.ConformityIndex);
+            MetricTypes.Add(MetricTypeEnum.DoseAtVolume);
+            MetricTypes.Add(MetricTypeEnum.HomogeneityIndex);
+            MetricTypes.Add(MetricTypeEnum.MaxDose);
+            MetricTypes.Add(MetricTypeEnum.MeanDose);
+            MetricTypes.Add(MetricTypeEnum.MinDose);
+            MetricTypes.Add(MetricTypeEnum.Volume);
+            MetricTypes.Add(MetricTypeEnum.VolumeAtDose);
+            MetricTypes.Add(MetricTypeEnum.VolumeOfRegret);
+            MetricTypes.Add(MetricTypeEnum.Undefined);
         }
 
         private void UpdateMetrics()
@@ -264,6 +420,8 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<SetPlanModelEvent>().Publish(PlanModel);
             builderView.ShowDialog();
 
+            // Need to do something to refresh the structures
+
             //StructureBuilderView structureBuilderView = new StructureBuilderView()
             //{
             //    DataContext = new StructureBuilderViewModel(_planModel, _eventAggregator)
@@ -280,7 +438,7 @@ namespace PlanScoreCard.ViewModels
 
             MetricPointModels.Clear();
 
-            List<ScorePointModel> scorePoints = SelectedScoreMetric.ScorePoints.OrderBy(sm => sm.Score).ToList();
+            List<ScorePointModel> scorePoints = SelectedScoreMetric.ScorePoints.OrderBy(sm => sm.PointX).ToList();
             foreach (ScorePointModel point in scorePoints)
                 MetricPointModels.Add(point);
 
@@ -310,7 +468,8 @@ namespace PlanScoreCard.ViewModels
         private void ScorePlan()
         {
             var scoreTemplate = ScoreTemplateBuilder.Build(ScoreMetrics.ToList(), Structures.ToList());
-            EventAggregator.GetEvent<ScorePlanEvent>().Publish(scoreTemplate);
+            ScoreCard.ScoreMetrics = scoreTemplate;
+            EventAggregator.GetEvent<ScorePlanEvent>().Publish(ScoreCard);
         }
 
         private void PointDown()
@@ -336,6 +495,7 @@ namespace PlanScoreCard.ViewModels
         private void ReloadScorePoints(SolidColorBrush obj)
         {
             SelectedMetricPointModel.PlanScoreBackgroundColor = obj;
+            ScoreMetrics.FirstOrDefault(s => s.Id == SelectedScoreMetric.Id).ScorePoints.FirstOrDefault(p => p.MetricId == SelectedMetricPointModel.MetricId).PlanScoreBackgroundColor = obj;
         }
 
         private void DeletePoint()
@@ -345,15 +505,29 @@ namespace PlanScoreCard.ViewModels
             if (result != MessageBoxResult.Yes)
                 return;
 
-            MetricPointModels.Remove(SelectedMetricPointModel);
+            //MetricPointModels.Remove(SelectedMetricPointModel);
+            //SelectedScoreMetric.ScorePoints = MetricPointModels;
+            //ScoreMetrics.FirstOrDefault(s => s.Id == SelectedScoreMetric.Id).ScorePoints = MetricPointModels;
+
+            ScoreMetrics.FirstOrDefault(s => s.Id == SelectedScoreMetric.Id).ScorePoints.Remove(SelectedMetricPointModel);
+            ScoreMetrics = ScoreMetrics;
+            SelectedScoreMetric = SelectedScoreMetric;
+
             ReRankPoints();
+            UpdateScoreMetricPlotModel();
         }
 
         private void AddPoint()
         {
             int selectedIndex = MetricPointModels.IndexOf(SelectedMetricPointModel);
             ScorePointModel metricModel = new ScorePointModel(selectedIndex + 1, selectedIndex + 1, EventAggregator);
+            SelectedMetricPointModel = metricModel;
             MetricPointModels.Insert(selectedIndex + 1, metricModel);
+            //SelectedScoreMetric.ScorePoints = MetricPointModels;
+
+            ScoreMetrics.FirstOrDefault(s => s.Id == SelectedScoreMetric.Id).ScorePoints.Insert(selectedIndex + 1, metricModel);
+
+            // THIS WORKS ^^
             ReRankPoints();
         }
 
@@ -473,47 +647,36 @@ namespace PlanScoreCard.ViewModels
                 ScoreMetrics.Add(metric);
 
             ReRankMetrics();
-            SelectedScoreMetric = ScoreMetrics.First();
-        }
+            if (ScoreMetrics.Count() == 0)
+            {
+                SelectedScoreMetric = null;
+                MetricPointModels.Clear();
+                ScoreMetricPlotModel = null;
+                MetricEditorControl = null;
+            }
+            else
+            {
+                SelectedScoreMetric = ScoreMetrics.First();
 
-        // Populates the View / Binds Data
-        private void Bind()
-        {
-            // Treatment Sites
-            TreatmentSites = new ObservableCollection<string>();
-
-            foreach (var site in ConfigurationManager.AppSettings["TreatmentSites"].Split(';'))
-                TreatmentSites.Add(site);
-
-            // Add the MetricTypes
-            MetricTypes.Add(MetricTypeEnum.ConformationNumber);
-            MetricTypes.Add(MetricTypeEnum.ConformityIndex);
-            MetricTypes.Add(MetricTypeEnum.DoseAtVolume);
-            MetricTypes.Add(MetricTypeEnum.HomogeneityIndex);
-            MetricTypes.Add(MetricTypeEnum.MaxDose);
-            MetricTypes.Add(MetricTypeEnum.MeanDose);
-            MetricTypes.Add(MetricTypeEnum.MinDose);
-            MetricTypes.Add(MetricTypeEnum.Volume);
-            MetricTypes.Add(MetricTypeEnum.VolumeAtDose);
-            MetricTypes.Add(MetricTypeEnum.VolumeOfRegret);
-            MetricTypes.Add(MetricTypeEnum.Undefined);
-
+            }
         }
 
         // Event Methods
         private void LoadScoreCard(ScoreCardModel scoreCardModel)
         {
             ScoreCard = scoreCardModel;
-            //TemplateName = ScoreCard.Name;
-            //SelectedTreatmentSite = ScoreCard.SiteGroup;
-            //ShowScoreCardMetrics(ScoreCard.ScoreMetrics);
         }
 
         private void SetPlan(PlanModel planModel)
         {
+            if (planModel == null)
+                return;
+
             PlanModel = planModel;
-            Structures = PlanModel.Structures;
-            Structures.OrderBy(s => s.StructureId);
+            foreach(var structure in PlanModel.Structures.OrderBy(s=>s.StructureId))
+            {
+                Structures.Add(structure);
+            }
         }
 
         private void SetUser(User user)
@@ -567,7 +730,8 @@ namespace PlanScoreCard.ViewModels
                 metric.CanReOrder = true;
             }
 
-            ScoreMetrics.OrderBy(o => o.Id);
+            MetricPointModels.OrderBy(o => o.PointId);
+
         }
 
         // Show Metric / Points 
@@ -575,16 +739,24 @@ namespace PlanScoreCard.ViewModels
         private void ShowScoreCardMetrics(List<ScoreTemplateModel> scoreMetrics)
         {
             ScoreMetrics.Clear();
-
+            //SelectedScoreMetric = null;
             foreach (var sm in ScoreTemplateBuilder.GetScoreCardMetricsFromTemplate(scoreMetrics, EventAggregator, 0, Structures.ToList()))
             {
                 //sm.SetEventAggregator(EventAggregator);
                 //sm.InititatePlot();
+                sm.IsLoaded = true;
                 ScoreMetrics.Add(sm);
             }
 
             // Set the Selected ScoreMetric
-            SelectedScoreMetric = ScoreMetrics.First();
+            if (ScoreMetrics.Count() == 0)
+            {
+                SelectedScoreMetric = null;
+            }
+            else
+            {
+                SelectedScoreMetric = ScoreMetrics.First();
+            }
         }
 
         private void ShowScorePointModels(ScoreMetricModel selectedMetric)

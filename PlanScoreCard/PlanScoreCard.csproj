@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>PlanScoreCard</RootNamespace>
     <AssemblyName>PlanScoreCard</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -34,6 +34,26 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Autofac, Version=4.9.4.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
@@ -107,11 +127,16 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converters\BoolToColorConverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
     <Compile Include="Converters\DoubleDecimalConverter.cs" />
     <Compile Include="Converters\DoubleF2Converter.cs" />
+    <Compile Include="Converters\MaxScoreToHeaderConverter.cs" />
     <Compile Include="Converters\MetricEditorConverter.cs" />
     <Compile Include="Converters\MetricIdConverter.cs" />
+    <Compile Include="Converters\ScoreToTextConverter.cs" />
+    <Compile Include="Converters\StructureToBoldConverter.cs" />
+    <Compile Include="Converters\StructureToStructureDisplayNameConverter.cs" />
     <Compile Include="Events\AddScorePointEvent.cs" />
     <Compile Include="Events\AddStructureEvent.cs" />
     <Compile Include="Events\ChangeNestEvent.cs" />
@@ -124,6 +149,10 @@
     <Compile Include="Events\EditScoreCardSetPlanEvent.cs" />
     <Compile Include="Events\EditScoreCardSetUserEvent.cs" />
     <Compile Include="Events\FreePrimarySelectionEvent.cs" />
+    <Compile Include="Events\HelperWindows\CancelEvent.cs" />
+    <Compile Include="Events\HelperWindows\NoEvent.cs" />
+    <Compile Include="Events\HelperWindows\StructureDictionaryAddedEvent.cs" />
+    <Compile Include="Events\HelperWindows\YesEvent.cs" />
     <Compile Include="Events\LoadEditScoreCardViewEvent.cs" />
     <Compile Include="Events\MetricDownEvent.cs" />
     <Compile Include="Events\MetricRankChangedEvent.cs" />
@@ -147,6 +176,7 @@
     <Compile Include="Events\ShowPluginViewEvent.cs" />
     <Compile Include="Events\ShowVolumeAtDoseMetricEvent.cs" />
     <Compile Include="Events\StructureBuilderChangedEvent.cs" />
+    <Compile Include="Events\UILaunchedEvent.cs" />
     <Compile Include="Events\UpdateMetricEditorEvent.cs" />
     <Compile Include="Events\UpdateScorePointGridEvent.cs" />
     <Compile Include="Events\UpdateScroreMetricsEvent.cs" />
@@ -172,6 +202,7 @@
     <Compile Include="Models\ScoreMetricModel.cs" />
     <Compile Include="Models\ScorePointModel.cs" />
     <Compile Include="Models\ScoreValueModel.cs" />
+    <Compile Include="Models\StructureDictionaryModel.cs" />
     <Compile Include="Models\StructureModel.cs" />
     <Compile Include="Models\StructureModelNestingModel.cs" />
     <Compile Include="Models\StructureOperationEnum.cs" />
@@ -181,7 +212,9 @@
     <Compile Include="Services\PlanScoreCalculationServices.cs" />
     <Compile Include="Services\PlanScorePlottingServices.cs" />
     <Compile Include="Services\PluginViewService.cs" />
+    <Compile Include="Services\ProgressViewService.cs" />
     <Compile Include="Services\SmartSearchService.cs" />
+    <Compile Include="Services\StructureDictionaryService.cs" />
     <Compile Include="Services\StructureGenerationService.cs" />
     <Compile Include="Services\ViewLauncherService.cs" />
     <Compile Include="Services\ViewResolvingPlotModel.cs" />
@@ -194,6 +227,7 @@
     <Compile Include="ViewModels\EditScoreCardViewModel.cs" />
     <Compile Include="ViewModels\GenerateScorecardViewModel.cs" />
     <Compile Include="ViewModels\HIViewModel.cs" />
+    <Compile Include="ViewModels\INofityPropertyChanged.cs" />
     <Compile Include="ViewModels\Interfaces\IScoreMetricViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MetricEditors\EditCIViewModel.cs" />
@@ -209,30 +243,23 @@
     <Compile Include="ViewModels\StructureBuilderGroupViewModel.cs" />
     <Compile Include="ViewModels\StructureBuilderViewModel.cs" />
     <Compile Include="ViewModels\StructureGenerationViewModel.cs" />
+    <Compile Include="ViewModels\VMHelpers\AskAddDictionaryStructureViewModel.cs" />
+    <Compile Include="ViewModels\VMHelpers\StructureDictionarySelectorViewModel.cs" />
     <Compile Include="ViewModels\VolumeAtDoseViewModel.cs" />
-    <Compile Include="Views\CIView.xaml.cs">
-      <DependentUpon>CIView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ColorPickerView.xaml.cs">
       <DependentUpon>ColorPickerView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\DoseAtVolumeView.xaml.cs">
-      <DependentUpon>DoseAtVolumeView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\DoseValueView.xaml.cs">
-      <DependentUpon>DoseValueView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditScoreCardView.xaml.cs">
       <DependentUpon>EditScoreCardView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\GenerateScorecardView.xaml.cs">
-      <DependentUpon>GenerateScorecardView.xaml</DependentUpon>
+    <Compile Include="Views\HelperWindows\AskAddDictionaryStructureView.xaml.cs">
+      <DependentUpon>AskAddDictionaryStructureView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\HIView.xaml.cs">
-      <DependentUpon>HIView.xaml</DependentUpon>
+    <Compile Include="Views\HelperWindows\ProgressView.xaml.cs">
+      <DependentUpon>ProgressView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MainView.xaml.cs">
-      <DependentUpon>MainView.xaml</DependentUpon>
+    <Compile Include="Views\HelperWindows\StructureDictionarySelectorView.xaml.cs">
+      <DependentUpon>StructureDictionarySelectorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MetricEditors\EditCIView.xaml.cs">
       <DependentUpon>EditCIView.xaml</DependentUpon>
@@ -258,9 +285,6 @@
     <Compile Include="Views\PluginView.xaml.cs">
       <DependentUpon>PluginView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PointPlotView.xaml.cs">
-      <DependentUpon>PointPlotView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ScoreCardView.xaml.cs">
       <DependentUpon>ScoreCardView.xaml</DependentUpon>
     </Compile>
@@ -276,8 +300,8 @@
     <Compile Include="Views\StructureGenerationVIew.xaml.cs">
       <DependentUpon>StructureGenerationVIew.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\VolumeAtDoseView.xaml.cs">
-      <DependentUpon>VolumeAtDoseView.xaml</DependentUpon>
+    <Compile Include="Views\testView.xaml.cs">
+      <DependentUpon>testView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -303,25 +327,16 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Content Include="StructureDictionary\InitialStructureDictionary.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Page Include="Views\CIView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\ColorPickerView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\DoseAtVolumeView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\DoseValueView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -329,15 +344,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\GenerateScorecardView.xaml">
+    <Page Include="Views\HelperWindows\AskAddDictionaryStructureView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\HIView.xaml">
+    <Page Include="Views\HelperWindows\ProgressView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MainView.xaml">
+    <Page Include="Views\HelperWindows\StructureDictionarySelectorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -373,10 +388,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PointPlotView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\ScoreCardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -397,10 +408,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\VolumeAtDoseView.xaml">
+    <Page Include="Views\testView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="StructureDictionary\StructureDictionary.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -25,12 +25,12 @@
         <Label Grid.Column="5" Grid.Row="1" Content=")" FontSize="20" HorizontalAlignment="Left" FontWeight="DemiBold" VerticalAlignment="Center"/>
         
         <Label Grid.Column="1" Grid.Row="0" Content="High Dose Limit" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
-        <TextBox Grid.Column="1" Text="{Binding HI_HiValue}" Grid.Row="1" Margin="5" IsReadOnly="True"/>
+        <TextBox Grid.Column="1" Text="{Binding HI_HiValue, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Margin="5" />
 
         <Label Grid.Column="2" Grid.Row="1" Content="-" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,-5"/>
 
         <Label Grid.Column="3" Grid.Row="0" Content="Lower Dose Limit" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
-        <TextBox Grid.Column="3" Text="{Binding HI_LowValue}" Grid.Row="1" Margin="5" IsReadOnly="True"/>
+        <TextBox Grid.Column="3" Text="{Binding HI_LowValue, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Margin="5" />
 
         <Border Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" BorderThickness="0,2 0,0" Margin="0, 5, 0, 0" BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" />
 
@@ -47,10 +47,10 @@
             </Grid.RowDefinitions>
             
             <Label Grid.Column="1" Grid.Row="0" Content="Target Dose" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
-            <TextBox Grid.Column="1" Text="{Binding TargetValue}" Grid.Row="1" Margin="5" IsReadOnly="True"/>
+            <TextBox Grid.Column="1" Text="{Binding TargetValue, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Margin="5"/>
 
             <Label Grid.Column="2" Grid.Row="0" Content="Target Dose Unit" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
-            <ComboBox Grid.Column="2" ItemsSource="{Binding DoseUnits}" SelectedItem="{Binding DoseUnit}" Grid.Row="1" Margin="5" IsReadOnly="True"/>
+            <ComboBox Grid.Column="2" ItemsSource="{Binding DoseUnits, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding DoseUnit}" Grid.Row="1" Margin="5"/>
         </Grid>
         
         

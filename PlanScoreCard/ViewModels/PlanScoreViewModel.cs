@@ -51,13 +51,12 @@ namespace PlanScoreCard.ViewModels
             PlanScores = new ObservableCollection<PlanScoreModel>();
             Plans = new ObservableCollection<PlanningItem>();
             
-            if (_plan != null)
-            {
-                OnPlanChanged(new List<PlanModel> { new PlanModel(_plan as PlanningItem, _eventAggregator) { PlanId = _plan.Id, CourseId = _course.Id, bSelected = true } });
-            }
+            //if (_plan != null)
+            //{
+            //    OnPlanChanged(new List<PlanModel> { new PlanModel(_plan as PlanningItem, _eventAggregator) { PlanId = _plan.Id, CourseId = _course.Id, bSelected = true } });
+            //}
            
         }
-
 
         // Updates the PlanModel
         public void UpdatePlanModel(Patient patient, Course course, PlanSetup plan)
@@ -103,10 +102,10 @@ namespace PlanScoreCard.ViewModels
             int metric_id = 0;
             foreach (var template in templates)
             {
-                var psm = new PlanScoreModel(_app);
-                psm.BuildPlanScoreFromTemplate(Plans, template, metric_id);
-                PlanScores.Add(psm);
-                metric_id++;
+                //var psm = new PlanScoreModel(_app);
+                //psm.BuildPlanScoreFromTemplate(Plans, template, metric_id);
+                //PlanScores.Add(psm);
+                //metric_id++;
             }
 
             //remove score points from metrics that didn't have the

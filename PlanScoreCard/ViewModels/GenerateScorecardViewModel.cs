@@ -446,7 +446,7 @@ namespace PlanScoreCard.ViewModels
         private void OnScorePlan()
         {
             var scoreTemplate = ScoreTemplateBuilder.Build(ScoreMetrics.ToList(), Structures.ToList());
-            _eventAggregator.GetEvent<ScorePlanEvent>().Publish(scoreTemplate);
+            //_eventAggregator.GetEvent<ScorePlanEvent>().Publish(scoreTemplate);
         }
 
         private bool CanScorePlan()
