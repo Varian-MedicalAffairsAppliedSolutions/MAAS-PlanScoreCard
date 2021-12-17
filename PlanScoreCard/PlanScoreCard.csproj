@@ -176,6 +176,7 @@
     <Compile Include="Events\ShowPluginViewEvent.cs" />
     <Compile Include="Events\ShowVolumeAtDoseMetricEvent.cs" />
     <Compile Include="Events\StructureBuilderChangedEvent.cs" />
+    <Compile Include="Events\UILaunchedEvent.cs" />
     <Compile Include="Events\UpdateMetricEditorEvent.cs" />
     <Compile Include="Events\UpdateScorePointGridEvent.cs" />
     <Compile Include="Events\UpdateScroreMetricsEvent.cs" />

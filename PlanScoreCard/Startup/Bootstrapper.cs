@@ -13,7 +13,7 @@ namespace PlanScoreCard.Startup
 {
     public class Bootstrapper
     {
-        public IContainer Bootstrap(Patient patient, Course course, PlanSetup plan, User user, Application app)
+        public IContainer Bootstrap(Patient patient, Course course, PlanSetup plan, User user, Application app, IEventAggregator eventAggregator)
         {
             var container = new ContainerBuilder();
             //esapi components.
@@ -52,7 +52,7 @@ namespace PlanScoreCard.Startup
 
 
             //events
-            container.RegisterType<EventAggregator>().As<IEventAggregator>().SingleInstance();
+            container.RegisterInstance<IEventAggregator>(eventAggregator);
             container.RegisterType<CancelEvent>().AsSelf();
 
             // services

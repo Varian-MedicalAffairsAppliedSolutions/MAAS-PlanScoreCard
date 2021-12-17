@@ -20,11 +20,12 @@
             <converters:BoolToColorConverter x:Key="localBoolToColorConverter"/>
         </ResourceDictionary>
     </metro:MetroWindow.Resources>
-    <Grid>
-        <Grid Grid.Row="1">
+    <Grid x:FieldModifier="public"  x:Name="TotalGrid">
+        <Grid Grid.Row="1" x:FieldModifier="public" x:Name="ParentGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2.*"/>
                 <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Grid>
                 <Grid.RowDefinitions>
