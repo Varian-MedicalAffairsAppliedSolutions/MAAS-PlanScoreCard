@@ -310,6 +310,10 @@ namespace PlanScoreCard.Models
             {
                 // The id and the code are from the template Structure
                 Structure structure = GetStructureFromTemplate(id, templateId, code, auto, comment, plan);
+                if (structure != null)
+                {
+                    template.Structure.StructureId = structure.Id;
+                }
                 ScoreValueModel scoreValue = new ScoreValueModel();
 
                 scoreValue.PlanId = plan.Id;

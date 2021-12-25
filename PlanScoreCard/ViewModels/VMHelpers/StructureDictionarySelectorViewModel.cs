@@ -1,4 +1,5 @@
-﻿using PlanScoreCard.Models;
+﻿using PlanScoreCard.Events.HelperWindows;
+using PlanScoreCard.Models;
 using PlanScoreCard.Services;
 using Prism.Commands;
 using Prism.Events;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace PlanScoreCard.ViewModels.VMHelpers
 {
-    public class StructureDictionarySelectorViewModel:BindableBase
+    public class StructureDictionarySelectorViewModel : BindableBase
     {
         private readonly IEventAggregator EventAggregator;
 
@@ -37,7 +38,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         public string StructureToAdd
         {
             get { return _structureToAdd; }
-            set { SetProperty(ref _structureToAdd,value); }
+            set { SetProperty(ref _structureToAdd, value); }
         }
 
         private string _templateStructureId;
@@ -46,8 +47,9 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         public bool bAddToDictionary
         {
             get { return _bAddToDictionary; }
-            set { 
-                SetProperty(ref _bAddToDictionary,value);
+            set
+            {
+                SetProperty(ref _bAddToDictionary, value);
                 if (bAddToDictionary)
                 {
                     bAddNewEntry = false;
@@ -59,8 +61,9 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         public bool bAddNewEntry
         {
             get { return _bAddNewEntry; }
-            set { 
-                SetProperty(ref _bAddNewEntry,value);
+            set
+            {
+                SetProperty(ref _bAddNewEntry, value);
                 if (bAddNewEntry)
                 {
                     bAddToDictionary = false;
@@ -72,7 +75,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         public string EntryKey
         {
             get { return _entryKey; }
-            set { SetProperty(ref _entryKey,value); }
+            set { SetProperty(ref _entryKey, value); }
         }
 
 
@@ -90,25 +93,41 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             //DictionaryStructures = new List<string>();
             CancelCommand = new DelegateCommand(OnCancel);
             UpdateDictionaryCommand = new DelegateCommand(OnDictionaryUpdate);
+            //CloseAction = new Action(OnClose);
             Bind();
+        }
+
+        private void OnClose()
+        {
+            //closes the window
         }
 
         private void OnDictionaryUpdate()
         {
             if (bAddToDictionary)
             {
-                StructureDictionaryService.AddSynonym(SelectedDictionaryKey, StructureToAdd);
+                if (StructureDictionaryService.AddSynonym(SelectedDictionaryKey, StructureToAdd))
+                {
+                    EventAggregator.GetEvent<StructureDictionaryAddedEvent>().Publish();
+                }
             }
             if (bAddNewEntry)
             {
                 StructureDictionaryService.AddStructure(SelectedDictionaryKey);
-                StructureDictionaryService.AddSynonym(SelectedDictionaryKey, StructureToAdd);
+                if (StructureDictionaryService.AddSynonym(SelectedDictionaryKey, StructureToAdd))
+                {
+                    EventAggregator.GetEvent<StructureDictionaryAddedEvent>().Publish();
+                }
+
             }
+            CloseAction.Invoke();
         }
 
         private void OnCancel()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            CloseAction.Invoke();
+            //OnClose();
         }
 
         private void Bind()
@@ -117,7 +136,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             {
                 DictionaryKeys.Add(structure.StructureID);
             }
-            if(DictionaryKeys.Any(x=>x.Equals(_templateStructureId, StringComparison.OrdinalIgnoreCase)))
+            if (DictionaryKeys.Any(x => x.Equals(_templateStructureId, StringComparison.OrdinalIgnoreCase)))
             {
                 bAddToDictionary = true;
                 SelectedDictionaryKey = DictionaryKeys.FirstOrDefault(x => x.Equals(_templateStructureId, StringComparison.OrdinalIgnoreCase));

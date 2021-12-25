@@ -106,13 +106,13 @@ namespace PlanScoreCard.ViewModels
             }
         }
         private bool readyEdit = false;
-        private void KeepDictionaryStructure(StructureModel structureModel)
+        private void KeepDictionaryStructure(StructureModel structureModel, string structureId)
         {
             bool structureExcluded = false;
             var excludeStructures = ConfigurationManager.AppSettings["DictionaryExclusions"].Split(';');
             if (excludeStructures != null && excludeStructures.Length > 0)
             {
-                if (excludeStructures.Contains(structureModel.StructureId))
+                if (excludeStructures.Contains(structureId))
                 {
                     structureExcluded = true;
                 }
@@ -121,16 +121,48 @@ namespace PlanScoreCard.ViewModels
             {
                 //MessageBoxResult result = MessageBox.Show("This structure is not contained within the Structure Dictionary, would you like to add it?", "New StructureId", MessageBoxButton.YesNo);
                 AskAddDictionaryStructureView = new AskAddDictionaryStructureView();
-                AskAddDictionaryStructureView.DataContext = new AskAddDictionaryStructureViewModel(EventAggregator, structureModel.StructureId);
+                AskAddDictionaryStructureView.DataContext = new AskAddDictionaryStructureViewModel(EventAggregator, structureId);
                 AskAddDictionaryStructureView.ShowDialog();
                 if (_askEditDictionary)
                 {
-                    StructureSelectorView = new StructureDictionarySelectorView(StructureDictionaryService, structureModel.StructureId, structureModel.TemplateStructureId, EventAggregator);
+                    StructureSelectorView = new StructureDictionarySelectorView(StructureDictionaryService, structureId, structureModel.TemplateStructureId, EventAggregator);
 
                     StructureSelectorView.ShowDialog();
+                    //re-evaluate structures that could have been matched in the new structure dictionary. 
                 }
             }
         }
+
+        private void UpdateStructuresBasedOnDictionary()
+        {
+            foreach(var structure in ScoreMetrics.Where(x => String.IsNullOrWhiteSpace(x.Structure.StructureId)))
+            {
+                StructureDictionaryModel structureDictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.Equals(structure.Structure.TemplateStructureId, StringComparison.OrdinalIgnoreCase));
+                if (structureDictionary != null && structureDictionary.StructureSynonyms!=null)
+                {
+                    // Get a collection of all acceptable Structures
+                    List<string> acceptedStructures = new List<string>();
+                    //acceptedStructures.Add(structureDictionary.StructureID.ToLower());
+                    if (structureDictionary.StructureSynonyms != null)
+                    {
+                        acceptedStructures.AddRange(structureDictionary.StructureSynonyms.Select(s=>s.ToLower()));
+                    }
+
+                    // Gets the Plan Structures
+                    var planStructures = Structures.Select(x=>x.StructureId.ToLower());
+
+                    // Finds any matches between the PlanStructures and All Accepted StructIDs
+                    //Structure structure = null;
+                    string matchedStructureID = planStructures.Intersect(acceptedStructures).FirstOrDefault();
+                    if (matchedStructureID != null)
+                    {
+                        structure.Structure.StructureId = Structures.FirstOrDefault(x=>x.StructureId.Equals(matchedStructureID,StringComparison.OrdinalIgnoreCase)).StructureId;
+                        //structure = plan.StructureSet.Structures.FirstOrDefault(s => s.Id.ToLower() == matchedStructureID.ToLower());
+                    }
+                }
+            }
+        }
+
         // Selected Structure
         private StructureModel selectedStructure;
 
@@ -141,7 +173,7 @@ namespace PlanScoreCard.ViewModels
             {
                 if (readyEdit && SelectedStructure == null && value!=null && !String.IsNullOrWhiteSpace(value.StructureId))
                 {
-                    KeepDictionaryStructure(SelectedScoreMetric.Structure);
+                    KeepDictionaryStructure(SelectedScoreMetric.Structure, value.StructureId);
                 }
                 SetProperty(ref selectedStructure, value);
 
@@ -329,6 +361,7 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<UpdateScroreMetricsEvent>().Subscribe(UpdateMetrics);
             EventAggregator.GetEvent<YesEvent>().Subscribe(OnDictionaryYes);
             EventAggregator.GetEvent<NoEvent>().Subscribe(OnDictionaryNo);
+            EventAggregator.GetEvent<StructureDictionaryAddedEvent>().Subscribe(UpdateStructuresBasedOnDictionary);
 
             // Commands
             DeleteMetricCommand = new DelegateCommand(DeleteMetric);

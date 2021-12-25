@@ -121,7 +121,7 @@ namespace PlanScoreCard.Services
 
         public void UpdateStructureDictionaryConfig()
         {
-            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ConfigurationManager.AppSettings["StructureDictionary"]);
+            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ConfigurationManager.AppSettings["StructureDictionaryPath"]);
             
             File.WriteAllText(path, JsonConvert.SerializeObject(StructureDictionary));
             //StreamReader reader = File.OpenText(ConfigurationManager.AppSettings["StructureDictionaryPath"].ToString());
