@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,14 +32,26 @@ namespace PlanScoreCard.ViewModels.VMHelpers
 
         private void OnExclude()
         {
-            if (String.IsNullOrEmpty(ConfigurationManager.AppSettings["DictionaryExclusions"]))
+            //this needs to be the path running the application
+            var configFile = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
+            var value = ConfigurationManager.AppSettings["DictionaryExclusions"];
+            var splitValues = value.Split(';');
+            if (!splitValues.Any(x=>x == _newStructure))
             {
-                ConfigurationManager.AppSettings["DictionaryExclusions"] = _newStructure;
+                if (String.IsNullOrEmpty(value))
+                {
+                    //ConfigurationManager.AppSettings["DictionaryExclusions"] = _newStructure;
+                    configFile.AppSettings.Settings.Remove("DictionaryExclusions");
+                    configFile.AppSettings.Settings.Add("DictionaryExclusions", _newStructure);
+                }
+                else
+                {
+
+                    configFile.AppSettings.Settings.Remove("DictionaryExclusions");
+                    configFile.AppSettings.Settings.Add("DictionaryExclusions", $"{value};{_newStructure}");
+                }
             }
-            else
-            {
-                ConfigurationManager.AppSettings["DictionaryExclusions"] += $";{_newStructure}";
-            }
+            configFile.Save(ConfigurationSaveMode.Modified);
             OnNo();
         }
 

@@ -18,6 +18,7 @@ using System.Collections.ObjectModel;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -109,10 +110,11 @@ namespace PlanScoreCard.ViewModels
         private void KeepDictionaryStructure(StructureModel structureModel, string structureId)
         {
             bool structureExcluded = false;
-            var excludeStructures = ConfigurationManager.AppSettings["DictionaryExclusions"].Split(';');
+            var configFile = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
+            var excludeStructures = configFile.AppSettings.Settings["DictionaryExclusions"].Value.Split(';');
             if (excludeStructures != null && excludeStructures.Length > 0)
             {
-                if (excludeStructures.Contains(structureId))
+                if (excludeStructures.Any(x=>x.Equals(structureId, StringComparison.OrdinalIgnoreCase)))
                 {
                     structureExcluded = true;
                 }
