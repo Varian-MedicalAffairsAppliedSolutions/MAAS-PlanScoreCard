@@ -36,7 +36,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             var configFile = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
             var value = ConfigurationManager.AppSettings["DictionaryExclusions"];
             var splitValues = value.Split(';');
-            if (!splitValues.Any(x=>x == _newStructure))
+            if (!splitValues.Any(x=>x.Equals(_newStructure, StringComparison.OrdinalIgnoreCase)))
             {
                 if (String.IsNullOrEmpty(value))
                 {

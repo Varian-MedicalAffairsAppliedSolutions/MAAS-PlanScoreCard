@@ -220,8 +220,15 @@ namespace PlanScoreCard.ViewModels
                 foreach (PlanSetup plan in course.PlanSetups)
                     Plans.Add(new PlanModel(plan, EventAggregator));
             }
-
-            Plans.First().bPrimary = true;
+            if (Plan != null)
+            {
+                if(Plans.Any(x=>x.PlanId == Plan.Id && x.CourseId == Course.Id))
+                {
+                    Plans.FirstOrDefault(x => x.PlanId == Plan.Id && x.CourseId == Course.Id).bPrimary = true;
+                }
+            }
+            
+            //Plans.First().bPrimary = true;
 
         }
 

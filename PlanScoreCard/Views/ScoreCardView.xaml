@@ -240,6 +240,10 @@
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="3*"/>
                                                 </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
                                                 <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 1">
                                                     <TextBlock Text="{Binding MetricId, Converter={StaticResource localMetricIdConverter}}" Foreground="Black" HorizontalAlignment="Center"/>
                                                 </Border>
@@ -252,36 +256,13 @@
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="25"/>
                                                             <RowDefinition Height="25"/>
-                                                            <RowDefinition Height="Auto"/>
                                                         </Grid.RowDefinitions>
                                                         <TextBlock Foreground="Black" Text="{Binding StructureId}" Grid.Row="0" HorizontalAlignment="Center" TextWrapping="Wrap"/>
                                                         <TextBlock Foreground="Black" Text="{Binding TemplateStructureId}" Grid.Row="1" HorizontalAlignment="Center" TextWrapping="Wrap" Visibility="{Binding TemplateStructureVisibility}"/>
 
                                                         <TextBlock Text="{Binding MetricText}" Foreground="Black" HorizontalAlignment="Center" Grid.Column="1"/>
 
-                                                        <StackPanel Grid.ColumnSpan="2" Grid.Row="2">
-                                                            <Grid>
-                                                                <ItemsControl ItemsSource="{Binding Colors}">
-                                                                    <ItemsControl.ItemsPanel>
-                                                                        <ItemsPanelTemplate>
-                                                                            <WrapPanel Orientation="Horizontal"/>
-                                                                        </ItemsPanelTemplate>
-                                                                    </ItemsControl.ItemsPanel>
-                                                                    <ItemsControl.ItemTemplate>
-                                                                        <DataTemplate>
-                                                                            <Border Background="{Binding PlanScoreBackgroundColor}"  BorderBrush="Black" BorderThickness="1" 
-                                                            Width="{Binding RelativeSource={RelativeSource AncestorType=StackPanel}, Path=DataContext.BlockWidth}" Height="25">
-                                                                                <TextBlock Text="{Binding ColorLabel}" TextWrapping="Wrap" 
-                                                            FontSize="{Binding RelativeSource={RelativeSource AncestorType=StackPanel}, Path=DataContext.FontSize}" FontWeight="Bold"/>
-                                                                            </Border>
-                                                                        </DataTemplate>
-                                                                    </ItemsControl.ItemTemplate>
-                                                                </ItemsControl>
-                                                            </Grid>
-                                                            <icons:PackIconFontAwesome Kind="CaretUpSolid" Foreground="DarkGray" Margin="{Binding PKPosition}"
-                                                               Visibility="{Binding bPKColor,Converter={StaticResource localVisibilityConverter}}"
-                                                               HorizontalAlignment="Left"/>
-                                                        </StackPanel>
+                                                        
                                                     </Grid>
                                                 </Border>
                                                 <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 1" Grid.Column="3" Grid.ColumnSpan="3">
@@ -360,6 +341,29 @@
                                                         
                                                     </Grid>
                                                 </Border>
+                                                <StackPanel Grid.ColumnSpan="7" Grid.Row="1">
+                                                    <Grid>
+                                                        <ItemsControl ItemsSource="{Binding Colors}">
+                                                            <ItemsControl.ItemsPanel>
+                                                                <ItemsPanelTemplate>
+                                                                    <WrapPanel Orientation="Horizontal"/>
+                                                                </ItemsPanelTemplate>
+                                                            </ItemsControl.ItemsPanel>
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Border Background="{Binding PlanScoreBackgroundColor}"  BorderBrush="Black" BorderThickness="1" 
+                                                            Width="{Binding RelativeSource={RelativeSource AncestorType=StackPanel}, Path=DataContext.BlockWidth}" Height="25">
+                                                                        <TextBlock Text="{Binding ColorLabel}" TextWrapping="Wrap" 
+                                                            FontSize="{Binding RelativeSource={RelativeSource AncestorType=StackPanel}, Path=DataContext.FontSize}" FontWeight="Bold"/>
+                                                                    </Border>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </Grid>
+                                                    <icons:PackIconFontAwesome Kind="CaretUpSolid" Foreground="DarkGray" Margin="{Binding PKPosition}"
+                                                               Visibility="{Binding bPKColor,Converter={StaticResource localVisibilityConverter}}"
+                                                               HorizontalAlignment="Left"/>
+                                                </StackPanel>
                                             </Grid>
                                             
                                         </DataTemplate>

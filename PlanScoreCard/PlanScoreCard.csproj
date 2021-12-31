@@ -215,6 +215,9 @@
     <Compile Include="Models\StructureModelNestingModel.cs" />
     <Compile Include="Models\StructureOperationEnum.cs" />
     <Compile Include="Models\StructureOperationModel.cs" />
+    <Compile Include="PlanScorecardLauncher.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Services\NormalizationService.cs" />
     <Compile Include="Services\PatientSelectService.cs" />
     <Compile Include="Services\PlanScoreCalculationServices.cs" />
