@@ -91,16 +91,13 @@ namespace PlanScoreCard.ViewModels
                 UpdateScoreMetricPlotModel();
                 UpdateMetricEditor(SelectedScoreMetric);
 
-                if (SelectedScoreMetric.Structure == null)
-                    return;
-
-                if (String.IsNullOrWhiteSpace(SelectedScoreMetric.Structure.StructureId))
+                if (SelectedScoreMetric.Structure == null || String.IsNullOrWhiteSpace(SelectedScoreMetric.Structure?.StructureId))
                 {
                     SelectedStructure = null;
                 }
                 else
                 {
-                    
+
                     SelectedStructure = SelectedScoreMetric.Structure;
                     readyEdit = true;
                 }
@@ -114,7 +111,7 @@ namespace PlanScoreCard.ViewModels
             var excludeStructures = configFile.AppSettings.Settings["DictionaryExclusions"].Value.Split(';');
             if (excludeStructures != null && excludeStructures.Length > 0)
             {
-                if (excludeStructures.Any(x=>x.Equals(structureId, StringComparison.OrdinalIgnoreCase)))
+                if (excludeStructures.Any(x => x.Equals(structureId, StringComparison.OrdinalIgnoreCase)))
                 {
                     structureExcluded = true;
                 }
@@ -129,6 +126,7 @@ namespace PlanScoreCard.ViewModels
                 {
                     StructureSelectorView = new StructureDictionarySelectorView(StructureDictionaryService, structureId, structureModel.TemplateStructureId, EventAggregator);
 
+
                     StructureSelectorView.ShowDialog();
                     //re-evaluate structures that could have been matched in the new structure dictionary. 
                 }
@@ -137,28 +135,28 @@ namespace PlanScoreCard.ViewModels
 
         private void UpdateStructuresBasedOnDictionary()
         {
-            foreach(var structure in ScoreMetrics.Where(x => String.IsNullOrWhiteSpace(x.Structure.StructureId)))
+            foreach (var structure in ScoreMetrics.Where(x => String.IsNullOrWhiteSpace(x.Structure.StructureId)))
             {
                 StructureDictionaryModel structureDictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.Equals(structure.Structure.TemplateStructureId, StringComparison.OrdinalIgnoreCase));
-                if (structureDictionary != null && structureDictionary.StructureSynonyms!=null)
+                if (structureDictionary != null && structureDictionary.StructureSynonyms != null)
                 {
                     // Get a collection of all acceptable Structures
                     List<string> acceptedStructures = new List<string>();
                     //acceptedStructures.Add(structureDictionary.StructureID.ToLower());
                     if (structureDictionary.StructureSynonyms != null)
                     {
-                        acceptedStructures.AddRange(structureDictionary.StructureSynonyms.Select(s=>s.ToLower()));
+                        acceptedStructures.AddRange(structureDictionary.StructureSynonyms.Select(s => s.ToLower()));
                     }
 
                     // Gets the Plan Structures
-                    var planStructures = Structures.Select(x=>x.StructureId.ToLower());
+                    var planStructures = Structures.Select(x => x.StructureId.ToLower());
 
                     // Finds any matches between the PlanStructures and All Accepted StructIDs
                     //Structure structure = null;
                     string matchedStructureID = planStructures.Intersect(acceptedStructures).FirstOrDefault();
                     if (matchedStructureID != null)
                     {
-                        structure.Structure.StructureId = Structures.FirstOrDefault(x=>x.StructureId.Equals(matchedStructureID,StringComparison.OrdinalIgnoreCase)).StructureId;
+                        structure.Structure.StructureId = Structures.FirstOrDefault(x => x.StructureId.Equals(matchedStructureID, StringComparison.OrdinalIgnoreCase)).StructureId;
                         //structure = plan.StructureSet.Structures.FirstOrDefault(s => s.Id.ToLower() == matchedStructureID.ToLower());
                     }
                 }
@@ -173,7 +171,7 @@ namespace PlanScoreCard.ViewModels
             get { return selectedStructure; }
             set
             {
-                if (readyEdit && SelectedStructure == null && value!=null && !String.IsNullOrWhiteSpace(value.StructureId))
+                if (readyEdit && SelectedStructure == null && value != null && !String.IsNullOrWhiteSpace(value.StructureId))
                 {
                     KeepDictionaryStructure(SelectedScoreMetric.Structure, value.StructureId);
                 }
@@ -188,9 +186,24 @@ namespace PlanScoreCard.ViewModels
                     {
                         SelectedStructure.TemplateStructureId = SelectedStructure.StructureId;
                     }
-                    if (!String.IsNullOrWhiteSpace(SelectedStructure.StructureId) && String.IsNullOrWhiteSpace(SelectedScoreMetric.Structure.StructureId))
+                    if (!String.IsNullOrWhiteSpace(SelectedStructure.StructureId) && String.IsNullOrWhiteSpace(SelectedScoreMetric.Structure?.StructureId))
                     {
+                        if (SelectedScoreMetric.Structure == null)
+                        {
+                            SelectedScoreMetric.Structure = new StructureModel
+                            {
+                                StructureId = SelectedStructure.StructureId,
+                                StructureCode = SelectedStructure.StructureCode,
+                                StructureComment = SelectedStructure.StructureComment,
+                                AutoGenerated = SelectedStructure.AutoGenerated,
+                            };
+                            if (String.IsNullOrEmpty(SelectedScoreMetric.Structure.TemplateStructureId))
+                            {
+                                SelectedScoreMetric.Structure.TemplateStructureId = selectedStructure.StructureId;
+                            }
+                        }
                         SelectedScoreMetric.Structure.StructureId = SelectedStructure.StructureId;
+
                     }
                 }
                 //do not change the selected score metric. This should be unique to the scorecard. 
@@ -198,7 +211,7 @@ namespace PlanScoreCard.ViewModels
 
                 if (SelectedStructure == null)
                     return;
-                
+
                 // This checks to match a key to a template structure id.
                 //StructureDictionaryModel dictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower() == SelectedStructure.TemplateStructureId.ToLower());
 
@@ -660,6 +673,7 @@ namespace PlanScoreCard.ViewModels
             metricModel.Id = selectedIndex + 1;
             metricModel.CanReorder = true;
 
+
             ScoreMetrics.Insert(selectedIndex + 1, metricModel);
             ReRankMetrics();
         }
@@ -708,7 +722,7 @@ namespace PlanScoreCard.ViewModels
                 return;
 
             PlanModel = planModel;
-            foreach(var structure in PlanModel.Structures.OrderBy(s=>s.StructureId))
+            foreach (var structure in PlanModel.Structures.OrderBy(s => s.StructureId))
             {
                 Structures.Add(structure);
             }

@@ -25,6 +25,7 @@ namespace PlanScoreCard.Models.Internals
                         scoreTemplates.Add(new ScoreTemplateModel(
                             scoreMetric.ScoreMetric.Structure,
                             scoreMetric.ScoreMetric.MetricType,
+                            scoreMetric.ScoreMetric.MetricComment,
                             Convert.ToDouble(scoreMetric.ScoreMetric.HI_Hi),
                             Convert.ToDouble(scoreMetric.ScoreMetric.HI_Lo),
                             String.IsNullOrEmpty(scoreMetric.ScoreMetric.HI_Target) ? 0.0 : Convert.ToDouble(scoreMetric.ScoreMetric.HI_Target),
@@ -36,6 +37,7 @@ namespace PlanScoreCard.Models.Internals
                         scoreTemplates.Add(new ScoreTemplateModel(
                             scoreMetric.ScoreMetric.Structure,
                             scoreMetric.ScoreMetric.MetricType,
+                            scoreMetric.ScoreMetric.MetricComment,
                             GetInputValue(scoreMetric),
                             GetInputUnit(scoreMetric),
                             GetOutputUnit(scoreMetric),
@@ -61,6 +63,7 @@ namespace PlanScoreCard.Models.Internals
                         scoreTemplates.Add(new ScoreTemplateModel(
                             scoreMetric.Structure,
                             scoreMetric.MetricType,
+                            scoreMetric.MetricComment,
                             Convert.ToDouble(scoreMetric.HI_Hi),
                             Convert.ToDouble(scoreMetric.HI_Lo),
                             String.IsNullOrEmpty(scoreMetric.HI_Target) ? 0.0 : Convert.ToDouble(scoreMetric.HI_Target),
@@ -72,6 +75,7 @@ namespace PlanScoreCard.Models.Internals
                         scoreTemplates.Add(new ScoreTemplateModel(
                             scoreMetric.Structure,
                             scoreMetric.MetricType,
+                            scoreMetric.MetricComment,
                             GetInputValue(scoreMetric),
                             GetInputUnit(scoreMetric),
                             GetOutputUnit(scoreMetric),

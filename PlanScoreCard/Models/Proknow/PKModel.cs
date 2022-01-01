@@ -32,6 +32,7 @@ namespace PlanScoreCard.Models.Proknow
                 {
                     stm = new ScoreTemplateModel(new StructureModel() { StructureId = metric.roi_name },
                         metricType,
+                        String.Empty,
                         1.0,//PK always uses D1% as high dose value.
                         99.0,//PK always uses D99% as low dose value.
                         inputValue,//PK puts expected target dose in arg1.
@@ -42,6 +43,7 @@ namespace PlanScoreCard.Models.Proknow
                 {
                     stm = new ScoreTemplateModel(new StructureModel() { StructureId = metric.roi_name },
                     metricType,
+                    String.Empty,
                     inputValue,
                     inputUnit,
                     outputUnit,

@@ -1,4 +1,5 @@
-﻿using PlanScoreCard.Events.HelperWindows;
+﻿using Microsoft.Win32;
+using PlanScoreCard.Events.HelperWindows;
 using PlanScoreCard.Models;
 using PlanScoreCard.Services;
 using Prism.Commands;
@@ -53,6 +54,8 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                 if (bAddToDictionary)
                 {
                     bAddNewEntry = false;
+                    bDeleteStructureDictionaryEntry = false;
+                    bMergeDictionaryFromFile = false;
                 }
             }
         }
@@ -66,10 +69,45 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                 SetProperty(ref _bAddNewEntry, value);
                 if (bAddNewEntry)
                 {
+                    SelectedDictionaryKey = null;
                     bAddToDictionary = false;
+                    bDeleteStructureDictionaryEntry = false;
+                    bMergeDictionaryFromFile = false;
                 }
             }
         }
+        private bool _bDeleteStructureDictionaryEntry;
+
+        public bool bDeleteStructureDictionaryEntry
+        {
+            get { return _bDeleteStructureDictionaryEntry; }
+            set
+            {
+                SetProperty(ref _bDeleteStructureDictionaryEntry, value);
+                if (bDeleteStructureDictionaryEntry)
+                {
+                    SelectedDictionaryKey = null;
+                    bAddNewEntry = false;
+                    bAddToDictionary = false;
+                    bMergeDictionaryFromFile = false;
+                }
+            }
+        }
+        private bool _bMergeDictionaryFromFile;
+
+        public bool bMergeDictionaryFromFile
+        {
+            get { return _bMergeDictionaryFromFile; }
+            set { SetProperty(ref _bMergeDictionaryFromFile,value);
+                if (bMergeDictionaryFromFile)
+                {
+                    bAddNewEntry = false;
+                    bAddToDictionary = false;
+                    bDeleteStructureDictionaryEntry = false;
+                }
+            }
+        }
+
         private string _entryKey;
 
         public string EntryKey
@@ -77,11 +115,19 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             get { return _entryKey; }
             set { SetProperty(ref _entryKey, value); }
         }
+        private string _fileToMergeText;
+
+        public string FileToMergeText
+        {
+            get { return _fileToMergeText; }
+            set { SetProperty(ref _fileToMergeText, value); }
+        }
 
 
         public DelegateCommand CancelCommand { get; private set; }
         public DelegateCommand UpdateDictionaryCommand { get; private set; }
         public Action CloseAction { get; set; }
+        public DelegateCommand OpenDictionaryFileCommand { get; private set; }
         public StructureDictionarySelectorViewModel(StructureDictionaryService structureDictionaryService, string newStructureId, string templateStructureId, IEventAggregator eventAggregator)
         {
             EventAggregator = eventAggregator;
@@ -93,8 +139,20 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             //DictionaryStructures = new List<string>();
             CancelCommand = new DelegateCommand(OnCancel);
             UpdateDictionaryCommand = new DelegateCommand(OnDictionaryUpdate);
+            OpenDictionaryFileCommand = new DelegateCommand(OnOpenDictionaryFile);
             //CloseAction = new Action(OnClose);
             Bind();
+        }
+
+        private void OnOpenDictionaryFile()
+        {
+            var ofd = new OpenFileDialog();
+            ofd.Filter = "JSON(*.json)|*.json";
+            ofd.Title = "Open Structure Dictionary File to Merge";
+            if(ofd.ShowDialog() == true)
+            {
+                FileToMergeText = ofd.FileName; 
+            }
         }
 
         private void OnClose()
@@ -113,12 +171,30 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             }
             if (bAddNewEntry)
             {
-                StructureDictionaryService.AddStructure(SelectedDictionaryKey);
-                if (StructureDictionaryService.AddSynonym(SelectedDictionaryKey, StructureToAdd))
+                StructureDictionaryService.AddStructure(EntryKey);
+                if (StructureDictionaryService.AddSynonym(EntryKey, StructureToAdd))
                 {
                     EventAggregator.GetEvent<StructureDictionaryAddedEvent>().Publish();
                 }
 
+            }
+            if (bDeleteStructureDictionaryEntry)
+            {
+                if(SelectedDictionaryKey != null)
+                {
+                    StructureDictionaryService.DeleteStructure(SelectedDictionaryKey);
+                }
+            }
+            if (bMergeDictionaryFromFile)
+            {
+                if (!String.IsNullOrEmpty(FileToMergeText))
+                {
+                    StructureDictionaryService.MergeDictionary(FileToMergeText);
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("No Merge File Selected");
+                }
             }
             CloseAction.Invoke();
         }

@@ -151,6 +151,13 @@ namespace PlanScoreCard.Models
                 NotifyPropertyChanged();
             }
         }
+        private string _metricComment;
+
+        public string MetricComment
+        {
+            get { return _metricComment; }
+            set { SetProperty(ref _metricComment,value); }
+        }
 
         // Available Structures
         public ObservableCollection<StructureModel> Structures { get; set; }

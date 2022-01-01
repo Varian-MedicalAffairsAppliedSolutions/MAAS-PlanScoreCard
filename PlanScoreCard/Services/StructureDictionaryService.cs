@@ -151,7 +151,7 @@ namespace PlanScoreCard.Services
 
         }
 
-        private void MergeDictionary(string dictionaryPath)
+        public void MergeDictionary(string dictionaryPath)
         {
             StreamReader reader = File.OpenText(dictionaryPath);
             string line;

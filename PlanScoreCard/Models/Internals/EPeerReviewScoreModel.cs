@@ -36,6 +36,7 @@ namespace PlanScoreCard.Models.Internals
                             StructureCode = structureCode
                         },
                         metricType,
+                        String.Empty,
                         inputValue,
                         inputUnit,
                         outputUnit,
