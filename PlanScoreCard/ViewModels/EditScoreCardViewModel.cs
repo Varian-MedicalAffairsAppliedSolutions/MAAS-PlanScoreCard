@@ -101,6 +101,14 @@ namespace PlanScoreCard.ViewModels
                     SelectedStructure = SelectedScoreMetric.Structure;
                     readyEdit = true;
                 }
+                if (String.IsNullOrEmpty(SelectedScoreMetric.MetricComment))
+                {
+                    MetricComment = null;
+                }
+                else
+                {
+                    MetricComment = SelectedScoreMetric.MetricComment;
+                }
             }
         }
         private bool readyEdit = false;
@@ -309,6 +317,22 @@ namespace PlanScoreCard.ViewModels
             get { return selectedTreatmentSite; }
             set { SetProperty(ref selectedTreatmentSite, value); }
         }
+
+        private string _metricComment;
+
+        public string MetricComment
+        {
+            get { return _metricComment; }
+            set 
+            { 
+                SetProperty(ref _metricComment,value);
+                if (!String.IsNullOrEmpty(MetricComment))
+                {
+                    selectedMetric.MetricComment = MetricComment;
+                }
+            }
+        }
+
 
         // Treatment Sites
         private ObservableCollection<string> treatmentSites;

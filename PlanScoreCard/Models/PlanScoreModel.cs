@@ -32,6 +32,7 @@ namespace PlanScoreCard.Models
         public string TemplateStructureId { get; set; }
         public string MetricText { get; set; }
         public double ScoreMax { get; set; }
+        public string MetricComment { get; set; }
         public int MetricId { get; set; }
         private double _minXValue;
 
@@ -305,6 +306,7 @@ namespace PlanScoreCard.Models
             MetricText = PlanScoreCalculationServices.GetMetricTextFromTemplate(template);
             SetInitialPlotParameters(template);
             MetricId = metricId;
+            MetricComment = template.MetricComment;
 
             foreach (var plan in plans)
             {

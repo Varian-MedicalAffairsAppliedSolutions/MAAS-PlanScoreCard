@@ -223,12 +223,13 @@
                             <Label Grid.Column="7" Content="Metric Plot" HorizontalAlignment="Center"/>
 
                         </Grid>
-                        
+
                         <Border Grid.Row="1" BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" Margin="3">
                             <ScrollViewer Grid.Row="1">
                                 <ItemsControl ItemsSource="{Binding PlanScores, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontWeight="DemiBold">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
+                                            <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 1">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="0.5*"/>
@@ -244,28 +245,31 @@
                                                     <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="Auto"/>
                                                 </Grid.RowDefinitions>
-                                                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 1">
+                                                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 0">
                                                     <TextBlock Text="{Binding MetricId, Converter={StaticResource localMetricIdConverter}}" Foreground="Black" HorizontalAlignment="Center"/>
                                                 </Border>
-                                                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 1" Grid.Column="1" Grid.ColumnSpan="2">
+                                                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 0" Grid.Column="1" Grid.ColumnSpan="2">
                                                     <Grid>
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="2*"/>
                                                             <ColumnDefinition Width="3*"/>
                                                         </Grid.ColumnDefinitions>
                                                         <Grid.RowDefinitions>
-                                                            <RowDefinition Height="25"/>
+                                                            <RowDefinition Height="35"/>
                                                             <RowDefinition Height="25"/>
                                                         </Grid.RowDefinitions>
                                                         <TextBlock Foreground="Black" Text="{Binding StructureId}" Grid.Row="0" HorizontalAlignment="Center" TextWrapping="Wrap"/>
                                                         <TextBlock Foreground="Black" Text="{Binding TemplateStructureId}" Grid.Row="1" HorizontalAlignment="Center" TextWrapping="Wrap" Visibility="{Binding TemplateStructureVisibility}"/>
+                                                        <StackPanel Grid.Column="1">
 
-                                                        <TextBlock Text="{Binding MetricText}" Foreground="Black" HorizontalAlignment="Center" Grid.Column="1"/>
+                                                            <TextBlock Text="{Binding MetricText}" Foreground="Black" HorizontalAlignment="Center"/>
+                                                            <TextBlock Text="{Binding MetricComment}" FontSize="12" Foreground="Black" HorizontalAlignment="Center"/>
+                                                        </StackPanel>
 
-                                                        
+
                                                     </Grid>
                                                 </Border>
-                                                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 1" Grid.Column="3" Grid.ColumnSpan="3">
+                                                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 0" Grid.Column="3" Grid.ColumnSpan="3">
                                                     <ItemsControl ItemsSource="{Binding ScoreValues}">
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
@@ -283,7 +287,7 @@
                                                         </ItemsControl.ItemTemplate>
                                                     </ItemsControl>
                                                 </Border>
-                                                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 1" Grid.Column="6">
+                                                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 0" Grid.Column="6">
                                                     <StackPanel>
                                                         <TextBlock Text="{Binding ScoreMax, Converter={StaticResource localDoubleConverter}}" Foreground="Black" HorizontalAlignment="Center" Margin="5,0,0,0"/>
                                                         <StackPanel Visibility="{Binding bStatsVis,Converter={StaticResource localVisibilityConverter}}">
@@ -294,7 +298,7 @@
                                                         </StackPanel>
                                                     </StackPanel>
                                                 </Border>
-                                                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 1" Grid.Column="7">
+                                                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 0" Grid.Column="7">
 
                                                     <Grid>
                                                         <Grid.RowDefinitions>
@@ -338,51 +342,53 @@
                                                             <TextBlock Text="{Binding XAxisLabel}" HorizontalAlignment="Center" FontSize="10" Foreground="Black"/>
                                                             <TextBlock Text="{Binding MaxXValue}" HorizontalAlignment="Right" FontSize="10" Foreground="Black"/>
                                                         </Grid>
-                                                        
+
                                                     </Grid>
                                                 </Border>
-                                                <StackPanel Grid.ColumnSpan="7" Grid.Row="1">
-                                                    <Grid>
-                                                        <ItemsControl ItemsSource="{Binding Colors}">
-                                                            <ItemsControl.ItemsPanel>
-                                                                <ItemsPanelTemplate>
-                                                                    <WrapPanel Orientation="Horizontal"/>
-                                                                </ItemsPanelTemplate>
-                                                            </ItemsControl.ItemsPanel>
-                                                            <ItemsControl.ItemTemplate>
-                                                                <DataTemplate>
-                                                                    <Border Background="{Binding PlanScoreBackgroundColor}"  BorderBrush="Black" BorderThickness="1" 
+                                                <Border Grid.ColumnSpan="7" Grid.Row="1" BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 0">
+                                                    <StackPanel>
+                                                        <Grid>
+                                                            <ItemsControl ItemsSource="{Binding Colors}">
+                                                                <ItemsControl.ItemsPanel>
+                                                                    <ItemsPanelTemplate>
+                                                                        <WrapPanel Orientation="Horizontal"/>
+                                                                    </ItemsPanelTemplate>
+                                                                </ItemsControl.ItemsPanel>
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <Border Background="{Binding PlanScoreBackgroundColor}"  BorderBrush="Black" BorderThickness="1" 
                                                             Width="{Binding RelativeSource={RelativeSource AncestorType=StackPanel}, Path=DataContext.BlockWidth}" Height="25">
-                                                                        <TextBlock Text="{Binding ColorLabel}" TextWrapping="Wrap" 
+                                                                            <TextBlock Text="{Binding ColorLabel}" TextWrapping="Wrap" 
                                                             FontSize="{Binding RelativeSource={RelativeSource AncestorType=StackPanel}, Path=DataContext.FontSize}" FontWeight="Bold"/>
-                                                                    </Border>
-                                                                </DataTemplate>
-                                                            </ItemsControl.ItemTemplate>
-                                                        </ItemsControl>
-                                                    </Grid>
-                                                    <icons:PackIconFontAwesome Kind="CaretUpSolid" Foreground="DarkGray" Margin="{Binding PKPosition}"
+                                                                        </Border>
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+                                                        </Grid>
+                                                        <icons:PackIconFontAwesome Kind="CaretUpSolid" Foreground="DarkGray" Margin="{Binding PKPosition}"
                                                                Visibility="{Binding bPKColor,Converter={StaticResource localVisibilityConverter}}"
                                                                HorizontalAlignment="Left"/>
-                                                </StackPanel>
+                                                    </StackPanel>
+                                                </Border>
                                             </Grid>
-                                            
+                                            </Border>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                             </ScrollViewer>
                         </Border>
-                        
-                        
+
+
                     </Grid>
-                    
-                    
-                    
+
+
+
                 </GroupBox>
-                
-                
+
+
             </Grid>
-            
-            
+
+
         </Grid>
 
 
