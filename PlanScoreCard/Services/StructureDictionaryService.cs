@@ -153,26 +153,27 @@ namespace PlanScoreCard.Services
 
         public void MergeDictionary(string dictionaryPath)
         {
-            StreamReader reader = File.OpenText(dictionaryPath);
-            string line;
+            //StreamReader reader = File.OpenText(dictionaryPath);
+            //string line;
 
-            List<StructureDictionaryModel> userDictionary = new List<StructureDictionaryModel>();
+            List<StructureDictionaryModel> userDictionary = JsonConvert.DeserializeObject<List<StructureDictionaryModel>>(File.ReadAllText(dictionaryPath));
+
             // Populate a Collection from the User-Input Dictionary
-            while ((line = reader.ReadLine()) != null)
-            {
-                // If a line does not have a colon, assume that it is an improper entry and move to the next row.
-                if (!line.Contains(':'))
-                    continue;
+            //while ((line = reader.ReadLine()) != null)
+            //{
+            //    // If a line does not have a colon, assume that it is an improper entry and move to the next row.
+            //    if (!line.Contains(':'))
+            //        continue;
 
-                string[] items = line.Split(':');
-                string structureID = items[0];   // Here's your integer.
-                List<string> synonyms = items[1].Split(',').ToList();
+            //    string[] items = line.Split(':');
+            //    string structureID = items[0];   // Here's your integer.
+            //    List<string> synonyms = items[1].Split(',').ToList();
 
-                StructureDictionaryModel structureDictionaryModel = new StructureDictionaryModel(structureID, synonyms);
-                userDictionary.Add(structureDictionaryModel);
-            }
+            //    StructureDictionaryModel structureDictionaryModel = new StructureDictionaryModel(structureID, synonyms);
+            //    userDictionary.Add(structureDictionaryModel);
+            //}
 
-            List<StructureDictionaryModel> newDictionary = new List<StructureDictionaryModel>();
+            //List<StructureDictionaryModel> newDictionary = new List<StructureDictionaryModel>();
 
             // Compare the two collections and Merge. 
             foreach (StructureDictionaryModel newStructure in userDictionary)
@@ -195,7 +196,7 @@ namespace PlanScoreCard.Services
                             continue;
                         }
 
-                        if (!structure.StructureSynonyms.Contains(newSnynonym))
+                        if (!structure.StructureSynonyms.Any(x=>x.Equals(newSnynonym, StringComparison.OrdinalIgnoreCase)))
                         {
                             structure.StructureSynonyms.Add(newSnynonym);
                             continue;
@@ -210,7 +211,7 @@ namespace PlanScoreCard.Services
 
 
             }
-            reader.Close();
+            //reader.Close();
 
             UpdateStructureDictionaryConfig();
         }

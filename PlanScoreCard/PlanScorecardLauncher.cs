@@ -44,7 +44,7 @@ namespace VMS.TPS
         }
         private string AppExePath()
         {
-            return @"C:\Users\mschmidt\Desktop\PSC_current\MAAS - PlanScoreCard\PlanScoreCard\bin\Debug\PlanScoreCard.exe";
+            return @"C:\Users\mschmidt\Desktop\PSC_current\MAAS-PlanScoreCard\PlanScoreCard\bin\Debug\PlanScoreCard.exe";
             //return @"C:\ESAPI\PlanScorecard_Plugin3_0_0_3\PlanScoreCard.exe";
         }
     }

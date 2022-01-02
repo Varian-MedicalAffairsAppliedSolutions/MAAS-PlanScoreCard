@@ -190,6 +190,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                 if (!String.IsNullOrEmpty(FileToMergeText))
                 {
                     StructureDictionaryService.MergeDictionary(FileToMergeText);
+                    EventAggregator.GetEvent<StructureDictionaryAddedEvent>().Publish();
                 }
                 else
                 {

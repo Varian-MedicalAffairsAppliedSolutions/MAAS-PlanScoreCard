@@ -258,7 +258,8 @@
                             </Grid.ColumnDefinitions>
 
                             <ComboBox Height="30" Grid.Column="0" DisplayMemberPath="StructureId" SelectedValuePath="Value" SelectedItem="{Binding SelectedStructure}" ItemsSource="{Binding Structures}" Margin="5,0,5,0" Background="WhiteSmoke"/>
-                            <Button Command="{Binding AddNewStructureCommand}" Content="{icons:FontAwesome Kind=PlusCircleSolid}" Grid.Column="1" Height="30"  HorizontalAlignment="Left" Width="30" Margin="2"/>
+                            <!--<Button Command="{Binding AddNewStructureCommand}" Content="{icons:FontAwesome Kind=PlusCircleSolid}" Grid.Column="1" Height="30"  HorizontalAlignment="Left" Width="30" Margin="2"/>-->
+                            <Button Height="30" Grid.Column="1" Content="{icons:FontAwesome Kind=BookOpenSolid}" Width="40" Margin="2" Command="{Binding OpenDictionaryEditorCommand}" ToolTip="Open Structure Dictionary Editor"/>
 
                         </Grid>
                         <TextBlock Grid.Row="2" Text="Metric Comment" FontWeight="DemiBold" FontSize="12" Margin="5"/>

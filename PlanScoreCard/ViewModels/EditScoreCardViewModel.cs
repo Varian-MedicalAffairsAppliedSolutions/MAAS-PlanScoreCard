@@ -98,7 +98,8 @@ namespace PlanScoreCard.ViewModels
                 else
                 {
 
-                    SelectedStructure = SelectedScoreMetric.Structure;
+                    SelectedStructure = Structures.FirstOrDefault(x => x.StructureId.Equals(SelectedScoreMetric.Structure.StructureId, StringComparison.OrdinalIgnoreCase));
+                    //SelectedScoreMetric.Structure;
                     readyEdit = true;
                 }
                 if (String.IsNullOrEmpty(SelectedScoreMetric.MetricComment))
@@ -179,12 +180,12 @@ namespace PlanScoreCard.ViewModels
             get { return selectedStructure; }
             set
             {
-                if (readyEdit && SelectedStructure == null && value != null && !String.IsNullOrWhiteSpace(value.StructureId))
+                if (readyEdit && SelectedStructure == null && value != null && !String.IsNullOrWhiteSpace(value.StructureId) && String.IsNullOrEmpty(value.TemplateStructureId))
                 {
                     KeepDictionaryStructure(SelectedScoreMetric.Structure, value.StructureId);
                 }
                 SetProperty(ref selectedStructure, value);
-
+                OpenDictionaryEditorCommand.RaiseCanExecuteChanged();
                 //&& String.IsNullOrWhiteSpace(SelectedScoreMetric.Structure.StructureId)
 
                 //if (SelectedScoreMetric.Structure == null)
@@ -377,6 +378,7 @@ namespace PlanScoreCard.ViewModels
         //this property is used to determine whether to open the structure dictionary editor.
         private bool _askEditDictionary { get; set; }
         public AskAddDictionaryStructureView AskAddDictionaryStructureView { get; set; }
+        public DelegateCommand OpenDictionaryEditorCommand { get; private set;}
         // Constructor
         public EditScoreCardViewModel(IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService, StructureDictionaryService structureDictionaryService)
         {
@@ -416,15 +418,27 @@ namespace PlanScoreCard.ViewModels
             SaveTemplateCommand = new DelegateCommand(SaveTemplate);
             OrderPointsByValueCommand = new DelegateCommand(OrderPointsByValue);
             AddNewStructureCommand = new DelegateCommand(OnAddNewStructure);
+            OpenDictionaryEditorCommand = new DelegateCommand(OnOpenDictionaryEditor, CanOpenDictionaryEditor);
 
-            // Inititate Collections
-            Structures = new ObservableCollection<StructureModel>();
+          // Inititate Collections
+          Structures = new ObservableCollection<StructureModel>();
             ScoreMetrics = new ObservableCollection<ScoreMetricModel>();
             MetricPointModels = new ObservableCollection<ScorePointModel>();
             TreatmentSites = new ObservableCollection<string>();
             MetricTypes = new ObservableCollection<MetricTypeEnum>();
 
             Bind();
+        }
+
+        private bool CanOpenDictionaryEditor()
+        {
+            return SelectedStructure!=null && !String.IsNullOrEmpty(SelectedStructure.StructureId) && !String.IsNullOrEmpty(SelectedStructure.TemplateStructureId);
+        }
+
+        private void OnOpenDictionaryEditor()
+        {
+            StructureSelectorView = new StructureDictionarySelectorView(StructureDictionaryService, SelectedStructure.StructureId, SelectedStructure.TemplateStructureId, EventAggregator);
+            StructureSelectorView.ShowDialog();
         }
 
         private void OnDictionaryNo()

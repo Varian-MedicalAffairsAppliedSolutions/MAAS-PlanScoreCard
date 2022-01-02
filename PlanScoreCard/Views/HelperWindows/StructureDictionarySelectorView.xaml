@@ -8,7 +8,7 @@
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:converters="clr-namespace:PlanScoreCard.Converters"
-        Title="Add Structure to Dictionary" Height="430" WindowStartupLocation="CenterScreen" Width="550" ResizeMode="NoResize">
+        Title="Add Structure to Dictionary" Height="550" WindowStartupLocation="CenterScreen" Width="550" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -47,7 +47,7 @@
                 <TextBlock Text="Structure Dictionary Administration"/>
                 <StackPanel Orientation="Horizontal">
                     <CheckBox Content="Delete From Dictionary" IsChecked="{Binding bDeleteStructureDictionaryEntry}" Margin="5"/>
-                    <ComboBox ItemsSource="{Binding DictionaryKeys}" SelectedItem="{Binding SelectedDictionaryKey}" Width="350" Height="30" IsEnabled="{Binding bAddToDictionary}" Margin="5"/>
+                    <ComboBox ItemsSource="{Binding DictionaryKeys}" SelectedItem="{Binding SelectedDictionaryKey}" Width="350" Height="30" IsEnabled="{Binding bDeleteStructureDictionaryEntry}" Margin="5"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <CheckBox Content="Merge from File" IsChecked="{Binding bMergeDictionaryFromFile}" Margin="5"/>
