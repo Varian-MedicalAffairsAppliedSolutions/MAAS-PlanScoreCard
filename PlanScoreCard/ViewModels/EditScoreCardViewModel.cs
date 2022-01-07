@@ -140,6 +140,13 @@ namespace PlanScoreCard.ViewModels
                     //re-evaluate structures that could have been matched in the new structure dictionary. 
                 }
             }
+            foreach (var score in ScoreMetrics.Where(x => x.Structure!=null && x.Structure.TemplateStructureId == structureModel.TemplateStructureId))
+            {
+                if (score.Structure != null && String.IsNullOrEmpty(score.Structure.StructureId))
+                {
+                    score.Structure.StructureId = structureId;                    
+                }
+            }
         }
 
         private void UpdateStructuresBasedOnDictionary()
@@ -402,7 +409,8 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<UpdateScroreMetricsEvent>().Subscribe(UpdateMetrics);
             EventAggregator.GetEvent<YesEvent>().Subscribe(OnDictionaryYes);
             EventAggregator.GetEvent<NoEvent>().Subscribe(OnDictionaryNo);
-            EventAggregator.GetEvent<StructureDictionaryAddedEvent>().Subscribe(UpdateStructuresBasedOnDictionary);
+            //commented because structures should be matched automatically on selection without requirement of dictionary being selected.
+            //EventAggregator.GetEvent<StructureDictionaryAddedEvent>().Subscribe(UpdateStructuresBasedOnDictionary);
 
             // Commands
             DeleteMetricCommand = new DelegateCommand(DeleteMetric);
