@@ -139,6 +139,7 @@
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
     <Compile Include="Converters\DoubleDecimalConverter.cs" />
     <Compile Include="Converters\DoubleF2Converter.cs" />
+    <Compile Include="Converters\IntVisibilityConverter.cs" />
     <Compile Include="Converters\MaxScoreToHeaderConverter.cs" />
     <Compile Include="Converters\MetricEditorConverter.cs" />
     <Compile Include="Converters\MetricIdConverter.cs" />
@@ -189,6 +190,8 @@
     <Compile Include="Events\UpdateScorePointGridEvent.cs" />
     <Compile Include="Events\UpdateScroreMetricsEvent.cs" />
     <Compile Include="Events\VariationCheckedEvent.cs" />
+    <Compile Include="Models\BuildStructureGroupModel.cs" />
+    <Compile Include="Models\BuildStructureGroupStepModel.cs" />
     <Compile Include="Models\Internals\EPeerReviewScoreModel.cs" />
     <Compile Include="Models\Internals\InternalTemplateModel.cs" />
     <Compile Include="Models\Internals\PlanScoreColorModel.cs" />
@@ -231,6 +234,7 @@
     <Compile Include="Services\ViewResolvingPlotModel.cs" />
     <Compile Include="Startup\Bootstrapper.cs" />
     <Compile Include="UIExtensions\ScrollViewerExt.cs" />
+    <Compile Include="ViewModels\BuildStructureViewModel.cs" />
     <Compile Include="ViewModels\CIViewModel.cs" />
     <Compile Include="ViewModels\ColorPickerViewModel.cs" />
     <Compile Include="ViewModels\DoseAtVolumeViewModel.cs" />
@@ -257,6 +261,9 @@
     <Compile Include="ViewModels\VMHelpers\AskAddDictionaryStructureViewModel.cs" />
     <Compile Include="ViewModels\VMHelpers\StructureDictionarySelectorViewModel.cs" />
     <Compile Include="ViewModels\VolumeAtDoseViewModel.cs" />
+    <Compile Include="Views\BuildStructureView.xaml.cs">
+      <DependentUpon>BuildStructureView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ColorPickerView.xaml.cs">
       <DependentUpon>ColorPickerView.xaml</DependentUpon>
     </Compile>
@@ -338,6 +345,15 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Content Include="Resources\AndBoolean.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\OrBoolean.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\SubBoolean.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="StructureDictionary\InitialStructureDictionary.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -346,6 +362,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\BuildStructureView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ColorPickerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

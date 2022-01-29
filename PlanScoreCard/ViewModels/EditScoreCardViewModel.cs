@@ -510,8 +510,9 @@ namespace PlanScoreCard.ViewModels
         private void OnAddNewStructure()
         {
 
-            StructureBuilderView builderView = ViewLauncherService.GetStructureBuilderView();
-            EventAggregator.GetEvent<SetPlanModelEvent>().Publish(PlanModel);
+            BuildStructureView builderView = ViewLauncherService.GetStructureBuilderView();
+            //EventAggregator.GetEvent<SetPlanModelEvent>().Publish(PlanModel);
+            builderView.DataContext = new BuildStructureViewModel(PlanModel, EventAggregator);
             builderView.ShowDialog();
 
             // Need to do something to refresh the structures

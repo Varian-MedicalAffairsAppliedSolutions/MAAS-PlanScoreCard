@@ -49,6 +49,7 @@ namespace PlanScoreCard.Startup
             container.RegisterType<ScoreCardView>().AsSelf();
             container.RegisterType<ProgressView>().AsSelf().SingleInstance();
             container.RegisterType<EditVolumeAtDoseView>().AsSelf();
+            container.RegisterType<BuildStructureView>().AsSelf();
 
 
             //events

@@ -121,7 +121,7 @@ namespace PlanScoreCard.ViewModels
             }
         }
 
-        private void AddStructureOperationModel()
+        public void AddStructureOperationModel()
         {
             StructureOperationModel structureOperationModel = new StructureOperationModel(_eventAggregator);
             foreach (var structure in _planModel.Structures)

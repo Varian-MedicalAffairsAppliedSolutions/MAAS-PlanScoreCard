@@ -24,11 +24,11 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock FontWeight="Bold" Margin="5,5,0,0" HorizontalAlignment="Center" Foreground="White" >
+        <!--<TextBlock FontWeight="Bold" Margin="5,5,0,0" HorizontalAlignment="Center" >
             <Run Text="Structure*"/>
             <LineBreak/>
-            <Run Text="Beneath will be combined prior to base structure operation" FontSize="8"/>
-        </TextBlock>
+            <Run Text="Prior to Structure Operation" FontSize="8"/>
+        </TextBlock>-->
         <ScrollViewer Height="180" Grid.Row="1" >
             <ItemsControl ItemsSource="{Binding StructureOperations}">
                 <ItemsControl.ItemTemplate>
@@ -74,10 +74,10 @@
         <TextBlock Text="Additional" FontWeight="Bold" Margin="5,5,0,0" Grid.Column="1" HorizontalAlignment="Center" Foreground="White"/>
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
             <Button Content="Add" Command="{Binding AddOperationCommand}" Grid.Row="1" Grid.Column="3" Margin="5" FontWeight="Bold" Height="45" VerticalAlignment="Top"/>
-            <StackPanel Visibility="{Binding bIsNestable,Converter={StaticResource boolVisibilityConverter}}">
+            <!--<StackPanel Visibility="{Binding bIsNestable,Converter={StaticResource boolVisibilityConverter}}">
                 <Button Content="Nest Left" Margin="2" Height="20" Command="{Binding NestLeftCommand}"/>
                 <Button Content="Nest Right" Margin="2" Height="20" Command="{Binding NestRightCommand}"/>
-            </StackPanel>
+            </StackPanel>-->
 
         </StackPanel>
     </Grid>

@@ -65,6 +65,7 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand<Window> AddStructureCommand { get; private set; }
         public DelegateCommand IncreaseMarginCommand { get; private set; }
         public DelegateCommand DecreaseMarginCommand { get; private set; }
+        public StructureBuilderGroupViewModel StructureGroupLeft { get; private set; }
         public StructureBuilderGroupViewModel StructureGroup1 { get; private set; }
         public StructureBuilderGroupViewModel StructureGroup2 { get; private set; }
         public ObservableCollection<OperationModel> Operations { get; private set; }
@@ -165,13 +166,16 @@ namespace PlanScoreCard.ViewModels
             NestingColumn = 0;
             NestingOperationColumn = 2;
             BaseColumn = 3;
+            
         }
 
         public void SetPlanModel(PlanModel planSetup)
         {
             _planModel = planSetup;
             _eventAggregator.GetEvent<SetPlanModelEvent>().Unsubscribe(SetPlanModel);
-
+            StructureGroupLeft = new StructureBuilderGroupViewModel(StructureModelNestingModel.None, _planModel, _eventAggregator);
+            StructureGroupLeft.bIsNestable = false;
+            StructureGroupLeft.AddStructureOperationModel();
             StructureGroup1 = new StructureBuilderGroupViewModel(StructureModelNestingModel.None, _planModel, _eventAggregator);
             StructureGroup1.bIsNestable = true;
 
