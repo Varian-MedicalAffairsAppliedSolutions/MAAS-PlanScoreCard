@@ -185,6 +185,15 @@
     <Compile Include="Events\ShowPluginViewEvent.cs" />
     <Compile Include="Events\ShowVolumeAtDoseMetricEvent.cs" />
     <Compile Include="Events\StructureBuilderChangedEvent.cs" />
+    <Compile Include="Events\StructureBuilder\AddGroupStepEvent.cs" />
+    <Compile Include="Events\StructureBuilder\DeleteGroupEvent.cs" />
+    <Compile Include="Events\StructureBuilder\DeleteGroupStepEvent.cs" />
+    <Compile Include="Events\StructureBuilder\DemoteGroupEvent.cs" />
+    <Compile Include="Events\StructureBuilder\MoveGroupLeftEvent.cs" />
+    <Compile Include="Events\StructureBuilder\MoveGroupRightEvent.cs" />
+    <Compile Include="Events\StructureBuilder\PromoteGroupEvent.cs" />
+    <Compile Include="Events\StructureBuilder\UpdateGroupCommentEvent.cs" />
+    <Compile Include="Events\StructureBuilder\UpdateStructureCommentEvent.cs" />
     <Compile Include="Events\UILaunchedEvent.cs" />
     <Compile Include="Events\UpdateMetricEditorEvent.cs" />
     <Compile Include="Events\UpdateScorePointGridEvent.cs" />

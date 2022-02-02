@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using PlanScoreCard.Events.StructureBuilder;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using System;
@@ -30,7 +31,10 @@ namespace PlanScoreCard.Models
         public string GroupComment
         {
             get { return _groupComment; }
-            set { SetProperty(ref _groupComment, value); }
+            set { 
+                SetProperty(ref _groupComment, value);
+                _eventAggregator.GetEvent<UpdateStructureCommentEvent>().Publish();
+            }
         }
         private int _groupMargin;
 
@@ -38,14 +42,25 @@ namespace PlanScoreCard.Models
         public int GroupMargin
         {
             get { return _groupMargin; }
-            set { SetProperty(ref _groupMargin,value); }
+            set 
+            { 
+                SetProperty(ref _groupMargin,value);
+                UpdateGroupComment();
+                _eventAggregator.GetEvent<UpdateStructureCommentEvent>().Publish();
+            }
         }
+
+
         private string _selectedOperation;
 
         public string SelectedOperation
         {
             get { return _selectedOperation; }
-            set { SetProperty(ref _selectedOperation,value); }
+            set 
+            { 
+                SetProperty(ref _selectedOperation,value);
+                _eventAggregator.GetEvent<UpdateStructureCommentEvent>().Publish();
+            }
         }
 
         public int GroupNumber { get; set; }
@@ -75,31 +90,46 @@ namespace PlanScoreCard.Models
             DeleteGroupCommand = new DelegateCommand(OnDeleteGroup);
             //a groups should start with a single step when its instantiated.
             GroupSteps.Add(new BuildStructureGroupStepModel(_plan, _eventAggregator));
+            //events
+            _eventAggregator.GetEvent<UpdateGroupCommentEvent>().Subscribe(UpdateGroupComment);
+            _eventAggregator.GetEvent<AddGroupStepEvent>().Subscribe(OnAddGroupStep);
+            _eventAggregator.GetEvent<DeleteGroupStepEvent>().Subscribe(OnDeleteGroupStep);
+        }
+
+        private void OnDeleteGroupStep(BuildStructureGroupStepModel obj)
+        {
+            GroupSteps.Remove(obj);
+            UpdateGroupComment();
+        }
+
+        private void OnAddGroupStep()
+        {
+            GroupSteps.Add(new BuildStructureGroupStepModel(_plan,_eventAggregator));
         }
 
         private void OnDeleteGroup()
         {
-            throw new NotImplementedException();
+            _eventAggregator.GetEvent<DeleteGroupEvent>().Publish(this);
         }
 
         private void OnPromote()
         {
-            throw new NotImplementedException();
+            _eventAggregator.GetEvent<PromoteGroupEvent>().Publish(this);
         }
 
         private void OnDemote()
         {
-            throw new NotImplementedException();
+            _eventAggregator.GetEvent<DemoteGroupEvent>().Publish(this);
         }
 
         private void OnMoveRight()
         {
-            throw new NotImplementedException();
+            _eventAggregator.GetEvent<MoveGroupRightEvent>().Publish(this);
         }
 
         private void OnMoveLeft()
         {
-            throw new NotImplementedException();
+            _eventAggregator.GetEvent<MoveGroupLeftEvent>().Publish(this);
         }
 
         private void OnEditGroup()
@@ -115,6 +145,18 @@ namespace PlanScoreCard.Models
         private void OnDecreaseGroupMargin()
         {
             GroupMargin--;
+        }
+
+        private void UpdateGroupComment()
+        {
+            foreach(var step in GroupSteps)
+            {
+                if(step.SelectedOperation != null)
+                {
+                    GroupComment += $" {step.SelectedOperation} ";
+                }
+                GroupComment += $"<{step.SelectedStructure.StructureId}>";
+            }
         }
     }
 }

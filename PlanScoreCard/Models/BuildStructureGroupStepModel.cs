@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using PlanScoreCard.Events.StructureBuilder;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using System;
@@ -23,6 +24,7 @@ namespace PlanScoreCard.Models
             {
                 SetProperty(ref _selectedStructure, value);
                 AddGroupStepCommand.RaiseCanExecuteChanged();
+                _eventAggregator.GetEvent<UpdateGroupCommentEvent>().Publish();
             }
         }
         private int _structureMargin;
@@ -30,7 +32,11 @@ namespace PlanScoreCard.Models
         public int StructureMargin
         {
             get { return _structureMargin; }
-            set { SetProperty(ref _structureMargin, value); }
+            set { 
+                SetProperty(ref _structureMargin, value);
+                _eventAggregator.GetEvent<UpdateGroupCommentEvent>().Publish();
+            }
+
         }
         private string _selectedOperation;
 
@@ -41,6 +47,7 @@ namespace PlanScoreCard.Models
             {
                 SetProperty(ref _selectedOperation, value);
                 AddGroupStepCommand.RaiseCanExecuteChanged();
+                _eventAggregator.GetEvent<UpdateGroupCommentEvent>().Publish();
             }
         }
         public int StepNumber { get; set; }
@@ -74,12 +81,12 @@ namespace PlanScoreCard.Models
 
         private void OnDeleteGroupStep()
         {
-            throw new NotImplementedException();
+            _eventAggregator.GetEvent<DeleteGroupStepEvent>().Publish(this);
         }
 
         private void OnAddGroupStep()
         {
-            throw new NotImplementedException();
+            _eventAggregator.GetEvent<AddGroupStepEvent>().Publish();
         }
 
         private void OnIncreaseMargin()
