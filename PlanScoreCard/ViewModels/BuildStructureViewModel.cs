@@ -74,6 +74,15 @@ namespace PlanScoreCard.ViewModels
             _eventAggregator.GetEvent<DemoteGroupEvent>().Subscribe(OnDemoteGroup);
             _eventAggregator.GetEvent<MoveGroupLeftEvent>().Subscribe(OnMoveGroupLeft);
             _eventAggregator.GetEvent<MoveGroupRightEvent>().Subscribe(OnMoveGroupRight);
+            _eventAggregator.GetEvent<GroupSelectedEvent>().Subscribe(OnNewGroupSelected);
+        }
+
+        private void OnNewGroupSelected(BuildStructureGroupModel obj)
+        {
+            if (SelectedGroup != obj)
+            {
+                SelectedGroup = obj;
+            }
         }
 
         private void OnMoveGroupRight(BuildStructureGroupModel obj)
@@ -82,8 +91,12 @@ namespace PlanScoreCard.ViewModels
             var group_number = Convert.ToInt16(obj.GroupId.Substring(5));
             if (BuildGroups.Any(x => Convert.ToInt16(x.GroupId.Substring(5)) == group_number+1))
             {
-                BuildGroups.FirstOrDefault(x => Convert.ToInt16(x.GroupId.Substring(5)) == group_number + 1).GroupId = $"Group{group_number}";
+                var moveGroup = BuildGroups.FirstOrDefault(x => Convert.ToInt16(x.GroupId.Substring(5)) == group_number + 1);
+                moveGroup.GroupId = $"Group{group_number}";
                 obj.GroupId = $"Group{group_number + 1}";
+                string moveGroupOperation = moveGroup.SelectedOperation;
+                moveGroup.SelectedOperation = obj.SelectedOperation;
+                obj.SelectedOperation = moveGroupOperation;
                 ResetGroups();
             }
         }
@@ -94,8 +107,12 @@ namespace PlanScoreCard.ViewModels
             var group_number = Convert.ToInt16(obj.GroupId.Substring(5));
             if (BuildGroups.Any(x => Convert.ToInt16(x.GroupId.Substring(5)) == group_number - 1))
             {
-                BuildGroups.FirstOrDefault(x => Convert.ToInt16(x.GroupId.Substring(5)) == group_number - 1).GroupId = $"Group{group_number}";
-                obj.GroupId = $"Group{group_number + 1}";
+                var moveGroup = BuildGroups.FirstOrDefault(x => Convert.ToInt16(x.GroupId.Substring(5)) == group_number - 1);
+                moveGroup.GroupId = $"Group{group_number}";
+                obj.GroupId = $"Group{group_number -1}";
+                string moveGroupOperation = moveGroup.SelectedOperation;
+                moveGroup.SelectedOperation = obj.SelectedOperation;
+                obj.SelectedOperation = moveGroupOperation;
                 ResetGroups();
             }
         }
@@ -177,7 +194,9 @@ namespace PlanScoreCard.ViewModels
                     }
                     else
                     {
-                        var currentStep = new BuildStructureGroupStepModel(_plan, _eventAggregator);
+                        var currentStep = new BuildStructureGroupStepModel(_plan, _eventAggregator, count);
+                        groupModel.GroupSteps.Add(currentStep);
+
                         currentStep.SelectedOperation = keepOperation;
                         currentStep.SelectedStructure = currentStep.Structures.FirstOrDefault(x => x.StructureId == step.Split('>').FirstOrDefault());
                         if (step.Contains('|'))
@@ -185,9 +204,13 @@ namespace PlanScoreCard.ViewModels
                             currentStep.StructureMargin = Convert.ToInt32(step.Split('|').Last().Split(' ').First());
                         }
                     }
-                    keepOperation = step.Split(' ').ElementAt(step.Split(' ').Length - 2);
+                    if (step.Split(' ').Length > 1)
+                    {
+                        keepOperation = step.Split(' ').ElementAt(step.Split(' ').Length - 2);
+                    }
                     count++;
                 }
+                BuildGroups.Add(groupModel);
             }
             UpdateStructureComment();
         }
@@ -217,6 +240,10 @@ namespace PlanScoreCard.ViewModels
                 depthKeep = depth;
                 if (BuildGroups.Count() > groupNum+1)
                 {
+                    if (BuildGroups.ElementAt(groupNum + 1).SelectedOperation!=null)
+                    {
+                        StructureComment += $" {BuildGroups.ElementAt(groupNum + 1).SelectedOperation} ";
+                    }
                     int nextDepth = depths.ElementAt(groupNum + 1);
                     int depthdiff2 = depth - nextDepth;
                     for (int i = 0; i < depthdiff2; i++)
@@ -238,6 +265,7 @@ namespace PlanScoreCard.ViewModels
         private void OnGroupDelete(BuildStructureGroupModel obj)
         {
             BuildGroups.Remove(obj);
+            ResetGroups();
         }
 
         private void OnCommitToGrouping()

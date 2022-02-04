@@ -27,154 +27,177 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="0.4*"/>
+                <ColumnDefinition Width="2.2*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Command="{Binding AddNewGroupingCommand}" Margin="140,5,5,5" Width="60" HorizontalAlignment="Left" ToolTip="Add New Grouping">
+            <Button Command="{Binding AddNewGroupingCommand}" Margin="30,5,5,5" Width="60" HorizontalAlignment="Left" ToolTip="Add New Grouping" Height="40">
                 <icons:FontAwesome Kind="PlusSolid"/>
             </Button>
-            <TextBlock Text="Edit Groupings" FontWeight="Bold" FontSize="14" Grid.Column="2" HorizontalAlignment="Center" Margin="5"/>
+            <StackPanel Orientation="Horizontal" Margin="180,0,0,0">
+                <StackPanel Margin="5">
+                    <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Text="AND" Margin="2"/>
+                    <Image Width="50" Height="50" Source="{Binding ANDImage}"/>
+                </StackPanel>
+                <StackPanel Margin="5">
+                    <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Text="OR" Margin="2"/>
+                    <Image Width="50" Height="50" Source="{Binding ORImage}"/>
+                </StackPanel>
+                <StackPanel Margin="5">
+                    <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Text="SUB" Margin="2"/>
+                    <Image Width="50" Height="50" Source="{Binding SUBImage}"/>
+                </StackPanel>
+            </StackPanel>
+            <TextBlock Text="Edit Groupings" FontWeight="Bold" FontSize="14" Grid.Column="1" HorizontalAlignment="Center" Margin="5"/>
             <!--#region StructureBuilder-->
-            <StackPanel Margin="5" Grid.Row="1">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="0.8*"/>
-                        <ColumnDefinition Width="0.4*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Structure" FontWeight="Bold" HorizontalAlignment="Center" Grid.Column="1"/>
-                    <TextBlock Text="Margin" FontWeight="Bold" Grid.Column="2" HorizontalAlignment="Center"/>
-                    <TextBlock Text="Operation" FontWeight="Bold" Grid.Column="0" HorizontalAlignment="Center"/>
-                </Grid>
-                <ItemsControl ItemsSource="{Binding SelectedGroup.GroupSteps}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="0.8*"/>
-                                    <ColumnDefinition Width="0.4*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <ComboBox Margin="5,2,5,2" Grid.Column="1" ItemsSource="{Binding Structures}" SelectedItem="{Binding SelectedStructure}" DisplayMemberPath="StructureId"/>
-                                <Grid Grid.Column="2">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Button Content="-" Command="{Binding DecreaseMarginCommand}"/>
-                                    <TextBox Margin="2" Text="{Binding StructureMargin}" Grid.Column="1"/>
-                                    <Button Content="+" Command="{Binding IncreaseMarginCommand}" Grid.Column="2"/>
-                                </Grid>
-                                <ComboBox Margin="5,2,5,2" ItemsSource="{Binding Operations}" SelectedItem="{Binding SelectedOperation}" Grid.Column="0"
-                                          Visibility="{Binding StepNumber,Converter={StaticResource intVisibilityConverter}}"/>
-                                <Button Margin="2" Command="{Binding AddGroupStepCommand}" Grid.Column="3">
-                                    <icons:FontAwesome Kind="PlusSolid"/>
-                                </Button>
-                                <Button Margin="2" Command="{Binding DeleteGroupStepCommand}" Grid.Column="2" Grid.Row="1" Width="40" Height="30" ToolTip="Delete Step">
-                                    <icons:FontAwesome Kind="TrashSolid"/>
-                                </Button>
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
-            <!--#endregion StructureBuilder-->
-            <StackPanel Grid.Row="1" Grid.Column="1">
-                <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Text="AND" Margin="2"/>
-                <Image Width="50" Height="50" Source="{Binding ANDImage}"/>
-                <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Text="OR" Margin="2"/>
-                <Image Width="50" Height="50" Source="{Binding ORImage}"/>
-                <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Text="SUB" Margin="2"/>
-                <Image Width="50" Height="50" Source="{Binding SUBImage}"/>
-            </StackPanel>
-            <ItemsControl ItemsSource="{Binding BuildGroups}" Grid.Row="1" Grid.Column="2">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <DockPanel>
-                            <Button Command="{Binding EditGroupCommand}" Width="60" Margin="5" DockPanel.Dock="Right">
-                                <icons:FontAwesome Kind="EditRegular"/>
-                            </Button>
-                            <TextBlock DockPanel.Dock="Left" FontWeight="Bold" Text="{Binding GroupId}"/>
-                            <TextBlock DockPanel.Dock="Bottom" FontSize="10" Text="{Binding GroupComment}"/>
-                        </DockPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </Grid>
-        <Border BorderBrush="Blue" BorderThickness="0,0,0,2" Grid.Row="1">
-            <Button HorizontalAlignment="Center" Content="Add to Structure Builder" Command="{Binding AddStructureGroupCommand}" Margin="5"/>
-        </Border>
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <ItemsControl ItemsSource="{Binding BuildGroups}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <StackPanel>
-                                <TextBlock Text="{Binding GroupId}" Margin="5" FontWeight="Bold"/>
-                                <TextBlock Text="{Binding GroupComment}" Margin="2"/>
-                            </StackPanel>
-                            <StackPanel Grid.Column="1">
+            <Grid Margin="5" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="0.8*"/>
+                    <ColumnDefinition Width="0.4*"/>
+                    <ColumnDefinition Width="0.4*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Structure" FontWeight="Bold" HorizontalAlignment="Center" Grid.Column="1"/>
+                <TextBlock Text="Margin" FontWeight="Bold" Grid.Column="2" HorizontalAlignment="Center"/>
+                <TextBlock Text="Operation" FontWeight="Bold" Grid.Column="0" HorizontalAlignment="Center"/>
+                <ScrollViewer Grid.Row="1" Grid.ColumnSpan="5">
+                    <ItemsControl ItemsSource="{Binding SelectedGroup.GroupSteps}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="2*"/>
                                         <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="0.8*"/>
+                                        <ColumnDefinition Width="0.4*"/>
+                                        <ColumnDefinition Width="0.4*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Button Content="-" Command="{Binding DecreaseGroupMarginCommand}"/>
-                                    <TextBox Text="{Binding GroupMargin}" Grid.Column="1"/>
-                                    <Button Content="+" Command="{Binding IncreaseGroupMarginCommand}" Grid.Column="2"/>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <ComboBox Margin="5,2,5,2" Grid.Column="1" ItemsSource="{Binding Structures}" SelectedItem="{Binding SelectedStructure}" DisplayMemberPath="StructureId"/>
+                                    <Grid Grid.Column="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Button Content="-" Command="{Binding DecreaseMarginCommand}"/>
+                                        <TextBox Margin="2" Text="{Binding StructureMargin}" Grid.Column="1"/>
+                                        <Button Content="+" Command="{Binding IncreaseMarginCommand}" Grid.Column="2"/>
+                                    </Grid>
+                                    <ComboBox Margin="5,2,5,2" ItemsSource="{Binding Operations}" SelectedItem="{Binding SelectedOperation}" Grid.Column="0"
+                                          Visibility="{Binding StepNumber,Converter={StaticResource intVisibilityConverter}}"/>
+                                    <Button Margin="2" Command="{Binding AddGroupStepCommand}" Grid.Column="3">
+                                        <icons:FontAwesome Kind="PlusSolid"/>
+                                    </Button>
+                                    <Button Margin="2" Command="{Binding DeleteGroupStepCommand}" Grid.Column="4" Width="40" Height="30" ToolTip="Delete Step">
+                                        <icons:FontAwesome Kind="TrashSolid"/>
+                                    </Button>
                                 </Grid>
-                                <Grid Margin="0,5,0,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Button Command="{Binding MoveLeftCommand}" Content="{icons:FontAwesome Kind=ArrowLeftSolid}" ToolTip="Move Group Left"/>
-                                    <Button Command="{Binding MoveRightCommand}" Grid.Column="3" Content="{icons:FontAwesome Kind=ArrowRightSolid}" ToolTip="Move Group Right"/>
-                                    <Button Command="{Binding DemoteCommand}" Grid.Column="1" Content="{icons:FontAwesome Kind=ArrowDownSolid}" ToolTip="Demote Group"/>
-                                    <Button Command="{Binding PromoteCommand}" Grid.Column="2" Content="{icons:FontAwesome Kind=ArrowUpSolid}" ToolTip="Promote Group"/>
-                                </Grid>
-                            </StackPanel>
-                            <ComboBox ItemsSource="{Binding Operations}" SelectedItem="{Binding SelectedOperation}" Margin="5" Grid.Row="1" 
-                                      HorizontalAlignment="Center" Width="100" Visibility="{Binding GroupNumber, Converter={StaticResource intVisibilityConverter}}"/>
-                            <Button Grid.Row="1" Grid.Column="1" Width="60" Height="30" ToolTip="Delete Group" Command="{Binding DeleteGroupCommand}">
-                                <icons:FontAwesome Kind="TrashAltRegular"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+                <!--#endregion StructureBuilder-->
+            </Grid>
+            <ItemsControl ItemsSource="{Binding BuildGroups}" Grid.Row="1" Grid.Column="2">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Command="{Binding EditGroupCommand}" Width="60" Margin="5" Grid.Column="1">
+                                <icons:FontAwesome Kind="EditRegular"/>
                             </Button>
+                            <TextBlock FontWeight="Bold" Text="{Binding GroupId}"/>
+                            <TextBlock FontSize="10" Text="{Binding GroupComment}" Grid.ColumnSpan="2" Grid.Row="1"/>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <StackPanel Grid.Row="1">
-                <TextBlock Text="Structure Builder Comment" FontWeight="Bold"/>
-                <TextBlock Text="{Binding StructureComment}"/>
-            </StackPanel>
         </Grid>
+        <!--<Border BorderBrush="Blue" BorderThickness="0,0,0,2" Grid.Row="1">
+            <Button HorizontalAlignment="Center" Content="Add to Structure Builder" Command="{Binding AddStructureGroupCommand}" Margin="5"/>
+        </Border>-->
+        <Border Grid.Row="2" BorderBrush="Blue" BorderThickness="0,2,0,0">
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ItemsControl ItemsSource="{Binding BuildGroups}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding GroupId}" Margin="5" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding GroupComment}" Margin="2"/>
+                                    <StackPanel Orientation="Horizontal">
+                                    <ComboBox ItemsSource="{Binding Operations}" SelectedItem="{Binding SelectedOperation}" Margin="5" Grid.Row="1" 
+                                      HorizontalAlignment="Center" Width="100" Visibility="{Binding GroupNumber, Converter={StaticResource intVisibilityConverter}}"/>
+                                    <Button Grid.Row="1" Grid.Column="1" Width="60" Height="30" ToolTip="Delete Group" Command="{Binding DeleteGroupCommand}">
+                                        <icons:FontAwesome Kind="TrashAltRegular"/>
+                                    </Button>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Button Content="-" Command="{Binding DecreaseGroupMarginCommand}"/>
+                                        <TextBox Text="{Binding GroupMargin}" Grid.Column="1"/>
+                                        <Button Content="+" Command="{Binding IncreaseGroupMarginCommand}" Grid.Column="2"/>
+                                    </Grid>
+                                    <Grid Margin="0,5,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Button Command="{Binding MoveLeftCommand}" Content="{icons:FontAwesome Kind=ArrowLeftSolid}" ToolTip="Move Group Left"/>
+                                        <Button Command="{Binding MoveRightCommand}" Grid.Column="3" Content="{icons:FontAwesome Kind=ArrowRightSolid}" ToolTip="Move Group Right"/>
+                                        <Button Command="{Binding DemoteCommand}" Grid.Column="1" Content="{icons:FontAwesome Kind=ArrowDownSolid}" ToolTip="Demote Group"/>
+                                        <Button Command="{Binding PromoteCommand}" Grid.Column="2" Content="{icons:FontAwesome Kind=ArrowUpSolid}" ToolTip="Promote Group"/>
+                                    </Grid>
+                                </StackPanel>
+
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <StackPanel Grid.Row="1">
+                    <TextBlock Text="Structure Builder Comment" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding StructureComment}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

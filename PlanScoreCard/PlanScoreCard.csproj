@@ -189,6 +189,7 @@
     <Compile Include="Events\StructureBuilder\DeleteGroupEvent.cs" />
     <Compile Include="Events\StructureBuilder\DeleteGroupStepEvent.cs" />
     <Compile Include="Events\StructureBuilder\DemoteGroupEvent.cs" />
+    <Compile Include="Events\StructureBuilder\GroupSelectedEvent.cs" />
     <Compile Include="Events\StructureBuilder\MoveGroupLeftEvent.cs" />
     <Compile Include="Events\StructureBuilder\MoveGroupRightEvent.cs" />
     <Compile Include="Events\StructureBuilder\PromoteGroupEvent.cs" />

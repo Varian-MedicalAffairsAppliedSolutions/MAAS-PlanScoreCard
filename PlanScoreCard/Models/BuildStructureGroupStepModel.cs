@@ -24,6 +24,8 @@ namespace PlanScoreCard.Models
             {
                 SetProperty(ref _selectedStructure, value);
                 AddGroupStepCommand.RaiseCanExecuteChanged();
+                IncreaseMarginCommand.RaiseCanExecuteChanged();
+                DecreaseMarginCommand.RaiseCanExecuteChanged();
                 _eventAggregator.GetEvent<UpdateGroupCommentEvent>().Publish();
             }
         }
@@ -56,18 +58,24 @@ namespace PlanScoreCard.Models
         public DelegateCommand IncreaseMarginCommand { get; private set; }
         public DelegateCommand AddGroupStepCommand { get; private set; }
         public DelegateCommand DeleteGroupStepCommand { get; private set; }
-        public BuildStructureGroupStepModel(PlanModel plan, IEventAggregator eventAggregator)
+        public BuildStructureGroupStepModel(PlanModel plan, IEventAggregator eventAggregator, int stepNum)
         {
             _plan = plan;
             _eventAggregator = eventAggregator;
+            StepNumber = stepNum;
             Structures = new ObservableCollection<StructureModel>();
             Operations = new List<string> { "AND", "OR", "SUB" };
             AddStructures();
             //commands
-            DecreaseMarginCommand = new DelegateCommand(OnDecreaseMargin);
-            IncreaseMarginCommand = new DelegateCommand(OnIncreaseMargin);
+            DecreaseMarginCommand = new DelegateCommand(OnDecreaseMargin, CanMargin);
+            IncreaseMarginCommand = new DelegateCommand(OnIncreaseMargin, CanMargin);
             AddGroupStepCommand = new DelegateCommand(OnAddGroupStep, CanAddGroupStep);
             DeleteGroupStepCommand = new DelegateCommand(OnDeleteGroupStep);
+        }
+
+        private bool CanMargin()
+        {
+            return SelectedStructure != null;
         }
 
         private bool CanAddGroupStep()

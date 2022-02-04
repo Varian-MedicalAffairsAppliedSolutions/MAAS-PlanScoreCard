@@ -89,7 +89,7 @@ namespace PlanScoreCard.Models
             PromoteCommand = new DelegateCommand(OnPromote);
             DeleteGroupCommand = new DelegateCommand(OnDeleteGroup);
             //a groups should start with a single step when its instantiated.
-            GroupSteps.Add(new BuildStructureGroupStepModel(_plan, _eventAggregator));
+            GroupSteps.Add(new BuildStructureGroupStepModel(_plan, _eventAggregator, GroupSteps.Count()));
             //events
             _eventAggregator.GetEvent<UpdateGroupCommentEvent>().Subscribe(UpdateGroupComment);
             _eventAggregator.GetEvent<AddGroupStepEvent>().Subscribe(OnAddGroupStep);
@@ -104,7 +104,7 @@ namespace PlanScoreCard.Models
 
         private void OnAddGroupStep()
         {
-            GroupSteps.Add(new BuildStructureGroupStepModel(_plan,_eventAggregator));
+            GroupSteps.Add(new BuildStructureGroupStepModel(_plan, _eventAggregator, GroupSteps.Count()));
         }
 
         private void OnDeleteGroup()
@@ -135,6 +135,7 @@ namespace PlanScoreCard.Models
         private void OnEditGroup()
         {
             //send group back to BuildStructureViewModel and reset selectedgroup property.
+            _eventAggregator.GetEvent<GroupSelectedEvent>().Publish(this);
         }
 
         private void OnIncreaseGroupMargin()
@@ -149,13 +150,21 @@ namespace PlanScoreCard.Models
 
         private void UpdateGroupComment()
         {
+            GroupComment = String.Empty;
             foreach(var step in GroupSteps)
             {
                 if(step.SelectedOperation != null)
                 {
                     GroupComment += $" {step.SelectedOperation} ";
                 }
-                GroupComment += $"<{step.SelectedStructure.StructureId}>";
+                if (step.SelectedStructure != null)
+                {
+                    GroupComment += $"<{step.SelectedStructure.StructureId}>";
+                }
+                if (step.StructureMargin != 0)
+                {
+                    GroupComment += $"|{step.StructureMargin}";
+                }
             }
         }
     }
