@@ -34,8 +34,8 @@ namespace PlanScoreCard.ViewModels.MetricEditors
         public ObservableCollection<string> DoseUnits
         {
             get { return doseUnits; }
-            set 
-            { 
+            set
+            {
                 SetProperty(ref doseUnits, value);
                 EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Publish();
             }
@@ -45,7 +45,9 @@ namespace PlanScoreCard.ViewModels.MetricEditors
         public EditDoseValueViewModel(IEventAggregator eventAggregator)
         {
             EventAggregator = eventAggregator;
+
             EventAggregator.GetEvent<ShowDoseValueMetricEvent>().Subscribe(SetMetric);
+
 
             DoseUnits = new ObservableCollection<string>();
 

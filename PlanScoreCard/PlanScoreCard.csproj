@@ -193,6 +193,7 @@
     <Compile Include="Events\StructureBuilder\MoveGroupLeftEvent.cs" />
     <Compile Include="Events\StructureBuilder\MoveGroupRightEvent.cs" />
     <Compile Include="Events\StructureBuilder\PromoteGroupEvent.cs" />
+    <Compile Include="Events\StructureBuilder\SetStructureBuilderPlanEvent.cs" />
     <Compile Include="Events\StructureBuilder\UpdateGroupCommentEvent.cs" />
     <Compile Include="Events\StructureBuilder\UpdateStructureCommentEvent.cs" />
     <Compile Include="Events\UILaunchedEvent.cs" />

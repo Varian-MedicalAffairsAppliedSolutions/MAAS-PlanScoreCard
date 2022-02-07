@@ -1,4 +1,5 @@
 ﻿using MahApps.Metro.Controls;
+using PlanScoreCard.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +21,13 @@ namespace PlanScoreCard.Views
     /// </summary>
     public partial class BuildStructureView : MetroWindow
     {
-        public BuildStructureView()
+        private BuildStructureViewModel BuildStructureViewModel {get;set;}
+        public BuildStructureView(BuildStructureViewModel buildStructureViewModel)
         {
+            BuildStructureViewModel = buildStructureViewModel;
+            DataContext = BuildStructureViewModel;
             InitializeComponent();
+
         }
     }
 }

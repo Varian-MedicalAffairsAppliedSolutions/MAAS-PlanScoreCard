@@ -29,20 +29,21 @@ namespace PlanScoreCard.Startup
             container.RegisterType<PluginViewModel>().AsSelf();
             container.RegisterType<MainViewModel>().AsSelf();
             container.RegisterType<EditScoreCardViewModel>().AsSelf().SingleInstance();
-            container.RegisterType<EditDoseAtVolumeViewModel>().AsSelf();
-            container.RegisterType<EditVolumeAtDoseViewModel>().AsSelf();
-            container.RegisterType<EditDoseValueViewModel>().AsSelf();
-            container.RegisterType<EditHIViewModel>().AsSelf();
-            container.RegisterType<EditCIViewModel>().AsSelf();
+            container.RegisterType<EditDoseAtVolumeViewModel>().AsSelf().SingleInstance();
+            container.RegisterType<EditVolumeAtDoseViewModel>().AsSelf().SingleInstance();
+            container.RegisterType<EditDoseValueViewModel>().AsSelf().SingleInstance();
+            container.RegisterType<EditHIViewModel>().AsSelf().SingleInstance();
+            container.RegisterType<EditCIViewModel>().AsSelf().SingleInstance();
             container.RegisterType<StructureBuilderViewModel>().AsSelf();
             container.RegisterType<ScoreCardViewModel>().AsSelf();
+            container.RegisterType<BuildStructureViewModel>().AsSelf();
 
             // views
             container.RegisterType<PluginView>().AsSelf();
             container.RegisterType<EditScoreCardView>().AsSelf();
             container.RegisterType<EditDoseAtVolumeView>().AsSelf();
             container.RegisterType<EditVolumeAtDoseView>().AsSelf();
-            container.RegisterType<EditDoseValueView>().AsSelf();
+            container.RegisterType<EditDoseValueView>().AsSelf().SingleInstance();
             container.RegisterType<EditHIView>().AsSelf();
             container.RegisterType<EditCIView>().AsSelf();
             container.RegisterType<StructureBuilderView>().AsSelf();
@@ -59,7 +60,7 @@ namespace PlanScoreCard.Startup
             // services
             container.RegisterType<PluginViewService>().AsSelf();
             container.RegisterType<ViewLauncherService>().AsSelf();
-            container.RegisterType<ProgressViewService>().AsSelf();
+            container.RegisterType<ProgressViewService>().AsSelf().SingleInstance();
             container.RegisterType<StructureDictionaryService>().SingleInstance();
 
 

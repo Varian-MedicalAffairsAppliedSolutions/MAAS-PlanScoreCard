@@ -30,5 +30,9 @@ namespace PlanScoreCard.Views.MetricEditors
             DataContext = EditCIViewModel;
             InitializeComponent();
         }
+        public EditCIView()
+        {
+            InitializeComponent();
+        }
     }
 }

@@ -73,6 +73,7 @@ namespace PlanScoreCard.Models
         public DelegateCommand DemoteCommand { get; private set; }
         public DelegateCommand PromoteCommand { get; private set; }
         public DelegateCommand DeleteGroupCommand { get; private set; }
+        public DelegateCommand AddStepCommand { get; private set; }
         public BuildStructureGroupModel(PlanModel plan, IEventAggregator eventAggregator)
         {
             _plan = plan;
@@ -88,12 +89,27 @@ namespace PlanScoreCard.Models
             DemoteCommand = new DelegateCommand(OnDemote);
             PromoteCommand = new DelegateCommand(OnPromote);
             DeleteGroupCommand = new DelegateCommand(OnDeleteGroup);
+            AddStepCommand = new DelegateCommand(OnAddGroupStep, CanAddStep);
             //a groups should start with a single step when its instantiated.
             GroupSteps.Add(new BuildStructureGroupStepModel(_plan, _eventAggregator, GroupSteps.Count()));
             //events
             _eventAggregator.GetEvent<UpdateGroupCommentEvent>().Subscribe(UpdateGroupComment);
-            _eventAggregator.GetEvent<AddGroupStepEvent>().Subscribe(OnAddGroupStep);
+            //_eventAggregator.GetEvent<AddGroupStepEvent>().Subscribe(OnAddGroupStep);
             _eventAggregator.GetEvent<DeleteGroupStepEvent>().Subscribe(OnDeleteGroupStep);
+           // _eventAggregator.GetEvent<SetStructureBuilderPlanEvent>().Subscribe(SetPlan);
+        }
+
+        private bool CanAddStep()
+        {
+            if(!GroupSteps.Any(x=>x.SelectedStructure == null))
+            {
+                return true;
+            }
+            if(GroupSteps.Count()>1 && !GroupSteps.Skip(1).Any(x => String.IsNullOrEmpty(x.SelectedOperation)))
+            {
+                return true;
+            }
+            return false;
         }
 
         private void OnDeleteGroupStep(BuildStructureGroupStepModel obj)
@@ -150,6 +166,7 @@ namespace PlanScoreCard.Models
 
         private void UpdateGroupComment()
         {
+            AddStepCommand.RaiseCanExecuteChanged();
             GroupComment = String.Empty;
             foreach(var step in GroupSteps)
             {

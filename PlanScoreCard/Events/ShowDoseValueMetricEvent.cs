@@ -10,5 +10,6 @@ namespace PlanScoreCard.Events
 {
     public class ShowDoseValueMetricEvent : PubSubEvent<ScoreMetricModel>
     {
+        public new ICollection<IEventSubscription> Subscriptions => base.Subscriptions;
     }
 }

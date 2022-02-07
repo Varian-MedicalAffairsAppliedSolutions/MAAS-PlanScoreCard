@@ -228,18 +228,21 @@ namespace PlanScoreCard.Models
             // Set Colours. Access the plot Information. 
             LineSeries series = ScorePlotModel.Series.First() as LineSeries;
             series.Points.OrderBy(o => o.X);
-            DataPoint minValue = series.Points.First();
-            DataPoint maxValue = series.Points.Last();
+            if (series.Points.Any() && series.Points.Count() >1)
+            {
+                DataPoint minValue = series.Points.First();
+                DataPoint maxValue = series.Points.Last();
 
-            if (minValue.Y < maxValue.Y)
-            {
-                IsLeftZero = true;
-                IsRightZero = false;
-            }
-            else
-            {
-                IsLeftZero = false;
-                IsRightZero = true;
+                if (minValue.Y < maxValue.Y)
+                {
+                    IsLeftZero = true;
+                    IsRightZero = false;
+                }
+                else
+                {
+                    IsLeftZero = false;
+                    IsRightZero = true;
+                }
             }
 
         }
@@ -501,26 +504,34 @@ namespace PlanScoreCard.Models
                     }
                     else
                     {
-                        var dvh = plan.GetDVHCumulativeData(structure,
-                            template.OutputUnit.Contains("%") ? DoseValuePresentation.Relative : DoseValuePresentation.Absolute,
-                            VolumePresentation.Relative,
-                            _dvhResolution);
-                        if (template.MetricType.Contains("Min"))
+                        if (String.IsNullOrEmpty(template.OutputUnit))
                         {
-                            scoreValue.Value = dvh.MinDose.Dose;
+                            MessageBox.Show($"No output unit for metric {template.MetricType} on {template.Structure.StructureId}");
+                            scoreValue.Value = -1000;
                         }
-                        else if (template.MetricType.Contains("Max"))
+                        else
                         {
-                            scoreValue.Value = dvh.MaxDose.Dose;
-                        }
-                        else if (template.MetricType.Contains("Mean"))
-                        {
-                            scoreValue.Value = dvh.MeanDose.Dose;
-                        }
-                        if (template.OutputUnit != dvh.MaxDose.UnitAsString)
-                        {
-                            if (template.OutputUnit == "Gy") { scoreValue.Value = scoreValue.Value / 100.0; }
-                            else { scoreValue.Value = scoreValue.Value * 100.0; }
+                            var dvh = plan.GetDVHCumulativeData(structure,
+                                template.OutputUnit.Contains("%") ? DoseValuePresentation.Relative : DoseValuePresentation.Absolute,
+                                VolumePresentation.Relative,
+                                _dvhResolution);
+                            if (template.MetricType.Contains("Min"))
+                            {
+                                scoreValue.Value = dvh.MinDose.Dose;
+                            }
+                            else if (template.MetricType.Contains("Max"))
+                            {
+                                scoreValue.Value = dvh.MaxDose.Dose;
+                            }
+                            else if (template.MetricType.Contains("Mean"))
+                            {
+                                scoreValue.Value = dvh.MeanDose.Dose;
+                            }
+                            if (template.OutputUnit != dvh.MaxDose.UnitAsString)
+                            {
+                                if (template.OutputUnit == "Gy") { scoreValue.Value = scoreValue.Value / 100.0; }
+                                else { scoreValue.Value = scoreValue.Value * 100.0; }
+                            }
                         }
                     }
                     if (template.ScorePoints.Any())
@@ -644,7 +655,7 @@ namespace PlanScoreCard.Models
         private void SetInitialPlotParameters(ScoreTemplateModel template)
         {
             //plotting 
-            if (template.ScorePoints.Count() > 0)
+            if (template.ScorePoints.Count() > 1)
             {
                 MinXValue = template.ScorePoints.Min(x => x.PointX);
                 MaxXValue = template.ScorePoints.Max(x => x.PointX);
@@ -663,8 +674,8 @@ namespace PlanScoreCard.Models
                 //AxisTitleDistance = 0,
                 ////Minimum = template.ScorePoints.Min(x=>x.PointX)-0.1,
                 ////Maximum = template.ScorePoints.Max(x=>x.PointX)+0.1,
-                AbsoluteMinimum = template.ScorePoints.Count() > 0 ? template.ScorePoints.Min(x => x.PointX) : 0,
-                AbsoluteMaximum = template.ScorePoints.Count() > 0 ? template.ScorePoints.Max(x => x.PointX) : 1,
+                AbsoluteMinimum = template.ScorePoints.Count() > 1 ? template.ScorePoints.Min(x => x.PointX) : 0,
+                AbsoluteMaximum = template.ScorePoints.Count() > 1 ? template.ScorePoints.Max(x => x.PointX) : 1,
                 ////DataMinimum = template.ScorePoints.Min(x=>x.PointX),
                 ////DataMaximum = template.ScorePoints.Max(x=>x.PointX),
                 //MajorStep = template.ScorePoints.Max(x => x.PointX) - template.ScorePoints.Min(x => x.PointX),
@@ -762,7 +773,7 @@ namespace PlanScoreCard.Models
                 }
                 else if (structure.IsEmpty && autoGenerate && writeable)//generate structure if empty.
                 {
-                    var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan);
+                    var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan, StructureDictionaryService);
                     return new_structure;
                 }
                 else//return empty structure. 
@@ -816,7 +827,7 @@ namespace PlanScoreCard.Models
                 }
                 else if (structure != null && structure.IsEmpty && autoGenerate && writeable)//generate structure if empty.
                 {
-                    var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan);
+                    var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan, StructureDictionaryService);
                     return new_structure;
                 }
             }
@@ -833,7 +844,7 @@ namespace PlanScoreCard.Models
             // If no match, create it. 
             if (autoGenerate && writeable && !String.IsNullOrEmpty(comment))
             {
-                var structure = StructureGenerationService.BuildStructureWithESAPI(_app, id, comment, false, plan);
+                var structure = StructureGenerationService.BuildStructureWithESAPI(_app, id, comment, false, plan, StructureDictionaryService);
                 return structure;
             }
 

@@ -29,5 +29,9 @@ namespace PlanScoreCard.Views.MetricEditors
             DataContext = EditVolumeAtDoseViewModel;
             InitializeComponent();
         }
+        public EditVolumeAtDoseView()
+        {
+            InitializeComponent();
+        }
     }
 }

@@ -277,7 +277,7 @@ namespace PlanScoreCard.ViewModels
             _eventAggregator.GetEvent<MetricUpEvent>().Subscribe(OnMetricUp);
             _eventAggregator.GetEvent<MetricDownEvent>().Subscribe(OnMetricDown);
             _eventAggregator.GetEvent<PlanChangedEvent>().Subscribe(OnPlanChanged);
-            _eventAggregator.GetEvent<AddStructureEvent>().Subscribe(OnAddStructure);
+            //_eventAggregator.GetEvent<AddStructureEvent>().Subscribe(OnAddStructure);
             Structures = new ObservableCollection<StructureModel>();
             MetricTypes = new ObservableCollection<string>();
             ScoreMetrics = new ObservableCollection<ScoreMetricViewModel>();

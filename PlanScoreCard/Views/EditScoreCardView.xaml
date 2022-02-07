@@ -8,12 +8,14 @@
         xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:converters="clr-namespace:PlanScoreCard.Converters"
+        xmlns:metric="clr-namespace:PlanScoreCard.Views.MetricEditors"
         mc:Ignorable="d"
         Title="ScoreCard Editor" Height="820" Width="1400">
     <metro:MetroWindow.Resources>
         <ResourceDictionary>
             <converters:StructureToStructureDisplayNameConverter x:Key="structureNameConverter"/>
             <converters:StructureToBoldConverter x:Key="structureBoldConverter"/>
+            <converters:BoolVisibilityConverter x:Key="boolVisibilityConverter"/>
         </ResourceDictionary>
     </metro:MetroWindow.Resources>
     <Grid>
@@ -82,7 +84,7 @@
 
                         <Button Command="{Binding DeleteMetricCommand}" Content="{icons:FontAwesome Kind=TrashAltSolid}" Width="30" Height="30" Grid.Column="1"/>
                         <Button Command="{Binding CopyMetricCommand}" Content="{icons:FontAwesome Kind=CopySolid}" Width="30" Height="30" Grid.Column="2"/>
-                        <Button Command="{Binding AddNewStructureCommand}" Content="{icons:FontAwesome Kind=HammerSolid}" Grid.Column="4" Height="30"  HorizontalAlignment="Left" Width="30" Margin="2" ToolTip="Build new Structure"/>
+                        <Button Command="{Binding AddNewStructureCommand}" Content="{icons:FontAwesome Kind=HammerSolid}" Grid.Column="4" Height="30"  HorizontalAlignment="Left" Width="28" Margin="2" ToolTip="Build new Structure"/>
 
                         <Button Command="{Binding MetricUpCommand}" Content="{icons:FontAwesome Kind=CaretUpSolid}" Width="30" Height="30" Grid.Column="8"/>
                         <Button Command="{Binding MetricDownCommand}" Content="{icons:FontAwesome Kind=CaretDownSolid}" Width="30" Height="30" Grid.Column="9"/>
@@ -259,7 +261,7 @@
                             </Grid.ColumnDefinitions>
 
                             <ComboBox Height="30" Grid.Column="0" DisplayMemberPath="StructureId" SelectedValuePath="Value" SelectedItem="{Binding SelectedStructure}" ItemsSource="{Binding Structures}" Margin="5,0,5,0" Background="WhiteSmoke"/>
-                            <Button Height="30" Grid.Column="1" Content="{icons:FontAwesome Kind=BookOpenSolid}" Width="40" Margin="2" Command="{Binding OpenDictionaryEditorCommand}" ToolTip="Open Structure Dictionary Editor"/>
+                            <Button Height="30" Grid.Column="1" Content="{icons:FontAwesome Kind=BookOpenSolid}" Width="30" Margin="2" Command="{Binding OpenDictionaryEditorCommand}" ToolTip="Open Structure Dictionary Editor"/>
 
                         </Grid>
                         <TextBlock Grid.Row="2" Text="Metric Comment" FontWeight="DemiBold" FontSize="12" Margin="5"/>
@@ -271,7 +273,25 @@
                         <TextBox Height="25" Grid.Column="2" Text="{Binding SelectedScoreMetric.MetricText}" Grid.Row="1" Margin="5,0,5,0" IsReadOnly="True"/>-->
 
                         <GroupBox Header="Metric Builder"  Margin="5,0,5,5" FontSize="16" FontWeight="Bold" Background="WhiteSmoke" Grid.ColumnSpan="3" Grid.Row="3">
-                            <UserControl Margin="-5" Content="{Binding MetricEditorControl , Mode=TwoWay, NotifyOnSourceUpdated=True}"/>
+                            <!--<UserControl Margin="-5" Content="{Binding MetricEditorControl, Mode=TwoWay, NotifyOnSourceUpdated=True}"/>-->
+                            <StackPanel>
+                                <Border BorderBrush="Blue" BorderThickness="1" Visibility="{Binding bCIView, Converter={StaticResource boolVisibilityConverter}}">
+                                <metric:EditCIView DataContext="{Binding EditCIViewModel}" />
+                                </Border>
+                                <Border BorderBrush="Blue" BorderThickness="1" Visibility="{Binding bDAtVView, Converter={StaticResource boolVisibilityConverter}}">
+                                    <metric:EditDoseAtVolumeView DataContext="{Binding EditDoseAtVolumeViewModel}"/>
+                                </Border>
+                                <Border BorderBrush="Blue" BorderThickness="1" Visibility="{Binding bDValueView, Converter={StaticResource boolVisibilityConverter}}">
+                                    <metric:EditDoseValueView DataContext="{Binding EditDoseValueViewModel}"/>
+                                </Border>
+                                <Border BorderBrush="Blue" BorderThickness="1" Visibility="{Binding bHIView, Converter={StaticResource boolVisibilityConverter}}">
+                                    <metric:EditHIView DataContext="{Binding EditHIViewModel}"/>
+                                </Border>
+                                <Border BorderBrush="Blue" BorderThickness="1" Visibility="{Binding bVAtDView, Converter={StaticResource boolVisibilityConverter}}">
+                                    <metric:EditVolumeAtDoseView DataContext="{Binding EditVolumeAtDoseViewModel}"/>
+                                </Border>
+                            </StackPanel>
+
                         </GroupBox>
 
 

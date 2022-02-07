@@ -2,9 +2,11 @@
 using Newtonsoft.Json;
 using PlanScoreCard.Events;
 using PlanScoreCard.Events.HelperWindows;
+using PlanScoreCard.Events.StructureBuilder;
 using PlanScoreCard.Models;
 using PlanScoreCard.Models.Internals;
 using PlanScoreCard.Services;
+using PlanScoreCard.ViewModels.MetricEditors;
 using PlanScoreCard.ViewModels.VMHelpers;
 using PlanScoreCard.Views;
 using PlanScoreCard.Views.HelperWindows;
@@ -44,9 +46,54 @@ namespace PlanScoreCard.ViewModels
         public object MetricEditorControl
         {
             get { return metricEdtiorControl; }
-            set { SetProperty(ref metricEdtiorControl, value); }
+            set
+            {
+                SetProperty(ref metricEdtiorControl, value);
+            }
+        }
+        #region visibilityBools
+        public EditCIViewModel EditCIViewModel { get; set; }
+        public EditDoseAtVolumeViewModel EditDoseAtVolumeViewModel { get; set; }
+        public EditDoseValueViewModel EditDoseValueViewModel { get; set; }
+        public EditHIViewModel EditHIViewModel { get; set; }
+        public EditVolumeAtDoseViewModel EditVolumeAtDoseViewModel { get; set; }
+        private bool _bCIView;
+
+        public bool bCIView
+        {
+            get { return _bCIView; }
+            set { SetProperty(ref _bCIView, value); }
+        }
+        private bool _bDAtVView;
+
+        public bool bDAtVView
+        {
+            get { return _bDAtVView; }
+            set { SetProperty(ref _bDAtVView, value); }
+        }
+        private bool _bDValueView;
+
+        public bool bDValueView
+        {
+            get { return _bDValueView; }
+            set { SetProperty(ref _bDValueView, value); }
+        }
+        private bool _bHIView;
+
+        public bool bHIView
+        {
+            get { return _bHIView; }
+            set { SetProperty(ref _bHIView, value); }
+        }
+        private bool _bVAtDView;
+
+        public bool bVAtDView
+        {
+            get { return _bVAtDView; }
+            set { SetProperty(ref _bVAtDView, value); }
         }
 
+        #endregion
         public ObservableCollection<MetricTypeEnum> MetricTypes { get; set; }
 
         // ScoreCard Model
@@ -89,6 +136,7 @@ namespace PlanScoreCard.ViewModels
                     return;
 
                 UpdateScoreMetricPlotModel();
+                //MetricEditorControl = null;
                 UpdateMetricEditor(SelectedScoreMetric);
 
                 if (SelectedScoreMetric.Structure == null || String.IsNullOrWhiteSpace(SelectedScoreMetric.Structure?.StructureId))
@@ -125,7 +173,7 @@ namespace PlanScoreCard.ViewModels
                     structureExcluded = true;
                 }
             }
-            if (!structureExcluded)
+            if (!structureExcluded && structureModel != null)
             {
                 //MessageBoxResult result = MessageBox.Show("This structure is not contained within the Structure Dictionary, would you like to add it?", "New StructureId", MessageBoxButton.YesNo);
                 AskAddDictionaryStructureView = new AskAddDictionaryStructureView();
@@ -140,11 +188,14 @@ namespace PlanScoreCard.ViewModels
                     //re-evaluate structures that could have been matched in the new structure dictionary. 
                 }
             }
-            foreach (var score in ScoreMetrics.Where(x => x.Structure!=null && x.Structure.TemplateStructureId == structureModel.TemplateStructureId))
+            if (structureModel != null)
             {
-                if (score.Structure != null && String.IsNullOrEmpty(score.Structure.StructureId))
+                foreach (var score in ScoreMetrics.Where(x => x.Structure != null && x.Structure.TemplateStructureId == structureModel.TemplateStructureId))
                 {
-                    score.Structure.StructureId = structureId;                    
+                    if (score.Structure != null && String.IsNullOrEmpty(score.Structure.StructureId))
+                    {
+                        score.Structure.StructureId = structureId;
+                    }
                 }
             }
         }
@@ -331,9 +382,9 @@ namespace PlanScoreCard.ViewModels
         public string MetricComment
         {
             get { return _metricComment; }
-            set 
-            { 
-                SetProperty(ref _metricComment,value);
+            set
+            {
+                SetProperty(ref _metricComment, value);
                 if (!String.IsNullOrEmpty(MetricComment))
                 {
                     selectedMetric.MetricComment = MetricComment;
@@ -385,10 +436,24 @@ namespace PlanScoreCard.ViewModels
         //this property is used to determine whether to open the structure dictionary editor.
         private bool _askEditDictionary { get; set; }
         public AskAddDictionaryStructureView AskAddDictionaryStructureView { get; set; }
-        public DelegateCommand OpenDictionaryEditorCommand { get; private set;}
+        public DelegateCommand OpenDictionaryEditorCommand { get; private set; }
         // Constructor
-        public EditScoreCardViewModel(IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService, StructureDictionaryService structureDictionaryService)
+        public EditScoreCardViewModel(IEventAggregator eventAggregator, 
+            ViewLauncherService viewLauncherService, 
+            ProgressViewService progressViewService, 
+            StructureDictionaryService structureDictionaryService,
+            EditCIViewModel editCIViewModel,
+            EditDoseAtVolumeViewModel editDoseAtVolumeViewModel,
+            EditDoseValueViewModel editDoseValueViewModel,
+            EditHIViewModel editHIViewModel,
+            EditVolumeAtDoseViewModel editVolumeAtDoseViewModel)
         {
+            //viewmodels for modificators.
+            EditCIViewModel = editCIViewModel;
+            EditDoseAtVolumeViewModel = editDoseAtVolumeViewModel;
+            EditDoseValueViewModel = editDoseValueViewModel;
+            EditHIViewModel = editHIViewModel;
+            EditVolumeAtDoseViewModel = editVolumeAtDoseViewModel;
 
             ViewLauncherService = viewLauncherService;
             ProgressViewService = progressViewService;
@@ -428,8 +493,8 @@ namespace PlanScoreCard.ViewModels
             AddNewStructureCommand = new DelegateCommand(OnAddNewStructure);
             OpenDictionaryEditorCommand = new DelegateCommand(OnOpenDictionaryEditor, CanOpenDictionaryEditor);
 
-          // Inititate Collections
-          Structures = new ObservableCollection<StructureModel>();
+            // Inititate Collections
+            Structures = new ObservableCollection<StructureModel>();
             ScoreMetrics = new ObservableCollection<ScoreMetricModel>();
             MetricPointModels = new ObservableCollection<ScorePointModel>();
             TreatmentSites = new ObservableCollection<string>();
@@ -440,7 +505,7 @@ namespace PlanScoreCard.ViewModels
 
         private bool CanOpenDictionaryEditor()
         {
-            return SelectedStructure!=null && !String.IsNullOrEmpty(SelectedStructure.StructureId) && !String.IsNullOrEmpty(SelectedStructure.TemplateStructureId);
+            return SelectedStructure != null && !String.IsNullOrEmpty(SelectedStructure.StructureId) && !String.IsNullOrEmpty(SelectedStructure.TemplateStructureId);
         }
 
         private void OnOpenDictionaryEditor()
@@ -502,8 +567,8 @@ namespace PlanScoreCard.ViewModels
             Structures.OrderBy(s => s.StructureId);
 
             //also add structures to each metric in case you want to change it.
-            foreach (var sm in ScoreMetrics)
-                sm.Structures.Add(structure);
+            //foreach (var sm in ScoreMetrics)
+            //    sm.Structures.Add(structure);
 
         }
 
@@ -512,7 +577,8 @@ namespace PlanScoreCard.ViewModels
 
             BuildStructureView builderView = ViewLauncherService.GetStructureBuilderView();
             //EventAggregator.GetEvent<SetPlanModelEvent>().Publish(PlanModel);
-            builderView.DataContext = new BuildStructureViewModel(PlanModel, EventAggregator);
+            //builderView.DataContext = new BuildStructureViewModel(PlanModel, EventAggregator);
+            EventAggregator.GetEvent<SetStructureBuilderPlanEvent>().Publish(PlanModel);
             builderView.ShowDialog();
 
             // Need to do something to refresh the structures
@@ -887,33 +953,43 @@ namespace PlanScoreCard.ViewModels
         {
             if (scoreMetric.MetricType == MetricTypeEnum.ConformityIndex)
             {
-                EditCIView volumeAtDoseView = ViewLauncherService.GetEditMetricView_CI();
+                //EditCIView volumeAtDoseView = ViewLauncherService.GetEditMetricView_CI();
                 EventAggregator.GetEvent<ShowCIMetricEvent>().Publish(scoreMetric);
-                MetricEditorControl = volumeAtDoseView;
+                bVAtDView = bDAtVView = bVAtDView = bHIView = false;
+                bCIView = true;
+                //MetricEditorControl = volumeAtDoseView;
             }
             else if (scoreMetric.MetricType == MetricTypeEnum.DoseAtVolume)
             {
-                EditDoseAtVolumeView volumeAtDoseView = ViewLauncherService.GetEditMetricView_DoseAtVolume();
+                //EditDoseAtVolumeView volumeAtDoseView = ViewLauncherService.GetEditMetricView_DoseAtVolume();
                 EventAggregator.GetEvent<ShowDoseAtVolumeMetricEvent>().Publish(scoreMetric);
-                MetricEditorControl = volumeAtDoseView;
+                //MetricEditorControl = volumeAtDoseView;
+                bCIView = bVAtDView = bVAtDView = bHIView = false;
+                bDAtVView = true;
             }
             else if (scoreMetric.MetricType == MetricTypeEnum.HomogeneityIndex)
             {
-                EditHIView volumeAtDoseView = ViewLauncherService.GetEditMetricView_HI();
+                //EditHIView volumeAtDoseView = ViewLauncherService.GetEditMetricView_HI();
                 EventAggregator.GetEvent<ShowHIMetricEvent>().Publish(scoreMetric);
-                MetricEditorControl = volumeAtDoseView;
+                //MetricEditorControl = volumeAtDoseView;
+                bCIView = bDAtVView = bVAtDView = bVAtDView = false;
+                bHIView = true;
             }
             else if (scoreMetric.MetricType == MetricTypeEnum.MaxDose || scoreMetric.MetricType == MetricTypeEnum.MinDose || scoreMetric.MetricType == MetricTypeEnum.MeanDose)
             {
-                EditDoseValueView volumeAtDoseView = ViewLauncherService.GetEditMetricView_DoseValue();
+                //EditDoseValueView volumeAtDoseView = ViewLauncherService.GetEditMetricView_DoseValue();
                 EventAggregator.GetEvent<ShowDoseValueMetricEvent>().Publish(scoreMetric);
-                MetricEditorControl = volumeAtDoseView;
+                //MetricEditorControl = volumeAtDoseView;
+                bCIView = bDAtVView = bVAtDView = bHIView = false;
+                 bDValueView= true;
             }
             else if (scoreMetric.MetricType == MetricTypeEnum.VolumeAtDose || scoreMetric.MetricType == MetricTypeEnum.VolumeOfRegret || scoreMetric.MetricType == MetricTypeEnum.ConformationNumber)
             {
-                EditVolumeAtDoseView volumeAtDoseView = ViewLauncherService.GetEditMetricView_VolumeAtDose();
+                //EditVolumeAtDoseView volumeAtDoseView = ViewLauncherService.GetEditMetricView_VolumeAtDose();
                 EventAggregator.GetEvent<ShowVolumeAtDoseMetricEvent>().Publish(scoreMetric);
-                MetricEditorControl = volumeAtDoseView;
+                //MetricEditorControl = volumeAtDoseView;
+                bCIView = bDAtVView = bDValueView = bHIView  = false;
+                bVAtDView = true;
             }
         }
 
