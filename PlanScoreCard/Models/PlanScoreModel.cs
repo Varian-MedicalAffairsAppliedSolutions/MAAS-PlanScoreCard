@@ -228,7 +228,7 @@ namespace PlanScoreCard.Models
             // Set Colours. Access the plot Information. 
             LineSeries series = ScorePlotModel.Series.First() as LineSeries;
             series.Points.OrderBy(o => o.X);
-            if (series.Points.Any() && series.Points.Count() >1)
+            if (series.Points.Any() && series.Points.Count() > 1)
             {
                 DataPoint minValue = series.Points.First();
                 DataPoint maxValue = series.Points.Last();
@@ -437,8 +437,8 @@ namespace PlanScoreCard.Models
                     {
                         if (plan is PlanSetup)
                         {
-                            var dTarget = 100.0;
-                            if (template.HI_Target != 0.0)
+                            var dTarget = template.HI_Target;
+                            if (template.HI_Target != 0.0 && template.HI_TargetUnit != "%")
                             {
                                 if (template.HI_TargetUnit != (plan as PlanSetup).TotalDose.UnitAsString)
                                 {
@@ -458,28 +458,31 @@ namespace PlanScoreCard.Models
                                     dTarget = template.HI_Target;
                                 }
                             }
-                            var dvh = plan.GetDVHCumulativeData(structure, DoseValuePresentation.Absolute,
+                            var dvh = template.HI_TargetUnit =="%"?
+                                plan.GetDVHCumulativeData(structure, DoseValuePresentation.Relative, VolumePresentation.Relative,_dvhResolution)
+                                : plan.GetDVHCumulativeData(structure, DoseValuePresentation.Absolute,
                                 VolumePresentation.Relative, _dvhResolution);
-                            if (dvh == null) { scoreValue.Value = ScoreMax = scoreValue.Score = -100; return; }
+                            if (dvh == null) { scoreValue.Value = ScoreMax = scoreValue.Score = -1000; return; }
                             var h_val = template.HI_HiValue;// * dTarget / 100.0;
                             var l_val = template.HI_LowValue;// * dTarget / 100.0;
-                            if (template.HI_TargetUnit != (plan as PlanSetup).TotalDose.UnitAsString)
-                            {
-                                if ((plan as PlanSetup).TotalDose.UnitAsString.Contains('c'))
-                                {
-                                    h_val = h_val * 100.0;
-                                    l_val = l_val * 100.0;
-                                }
-                                else
-                                {
-                                    h_val = h_val / 100.0;
-                                    l_val = l_val / 100.0;
-                                }
-                            }
-                            var dHi = dvh.CurveData.FirstOrDefault(x => x.Volume < h_val).DoseValue.Dose;
-                            var dLo = dvh.CurveData.FirstOrDefault(x => x.Volume < l_val).DoseValue.Dose;
-
-                            scoreValue.Value = (dHi - dLo) / dTarget;
+                           
+                            var dHi = dvh.CurveData.FirstOrDefault(x => x.Volume <= h_val).DoseValue.Dose;
+                            var dLo = dvh.CurveData.FirstOrDefault(x => x.Volume <= l_val).DoseValue.Dose;
+                            //the target dose level has already been converted to the system's dose unit and therefore dHi and dLo do not need to be converted.
+                            //if (template.HI_TargetUnit != (plan as PlanSetup).TotalDose.UnitAsString)
+                            //{
+                            //    if ((plan as PlanSetup).TotalDose.UnitAsString.Contains('c'))
+                            //    {
+                            //        dHi = dHi* 100.0;
+                            //        dLo = dLo* 100.0;
+                            //    }
+                            //    else
+                            //    {
+                            //        dHi= dHi / 100.0;
+                            //        dLo = dLo / 100.0;
+                            //    }
+                            //}
+                            scoreValue.Value = template.OutputUnit == "%" ? (dHi - dLo) / (dTarget - (plan as PlanSetup).TotalDose.Dose) : (dHi - dLo) / dTarget;
                         }
                         else
                         {

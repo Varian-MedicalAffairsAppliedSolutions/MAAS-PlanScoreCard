@@ -240,7 +240,7 @@
                             <RowDefinition Height="20"/>
                             <RowDefinition Height="40"/>
                             <RowDefinition Height="40"/>
-                            <RowDefinition Height="150"/>
+                            <RowDefinition Height="180"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
@@ -307,7 +307,7 @@
                         <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" Content="Description" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
                         <TextBox Grid.Column="0" Text="{Binding SelectedScoreMetric.MetricText}"  Grid.Row="3" Grid.ColumnSpan="3" Margin="5" IsReadOnly="True"/>-->
 
-                        <Border Grid.Row="5" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="1" Margin="2,2,2,4" CornerRadius="3" Height="400">
+                        <Border Grid.Row="5" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="1" Margin="2,2,2,4" CornerRadius="3" Height="360">
                             <oxy:PlotView Model="{Binding SelectedScoreMetric.ScoreMetricPlotModel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="LightGray" Height="320"/>
                         </Border>
                     </Grid>

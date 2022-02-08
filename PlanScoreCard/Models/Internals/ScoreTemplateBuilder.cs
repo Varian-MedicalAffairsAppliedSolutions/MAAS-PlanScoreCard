@@ -274,7 +274,7 @@ namespace PlanScoreCard.Models.Internals
                 scoreMetric.MetricComment = template.MetricComment;
 
                 // Metric Type - Dependant Variables
-                if (scoreMetric.MetricType == MetricTypeEnum.DoseAtVolume || scoreMetric.MetricType == MetricTypeEnum.VolumeAtDose)
+                if (scoreMetric.MetricType == MetricTypeEnum.DoseAtVolume || scoreMetric.MetricType == MetricTypeEnum.VolumeAtDose|| scoreMetric.MetricType == MetricTypeEnum.ConformationNumber || scoreMetric.MetricType == MetricTypeEnum.VolumeOfRegret)
                 {
                     scoreMetric.OutputUnit = template.OutputUnit;
                     scoreMetric.InputUnit = template.InputUnit;
@@ -288,7 +288,7 @@ namespace PlanScoreCard.Models.Internals
                 {
                     scoreMetric.HI_Hi = template.HI_HiValue.ToString();
                     scoreMetric.HI_Lo = template.HI_LowValue.ToString();
-                    scoreMetric.HI_Target = template.InputValue.ToString();
+                    scoreMetric.HI_Target = template.HI_Target.ToString();
                     scoreMetric.OutputUnit = template.HI_TargetUnit;
                 }
                 else if (scoreMetric.MetricType == MetricTypeEnum.ConformityIndex)

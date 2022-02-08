@@ -48,11 +48,11 @@ namespace PlanScoreCard.ViewModels
 
         // ScoreTemplates - Legacy?
         private List<ScoreTemplateModel> ScoreTemplates;
-        
+
         // Template Information
         private string TemplateName;
         private string TemplateSite;
-        
+
         // Full Properties
 
         private string scoreTotalText;
@@ -68,7 +68,7 @@ namespace PlanScoreCard.ViewModels
         public string PatientId
         {
             get { return patientId; }
-            set { SetProperty(ref patientId , value); }
+            set { SetProperty(ref patientId, value); }
         }
 
         // Score Card Name 
@@ -86,7 +86,7 @@ namespace PlanScoreCard.ViewModels
         public double MaxScore
         {
             get { return maxScore; }
-            set { SetProperty(ref maxScore , value); }
+            set { SetProperty(ref maxScore, value); }
         }
 
         // Selected Plan
@@ -103,7 +103,7 @@ namespace PlanScoreCard.ViewModels
         public ObservableCollection<PlanScoreModel> PlanScores
         {
             get { return planScores; }
-            set { SetProperty( ref planScores , value); }
+            set { SetProperty(ref planScores, value); }
         }
 
         // Plan Models
@@ -111,11 +111,11 @@ namespace PlanScoreCard.ViewModels
         public ObservableCollection<PlanModel> Plans
         {
             get { return plans; }
-            set { SetProperty(ref plans , value); }
+            set { SetProperty(ref plans, value); }
         }
 
         // Delegate Commands
-        public DelegateCommand ScorePlanCommand { get; set;  }
+        public DelegateCommand ScorePlanCommand { get; set; }
         public DelegateCommand ImportScoreCardCommand { get; set; }
         public DelegateCommand EditScoreCardCommand { get; set; }
         public DelegateCommand NormalizePlanCommand { get; set; }
@@ -142,7 +142,7 @@ namespace PlanScoreCard.ViewModels
         public ScoreCardViewModel(Application app, Patient patient, Course course, PlanSetup plan, IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService, StructureDictionaryService structureDictionaryService)
         {
             // Set the Initial Variables Passed In
-            Application  = app;
+            Application = app;
             Patient = patient;
             Course = course;
             Plan = plan;
@@ -183,7 +183,26 @@ namespace PlanScoreCard.ViewModels
         // Button Click Commands
         private void ExportScoreCard()
         {
-            throw new NotImplementedException();
+            //implement this method when you get back (export scorecard values to  CSV).
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "CSV File (.csv)|*.csv";
+            sfd.Title = "Export Template to CSV";
+            if (sfd.ShowDialog() == true)
+            {
+                using (StreamWriter sw = new StreamWriter(sfd.FileName))
+                {
+                    sw.WriteLine("Metric Id,Course Id,Plan Id,StructureId,Metric Text,Metric Value,Score,Max Score");
+                    foreach (var template in PlanScores)
+                    {
+                        foreach (var point in template.ScoreValues)
+                        {
+                            sw.WriteLine($"{template.MetricId},{point.CourseId},{point.PlanId},{template.StructureId},{template.MetricText},{point.Value},{point.Score},{template.ScoreMax}");
+                        }
+                    }
+                    sw.Flush();
+                }
+            }
+            System.Windows.MessageBox.Show("Export Successful");
         }
 
         private void NormalizePlan()
@@ -222,12 +241,12 @@ namespace PlanScoreCard.ViewModels
             }
             if (Plan != null)
             {
-                if(Plans.Any(x=>x.PlanId == Plan.Id && x.CourseId == Course.Id))
+                if (Plans.Any(x => x.PlanId == Plan.Id && x.CourseId == Course.Id))
                 {
                     Plans.FirstOrDefault(x => x.PlanId == Plan.Id && x.CourseId == Course.Id).bPrimary = true;
                 }
             }
-            
+
             //Plans.First().bPrimary = true;
 
         }
@@ -235,7 +254,7 @@ namespace PlanScoreCard.ViewModels
         // Score Plan
         private void ScorePlan()
         {
-            if (ScoreCard !=  null)
+            if (ScoreCard != null)
                 ScorePlan(ScoreCard);
 
             ProgressViewService.Close();
@@ -259,7 +278,7 @@ namespace PlanScoreCard.ViewModels
 
             // Get Collection of SelectedPlans
             List<PlanningItem> selectedPlans = Plans.Where(p => p.bSelected == true).Select(s => s.Plan as PlanningItem).ToList();
-            
+
             // Convert the List to an Observable Collection
             ObservableCollection<PlanningItem> selectedPlanCollection = new ObservableCollection<PlanningItem>();
             foreach (PlanningItem plan in selectedPlans)
@@ -267,7 +286,7 @@ namespace PlanScoreCard.ViewModels
 
             // Initiate the MetricId Counter
             int metric_id = 0;
-                            
+
             // Loop through each Metric (ScoreTemplateModel)
             foreach (ScoreTemplateModel template in scoreCard.ScoreMetrics)
             {
@@ -318,15 +337,15 @@ namespace PlanScoreCard.ViewModels
         {
             // Show the Progress Bar
             ProgressViewService.ShowProgress("Loading Scorecard", 100, true);
-            
+
             ScoreCardModel scoreCard = new ScoreCardModel(TemplateName, TemplateSite, ScoreCard?.ScoreMetrics);
             EditScoreCardView = ViewLauncherService.GetEditScoreCardView();
-            
+
             // Events
             EventAggregator.GetEvent<EditScoreCardSetPlanEvent>().Publish(new PlanModel(Plan, EventAggregator)); // Push the SelectedPlan
             EventAggregator.GetEvent<LoadEditScoreCardViewEvent>().Publish(scoreCard); // Push the ScoreCardModel to the ViewModel
             EventAggregator.GetEvent<EditScoreCardSetUserEvent>().Publish(Application.CurrentUser); // Push the User
-            
+
             // Close the Progress Bar
             ProgressViewService.Close();
 
@@ -415,7 +434,7 @@ namespace PlanScoreCard.ViewModels
                     }
 
 
-                    ScoreCard = new ScoreCardModel(TemplateName,TemplateSite,ScoreTemplates);
+                    ScoreCard = new ScoreCardModel(TemplateName, TemplateSite, ScoreTemplates);
 
                 }
                 if (importSuccess)
@@ -424,7 +443,7 @@ namespace PlanScoreCard.ViewModels
                 }
             }
         }
-        
+
         // Event Methods
         private void OnPlanChanged(List<PlanModel> obj)
         {

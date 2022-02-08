@@ -59,6 +59,7 @@ namespace PlanScoreCard.ViewModels.MetricEditors
 			set
 			{
 				SetProperty(ref _selectedDoseUnit, value);
+				ScoreMetric.InputUnit = SelectedDoseUnit;
 				EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Publish();
 			}
 		}
@@ -86,6 +87,7 @@ namespace PlanScoreCard.ViewModels.MetricEditors
 			SelectedDoseUnit = scoreMetric.OutputUnit;
 			HI_HiValue = Convert.ToDouble(scoreMetric.HI_Hi);
 			HI_LowValue = Convert.ToDouble(scoreMetric.HI_Lo);
+			TargetValue = Convert.ToDouble(scoreMetric.HI_Target);
 		}
     }
 }

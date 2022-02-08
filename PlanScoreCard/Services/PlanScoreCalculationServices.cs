@@ -107,11 +107,11 @@ namespace PlanScoreCard.Services
             }
             else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.ConformationNumber)
             {
-                return $"Conformation Number at [{template.InputValue}{template.InputUnit}]";
+                return $"Conformation No. at [{template.InputValue}{template.InputUnit}]";
             }
             else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.HomogeneityIndex)
             {
-                return $"Homogeneity Index [{template.HI_HiValue} - {template.HI_LowValue}]/{template.HI_Target}]";
+                return $"HI [{template.HI_HiValue} - {template.HI_LowValue}]/{template.HI_Target}]";
             }
             else
             {

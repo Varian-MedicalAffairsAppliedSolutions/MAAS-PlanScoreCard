@@ -972,7 +972,7 @@ namespace PlanScoreCard.ViewModels
                 //EditHIView volumeAtDoseView = ViewLauncherService.GetEditMetricView_HI();
                 EventAggregator.GetEvent<ShowHIMetricEvent>().Publish(scoreMetric);
                 //MetricEditorControl = volumeAtDoseView;
-                bCIView = bDAtVView = bVAtDView = bVAtDView = false;
+                bCIView = bDAtVView = bVAtDView = bDValueView = false;
                 bHIView = true;
             }
             else if (scoreMetric.MetricType == MetricTypeEnum.MaxDose || scoreMetric.MetricType == MetricTypeEnum.MinDose || scoreMetric.MetricType == MetricTypeEnum.MeanDose)
