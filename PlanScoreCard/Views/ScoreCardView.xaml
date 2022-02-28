@@ -263,7 +263,7 @@
                                                         <StackPanel Grid.Column="1">
 
                                                             <TextBlock Text="{Binding MetricText}" Foreground="Black" HorizontalAlignment="Center"/>
-                                                            <TextBlock Text="{Binding MetricComment}" FontSize="12" Foreground="Black" HorizontalAlignment="Center"/>
+                                                            <!--<TextBlock Text="{Binding MetricComment}" FontSize="12" Foreground="Black" HorizontalAlignment="Center"/>-->
                                                         </StackPanel>
 
 

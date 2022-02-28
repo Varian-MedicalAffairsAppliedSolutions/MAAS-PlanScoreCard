@@ -663,7 +663,9 @@ namespace PlanScoreCard.Models
                 MinXValue = template.ScorePoints.Min(x => x.PointX);
                 MaxXValue = template.ScorePoints.Max(x => x.PointX);
                 CheckOutsideBounds();
-                XAxisLabel = $"{MetricText.Split(' ').FirstOrDefault()} {template.OutputUnit}";
+                XAxisLabel = template.ScorePoints.Any(x=>x.Variation) ?
+                    $"{MetricText.Split(' ').FirstOrDefault()} [{template.OutputUnit}]\nVariation @ {template.ScorePoints.FirstOrDefault(x=>x.Variation).PointX}{template.OutputUnit}"
+                    :$"{MetricText.Split(' ').FirstOrDefault()} [{template.OutputUnit}]";
             }
             ScorePlotModel.Series.Clear();
             ScorePlotModel.Axes.Add(new LinearAxis
