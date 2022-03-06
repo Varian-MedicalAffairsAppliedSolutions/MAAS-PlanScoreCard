@@ -33,6 +33,22 @@ namespace PlanScoreCard.Models
         public string MetricText { get; set; }
         public double ScoreMax { get; set; }
         public string MetricComment { get; set; }
+        public string PrintComment { get; set; }
+        private bool _bPrintComment;
+
+        public bool bPrintComment
+        {
+            get { return _bPrintComment; }
+            set { SetProperty(ref _bPrintComment,value); }
+        }
+        private bool _bShowPrintComment;
+
+        public bool bShowPrintComment
+        {
+            get { return _bShowPrintComment; }
+            set { SetProperty(ref _bShowPrintComment,value); }
+        }
+
         public int MetricId { get; set; }
         private double _minXValue;
 
@@ -272,7 +288,7 @@ namespace PlanScoreCard.Models
             CountAboveMax = 0;
 
             TemplateStructureVisibility = Visibility.Visible;
-
+            bShowPrintComment = true;
         }
         public void BuildPlanScoreFromTemplate(ObservableCollection<PlanningItem> plans, ScoreTemplateModel template, int metricId)
         {
@@ -664,7 +680,7 @@ namespace PlanScoreCard.Models
                 MaxXValue = template.ScorePoints.Max(x => x.PointX);
                 CheckOutsideBounds();
                 XAxisLabel = template.ScorePoints.Any(x=>x.Variation) ?
-                    $"{MetricText.Split(' ').FirstOrDefault()} [{template.OutputUnit}]\nVariation @ {template.ScorePoints.FirstOrDefault(x=>x.Variation).PointX}{template.OutputUnit}"
+                    $"{MetricText.Split(' ').FirstOrDefault()} [{template.OutputUnit}]. Variation @ {template.ScorePoints.FirstOrDefault(x=>x.Variation).PointX}{template.OutputUnit}"
                     :$"{MetricText.Split(' ').FirstOrDefault()} [{template.OutputUnit}]";
             }
             ScorePlotModel.Series.Clear();

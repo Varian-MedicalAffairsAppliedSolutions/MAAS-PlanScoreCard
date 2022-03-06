@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using Newtonsoft.Json;
+using OxyPlot.Wpf;
 using PlanScoreCard.Events;
 using PlanScoreCard.Events.Plugin;
 using PlanScoreCard.Models;
@@ -17,6 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using VMS.TPS.Common.Model.API;
 
 namespace PlanScoreCard.ViewModels
@@ -43,7 +45,12 @@ namespace PlanScoreCard.ViewModels
         public ScoreCardModel ScoreCard
         {
             get { return scoreCard; }
-            set { SetProperty(ref scoreCard, value); }
+            set
+            {
+                SetProperty(ref scoreCard, value);
+                ExportScoreCardCommand.RaiseCanExecuteChanged();
+                PrintReportCommand.RaiseCanExecuteChanged();
+            }
         }
 
         // ScoreTemplates - Legacy?
@@ -95,7 +102,12 @@ namespace PlanScoreCard.ViewModels
         public PlanModel SelectedPlan
         {
             get { return selectedPlan; }
-            set { SetProperty(ref selectedPlan, value); }
+            set
+            {
+                SetProperty(ref selectedPlan, value);
+                ExportScoreCardCommand.RaiseCanExecuteChanged();
+                PrintReportCommand.RaiseCanExecuteChanged();
+            }
         }
 
         // Plan Scores
@@ -120,6 +132,7 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand EditScoreCardCommand { get; set; }
         public DelegateCommand NormalizePlanCommand { get; set; }
         public DelegateCommand ExportScoreCardCommand { get; set; }
+        public DelegateCommand PrintReportCommand { get; private set; }
 
         // Plugin Visibility
 
@@ -137,6 +150,38 @@ namespace PlanScoreCard.ViewModels
             get { return pluginWidth; }
             set { SetProperty(ref pluginWidth, value); }
         }
+
+        //warnings and flags 
+        private bool _bWarning;
+
+        public bool bWarning
+        {
+            get { return _bWarning; }
+            set { SetProperty(ref _bWarning, value); }
+        }
+        private bool _bFlag;
+
+        public bool bFlag
+        {
+            get { return _bFlag; }
+            set { SetProperty(ref _bFlag, value); }
+        }
+        private string _warnings;
+
+        public string Warnings
+        {
+            get { return _warnings; }
+            set { SetProperty(ref _warnings, value); }
+        }
+        private string _flags;
+
+        public string Flags
+        {
+            get { return _flags; }
+            set { SetProperty(ref _flags, value); }
+        }
+
+
 
         // Constructor
         public ScoreCardViewModel(Application app, Patient patient, Course course, PlanSetup plan, IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService, StructureDictionaryService structureDictionaryService)
@@ -171,13 +216,88 @@ namespace PlanScoreCard.ViewModels
             ImportScoreCardCommand = new DelegateCommand(ImportScoreCard);
             EditScoreCardCommand = new DelegateCommand(EditScoreCard);
             NormalizePlanCommand = new DelegateCommand(NormalizePlan);
-            ExportScoreCardCommand = new DelegateCommand(ExportScoreCard);
+            ExportScoreCardCommand = new DelegateCommand(ExportScoreCard, CanExportScorecard);
+            PrintReportCommand = new DelegateCommand(OnPrintReport, CanPrintReport);
 
             // Sets If no Plan is Passed In
             if (Plan != null)
                 OnPlanChanged(new List<PlanModel> { new PlanModel(Plan as PlanningItem, eventAggregator) { PlanId = Plan.Id, CourseId = Course.Id, bSelected = true } });
 
             InitializeClass();
+        }
+
+        private bool CanExportScorecard()
+        {
+            return ScoreCard != null && Plans.Any();
+        }
+
+        private bool CanPrintReport()
+        {
+            return ScoreCard != null && Plans.Any();
+        }
+
+        private void OnPrintReport()
+        {
+            var fd = new FlowDocument() { FontSize = 12, FontFamily = new System.Windows.Media.FontFamily("Franklin Gothic") };
+            fd.Blocks.Add(new Paragraph(new Run($"Scorecard: {ScoreCard.Name} - {ScoreCard.SiteGroup}")) { TextAlignment = System.Windows.TextAlignment.Center });
+            fd.Blocks.Add(new Paragraph(new Run($"Summary: {ScoreTotalText}")));
+            foreach (var score in PlanScores)
+            {
+                if (!score.bPrintComment)
+                {
+                    score.bShowPrintComment = false;
+                }
+                var grid = new System.Windows.Controls.Grid();
+                var col1 = new System.Windows.Controls.ColumnDefinition();
+                col1.Width = new System.Windows.GridLength(16.5, System.Windows.GridUnitType.Star);
+                var col2 = new System.Windows.Controls.ColumnDefinition();
+                col2.Width = new System.Windows.GridLength(5, System.Windows.GridUnitType.Star);
+                var scv = new ScoreReportView { DataContext = score };
+                grid.ColumnDefinitions.Add(col1);
+                grid.ColumnDefinitions.Add(col2);
+                System.Windows.Controls.Grid.SetColumn(scv, 0);
+                var innerGrid = new System.Windows.Controls.Grid();
+                var row1 = new System.Windows.Controls.RowDefinition();
+                row1.Height = new System.Windows.GridLength(3, System.Windows.GridUnitType.Star);
+                var row2 = new System.Windows.Controls.RowDefinition();
+                row2.Height = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+                var plotter = new System.Windows.Controls.Image()
+                {
+                    Source = new PngExporter() 
+                    { 
+                        Background = OxyPlot.OxyColors.LightGray}.ExportToBitmap(score.ScorePlotModel),
+                        Height = 55, 
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+
+                };
+                System.Windows.Controls.Grid.SetRow(plotter, 0);
+                var plotView = new ScorePlotView { DataContext = score };
+                System.Windows.Controls.Grid.SetRow(plotView, 0);
+                System.Windows.Controls.Grid.SetRowSpan(plotView, 2);
+                innerGrid.RowDefinitions.Add(row1);
+                innerGrid.RowDefinitions.Add(row2);
+                System.Windows.Controls.Grid.SetColumn(innerGrid, 1);
+                innerGrid.Children.Add(plotter);
+                innerGrid.Children.Add(plotView);
+                grid.Children.Add(scv);
+                grid.Children.Add(innerGrid);
+                fd.Blocks.Add(new BlockUIContainer(grid));
+            }
+            System.Windows.Controls.PrintDialog printer = new System.Windows.Controls.PrintDialog();
+            fd.PageHeight = 1056;
+            fd.PageWidth = 816;
+            fd.PagePadding = new System.Windows.Thickness(50);
+            fd.ColumnGap = 0;
+            fd.ColumnWidth = 816;
+            IDocumentPaginatorSource source = fd;
+            if (printer.ShowDialog() == true)
+            {
+                printer.PrintDocument(source.DocumentPaginator, "Plan Scores");
+            }
+            foreach(var score in PlanScores)
+            {
+                score.bShowPrintComment = true;
+            }
         }
 
         // Button Click Commands
@@ -288,13 +408,32 @@ namespace PlanScoreCard.ViewModels
             int metric_id = 0;
 
             // Loop through each Metric (ScoreTemplateModel)
+            Warnings = String.Empty;
+            Flags = String.Empty;
             foreach (ScoreTemplateModel template in scoreCard.ScoreMetrics)
             {
                 // PlanScoreModel
                 PlanScoreModel psm = new PlanScoreModel(Application, StructureDictionaryService);
                 psm.BuildPlanScoreFromTemplate(selectedPlanCollection, template, metric_id);
                 PlanScores.Add(psm);
+                if (template.ScorePoints.Any(x => x.Variation) && psm.ScoreValues.Any(x => x.Score < template.ScorePoints.FirstOrDefault(y => y.Variation).Score))
+                {
+                    bWarning = true;
+                    foreach (var scoreBelowVariation in psm.ScoreValues.Where(x => x.Score < template.ScorePoints.FirstOrDefault(y => y.Variation).Score))
+                    {
+                        Warnings += $"Course [{scoreBelowVariation.CourseId}]. Plan [{scoreBelowVariation.PlanId}. Metric {psm.MetricId} -- {psm.MetricText} below variation\n";
+                    }
+                }
+                if (psm.ScoreValues.Any(x => x.Score == 0))
+                {
+                    bFlag = true;
+                    foreach (var zeroScore in psm.ScoreValues.Where(x => x.Score == 0))
+                    {
+                        Flags += $"Course [{zeroScore.CourseId}]. Plan [{zeroScore.PlanId}. Metric {psm.MetricId + 1} -- {psm.MetricText}. Score is 0.\n";
+                    }
+                }
                 metric_id++;
+
             }
 
             //remove score points from metrics that didn't have the
@@ -321,13 +460,15 @@ namespace PlanScoreCard.ViewModels
                         {
                             plan.PlanScore = planTotal;
                         }
+
                         MaxScore = planScores.Sum(x => x.ScoreMax);
                         plan.MaxScore = MaxScore;
                     }
                 }
+                //if(PlanScores.Select(x=>x.ScoreValues.Any(y=>y.Score<y.)))
             }
-
-            ScoreTotalText = ScoreTotalText;
+            // not sure what the line below was supposed to accomplish. 
+            //ScoreTotalText = ScoreTotalText;
             // Will delay for 3 seconds
             System.Threading.Thread.Sleep(700);
             ProgressViewService.Close();

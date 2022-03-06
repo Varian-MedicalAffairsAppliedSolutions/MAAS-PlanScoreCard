@@ -136,6 +136,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Converters\BoolToColorConverter.cs" />
+    <Compile Include="Converters\BoolToColorFlagConverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
     <Compile Include="Converters\DoubleDecimalConverter.cs" />
     <Compile Include="Converters\DoubleF2Converter.cs" />
@@ -311,6 +312,9 @@
     <Compile Include="Views\PlanScoreView.xaml.cs">
       <DependentUpon>PlanScoreView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\PlotOnlyView.xaml.cs">
+      <DependentUpon>PlotOnlyView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\PluginView.xaml.cs">
       <DependentUpon>PluginView.xaml</DependentUpon>
     </Compile>
@@ -319,6 +323,12 @@
     </Compile>
     <Compile Include="Views\ScoreMetricView.xaml.cs">
       <DependentUpon>ScoreMetricView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ScorePlotView.xaml.cs">
+      <DependentUpon>ScorePlotView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ScoreReportView.xaml.cs">
+      <DependentUpon>ScoreReportView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\StructureBuilderGroupView.xaml.cs">
       <DependentUpon>StructureBuilderGroupView.xaml</DependentUpon>
@@ -425,6 +435,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\PlotOnlyView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\PluginView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -434,6 +448,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ScoreMetricView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ScorePlotView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ScoreReportView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
