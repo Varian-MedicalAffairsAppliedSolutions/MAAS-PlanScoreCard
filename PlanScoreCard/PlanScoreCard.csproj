@@ -171,6 +171,7 @@
     <Compile Include="Events\PlanChangedEvent.cs" />
     <Compile Include="Events\PlanSelectedEvent.cs" />
     <Compile Include="Events\Plugins\ConsoleUpdateEvent.cs" />
+    <Compile Include="Events\Plugins\PlanToPluginEvent.cs" />
     <Compile Include="Events\Plugins\PlotUpdateEvent.cs" />
     <Compile Include="Events\Plugins\PluginVisibilityEvent.cs" />
     <Compile Include="Events\PointDownEvent.cs" />

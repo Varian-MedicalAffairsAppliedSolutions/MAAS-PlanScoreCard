@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using OxyPlot.Wpf;
 using PlanScoreCard.Events;
 using PlanScoreCard.Events.Plugin;
+using PlanScoreCard.Events.Plugins;
 using PlanScoreCard.Models;
 using PlanScoreCard.Models.Internals;
 using PlanScoreCard.Models.Proknow;
@@ -451,7 +452,7 @@ namespace PlanScoreCard.ViewModels
                         double planTotal = planScores.Sum(x => x.ScoreValues.FirstOrDefault(y => y.PlanId == pc.planId && y.CourseId == pc.courseId).Score);
                         ScoreTotalText += $"\n\t\t[{cid}] {pid}: {planTotal:F2}/{planScores.Sum(x => x.ScoreMax):F2} ({planTotal / planScores.Sum(x => x.ScoreMax) * 100.0:F2}%)";
 
-                        PlanModel plan = Plans.FirstOrDefault(p => p.PlanId == pid);
+                        PlanModel plan = Plans.FirstOrDefault(p => p.PlanId == pid && p.CourseId == cid);
 
                         if (plan.PlanScore == null)
                             plan.PlanScore = 0;
@@ -611,6 +612,7 @@ namespace PlanScoreCard.ViewModels
                 {
                     ScorePlan(ScoreCard);
                 }
+                EventAggregator.GetEvent<PlanToPluginEvent>().Publish(Plans.ToList());
             }
 
 
