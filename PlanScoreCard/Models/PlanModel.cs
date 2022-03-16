@@ -43,8 +43,10 @@ namespace PlanScoreCard.Models
 
                 if (!bSelected && bPrimary)
                     bSelected = true;
-
-                _eventAggregator.GetEvent<PlanSelectedEvent>().Publish();
+                if (bSelected)
+                {
+                    _eventAggregator.GetEvent<PlanSelectedEvent>().Publish();
+                }
             }
         }
         private bool _bPrimary;

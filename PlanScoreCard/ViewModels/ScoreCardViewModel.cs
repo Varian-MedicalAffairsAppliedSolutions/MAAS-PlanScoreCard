@@ -631,6 +631,14 @@ namespace PlanScoreCard.ViewModels
                 PluginWidth = 0;
             }
         }
-
+        public void UpdatePlanModel(Patient patient, Course course, PlanSetup plan)
+        {
+            Patient = patient;
+            Course = course;
+            Plan = plan;
+            //Plans.Clear();
+            InitializeClass();
+            //OnPlanChanged(new List<PlanModel> { new PlanModel(Plan as PlanningItem, EventAggregator) { PlanId = Plan.Id, CourseId = Course.Id, bSelected = true } });
+        }
     }
 }

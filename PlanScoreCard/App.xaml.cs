@@ -144,5 +144,17 @@ namespace PlanScoreCard
             }
 
         }
+        public void ResetApplication(string feedback)
+        {
+            //NavigationViewModel.DisposePlugin();
+            _app.ClosePatient();
+            var _patient = _app.OpenPatientById(_patientId);
+            var _course = _patient.Courses.FirstOrDefault(x => x.Id == _courseId);
+            var _plan = _course.PlanSetups.FirstOrDefault(x => x.Id == _planId);
+            (view.DataContext as ScoreCardViewModel).UpdatePlanModel(_patient, _course, _plan);
+            //ScoreCardViewModel.UpdatePlanModel(_patient, _course, _plan);
+            //NavigationViewModel.UpdatePlanParameters(_patient, _course, _plan, feedbacks);
+            //_eventAggregator.GetEvent<PlanChangedEvent>().Publish(NavigationViewModel.SelectedPlans.ToList());
+        }
     }
 }
