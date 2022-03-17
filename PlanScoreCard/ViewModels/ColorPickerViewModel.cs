@@ -36,7 +36,7 @@ namespace PlanScoreCard.ViewModels
         private void OnCancelColor()
         {
             //System.Windows.MessageBox.Show($"Cancelled!");
-            _eventAggregator.GetEvent<ColorSelectedEvent>().Publish(new Tuple<int, int, string, string>(_metricId, _pointId, ColorLabel, "#000000"));
+            _eventAggregator.GetEvent<ColorSelectedEvent>().Publish(new Tuple<int, int, string, string>(_metricId, _pointId, ColorLabel, "#00000000"));
         }
 
         private void OnSelectColor(Brush obj)

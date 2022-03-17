@@ -614,7 +614,7 @@ namespace PlanScoreCard.Models
                     {
                         foreach (var score in template.ScorePoints)
                         {
-                            if (score.Colors.Count > 0)
+                            if (score.Colors.Count > 0 && !score.Colors.All(x=>x == 0))
                             {
                                 bPKColor = true;
                                 var pkColor = new PlanScoreColorModel(score.Colors, score.Label);
