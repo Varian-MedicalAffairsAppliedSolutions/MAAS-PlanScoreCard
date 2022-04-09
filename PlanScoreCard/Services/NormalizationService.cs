@@ -123,7 +123,7 @@ namespace PlanScoreCard.Services
             foreach (var template in _templates)
             {
                 var psm = new PlanScoreModel(_app, StructureDictionaryService);
-                psm.BuildPlanScoreFromTemplate(new ObservableCollection<PlanningItem> { newPlan }, template, metricId);
+                psm.BuildPlanScoreFromTemplate(new ObservableCollection<PlanningItem> { newPlan }, template, metricId, String.Empty, string.Empty);
                 metricId++;
                 PlanScores.Add(psm);
             }

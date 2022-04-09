@@ -79,11 +79,11 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <Button Command="{Binding AddMetricCommand}" Content="{icons:FontAwesome Kind=PlusCircleSolid}"  Height="30" Grid.Column="0" Grid.ColumnSpan="1" Margin="2"/>
+                        <Button Command="{Binding AddMetricCommand}" Content="{icons:FontAwesome Kind=PlusCircleSolid}"  Height="30" Grid.Column="0" Grid.ColumnSpan="1" Margin="2" ToolTip="Add Score Metric"/>
                         <!--<Button Command="{Binding DeleteMetricCommand}" Content="{icons:FontAwesome Kind=EditSolid}"  Height="30" Grid.Column="1" Grid.ColumnSpan="1" Margin="3"/>-->
 
-                        <Button Command="{Binding DeleteMetricCommand}" Content="{icons:FontAwesome Kind=TrashAltSolid}" Width="30" Height="30" Grid.Column="1"/>
-                        <Button Command="{Binding CopyMetricCommand}" Content="{icons:FontAwesome Kind=CopySolid}" Width="30" Height="30" Grid.Column="2"/>
+                        <Button Command="{Binding DeleteMetricCommand}" Content="{icons:FontAwesome Kind=TrashAltSolid}" Width="30" Height="30" Grid.Column="1" ToolTip="Delete Selected Score Metric"/>
+                        <Button Command="{Binding CopyMetricCommand}" Content="{icons:FontAwesome Kind=CopySolid}" Width="30" Height="30" Grid.Column="2" ToolTip="Copy Score Metric"/>
                         <Button Command="{Binding AddNewStructureCommand}" Content="{icons:FontAwesome Kind=HammerSolid}" Grid.Column="4" Height="30"  HorizontalAlignment="Left" Width="28" Margin="2" ToolTip="Build new Structure"/>
 
                         <Button Command="{Binding MetricUpCommand}" Content="{icons:FontAwesome Kind=CaretUpSolid}" Width="30" Height="30" Grid.Column="8"/>
@@ -192,10 +192,10 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <Button Command="{Binding AddPointCommand}" Content="{icons:FontAwesome Kind=PlusCircleSolid}"  Height="30" Grid.Column="0" HorizontalAlignment="Left" Grid.ColumnSpan="2" Width="30" Margin="2"/>
+                            <Button Command="{Binding AddPointCommand}" Content="{icons:FontAwesome Kind=PlusCircleSolid}"  Height="30" Grid.Column="0" HorizontalAlignment="Left" Grid.ColumnSpan="2" Width="30" Margin="2" ToolTip="Add new point to selected score metric"/>
                             <!--<Button Command="{Binding EditPointCommand}" Content="{icons:FontAwesome Kind=EditSolid}"  Height="30" Grid.Column="1" Grid.ColumnSpan="1" Margin="3"/>-->
 
-                            <Button Command="{Binding DeletePointCommand}" Content="{icons:FontAwesome Kind=TrashAltSolid}" Width="30" Height="30" Grid.Column="1"/>
+                            <Button Command="{Binding DeletePointCommand}" Content="{icons:FontAwesome Kind=TrashAltSolid}" Width="30" Height="30" Grid.Column="1" ToolTip="Delete selected score point on selected score metric."/>
                             <Button Command="{Binding OrderPointsByValueCommand}" Content="{icons:FontAwesome Kind=SortAmountUpSolid}" ToolTip="Order Points by Value" Width="30" Height="30" Grid.Column="2"/>
 
                             <Button Command="{Binding PointUpCommand}" Content="{icons:FontAwesome Kind=CaretUpSolid}" Width="30" Height="30" Grid.Column="11"/>

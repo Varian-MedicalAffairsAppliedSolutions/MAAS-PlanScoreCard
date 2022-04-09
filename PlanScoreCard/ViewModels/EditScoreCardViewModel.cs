@@ -130,6 +130,10 @@ namespace PlanScoreCard.ViewModels
             set
             {
                 SetProperty(ref selectedMetric, value);
+                DeleteMetricCommand.RaiseCanExecuteChanged();
+                CopyMetricCommand.RaiseCanExecuteChanged();
+                MetricUpCommand.RaiseCanExecuteChanged();
+                MetricDownCommand.RaiseCanExecuteChanged();
                 ShowScorePointModels(SelectedScoreMetric);
 
                 if (SelectedScoreMetric == null)
@@ -342,7 +346,13 @@ namespace PlanScoreCard.ViewModels
         public ScorePointModel SelectedMetricPointModel
         {
             get { return selectedMetricPointModel; }
-            set { SetProperty(ref selectedMetricPointModel, value); }
+            set 
+            { 
+                SetProperty(ref selectedMetricPointModel, value);
+                DeletePointCommand.RaiseCanExecuteChanged();
+                PointUpCommand.RaiseCanExecuteChanged();
+                PointDownCommand.RaiseCanExecuteChanged();
+            }
         }
 
         // Structures Collection
@@ -478,15 +488,15 @@ namespace PlanScoreCard.ViewModels
             //EventAggregator.GetEvent<StructureDictionaryAddedEvent>().Subscribe(UpdateStructuresBasedOnDictionary);
 
             // Commands
-            DeleteMetricCommand = new DelegateCommand(DeleteMetric);
+            DeleteMetricCommand = new DelegateCommand(DeleteMetric, CanDeleteMetric);
             AddMetricCommand = new DelegateCommand(AddMetric);
-            CopyMetricCommand = new DelegateCommand(CopyMetric);
-            MetricUpCommand = new DelegateCommand(MetricUp);
-            MetricDownCommand = new DelegateCommand(MetricDown);
+            CopyMetricCommand = new DelegateCommand(CopyMetric, CanDeleteMetric);
+            MetricUpCommand = new DelegateCommand(MetricUp, CanDeleteMetric);
+            MetricDownCommand = new DelegateCommand(MetricDown, CanDeleteMetric);
             AddPointCommand = new DelegateCommand(AddPoint);
-            DeletePointCommand = new DelegateCommand(DeletePoint);
-            PointUpCommand = new DelegateCommand(PointUp);
-            PointDownCommand = new DelegateCommand(PointDown);
+            DeletePointCommand = new DelegateCommand(DeletePoint, CanDeletePoint);
+            PointUpCommand = new DelegateCommand(PointUp, CanDeletePoint);
+            PointDownCommand = new DelegateCommand(PointDown, CanDeletePoint);
             ScorePlanCommand = new DelegateCommand(ScorePlan);
             SaveTemplateCommand = new DelegateCommand(SaveTemplate);
             OrderPointsByValueCommand = new DelegateCommand(OrderPointsByValue);
@@ -501,6 +511,21 @@ namespace PlanScoreCard.ViewModels
             MetricTypes = new ObservableCollection<MetricTypeEnum>();
 
             Bind();
+        }
+
+        //private bool CanMetricUp()
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        private bool CanDeletePoint()
+        {
+            return SelectedScoreMetric != null && SelectedMetricPointModel != null;
+        }
+
+        private bool CanDeleteMetric()
+        {
+           return SelectedScoreMetric != null;
         }
 
         private bool CanOpenDictionaryEditor()

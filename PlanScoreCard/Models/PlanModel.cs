@@ -43,10 +43,10 @@ namespace PlanScoreCard.Models
 
                 if (!bSelected && bPrimary)
                     bSelected = true;
-                if (bSelected)
-                {
+                //if (bSelected)
+                //{
                     _eventAggregator.GetEvent<PlanSelectedEvent>().Publish();
-                }
+                //}
             }
         }
         private bool _bPrimary;
@@ -58,14 +58,18 @@ namespace PlanScoreCard.Models
             {
                 SetProperty(ref _bPrimary, value);
 
-                if (bPrimary)
-                    bSelected = bPrimary;
 
-                _eventAggregator.GetEvent<FreePrimarySelectionEvent>().Publish(bPrimary);
                 if (bPrimary)
                 {
-                    _eventAggregator.GetEvent<PlanSelectedEvent>().Publish();
+                    _eventAggregator.GetEvent<FreePrimarySelectionEvent>().Publish(this);
+
+                    bSelected = bPrimary;
                 }
+                //don't need to call PlanSelected event because bSelected already calls it.
+                //if (bPrimary)
+                //{
+                //    _eventAggregator.GetEvent<PlanSelectedEvent>().Publish();
+                //}
             }
         }
         private bool _bPrimaryEnabled;

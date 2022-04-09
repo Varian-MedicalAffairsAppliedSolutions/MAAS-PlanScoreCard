@@ -290,7 +290,7 @@ namespace PlanScoreCard.Models
             TemplateStructureVisibility = Visibility.Visible;
             bShowPrintComment = true;
         }
-        public void BuildPlanScoreFromTemplate(ObservableCollection<PlanningItem> plans, ScoreTemplateModel template, int metricId)
+        public void BuildPlanScoreFromTemplate(ObservableCollection<PlanningItem> plans, ScoreTemplateModel template, int metricId, string primaryCourseId, string primaryPlanId)
         {
             ScoreMax = template.ScorePoints.Count() == 0 ? -1000 : template.ScorePoints.Max(x => x.Score);
             string id = template.Structure.StructureId;
@@ -570,13 +570,28 @@ namespace PlanScoreCard.Models
                     //break scorepoints into 2 groups, before and after the variation.
                     //this one sets marker color.
                     //this method is changed to only show the marker.
-
+                    bool checkCourse = false;
+                    if (!String.IsNullOrEmpty(primaryPlanId) && !String.IsNullOrEmpty(primaryCourseId))
+                    {
+                        if (plan is PlanSum)
+                        {
+                            checkCourse = (plan as PlanSum).PlanSetups.Any(x => x.Course.Id == primaryCourseId);
+                        }
+                        else
+                        {
+                            checkCourse = (plan as PlanSetup).Course.Id == primaryCourseId;
+                        }
+                    }
                     var ScorePointSeries = new LineSeries
                     {
-                        Color = ScorePlotModel.Series.Any(x => !String.IsNullOrWhiteSpace(x.Title) && x.Title.Contains("Marker")) ? OxyColors.Black : PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template),
+                        //Color = ScorePlotModel.Series.Any(x => !String.IsNullOrWhiteSpace(x.Title) && x.Title.Contains("Marker")) ? OxyColors.Black : PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template),
+                        //Color = plan.Id == primaryPlanId && checkCourse ? PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template) : OxyColors.Black,
+                        Color = plan.Id == primaryPlanId && checkCourse ? PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template) : OxyColors.Black,
                         MarkerType = MarkerType.Plus,
-                        MarkerStroke = ScorePlotModel.Series.Any(x => !String.IsNullOrWhiteSpace(x.Title) && x.Title.Contains("Marker")) ? OxyColors.Black : PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template),
-                        MarkerSize = ScorePlotModel.Series.Any(x => !String.IsNullOrWhiteSpace(x.Title) && x.Title.Contains("Marker")) ? 6 : 12,
+                        MarkerStroke = plan.Id == primaryPlanId && checkCourse ? PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template) : OxyColors.Black,
+                        //MarkerStroke = ScorePlotModel.Series.Any(x => !String.IsNullOrWhiteSpace(x.Title) && x.Title.Contains("Marker")) ? OxyColors.Black : PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template),
+                        //MarkerSize = ScorePlotModel.Series.Any(x => !String.IsNullOrWhiteSpace(x.Title) && x.Title.Contains("Marker")) ? 6 : 12,
+                        MarkerSize = plan.Id == primaryPlanId && checkCourse ? 12 : 6,
                         Title = "Marker"
                     };
                     //add to the plot
@@ -680,7 +695,7 @@ namespace PlanScoreCard.Models
                 MaxXValue = template.ScorePoints.Max(x => x.PointX);
                 CheckOutsideBounds();
                 XAxisLabel = template.ScorePoints.Any(x=>x.Variation) ?
-                    $"{MetricText.Split(' ').FirstOrDefault()} [{template.OutputUnit}]. Variation @ {template.ScorePoints.FirstOrDefault(x=>x.Variation).PointX}{template.OutputUnit}"
+                    $"Variation @ {template.ScorePoints.FirstOrDefault(x=>x.Variation).PointX}{template.OutputUnit}"
                     :$"{MetricText.Split(' ').FirstOrDefault()} [{template.OutputUnit}]";
             }
             ScorePlotModel.Series.Clear();

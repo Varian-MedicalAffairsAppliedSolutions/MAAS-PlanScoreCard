@@ -122,7 +122,15 @@ namespace PlanScoreCard.Services
         public void UpdateStructureDictionaryConfig()
         {
             string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ConfigurationManager.AppSettings["StructureDictionaryPath"]);
-            
+            //check if config can be modified
+            using (var fileStream = new FileStream(path, FileMode.Open))
+            {
+                if (!fileStream.CanWrite)
+                {
+                    System.Windows.MessageBox.Show($"Cannot update config file. \nUser does not have rights to {path}");
+                    return;
+                }
+            }
             File.WriteAllText(path, JsonConvert.SerializeObject(StructureDictionary));
             //StreamReader reader = File.OpenText(ConfigurationManager.AppSettings["StructureDictionaryPath"].ToString());
 

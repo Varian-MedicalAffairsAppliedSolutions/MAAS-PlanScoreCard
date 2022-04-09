@@ -516,9 +516,9 @@ namespace PlanScoreCard.ViewModels
         {
             _scoreTemplates = templates;
         }
-        private void SetPrimarySelections(bool obj)
+        private void SetPrimarySelections(PlanModel obj)
         {
-            if (obj)
+            if (obj.bPrimary)
             {
                 foreach (var plan in Plans)
                 {

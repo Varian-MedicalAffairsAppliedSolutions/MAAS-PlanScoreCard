@@ -202,9 +202,10 @@ namespace PlanScoreCard.ViewModels
             // Need to change this event to take in a ScoreCardModel as the payload
             //EventAggregator.GetEvent<ScorePlanEvent>().Subscribe(OnScorePlan);
             EventAggregator.GetEvent<PluginVisibilityEvent>().Subscribe(OnPluginVisible);
-            EventAggregator.GetEvent<PlanChangedEvent>().Subscribe(OnPlanChanged);
+            
             EventAggregator.GetEvent<ScorePlanEvent>().Subscribe(ScorePlan);
             EventAggregator.GetEvent<PlanSelectedEvent>().Subscribe(ScorePlan);
+            EventAggregator.GetEvent<FreePrimarySelectionEvent>().Subscribe(OnPrimaryChanged);
 
             MaxScore = 0;
 
@@ -225,6 +226,22 @@ namespace PlanScoreCard.ViewModels
                 OnPlanChanged(new List<PlanModel> { new PlanModel(Plan as PlanningItem, eventAggregator) { PlanId = Plan.Id, CourseId = Course.Id, bSelected = true } });
 
             InitializeClass();
+            //I moved this down here so that the scoreplan doesn't run until after the plans have already been setup (the event aggregator was running on every plan).
+            EventAggregator.GetEvent<PlanChangedEvent>().Subscribe(OnPlanChanged);
+        }
+
+        private void OnPrimaryChanged(PlanModel obj)
+        {
+            if (obj.bPrimary)
+            {
+                foreach(var plan in Plans)
+                {
+                    if (plan != obj)
+                    {
+                        plan.bPrimary = false;
+                    }
+                }
+            }
         }
 
         private bool CanExportScorecard()
@@ -252,7 +269,7 @@ namespace PlanScoreCard.ViewModels
                 var col1 = new System.Windows.Controls.ColumnDefinition();
                 col1.Width = new System.Windows.GridLength(16.5, System.Windows.GridUnitType.Star);
                 var col2 = new System.Windows.Controls.ColumnDefinition();
-                col2.Width = new System.Windows.GridLength(5, System.Windows.GridUnitType.Star);
+                col2.Width = new System.Windows.GridLength(8, System.Windows.GridUnitType.Star);
                 var scv = new ScoreReportView { DataContext = score };
                 grid.ColumnDefinitions.Add(col1);
                 grid.ColumnDefinitions.Add(col2);
@@ -262,13 +279,21 @@ namespace PlanScoreCard.ViewModels
                 row1.Height = new System.Windows.GridLength(3, System.Windows.GridUnitType.Star);
                 var row2 = new System.Windows.Controls.RowDefinition();
                 row2.Height = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+                List<double> thicknesses = new List<double>();
+                //foreach(var series in score.ScorePlotModel.Series)
+                //{
+                //    thicknesses.Add((series as LineSeries).StrokeThickness);
+                //}
                 var plotter = new System.Windows.Controls.Image()
                 {
+                    //var thickness = (score.ScorePlotModel.Series.First() as LineSeries).StrokeThickness
                     Source = new PngExporter() 
                     { 
+                        
                         Background = OxyPlot.OxyColors.LightGray}.ExportToBitmap(score.ScorePlotModel),
                         Height = 55, 
-                        HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+                        Width = 300
+                        //HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
 
                 };
                 System.Windows.Controls.Grid.SetRow(plotter, 0);
@@ -415,7 +440,7 @@ namespace PlanScoreCard.ViewModels
             {
                 // PlanScoreModel
                 PlanScoreModel psm = new PlanScoreModel(Application, StructureDictionaryService);
-                psm.BuildPlanScoreFromTemplate(selectedPlanCollection, template, metric_id);
+                psm.BuildPlanScoreFromTemplate(selectedPlanCollection, template, metric_id, Plans.FirstOrDefault(x=>x.bPrimary).CourseId, Plans.FirstOrDefault(x=>x.bPrimary).PlanId);
                 PlanScores.Add(psm);
                 if (template.ScorePoints.Any(x => x.Variation) && psm.ScoreValues.Any(x => x.Score < template.ScorePoints.FirstOrDefault(y => y.Variation).Score))
                 {
