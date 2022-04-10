@@ -24,9 +24,9 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="4*"/>
-                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="1.5*"/>
                     <ColumnDefinition Width="2*"/>
@@ -35,35 +35,35 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 0" Grid.ColumnSpan="4">
-                    <StackPanel>
-                        <TextBlock Text="{Binding MetricId, Converter={StaticResource localMetricIdConverter}}" Foreground="Black" HorizontalAlignment="Left"/>
-                        <StackPanel Orientation="Horizontal">
-                            <CheckBox Visibility="{Binding bShowPrintComment, Converter={StaticResource localVisibilityConverter}}" IsChecked="{Binding bPrintComment}"/>
-                            <TextBox Text="{Binding PrintComment}" Visibility="{Binding bPrintComment, Converter={StaticResource localVisibilityConverter}}" Width="200"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 0" Grid.Column="1" Grid.ColumnSpan="2">
+
+                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 0" Grid.ColumnSpan="3">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="4*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="35"/>
-                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="15"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Foreground="Black" Text="{Binding StructureId}" Grid.Row="0" HorizontalAlignment="Center" TextWrapping="Wrap"/>
-                        <TextBlock Foreground="Black" Text="{Binding TemplateStructureId}" Grid.Row="1" HorizontalAlignment="Center" TextWrapping="Wrap" Visibility="{Binding TemplateStructureVisibility}"/>
-                        <StackPanel Grid.Column="1">
-
-                            <TextBlock Text="{Binding MetricText}" Foreground="Black" HorizontalAlignment="Center"/>
+                        <Label Content="{Binding MetricId, Converter={StaticResource localMetricIdConverter}}" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                        <Label Foreground="Black" Content="{Binding StructureId}" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                        <TextBlock Foreground="Black" Text="{Binding TemplateStructureId}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Visibility="{Binding TemplateStructureVisibility}"/>
+                        <StackPanel Grid.Column="2">
+                            <Label Content="{Binding MetricText}" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                             <!--<TextBlock Text="{Binding MetricComment}" FontSize="12" Foreground="Black" HorizontalAlignment="Center"/>-->
                         </StackPanel>
 
 
                     </Grid>
+                </Border>
+                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 0" Grid.ColumnSpan="4">
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Visibility="{Binding bShowPrintComment, Converter={StaticResource localVisibilityConverter}}" IsChecked="{Binding bPrintComment}"/>
+                        <TextBox Height="15" Text="{Binding PrintComment}" Visibility="{Binding bPrintComment, Converter={StaticResource localVisibilityConverter}}" Width="200"/>
+                    </StackPanel>
                 </Border>
                 <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 0" Grid.Column="3" Grid.ColumnSpan="3">
                     <ItemsControl ItemsSource="{Binding ScoreValues}">
@@ -71,13 +71,13 @@
                             <DataTemplate>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="4*"/>
+                                        <ColumnDefinition Width="3*"/>
                                         <ColumnDefinition Width="2*"/>
                                         <ColumnDefinition Width="1.5*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding PlanId}" Foreground="Black" HorizontalAlignment="Center" Margin="15,0,0,0"/>
-                                    <TextBlock Text="{Binding Value, Converter={StaticResource localDoubleConverter}}" Foreground="Black" HorizontalAlignment="Center" Grid.Column="1" Margin="15,0,0,0"/>
-                                    <TextBlock Text="{Binding Score, Converter={StaticResource localDoubleConverter}}" Foreground="Black" HorizontalAlignment="Center" Grid.Column="2" Margin="15,0,0,0"/>
+                                    <Label Content="{Binding PlanId}" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                                    <Label Content="{Binding Value, Converter={StaticResource localDoubleConverter}}" Foreground="Black" HorizontalAlignment="Stretch" Grid.Column="1" HorizontalContentAlignment="Center"/>
+                                    <Label Content="{Binding Score, Converter={StaticResource localDoubleConverter}}" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Grid.Column="2"/>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -85,7 +85,7 @@
                 </Border>
                 <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 0" Grid.Column="6">
                     <StackPanel>
-                        <TextBlock Text="{Binding ScoreMax, Converter={StaticResource localDoubleConverter}}" Foreground="Black" HorizontalAlignment="Center" Margin="5,0,0,0"/>
+                        <Label Content="{Binding ScoreMax, Converter={StaticResource localDoubleConverter}}" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                         <StackPanel Visibility="{Binding bStatsVis,Converter={StaticResource localVisibilityConverter}}">
                             <TextBlock Text="Score Stats" FontSize="10" HorizontalAlignment="Center"/>
                             <TextBlock Text="{Binding MaxScore}" HorizontalAlignment="Center"/>

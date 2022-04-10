@@ -980,7 +980,7 @@ namespace PlanScoreCard.ViewModels
             {
                 //EditCIView volumeAtDoseView = ViewLauncherService.GetEditMetricView_CI();
                 EventAggregator.GetEvent<ShowCIMetricEvent>().Publish(scoreMetric);
-                bVAtDView = bDAtVView = bVAtDView = bHIView = false;
+                bVAtDView = bDAtVView = bHIView = bDValueView = false;
                 bCIView = true;
                 //MetricEditorControl = volumeAtDoseView;
             }
@@ -989,7 +989,7 @@ namespace PlanScoreCard.ViewModels
                 //EditDoseAtVolumeView volumeAtDoseView = ViewLauncherService.GetEditMetricView_DoseAtVolume();
                 EventAggregator.GetEvent<ShowDoseAtVolumeMetricEvent>().Publish(scoreMetric);
                 //MetricEditorControl = volumeAtDoseView;
-                bCIView = bVAtDView = bVAtDView = bHIView = false;
+                bCIView = bVAtDView = bHIView = bDValueView =  false;
                 bDAtVView = true;
             }
             else if (scoreMetric.MetricType == MetricTypeEnum.HomogeneityIndex)

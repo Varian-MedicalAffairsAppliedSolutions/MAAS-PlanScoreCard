@@ -18,7 +18,7 @@ namespace PlanScoreCard.Converters
             if (value.ToString() == "0")
                 return "";
 
-            string outputString = Math.Round((double)value,2).ToString();
+            string outputString = Math.Round((double)value,2).ToString("F2");
             return outputString;
         }
 

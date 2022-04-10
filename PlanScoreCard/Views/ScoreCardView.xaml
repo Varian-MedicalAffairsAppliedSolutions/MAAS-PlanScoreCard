@@ -24,7 +24,7 @@
     <Grid x:FieldModifier="public"  x:Name="TotalGrid">
         <Grid Grid.Row="1" x:FieldModifier="public" x:Name="ParentGrid">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2.*"/>
+                <ColumnDefinition Width="2.2*"/>
                 <ColumnDefinition Width="5*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
@@ -84,7 +84,7 @@
                         <Border Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="DarkGray" BorderThickness="1" Margin="2" CornerRadius="3">
                             <DataGrid SelectedItem="{Binding SelectedPlan}" ItemsSource="{Binding Plans, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" AutoGenerateColumns="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Binding="{Binding CourseId , Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12" Width="75">
+                                    <DataGridTextColumn Binding="{Binding CourseId , Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12" Width="65">
                                         <DataGridTextColumn.HeaderTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="Course"/>
@@ -96,7 +96,7 @@
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Binding="{Binding PlanId , Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12" Width="75">
+                                    <DataGridTextColumn Binding="{Binding PlanId , Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12" Width="65">
                                         <DataGridTextColumn.HeaderTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="Plan"/>
@@ -127,7 +127,7 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTextColumn Binding="{Binding PlanScore, Converter={StaticResource localScoreTextConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontWeight="Normal" FontSize="12" Width="95" IsReadOnly="True">
+                                    <DataGridTextColumn Binding="{Binding PlanScore, Converter={StaticResource localScoreTextConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontWeight="Normal" FontSize="12" Width="90" IsReadOnly="True">
                                         <DataGridTextColumn.HeaderTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding DataContext.MaxScore, Converter={StaticResource localScoreHeaderConverter}, RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
@@ -215,9 +215,9 @@
                         <Grid Grid.Row="0" Margin="3">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="3*"/>
                                 <ColumnDefinition Width="4*"/>
-                                <ColumnDefinition Width="4*"/>
+                                <ColumnDefinition Width="3*"/>
                                 <ColumnDefinition Width="2*"/>
                                 <ColumnDefinition Width="1.5*"/>
                                 <ColumnDefinition Width="2*"/>
@@ -225,25 +225,25 @@
                             </Grid.ColumnDefinitions>
 
                             <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" Grid.Row="0" Grid.ColumnSpan="8" BorderThickness="0,0,0,2"/>
-                            <Label Grid.Column="0" Content="Id" Grid.ColumnSpan="2" HorizontalAlignment="Left"/>
-                            <Label Grid.Column="1" Content="Structure" HorizontalAlignment="Center"/>
-                            <Label Grid.Column="2" Content="Score Metric" HorizontalAlignment="Center"/>
-                            <Label Grid.Column="3" Content="Plan Id" HorizontalAlignment="Center"/>
-                            <Label Grid.Column="4" Content="Value" HorizontalAlignment="Center"/>
-                            <Label Grid.Column="5" Content="Score" HorizontalAlignment="Center"/>
-                            <Label Grid.Column="6" Content="Max" HorizontalAlignment="Center"/>
+                            <Label Grid.Column="0" Content="Id" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                            <Label Grid.Column="1" Content="Structure" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                            <Label Grid.Column="2" Content="Score Metric" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                            <Label Grid.Column="3" Content="Plan Id" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+                            <Label Grid.Column="4" Content="Value" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                            <Label Grid.Column="5" Content="Score" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                            <Label Grid.Column="6" Content="Max" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                             <Label Grid.Column="7" Content="Metric Plot" HorizontalAlignment="Center"/>
 
                         </Grid>
 
                         <Border Grid.Row="1" BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" Margin="3">
-                            <ScrollViewer Grid.Row="1">
+                            <ScrollViewer>
                                 <ItemsControl ItemsSource="{Binding PlanScores, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontWeight="DemiBold">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="16.5*"/>
+                                                    <ColumnDefinition Width="17.8*"/>
                                                     <ColumnDefinition Width="5*"/>
                                                 </Grid.ColumnDefinitions>
                                                 <local:ScoreReportView DataContext="{Binding}"/>

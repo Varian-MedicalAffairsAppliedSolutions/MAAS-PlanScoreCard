@@ -269,7 +269,7 @@ namespace PlanScoreCard.ViewModels
                 var col1 = new System.Windows.Controls.ColumnDefinition();
                 col1.Width = new System.Windows.GridLength(16.5, System.Windows.GridUnitType.Star);
                 var col2 = new System.Windows.Controls.ColumnDefinition();
-                col2.Width = new System.Windows.GridLength(8, System.Windows.GridUnitType.Star);
+                col2.Width = new System.Windows.GridLength(5, System.Windows.GridUnitType.Star);
                 var scv = new ScoreReportView { DataContext = score };
                 grid.ColumnDefinitions.Add(col1);
                 grid.ColumnDefinitions.Add(col2);
@@ -447,7 +447,7 @@ namespace PlanScoreCard.ViewModels
                     bWarning = true;
                     foreach (var scoreBelowVariation in psm.ScoreValues.Where(x => x.Score < template.ScorePoints.FirstOrDefault(y => y.Variation).Score))
                     {
-                        Warnings += $"Course [{scoreBelowVariation.CourseId}]. Plan [{scoreBelowVariation.PlanId}. Metric {psm.MetricId} -- {psm.MetricText} below variation\n";
+                        Warnings += $"Course [{scoreBelowVariation.CourseId}]. Plan [{scoreBelowVariation.PlanId}. Metric {psm.MetricId+1} -- {psm.MetricText} below variation\n";
                     }
                 }
                 if (psm.ScoreValues.Any(x => x.Score == 0))

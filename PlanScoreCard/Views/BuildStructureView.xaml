@@ -63,7 +63,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Text="Structure" FontWeight="Bold" HorizontalAlignment="Center" Grid.Column="1"/>
-                <TextBlock Text="Margin" FontWeight="Bold" Grid.Column="2" HorizontalAlignment="Center"/>
+                <TextBlock Text="Margin [mm]" FontWeight="Bold" Grid.Column="2" HorizontalAlignment="Center"/>
                 <TextBlock Text="Operation" FontWeight="Bold" Grid.Column="0" HorizontalAlignment="Center"/>
                 <Button Command="{Binding SelectedGroup.AddStepCommand}" Grid.Column="3" Height="30" Width="30">
                     <icons:FontAwesome Kind="PlusSolid"/>
@@ -122,7 +122,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <Button Command="{Binding EditGroupCommand}" Width="60" Margin="5" Grid.Column="1">
+                            <Button Command="{Binding EditGroupCommand}" Width="60" Margin="5" Grid.Column="1" ToolTip="Edit Group">
                                 <icons:FontAwesome Kind="EditRegular"/>
                             </Button>
                             <TextBlock FontWeight="Bold" Text="{Binding GroupId}"/>

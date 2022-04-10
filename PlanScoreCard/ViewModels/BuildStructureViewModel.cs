@@ -62,7 +62,7 @@ namespace PlanScoreCard.ViewModels
             BuildGroups = new ObservableCollection<BuildStructureGroupModel>();
 
             //commands
-            AddNewGroupingCommand = new DelegateCommand(OnAddNewGrouping);
+            AddNewGroupingCommand = new DelegateCommand(OnAddNewGrouping, CanAddNewGrouping);
             AddStructureGroupCommand = new DelegateCommand(OnCommitToGrouping);
             GenerateStructureCommand = new DelegateCommand<Window>(OnGenerateStructure);
 
@@ -81,6 +81,22 @@ namespace PlanScoreCard.ViewModels
             _eventAggregator.GetEvent<GroupSelectedEvent>().Subscribe(OnNewGroupSelected);
             _eventAggregator.GetEvent<SetStructureBuilderPlanEvent>().Subscribe(SetPlan);
         }
+
+        private bool CanAddNewGrouping()
+        {
+            //either this should be adding the first group.
+            if(BuildGroups.Count == 0)
+            {
+                return true;
+            }
+            //or cannot add to group unless all other groups have some filling.
+            if (BuildGroups.All(x => !String.IsNullOrEmpty(x.GroupComment)))
+            {
+                return true;
+            }
+            return false;
+        }
+
         public void SetPlan(PlanModel plan)
         {
             _plan = plan;
@@ -273,34 +289,37 @@ namespace PlanScoreCard.ViewModels
                 groupModel.GroupNumber = groupNum;
                 string keepOperation = String.Empty;
                 var count = 0;
-                foreach (var step in group.Item2.Split('<').Skip(1))
+                if (!String.IsNullOrEmpty(group.Item2))
                 {
-                    if (count == 0)
+                    foreach (var step in group.Item2.Split('<').Skip(1))
                     {
-                        var step1 = groupModel.GroupSteps.First();
-                        step1.SelectedStructure = step1.Structures.FirstOrDefault(x => x.StructureId == step.Split('>').FirstOrDefault());
-                        if (step.Contains('|'))
+                        if (count == 0)
                         {
-                            step1.StructureMargin = Convert.ToInt32(step.Split('|').Last().Split(' ').First());
+                            var step1 = groupModel.GroupSteps.First();
+                            step1.SelectedStructure = step1.Structures.FirstOrDefault(x => x.StructureId == step.Split('>').FirstOrDefault());
+                            if (step.Contains('|'))
+                            {
+                                step1.StructureMargin = Convert.ToInt32(step.Split('|').Last().Split(' ').First());
+                            }
                         }
-                    }
-                    else
-                    {
-                        var currentStep = new BuildStructureGroupStepModel(_plan, _eventAggregator, count);
-                        groupModel.GroupSteps.Add(currentStep);
+                        else
+                        {
+                            var currentStep = new BuildStructureGroupStepModel(_plan, _eventAggregator, count);
+                            groupModel.GroupSteps.Add(currentStep);
 
-                        currentStep.SelectedOperation = keepOperation;
-                        currentStep.SelectedStructure = currentStep.Structures.FirstOrDefault(x => x.StructureId == step.Split('>').FirstOrDefault());
-                        if (step.Contains('|'))
-                        {
-                            currentStep.StructureMargin = Convert.ToInt32(step.Split('|').Last().Split(' ').First());
+                            currentStep.SelectedOperation = keepOperation;
+                            currentStep.SelectedStructure = currentStep.Structures.FirstOrDefault(x => x.StructureId == step.Split('>').FirstOrDefault());
+                            if (step.Contains('|'))
+                            {
+                                currentStep.StructureMargin = Convert.ToInt32(step.Split('|').Last().Split(' ').First());
+                            }
                         }
+                        if (step.Split(' ').Length > 1)
+                        {
+                            keepOperation = step.Split(' ').ElementAt(step.Split(' ').Length - 2);
+                        }
+                        count++;
                     }
-                    if (step.Split(' ').Length > 1)
-                    {
-                        keepOperation = step.Split(' ').ElementAt(step.Split(' ').Length - 2);
-                    }
-                    count++;
                 }
                 BuildGroups.Add(groupModel);
                 groupNum++;
@@ -354,6 +373,7 @@ namespace PlanScoreCard.ViewModels
                 }
                 groupNum++;
             }
+            AddNewGroupingCommand.RaiseCanExecuteChanged();
         }
 
         private void OnGroupDelete(BuildStructureGroupModel obj)
@@ -379,6 +399,7 @@ namespace PlanScoreCard.ViewModels
             _structureGroup.GroupNumber = BuildGroups.Count();
             BuildGroups.Add(_structureGroup);
             SelectedGroup = _structureGroup;
+            AddNewGroupingCommand.RaiseCanExecuteChanged();
         }
     }
 }
