@@ -108,6 +108,8 @@ namespace PlanScoreCard.ViewModels
 
                 TemplateName = scoreCard.Name;
                 SelectedTreatmentSite = scoreCard.SiteGroup;
+                DosePerFraction = scoreCard.DosePerFraction;
+                NumberOfFractions = scoreCard.NumberOfFractions;
                 ShowScoreCardMetrics(scoreCard.ScoreMetrics);
             }
         }
@@ -366,6 +368,34 @@ namespace PlanScoreCard.ViewModels
         {
             get { return templateAuthor; }
             set { SetProperty(ref templateAuthor, value); }
+        }
+        private double _dosePerFraction;
+
+        public double DosePerFraction
+        {
+            get { return _dosePerFraction; }
+            set 
+            { 
+                SetProperty(ref _dosePerFraction,value); 
+                if(DosePerFraction!= ScoreCard.DosePerFraction)
+                {
+                    ScoreCard.DosePerFraction = DosePerFraction;
+                }
+            }
+        }
+        private int _numberOfFractions;
+
+        public int NumberOfFractions
+        {
+            get { return _numberOfFractions; }
+            set 
+            { 
+                SetProperty(ref _numberOfFractions, value); 
+                if(NumberOfFractions!= ScoreCard.NumberOfFractions)
+                {
+                    ScoreCard.NumberOfFractions = NumberOfFractions;
+                }
+            }
         }
 
         // Template Name
@@ -639,7 +669,9 @@ namespace PlanScoreCard.ViewModels
             {
                 Creator = TemplateAuthor,
                 Site = String.IsNullOrEmpty(SelectedTreatmentSite) ? "Undefined" : SelectedTreatmentSite,
-                TemplateName = String.IsNullOrEmpty(TemplateName) ? "Undefined" : TemplateName
+                TemplateName = String.IsNullOrEmpty(TemplateName) ? "Undefined" : TemplateName,
+                DosePerFraction = DosePerFraction,
+                NumberOfFractions = NumberOfFractions
             };
             template.ScoreTemplates = scoreTemplates;
             SaveFileDialog sfd = new SaveFileDialog();

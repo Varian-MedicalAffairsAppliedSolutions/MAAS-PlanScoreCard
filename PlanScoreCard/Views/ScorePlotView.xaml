@@ -58,8 +58,8 @@
 
 
             <Grid Grid.Row="1" Margin="0 -6 0 0">
-                <TextBlock Text="{Binding MinXValue}" HorizontalAlignment="Left" FontSize="10" Foreground="Black"/>
-                <TextBlock Text="{Binding MaxXValue}" HorizontalAlignment="Right" FontSize="10" Foreground="Black"/>
+                <TextBlock Text="{Binding MinXValue, Converter={StaticResource localDoubleConverter}}" HorizontalAlignment="Left" FontSize="10" Foreground="Black"/>
+                <TextBlock Text="{Binding MaxXValue, Converter={StaticResource localDoubleConverter}}" HorizontalAlignment="Right" FontSize="10" Foreground="Black"/>
                 <TextBlock Text="{Binding XAxisLabel}" HorizontalAlignment="Center" FontSize="10" Foreground="Black" Margin="0 -5 0 0"/>
             </Grid>
 

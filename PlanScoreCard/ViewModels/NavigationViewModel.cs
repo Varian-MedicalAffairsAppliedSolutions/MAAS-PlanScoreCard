@@ -377,7 +377,7 @@ namespace PlanScoreCard.ViewModels
         private void OnEditScoreCard()
         {
             // Compile the ScoreCard Model - TEMPORARY 
-            ScoreCardModel scoreCard = new ScoreCardModel(_templateName, _templateSite, _scoreTemplates);
+            ScoreCardModel scoreCard = new ScoreCardModel(_templateName, _templateSite,0.0,0, _scoreTemplates);
 
             EditScoreCardView editScoreCardView = ViewLauncher.GetEditScoreCardView();
             _eventAggregator.GetEvent<EditScoreCardSetPlanEvent>().Publish(SelectedPlan); // Push the SelectedPlan

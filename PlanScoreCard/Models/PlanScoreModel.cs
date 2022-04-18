@@ -39,14 +39,14 @@ namespace PlanScoreCard.Models
         public bool bPrintComment
         {
             get { return _bPrintComment; }
-            set { SetProperty(ref _bPrintComment,value); }
+            set { SetProperty(ref _bPrintComment, value); }
         }
         private bool _bShowPrintComment;
 
         public bool bShowPrintComment
         {
             get { return _bShowPrintComment; }
-            set { SetProperty(ref _bShowPrintComment,value); }
+            set { SetProperty(ref _bShowPrintComment, value); }
         }
 
         public int MetricId { get; set; }
@@ -474,14 +474,14 @@ namespace PlanScoreCard.Models
                                     dTarget = template.HI_Target;
                                 }
                             }
-                            var dvh = template.HI_TargetUnit =="%"?
-                                plan.GetDVHCumulativeData(structure, DoseValuePresentation.Relative, VolumePresentation.Relative,_dvhResolution)
+                            var dvh = template.HI_TargetUnit == "%" ?
+                                plan.GetDVHCumulativeData(structure, DoseValuePresentation.Relative, VolumePresentation.Relative, _dvhResolution)
                                 : plan.GetDVHCumulativeData(structure, DoseValuePresentation.Absolute,
                                 VolumePresentation.Relative, _dvhResolution);
                             if (dvh == null) { scoreValue.Value = ScoreMax = scoreValue.Score = -1000; return; }
                             var h_val = template.HI_HiValue;// * dTarget / 100.0;
                             var l_val = template.HI_LowValue;// * dTarget / 100.0;
-                           
+
                             var dHi = dvh.CurveData.FirstOrDefault(x => x.Volume <= h_val).DoseValue.Dose;
                             var dLo = dvh.CurveData.FirstOrDefault(x => x.Volume <= l_val).DoseValue.Dose;
                             //the target dose level has already been converted to the system's dose unit and therefore dHi and dLo do not need to be converted.
@@ -625,11 +625,11 @@ namespace PlanScoreCard.Models
                             FontSize = 4;
                             break;
                     }
-                    if (template.ScorePoints.Count() > 0 && Colors.Count() == 0)
+                    if (template.ScorePoints.Count() > 0 && Colors.Count() == 0 && plan.Id == primaryPlanId)
                     {
                         foreach (var score in template.ScorePoints)
                         {
-                            if (score.Colors.Count > 0 && !score.Colors.All(x=>x == 0))
+                            if (score.Colors.Count > 0 && !score.Colors.All(x => x == 0))
                             {
                                 bPKColor = true;
                                 var pkColor = new PlanScoreColorModel(score.Colors, score.Label);
@@ -694,9 +694,9 @@ namespace PlanScoreCard.Models
                 MinXValue = template.ScorePoints.Min(x => x.PointX);
                 MaxXValue = template.ScorePoints.Max(x => x.PointX);
                 CheckOutsideBounds();
-                XAxisLabel = template.ScorePoints.Any(x=>x.Variation) ?
-                    $"Variation @ {template.ScorePoints.FirstOrDefault(x=>x.Variation).PointX}{template.OutputUnit}"
-                    :$"{MetricText.Split(' ').FirstOrDefault()} [{template.OutputUnit}]";
+                XAxisLabel = template.ScorePoints.Any(x => x.Variation) ?
+                    $"Variation @ {template.ScorePoints.FirstOrDefault(x => x.Variation).PointX}{template.OutputUnit}"
+                    : $"{MetricText.Split(' ').FirstOrDefault()} [{template.OutputUnit}]";
             }
             ScorePlotModel.Series.Clear();
             ScorePlotModel.Axes.Add(new LinearAxis

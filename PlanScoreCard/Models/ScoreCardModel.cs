@@ -12,6 +12,8 @@ namespace PlanScoreCard.Models
     {
         public string Name { get; set; }
         public string SiteGroup { get; set; }
+        public double DosePerFraction { get; set; }
+        public int NumberOfFractions { get; set; }
 
         private List<ScoreTemplateModel> scoreMetrics;
 
@@ -21,11 +23,13 @@ namespace PlanScoreCard.Models
             set { SetProperty(ref scoreMetrics , value); }
         }
 
-        public ScoreCardModel(string name, string siteGroup, List<ScoreTemplateModel> scoreMetrics)
+        public ScoreCardModel(string name, string siteGroup, double dosePerFraction, int numberOfFractions,List<ScoreTemplateModel> scoreMetrics)
         {
             Name = name; 
             SiteGroup = siteGroup;
             ScoreMetrics = scoreMetrics;
+            DosePerFraction = dosePerFraction;
+            NumberOfFractions = numberOfFractions;
 
             if (ScoreMetrics == null)
             {

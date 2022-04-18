@@ -18,7 +18,7 @@ namespace PlanScoreCard.Models.Internals
             ColorValue = planScoreColor != null ? planScoreColor.ColorValue : 0.0;
         }
 
-        public double PointX { get; private set; }
+        public double PointX { get; set; }
         public double Score { get; set; }
         public bool Variation { get; set; }
         public List<double> Colors { get; set; }

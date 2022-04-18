@@ -35,14 +35,24 @@
                 </Grid.RowDefinitions>
 
 
-                <GroupBox Header="Score Card Selection" FontWeight="Bold" Background="WhiteSmoke" Grid.Row="0" Margin="5" >
+                <GroupBox Header="Score Card Selection" Background="WhiteSmoke" Grid.Row="0" Margin="5" >
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="40"/>
                         </Grid.RowDefinitions>
-
-                        <Label Grid.Row="0" Content="Score Card ID"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Row="0" Content="Score Card ID" FontWeight="Bold" VerticalAlignment="Bottom"/>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="{Binding RxMessage}" FontWeight="Bold"/>
+                                <CheckBox IsChecked="{Binding bRxScaling}" Content="Rescale Scorecard by Rx" Visibility="{Binding bRxScalingVisibility, Converter={StaticResource localVisibilityConverter}}"/>
+                                <!--<TextBlock Text="*Reimport Scorecard to reset scaling" Visibility="{Binding bRxScalingVisibility, Converter={StaticResource localVisibilityConverter}}" FontSize="10"/>-->
+                            </StackPanel>
+                        </Grid>
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>

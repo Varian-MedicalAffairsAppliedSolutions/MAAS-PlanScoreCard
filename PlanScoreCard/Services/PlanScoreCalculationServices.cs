@@ -21,7 +21,7 @@ namespace PlanScoreCard.Services
                     int index = Colors.IndexOf(Colors.LastOrDefault(x => score >= x.ColorValue));
                     if (index == Colors.Count() - 1)
                     {
-                        return 60.0 * (double)Colors.Count();
+                        return width * (double)Colors.Count();
                     }
                     else
                     {

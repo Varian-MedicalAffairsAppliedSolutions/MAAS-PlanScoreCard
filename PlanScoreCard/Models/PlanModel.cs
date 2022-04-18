@@ -13,13 +13,13 @@ using VMS.TPS.Common.Model.API;
 namespace PlanScoreCard.Models
 {
     public class PlanModel : BindableBase
-    { 
+    {
         private string planId;
 
         public string PlanId
         {
             get { return planId; }
-            set { SetProperty(ref planId , value); }
+            set { SetProperty(ref planId, value); }
         }
 
         private string courseId;
@@ -27,11 +27,11 @@ namespace PlanScoreCard.Models
         public string CourseId
         {
             get { return courseId; }
-            set { SetProperty(ref courseId , value); }
+            set { SetProperty(ref courseId, value); }
         }
 
         public string DisplayTxt { get; set; }
-        
+
         private bool _bselected;
 
         public bool bSelected
@@ -45,7 +45,7 @@ namespace PlanScoreCard.Models
                     bSelected = true;
                 //if (bSelected)
                 //{
-                    _eventAggregator.GetEvent<PlanSelectedEvent>().Publish();
+                _eventAggregator.GetEvent<PlanSelectedEvent>().Publish();
                 //}
             }
         }
@@ -86,7 +86,7 @@ namespace PlanScoreCard.Models
         public double? PlanScore
         {
             get { return planScore; }
-            set { SetProperty( ref planScore , value); }
+            set { SetProperty(ref planScore, value); }
         }
 
         private double maxScore;
@@ -96,25 +96,59 @@ namespace PlanScoreCard.Models
             get { return maxScore; }
             set { SetProperty(ref maxScore, value); }
         }
+        private double _dosePerFraction;
 
+        public double DosePerFraction
+        {
+            get { return _dosePerFraction; }
+            set { SetProperty(ref _dosePerFraction, value); }
+        }
+        private int _numberOfFractions;
+
+        public int NumberOfFractions
+        {
+            get { return _numberOfFractions; }
+            set { SetProperty(ref _numberOfFractions, value); }
+        }
+        public bool bPlanSum;
         public PlanSetup Plan;
-
+        public PlanSum PlanSum;
         private IEventAggregator _eventAggregator;
 
         public ObservableCollection<StructureModel> Structures { get; set; }
         public PlanModel(PlanningItem plan, IEventAggregator eventAggregator)
         {
-            Plan = plan as PlanSetup;
+            if (plan is PlanSum)
+            {
+                bPlanSum = true;
+                PlanSum = plan as PlanSum;
+            }
+            //
+            //Dose per Fraction is always in Gy
+            if (plan is PlanSetup)
+            {
+                Plan = plan as PlanSetup;
+                if ((plan as PlanSetup).TotalDose.Unit == VMS.TPS.Common.Model.Types.DoseValue.DoseUnit.cGy)
+                {
+                    DosePerFraction = (plan as PlanSetup).DosePerFraction.Dose / 100.0;
+                }
+                else
+                {
+                    DosePerFraction = (plan as PlanSetup).DosePerFraction.Dose;
+                }
+            }
+            NumberOfFractions = (plan is PlanSetup) ? (int)(plan as PlanSetup).NumberOfFractions : 0;
+            //DoseUnit = (plan is PlanSetup) ? (plan as PlanSetup).TotalDose.UnitAsString : String.Empty;
             _eventAggregator = eventAggregator;
             Structures = new ObservableCollection<StructureModel>();
-            GenerateStructures();
+            GenerateStructures(plan);
             SetParameters();
         }
 
         private void SetParameters()
         {
-            PlanId = Plan.Id;
-            CourseId = Plan.Course.Id;
+            PlanId = bPlanSum ? PlanSum.Id : Plan.Id;
+            CourseId = bPlanSum ? PlanSum.PlanSetups.FirstOrDefault().Course.Id : Plan.Course.Id;
             bPrimary = false;
             bSelected = false;
         }
@@ -122,9 +156,9 @@ namespace PlanScoreCard.Models
         /// <summary>
         /// Add structures to plan.
         /// </summary>
-        private void GenerateStructures()
+        private void GenerateStructures(PlanningItem plan)
         {
-            foreach (var structure in Plan.StructureSet.Structures.Where(x => x.DicomType != "SUPPORT" && x.DicomType != "MARKER"))
+            foreach (var structure in plan.StructureSet.Structures.Where(x => x.DicomType != "SUPPORT" && x.DicomType != "MARKER"))
             {
                 //TODO work on filters for structures
                 Structures.Add(new StructureModel
