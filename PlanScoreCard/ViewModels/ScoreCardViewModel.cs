@@ -15,6 +15,7 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -52,6 +53,13 @@ namespace PlanScoreCard.ViewModels
                 ExportScoreCardCommand.RaiseCanExecuteChanged();
                 PrintReportCommand.RaiseCanExecuteChanged();
             }
+        }
+        private bool _validated;
+
+        public bool Validated
+        {
+            get { return _validated; }
+            set { _validated = value; }
         }
 
         // ScoreTemplates - Legacy?
@@ -352,6 +360,7 @@ namespace PlanScoreCard.ViewModels
         public ScoreCardViewModel(Application app, Patient patient, Course course, PlanSetup plan, IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService, StructureDictionaryService structureDictionaryService)
         {
             // Set the Initial Variables Passed In
+            Validated = ConfigurationManager.AppSettings["ValidForClinicalUse"] != "true";
             Application = app;
             Patient = patient;
             Course = course;

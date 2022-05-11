@@ -1,15 +1,20 @@
 ﻿using Autofac;
 using PlanScoreCard.Events;
+using PlanScoreCard.Events.HelperWindows;
 using PlanScoreCard.Startup;
 using PlanScoreCard.ViewModels;
+using PlanScoreCard.ViewModels.VMHelpers;
 using PlanScoreCard.Views;
+using PlanScoreCard.Views.HelperWindows;
 using Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using VMS.TPS.Common.Model.API;
@@ -26,9 +31,10 @@ namespace PlanScoreCard
 
         public void Application_Startup(object sender, StartupEventArgs e)
         {
+            this.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             try
             {
-                this.ShutdownMode = ShutdownMode.OnMainWindowClose;
+                //this.ShutdownMode = ShutdownMode.OnMainWindowClose;
                 IEventAggregator eventAggregator = new EventAggregator();
                 var startup = new StartupCore();
                 startup.StartupApp(sender, e, eventAggregator);
@@ -56,13 +62,45 @@ namespace PlanScoreCard
         public PlanSetup _plan;
         public ScoreCardView view;
         public VMS.TPS.Common.Model.API.Application _app;
+        private EULAView eulaView;
+        public Configuration GetUpdatedConfigFile()
+        {
+            var exePath = Assembly.GetExecutingAssembly().Location;
+            var configPath = exePath + ".config";
+            using (var fileStream = new FileStream(configPath, FileMode.Open))
+            {
+                if (!fileStream.CanWrite)
+                {
+                    System.Windows.MessageBox.Show($"Cannot update config file. \nUser does not have rights to {configPath}");
+                    return null;
+                }
+            }
+            //this needs to be the path running the application
+            return ConfigurationManager.OpenExeConfiguration(exePath);
+        }
         public void StartupApp(object sender, StartupEventArgs e, IEventAggregator eventAggregator)
         {
+            
             try
             {
+
+                string argsString = e.Args.First();
+                //var value = ConfigurationManager.AppSettings["EULAAgree"];
+                //configFile.AppSettings.Settings.Remove("EULAAgree");
+                //configFile.AppSettings.Settings["EULAAgree"].Value = "true";
+                var configFile = GetUpdatedConfigFile();
+                if (configFile!=null && configFile.AppSettings.Settings["EulaAgree"].Value != "true")
+                {
+                    eventAggregator.GetEvent<CloseEulaEvent>().Subscribe(OnCloseEula);
+                    eulaView = new EULAView();
+                    eulaView.DataContext = new EULAViewModel(eventAggregator);
+                    eulaView.ShowDialog();
+                }
                 var provider = new CultureInfo("en-US");
                 DateTime endDate = DateTime.Now;
-                if (DateTime.TryParse("06/30/2022", provider, DateTimeStyles.None, out endDate))
+                var configUpdate = GetUpdatedConfigFile();
+                var eulaValue = configUpdate.AppSettings.Settings["EulaAgree"].Value;
+                if (configUpdate!=null && DateTime.TryParse("06/30/2022", provider, DateTimeStyles.None, out endDate) && eulaValue == "true")
                 {
                     if (DateTime.Now <= endDate)
                     {
@@ -73,10 +111,10 @@ namespace PlanScoreCard
                         {
                             using (_app = VMS.TPS.Common.Model.API.Application.CreateApplication())
                             {
-                                if (e.Args.Count() > 0 && !String.IsNullOrWhiteSpace(e.Args.First()))
+                                if (!String.IsNullOrWhiteSpace(argsString))
                                 {
 
-                                    _patientId = e.Args.First().Split(';').First().Trim('\"');
+                                    _patientId = argsString.Split(';').First().Trim('\"');
                                 }
                                 else
                                 {
@@ -85,13 +123,13 @@ namespace PlanScoreCard
                                     return;
 
                                 }
-                                if (e.Args.First().Split(';').Count() > 1)
+                                if (argsString.Split(';').Count() > 1)
                                 {
-                                    _courseId = e.Args.First().Split(';').ElementAt(1).TrimEnd('\"');
+                                    _courseId = argsString.Split(';').ElementAt(1).TrimEnd('\"');
                                 }
-                                if (e.Args.First().Split(';').Count() > 2)
+                                if (argsString.Split(';').Count() > 2)
                                 {
-                                    _planId = e.Args.First().Split(';').ElementAt(2).TrimEnd('\"');
+                                    _planId = argsString.Split(';').ElementAt(2).TrimEnd('\"');
                                 }
                                 if (String.IsNullOrWhiteSpace(_patientId) || String.IsNullOrWhiteSpace(_courseId))
                                 {
@@ -118,6 +156,7 @@ namespace PlanScoreCard
                                 eventAggregator.GetEvent<UILaunchedEvent>().Publish();
                                 view.ShowDialog();
                                 _app.ClosePatient();
+                                System.Windows.Application.Current.Shutdown();
                             }
                         }
                         else
@@ -144,6 +183,15 @@ namespace PlanScoreCard
             }
 
         }
+
+        private void OnCloseEula()
+        {
+            if (eulaView != null)
+            {
+                eulaView.Close();
+            }
+        }
+
         public void ResetApplication(string feedback)
         {
             //NavigationViewModel.DisposePlugin();

@@ -1,0 +1,25 @@
+﻿<Window x:Class="PlanScoreCard.Views.HelperWindows.EULAView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PlanScoreCard.Views.HelperWindows"
+        mc:Ignorable="d"
+        Title="EULAView" Height="550" Width="400">
+    <Grid>
+        <StackPanel>
+            <TextBlock Text="LIMITED USE SOFTWARE LICENSE AGREEMENT" FontSize="16" FontWeight="Bold" Margin="5"/>
+            <ScrollViewer Height="425" VerticalAlignment="Center" Margin="5">
+                <TextBlock Text="{Binding LicenseText}" TextWrapping="Wrap" Margin="5"/>
+            </ScrollViewer>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Width="150" Height="25" Content="Agree" Command="{Binding EULAAgreeCommand}" HorizontalAlignment="Center" Margin="5"/>
+                <Button Width="150" Height="25" Content="Disagree" Command="{Binding EULADisagreeCommand}" HorizontalAlignment="Center" Margin="5" Grid.Column="1"/>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Window>

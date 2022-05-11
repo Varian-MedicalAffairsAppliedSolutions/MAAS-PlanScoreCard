@@ -35,7 +35,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         {
             //check if config can be modified
             var configPath = Assembly.GetExecutingAssembly().Location;
-            using (var fileStream = new FileStream(configPath, FileMode.Open))
+            using (var fileStream = new FileStream(configPath+".config", FileMode.Open))
             {
                 if (!fileStream.CanWrite)
                 {
