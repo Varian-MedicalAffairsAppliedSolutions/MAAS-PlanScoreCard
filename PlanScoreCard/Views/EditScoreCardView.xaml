@@ -301,6 +301,15 @@
                                 <Border BorderBrush="Blue" BorderThickness="1" Visibility="{Binding bVAtDView, Converter={StaticResource boolVisibilityConverter}}">
                                     <metric:EditVolumeAtDoseView DataContext="{Binding EditVolumeAtDoseViewModel}"/>
                                 </Border>
+                                <Border BorderBrush="Blue" BorderThickness="1" Visibility="{Binding bIHIView, Converter={StaticResource boolVisibilityConverter}}">
+                                    <metric:InhomogeneityIndexView/>
+                                </Border>
+                                <Border BorderBrush="Blue" BorderThickness="1" Visibility="{Binding bMGIView, Converter={StaticResource boolVisibilityConverter}}">
+                                    <metric:EditModifiedGradientIndexView DataContext="{Binding EditModifiedGradientIndexViewModel}"/>
+                                </Border>
+                                <Border BorderBrush="Blue" BorderThickness="1" Visibility="{Binding bDSVView, Converter={StaticResource boolVisibilityConverter}}">
+                                    <metric:EditDoseSubVolumeView DataContext="{Binding EditDoseSubVolumeViewModel}"/>
+                                </Border>
                             </StackPanel>
 
                         </GroupBox>

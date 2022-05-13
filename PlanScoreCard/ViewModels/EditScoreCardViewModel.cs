@@ -57,6 +57,8 @@ namespace PlanScoreCard.ViewModels
         public EditDoseValueViewModel EditDoseValueViewModel { get; set; }
         public EditHIViewModel EditHIViewModel { get; set; }
         public EditVolumeAtDoseViewModel EditVolumeAtDoseViewModel { get; set; }
+        public EditModifiedGradientIndexViewModel EditModifiedGradientIndexViewModel { get; set; }
+        public EditDoseSubVolumeViewModel EditDoseSubVolumeViewModel { get; set; }
         private bool _bCIView;
 
         public bool bCIView
@@ -92,6 +94,29 @@ namespace PlanScoreCard.ViewModels
             get { return _bVAtDView; }
             set { SetProperty(ref _bVAtDView, value); }
         }
+        private bool _bIHIView;
+
+        public bool bIHIView
+        {
+            get { return _bIHIView; }
+            set { SetProperty(ref _bIHIView,value); }
+        }
+        private bool _bMGIView;
+
+        public bool bMGIView
+        {
+            get { return _bMGIView; }
+            set { SetProperty(ref _bMGIView,value); }
+        }
+        private bool _bDSVView;
+
+        public bool bDSVView
+        {
+            get { return _bDSVView; }
+            set { SetProperty(ref _bDSVView,value); }
+        }
+
+
 
         #endregion
         public ObservableCollection<MetricTypeEnum> MetricTypes { get; set; }
@@ -486,7 +511,9 @@ namespace PlanScoreCard.ViewModels
             EditDoseAtVolumeViewModel editDoseAtVolumeViewModel,
             EditDoseValueViewModel editDoseValueViewModel,
             EditHIViewModel editHIViewModel,
-            EditVolumeAtDoseViewModel editVolumeAtDoseViewModel)
+            EditVolumeAtDoseViewModel editVolumeAtDoseViewModel,
+            EditModifiedGradientIndexViewModel editModifiedGradientIndexViewModel,
+            EditDoseSubVolumeViewModel editDoseSubVolumeViewModel)
         {
             //viewmodels for modificators.
             EditCIViewModel = editCIViewModel;
@@ -494,6 +521,8 @@ namespace PlanScoreCard.ViewModels
             EditDoseValueViewModel = editDoseValueViewModel;
             EditHIViewModel = editHIViewModel;
             EditVolumeAtDoseViewModel = editVolumeAtDoseViewModel;
+            EditModifiedGradientIndexViewModel = editModifiedGradientIndexViewModel;
+            EditDoseSubVolumeViewModel = editDoseSubVolumeViewModel;
 
             ViewLauncherService = viewLauncherService;
             ProgressViewService = progressViewService;
@@ -601,6 +630,9 @@ namespace PlanScoreCard.ViewModels
             MetricTypes.Add(MetricTypeEnum.Volume);
             MetricTypes.Add(MetricTypeEnum.VolumeAtDose);
             MetricTypes.Add(MetricTypeEnum.VolumeOfRegret);
+            MetricTypes.Add(MetricTypeEnum.InhomogeneityIndex);
+            MetricTypes.Add(MetricTypeEnum.ModifiedGradientIndex);
+            MetricTypes.Add(MetricTypeEnum.DoseAtSubVolume);
             MetricTypes.Add(MetricTypeEnum.Undefined);
         }
 
@@ -1012,7 +1044,7 @@ namespace PlanScoreCard.ViewModels
             {
                 //EditCIView volumeAtDoseView = ViewLauncherService.GetEditMetricView_CI();
                 EventAggregator.GetEvent<ShowCIMetricEvent>().Publish(scoreMetric);
-                bVAtDView = bDAtVView = bHIView = bDValueView = false;
+                bVAtDView = bDAtVView = bHIView = bDValueView = bMGIView = bIHIView = bDSVView = false;
                 bCIView = true;
                 //MetricEditorControl = volumeAtDoseView;
             }
@@ -1021,7 +1053,7 @@ namespace PlanScoreCard.ViewModels
                 //EditDoseAtVolumeView volumeAtDoseView = ViewLauncherService.GetEditMetricView_DoseAtVolume();
                 EventAggregator.GetEvent<ShowDoseAtVolumeMetricEvent>().Publish(scoreMetric);
                 //MetricEditorControl = volumeAtDoseView;
-                bCIView = bVAtDView = bHIView = bDValueView =  false;
+                bCIView = bVAtDView = bHIView = bDValueView = bMGIView = bIHIView = bDSVView= false;
                 bDAtVView = true;
             }
             else if (scoreMetric.MetricType == MetricTypeEnum.HomogeneityIndex)
@@ -1029,7 +1061,7 @@ namespace PlanScoreCard.ViewModels
                 //EditHIView volumeAtDoseView = ViewLauncherService.GetEditMetricView_HI();
                 EventAggregator.GetEvent<ShowHIMetricEvent>().Publish(scoreMetric);
                 //MetricEditorControl = volumeAtDoseView;
-                bCIView = bDAtVView = bVAtDView = bDValueView = false;
+                bCIView = bDAtVView = bVAtDView = bDValueView = bMGIView = bIHIView = bDSVView = false;
                 bHIView = true;
             }
             else if (scoreMetric.MetricType == MetricTypeEnum.MaxDose || scoreMetric.MetricType == MetricTypeEnum.MinDose || scoreMetric.MetricType == MetricTypeEnum.MeanDose)
@@ -1037,16 +1069,33 @@ namespace PlanScoreCard.ViewModels
                 //EditDoseValueView volumeAtDoseView = ViewLauncherService.GetEditMetricView_DoseValue();
                 EventAggregator.GetEvent<ShowDoseValueMetricEvent>().Publish(scoreMetric);
                 //MetricEditorControl = volumeAtDoseView;
-                bCIView = bDAtVView = bVAtDView = bHIView = false;
-                 bDValueView= true;
+                bCIView = bDAtVView = bVAtDView = bHIView = bMGIView = bIHIView = bDSVView = false;
+                bDValueView= true;
             }
             else if (scoreMetric.MetricType == MetricTypeEnum.VolumeAtDose || scoreMetric.MetricType == MetricTypeEnum.VolumeOfRegret || scoreMetric.MetricType == MetricTypeEnum.ConformationNumber)
             {
                 //EditVolumeAtDoseView volumeAtDoseView = ViewLauncherService.GetEditMetricView_VolumeAtDose();
                 EventAggregator.GetEvent<ShowVolumeAtDoseMetricEvent>().Publish(scoreMetric);
                 //MetricEditorControl = volumeAtDoseView;
-                bCIView = bDAtVView = bDValueView = bHIView  = false;
+                bCIView = bDAtVView = bDValueView = bHIView = bMGIView = bIHIView = bDSVView = false;
                 bVAtDView = true;
+            }
+            else if(scoreMetric.MetricType == MetricTypeEnum.DoseAtSubVolume)
+            {
+                EventAggregator.GetEvent<ShowDAtSubVMetricEvent>().Publish(scoreMetric);
+                bCIView = bDAtVView = bDValueView = bHIView = bMGIView = bIHIView = bVAtDView = false;
+                bDSVView = true;
+            }
+            else if (scoreMetric.MetricType == MetricTypeEnum.ModifiedGradientIndex)
+            {
+                EventAggregator.GetEvent<ShowModifiedGradientIndexMetricEvent>().Publish(scoreMetric);
+                bCIView = bDAtVView = bDValueView = bHIView = bIHIView = bVAtDView = bDSVView = false;
+                bMGIView = true;
+            }
+            else if(scoreMetric.MetricType == MetricTypeEnum.InhomogeneityIndex)
+            {
+                bCIView = bDAtVView = bDValueView = bHIView = bVAtDView = bDSVView = bMGIView = false;
+                bIHIView = true;
             }
         }
 

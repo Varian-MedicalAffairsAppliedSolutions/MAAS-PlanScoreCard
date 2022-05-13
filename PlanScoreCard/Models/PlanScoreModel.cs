@@ -521,6 +521,71 @@ namespace PlanScoreCard.Models
                         PlanScoreCalculationServices.GetVolumesFromDVH(template, dvh_body, dvh, out body_vol, out target_vol);
                         scoreValue.Value = body_vol / structure.Volume;
                     }
+                    else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.InhomogeneityIndex)
+                    {
+                        var dvh = plan.GetDVHCumulativeData(structure, DoseValuePresentation.Absolute,
+                            VolumePresentation.Relative, _dvhResolution);
+                        if (dvh == null){ scoreValue.Value = ScoreMax = scoreValue.Score = -1000;return; }
+                        scoreValue.Value = (dvh.MaxDose.Dose-dvh.MinDose.Dose)/ dvh.MeanDose.Dose;
+                    }
+                    else if((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum),template.MetricType) == MetricTypeEnum.ModifiedGradientIndex)
+                    {
+                        //plan.DoseValuePresentation = DoseValuePresentation.Absolute;
+                        //var doseUnit = plan.Dose.DoseMax3D.UnitAsString;
+                        var dhi = template.HI_HiValue;
+                        var dlo = template.HI_LowValue;
+                        var unit = template.InputUnit;
+                        var dvh = plan.GetDVHCumulativeData(structure,
+                            unit.Contains("%") ? DoseValuePresentation.Relative : DoseValuePresentation.Absolute,
+                            VolumePresentation.AbsoluteCm3,
+                            _dvhResolution);
+                        if (dvh == null) { scoreValue.Value = ScoreMax = scoreValue.Score = -1000;return; }
+                        var doseUnit = dvh.MaxDose.UnitAsString;
+                        if (unit != doseUnit)
+                        {
+                            if (unit.StartsWith("c"))
+                            {
+                                //unit is cGy and system unit is in Gy.
+                                dhi = dhi / 100.0;
+                                dlo = dlo / 100.0;
+                            }
+                            else
+                            {
+                                //unit is in Gy and system unit is in cGy
+                                dhi = dhi * 100.0;
+                                dlo = dlo * 100.0;
+                            }
+                        }
+                        var vDLo = dvh.CurveData.FirstOrDefault(x => x.DoseValue.Dose >= dlo).Volume;
+                        var vDHi = dvh.CurveData.FirstOrDefault(x => x.DoseValue.Dose >= dhi).Volume;
+                        scoreValue.Value = vDLo / vDHi;
+                    }
+                    else if((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.DoseAtSubVolume)
+                    {
+                        var specVolume = template.InputValue;
+                        var structureVolume = structure.Volume;
+                        var unit = template.OutputUnit;
+                        var dvh = plan.GetDVHCumulativeData(structure,
+                            unit.Contains("%") ? DoseValuePresentation.Relative : DoseValuePresentation.Absolute,
+                            VolumePresentation.AbsoluteCm3, _dvhResolution);
+                        if (dvh == null) { scoreValue.Value = ScoreMax = scoreValue.Score = -1000;return; }
+                        var doseValue = dvh.CurveData.FirstOrDefault(x => x.Volume <= structureVolume - specVolume).DoseValue;
+                        var doseUnit = doseValue.UnitAsString;
+                        scoreValue.Value = doseValue.Dose;
+                        if (unit != doseUnit)
+                        {
+                            if (unit.StartsWith("c"))
+                            {
+                                //unit is in cGy and dvh is in Gy
+                                scoreValue.Value = doseValue.Dose * 100.0;
+                            }
+                            else
+                            {
+                                scoreValue.Value = doseValue.Dose / 100.0;
+                            }
+                        }
+                        
+                    }
                     else
                     {
                         if (String.IsNullOrEmpty(template.OutputUnit))

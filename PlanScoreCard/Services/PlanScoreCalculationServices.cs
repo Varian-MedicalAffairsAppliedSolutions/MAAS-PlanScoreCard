@@ -113,6 +113,18 @@ namespace PlanScoreCard.Services
             {
                 return $"HI [{template.HI_HiValue} - {template.HI_LowValue}]/{template.HI_Target}]";
             }
+            else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.InhomogeneityIndex)
+            {
+                return "IHI[(Max-Min)/Mean]";
+            }
+            else if((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum),template.MetricType) == MetricTypeEnum.ModifiedGradientIndex)
+            {
+                return $"Mod GI[V{template.HI_LowValue}/V{template.HI_HiValue}]{template.InputUnit}";
+            }
+            else if((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum),template.MetricType) == MetricTypeEnum.DoseAtSubVolume)
+            {
+                return $"D At (V - {template.InputValue}CC)";
+            }
             else
             {
                 return $"{template.MetricType} [{template.OutputUnit}]";

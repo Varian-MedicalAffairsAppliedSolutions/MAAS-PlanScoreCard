@@ -37,6 +37,8 @@ namespace PlanScoreCard.Startup
             container.RegisterType<StructureBuilderViewModel>().AsSelf();
             container.RegisterType<ScoreCardViewModel>().AsSelf();
             container.RegisterType<BuildStructureViewModel>().AsSelf();
+            container.RegisterType<EditModifiedGradientIndexViewModel>().AsSelf().SingleInstance();
+            container.RegisterType<EditDoseSubVolumeViewModel>().AsSelf().SingleInstance();
 
             // views
             container.RegisterType<PluginView>().AsSelf();
@@ -51,6 +53,9 @@ namespace PlanScoreCard.Startup
             container.RegisterType<ProgressView>().AsSelf().SingleInstance();
             container.RegisterType<EditVolumeAtDoseView>().AsSelf();
             container.RegisterType<BuildStructureView>().AsSelf();
+            container.RegisterType<InhomogeneityIndexView>().AsSelf();
+            container.RegisterType<EditModifiedGradientIndexView>().AsSelf();
+            container.RegisterType<EditDoseSubVolumeView>().AsSelf();
 
 
             //events

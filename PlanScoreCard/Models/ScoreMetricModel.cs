@@ -81,6 +81,15 @@ namespace PlanScoreCard.Models
                 case MetricTypeEnum.ConformityIndex:
                     MetricText = $"CI [{InputValue} [{InputUnit}]]";
                     return;
+                case MetricTypeEnum.InhomogeneityIndex:
+                    MetricText = $"Inhomogeneity Index";
+                    return;
+                case MetricTypeEnum.ModifiedGradientIndex:
+                    MetricText = $"Modified GI [{HI_Lo}/{HI_Hi}]";
+                    return;
+                case MetricTypeEnum.DoseAtSubVolume:
+                    MetricText = $"D At (V - {InputValue}cc)";
+                    return;
                 default:
                     MetricText = "Undefined Metric";
                     return;

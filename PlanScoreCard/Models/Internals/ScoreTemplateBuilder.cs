@@ -20,7 +20,7 @@ namespace PlanScoreCard.Models.Internals
             {
                 if (scoreMetric.ScoreMetric != null)
                 {
-                    if (scoreMetric.ScoreMetric.MetricType == MetricTypeEnum.HomogeneityIndex)
+                    if (scoreMetric.ScoreMetric.MetricType == MetricTypeEnum.HomogeneityIndex|| scoreMetric.ScoreMetric.MetricType == MetricTypeEnum.ModifiedGradientIndex)
                     {
                         scoreTemplates.Add(new ScoreTemplateModel(
                             scoreMetric.ScoreMetric.Structure,
@@ -28,6 +28,7 @@ namespace PlanScoreCard.Models.Internals
                             scoreMetric.ScoreMetric.MetricComment,
                             Convert.ToDouble(scoreMetric.ScoreMetric.HI_Hi),
                             Convert.ToDouble(scoreMetric.ScoreMetric.HI_Lo),
+                            scoreMetric.ScoreMetric.InputUnit,
                             String.IsNullOrEmpty(scoreMetric.ScoreMetric.HI_Target) ? 0.0 : Convert.ToDouble(scoreMetric.ScoreMetric.HI_Target),
                             String.IsNullOrEmpty(scoreMetric.ScoreMetric.InputUnit) ? "cGy" : scoreMetric.ScoreMetric.InputUnit,
                             GetInternalScorePoint(scoreMetric.ScoreMetric.ScorePoints)));
@@ -58,7 +59,7 @@ namespace PlanScoreCard.Models.Internals
             {
                 if (scoreMetric != null)
                 {
-                    if (scoreMetric.MetricType == MetricTypeEnum.HomogeneityIndex)
+                    if (scoreMetric.MetricType == MetricTypeEnum.HomogeneityIndex || scoreMetric.MetricType == MetricTypeEnum.ModifiedGradientIndex)
                     {
                         scoreTemplates.Add(new ScoreTemplateModel(
                             scoreMetric.Structure,
@@ -66,6 +67,7 @@ namespace PlanScoreCard.Models.Internals
                             scoreMetric.MetricComment,
                             Convert.ToDouble(scoreMetric.HI_Hi),
                             Convert.ToDouble(scoreMetric.HI_Lo),
+                            scoreMetric.InputUnit,
                             String.IsNullOrEmpty(scoreMetric.HI_Target) ? 0.0 : Convert.ToDouble(scoreMetric.HI_Target),
                             String.IsNullOrEmpty(scoreMetric.InputUnit) ? "cGy" : scoreMetric.InputUnit,
                             GetInternalScorePoint(scoreMetric.ScorePoints)));
@@ -296,7 +298,17 @@ namespace PlanScoreCard.Models.Internals
                     scoreMetric.OutputUnit = template.InputUnit;
                     scoreMetric.InputValue = template.InputValue.ToString();
                 }
-
+                else if(scoreMetric.MetricType == MetricTypeEnum.ModifiedGradientIndex)
+                {
+                    scoreMetric.HI_Hi = template.HI_HiValue.ToString();
+                    scoreMetric.HI_Lo = template.HI_LowValue.ToString();
+                    scoreMetric.InputUnit = template.InputUnit;
+                }
+                else if(scoreMetric.MetricType == MetricTypeEnum.DoseAtSubVolume)
+                {
+                    scoreMetric.InputValue = template.InputValue.ToString();
+                    scoreMetric.OutputUnit = template.OutputUnit;
+                }
                 // Metric Text
                 scoreMetric.MetricText = GetScoreMetricText(scoreMetric);
 
@@ -353,6 +365,12 @@ namespace PlanScoreCard.Models.Internals
                     return $"HI [D{scoreMetric.HI_Hi}-D{scoreMetric.HI_Lo}]/{scoreMetric.HI_Target}";
                 case MetricTypeEnum.ConformityIndex:
                     return $"CI [{scoreMetric.InputValue} [{scoreMetric.InputUnit}]]";
+                case MetricTypeEnum.InhomogeneityIndex:
+                    return "IHI[(Max-Min)/Mean]";
+                case MetricTypeEnum.ModifiedGradientIndex:
+                    return $"Mod GI[V{scoreMetric.HI_Lo}/V{scoreMetric.HI_Hi}]{scoreMetric.InputUnit}";
+                case MetricTypeEnum.DoseAtSubVolume:
+                    return $"D At (V - {scoreMetric.InputValue}CC)";
                 default:
                     return "Undefined Metric";
             }

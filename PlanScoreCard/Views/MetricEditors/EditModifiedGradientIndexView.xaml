@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="PlanScoreCard.Views.MetricEditors.EditModifiedGradientIndexView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PlanScoreCard.Views.MetricEditors"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBlock Text="Volume [cc] covered by " FontSize="20" VerticalAlignment="Bottom" Margin="5"/>
+            <TextBox Text="{Binding DoseLow}" FontSize="16" Width="100" Height="30" VerticalAlignment="Bottom" Margin="5"/>
+            <ComboBox ItemsSource="{Binding DoseUnits}" SelectedItem="{Binding SelectedDoseUnitLow}" Height="30" FontSize="16" Margin="5" VerticalAlignment="Bottom"/>
+        </StackPanel>
+        <Border BorderBrush="Black" Grid.Row="1" BorderThickness="5" Height="3" Margin="10"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2">
+            <TextBlock Text="Volume [cc] covered by " FontSize="20" VerticalAlignment="Top" Margin="5"/>
+            <TextBox Text="{Binding DoseHigh}" FontSize="16" Width="100" Height="30" VerticalAlignment="Top" Margin="5"/>
+            <ComboBox ItemsSource="{Binding DoseUnits}" SelectedItem="{Binding SelectedDoseUnitHigh}" Height="30" FontSize="16" Margin="5" VerticalAlignment="Top"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

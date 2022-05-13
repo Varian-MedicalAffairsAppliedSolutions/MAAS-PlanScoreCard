@@ -35,6 +35,7 @@ namespace PlanScoreCard.Models.Proknow
                         String.Empty,
                         1.0,//PK always uses D1% as high dose value.
                         99.0,//PK always uses D99% as low dose value.
+                        String.Empty,
                         inputValue,//PK puts expected target dose in arg1.
                         "Gy",//Dose unit seems to be in Gy.
                         scores);

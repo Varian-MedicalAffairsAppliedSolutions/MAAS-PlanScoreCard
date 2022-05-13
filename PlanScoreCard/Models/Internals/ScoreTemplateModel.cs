@@ -66,12 +66,14 @@ namespace PlanScoreCard.Models.Internals
         public ScoreTemplateModel(StructureModel structure, MetricTypeEnum metricType, string metricComment,
             double hi_HiValue,
             double hi_LowValue,
+            string inputUnit,
             double hi_Target,
             string hi_TargetUnit,
             List<ScorePointInternalModel> scorePoints)
         {
             Structure = structure;
             MetricType = metricType.ToString();
+            InputUnit = inputUnit;
             HI_HiValue = hi_HiValue;
             HI_LowValue = hi_LowValue;
             HI_Target = hi_Target;

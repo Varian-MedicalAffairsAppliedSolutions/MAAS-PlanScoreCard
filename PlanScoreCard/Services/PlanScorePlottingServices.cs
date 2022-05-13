@@ -117,6 +117,10 @@ namespace PlanScoreCard.Services
             {
                 return $"Dose [{scoreMetricModel.OutputUnit}]";
             }
+            else if(metricType == MetricTypeEnum.DoseAtSubVolume)
+            {
+                return $"Dose [{scoreMetricModel.OutputUnit}]";
+            }
             else if (metricType == MetricTypeEnum.VolumeAtDose || metricType == MetricTypeEnum.VolumeOfRegret)
             {
                 return $"Volume [{scoreMetricModel.OutputUnit}]";
@@ -128,6 +132,14 @@ namespace PlanScoreCard.Services
             else if (metricType == MetricTypeEnum.HomogeneityIndex)
             {
                 return $"Homogeneity Index";
+            }
+            else if(metricType == MetricTypeEnum.ModifiedGradientIndex)
+            {
+                return "Modified Gradient Index";
+            }
+            else if (metricType == MetricTypeEnum.InhomogeneityIndex)
+            {
+                return "Inhomogeneity Index";
             }
             else
             {
@@ -155,6 +167,12 @@ namespace PlanScoreCard.Services
                     return $"Mean Dose Score";
                 case MetricTypeEnum.MaxDose:
                     return $"Max Dose Score";
+                case MetricTypeEnum.InhomogeneityIndex:
+                    return $"Inhomogeneity Index Score";
+                case MetricTypeEnum.ModifiedGradientIndex:
+                    return $"Modified Gradient Index {scoreMetricModel.HI_Lo}{scoreMetricModel.InputUnit}/{scoreMetricModel.HI_Hi}{scoreMetricModel.InputUnit}";
+                case MetricTypeEnum.DoseAtSubVolume:
+                    return $"Dose to Volume sub {scoreMetricModel.InputValue}CC";
                 default:
                     return $"Undefined Metric";
             }

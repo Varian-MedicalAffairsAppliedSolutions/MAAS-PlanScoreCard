@@ -18,6 +18,9 @@ namespace PlanScoreCard.Models
         ConformationNumber,
         HomogeneityIndex,
         ConformityIndex,
+        InhomogeneityIndex,
+        ModifiedGradientIndex,
+        DoseAtSubVolume,
         Undefined,
     }
 }
