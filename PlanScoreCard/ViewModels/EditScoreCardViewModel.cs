@@ -696,23 +696,51 @@ namespace PlanScoreCard.ViewModels
 
         private void SaveTemplate()
         {
-            List<ScoreTemplateModel> scoreTemplates = ScoreTemplateBuilder.Build(ScoreMetrics.ToList(), Structures.ToList());
-            InternalTemplateModel template = new InternalTemplateModel()
+            if (ValidateMetrics())
             {
-                Creator = TemplateAuthor,
-                Site = String.IsNullOrEmpty(SelectedTreatmentSite) ? "Undefined" : SelectedTreatmentSite,
-                TemplateName = String.IsNullOrEmpty(TemplateName) ? "Undefined" : TemplateName,
-                DosePerFraction = DosePerFraction,
-                NumberOfFractions = NumberOfFractions
-            };
-            template.ScoreTemplates = scoreTemplates;
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "JSON Format (.json)|*.json";
-            sfd.Title = "Save as PlanSC format";
-            if (sfd.ShowDialog() == true)
-            {
-                File.WriteAllText(sfd.FileName, JsonConvert.SerializeObject(template));
+                List<ScoreTemplateModel> scoreTemplates = ScoreTemplateBuilder.Build(ScoreMetrics.ToList(), Structures.ToList());
+                InternalTemplateModel template = new InternalTemplateModel()
+                {
+                    Creator = TemplateAuthor,
+                    Site = String.IsNullOrEmpty(SelectedTreatmentSite) ? "Undefined" : SelectedTreatmentSite,
+                    TemplateName = String.IsNullOrEmpty(TemplateName) ? "Undefined" : TemplateName,
+                    DosePerFraction = DosePerFraction,
+                    NumberOfFractions = NumberOfFractions
+                };
+                template.ScoreTemplates = scoreTemplates;
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "JSON Format (.json)|*.json";
+                sfd.Title = "Save as PlanSC format";
+                if (sfd.ShowDialog() == true)
+                {
+                    File.WriteAllText(sfd.FileName, JsonConvert.SerializeObject(template));
+                }
             }
+        }
+
+        private bool ValidateMetrics()
+        {
+            //check that the structure is not null
+            if(ScoreMetrics.Any(x=>x.Structure == null))
+            {
+                MessageBox.Show("Not all metrics have a structure selected.");
+                return false;
+            }
+            //check that the dose metrics have an output unit selected.
+            foreach(var scoremetric in ScoreMetrics)
+            {
+                if(scoremetric.MetricType == MetricTypeEnum.DoseAtVolume || scoremetric.MetricType == MetricTypeEnum.MaxDose
+                    || scoremetric.MetricType == MetricTypeEnum.MeanDose || scoremetric.MetricType == MetricTypeEnum.MinDose
+                    || scoremetric.MetricType == MetricTypeEnum.DoseAtSubVolume)
+                {
+                    if (String.IsNullOrEmpty(scoremetric.OutputUnit))
+                    {
+                        MessageBox.Show($"Metric {scoremetric.Id + 1} does not have a dose unit selected.");
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         private void ScorePlan()

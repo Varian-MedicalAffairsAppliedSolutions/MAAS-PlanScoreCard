@@ -272,7 +272,10 @@ namespace PlanScoreCard.Models.Internals
 
                 // Structure
                 scoreMetric.Structure = template.Structure;
-                scoreMetric.Structure.TemplateStructureId = template.Structure.TemplateStructureId;
+                if (scoreMetric.Structure != null)
+                {
+                    scoreMetric.Structure.TemplateStructureId = template.Structure.TemplateStructureId;
+                }
                 scoreMetric.MetricComment = template.MetricComment;
 
                 // Metric Type - Dependant Variables
