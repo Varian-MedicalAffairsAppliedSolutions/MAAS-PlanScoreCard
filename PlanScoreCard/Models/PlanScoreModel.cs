@@ -338,7 +338,7 @@ namespace PlanScoreCard.Models
                     template.Structure.StructureId = structure.Id;
                 }
                 ScoreValueModel scoreValue = new ScoreValueModel();
-
+                scoreValue.OutputUnit = template.OutputUnit;
                 scoreValue.PlanId = plan.Id;
 
                 if (plan is PlanSetup)

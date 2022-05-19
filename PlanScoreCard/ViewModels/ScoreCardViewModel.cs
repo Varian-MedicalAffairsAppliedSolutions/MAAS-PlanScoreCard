@@ -2,13 +2,16 @@
 using Newtonsoft.Json;
 using OxyPlot.Wpf;
 using PlanScoreCard.Events;
+using PlanScoreCard.Events.HelperWindows;
 using PlanScoreCard.Events.Plugin;
 using PlanScoreCard.Events.Plugins;
 using PlanScoreCard.Models;
 using PlanScoreCard.Models.Internals;
 using PlanScoreCard.Models.Proknow;
 using PlanScoreCard.Services;
+using PlanScoreCard.ViewModels.VMHelpers;
 using PlanScoreCard.Views;
+using PlanScoreCard.Views.HelperWindows;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -54,14 +57,20 @@ namespace PlanScoreCard.ViewModels
                 PrintReportCommand.RaiseCanExecuteChanged();
             }
         }
-        private bool _validated;
+        //private bool _validated;
 
-        public bool Validated
+        //public bool Validated
+        //{
+        //    get { return _validated; }
+        //    set { _validated = value; }
+        //}
+        private string _scoreCardTitle;
+
+        public string ScoreCardTitle
         {
-            get { return _validated; }
-            set { _validated = value; }
+            get { return _scoreCardTitle; }
+            set { SetProperty(ref _scoreCardTitle, value); }
         }
-
         // ScoreTemplates - Legacy?
         private List<ScoreTemplateModel> ScoreTemplates;
 
@@ -87,18 +96,13 @@ namespace PlanScoreCard.ViewModels
             set
             {
                 SetProperty(ref _numberOfFractions, value);
-                if (NumberOfFractions == 0 || DosePerFraction == 0.0)
-                {
-                    bRxScalingVisibility = false;
-                }
-                else
-                {
-                    bRxScalingVisibility = true;
-                }
                 SetRxMessage();
+                
+
             }
         }
-
+        private bool bDoseMatch;
+        private bool bFxMatch;
         private void SetRxMessage()
         {
             if (DosePerFraction == 0.0 || NumberOfFractions == 0)
@@ -110,7 +114,6 @@ namespace PlanScoreCard.ViewModels
             {
                 if (Plan is PlanSetup)
                 {
-                    bool bDoseMatch, bFxMatch;
                     CheckPlanRx(out bDoseMatch, out bFxMatch);
                     if (!bDoseMatch || !bFxMatch)
                     {
@@ -122,11 +125,23 @@ namespace PlanScoreCard.ViewModels
                         RxMessage = "Plan Rx matches scorecard.";
                         //bRxScalingVisibility = false;
                     }
+                    if (NumberOfFractions == 0 || DosePerFraction == 0.0)
+                    {
+                        bRxScalingVisibility = false;
+                    }
+                    else if (bDoseMatch && bFxMatch)
+                    {
+                        bRxScalingVisibility = false;
+                    }
+                    else
+                    {
+                        bRxScalingVisibility = true;
+                    }
                 }
                 else
                 {
                     RxMessage = "No Rx for PlanSum.";
-                    //bRxScalingVisibility = false;
+                    bRxScalingVisibility = false;
                 }
             }
         }
@@ -191,7 +206,7 @@ namespace PlanScoreCard.ViewModels
                     {
                         foreach (var scorePoint in template.ScorePoints)
                         {
-                            scorePoint.PointX = template.OutputUnit.StartsWith("c")?
+                            scorePoint.PointX = template.OutputUnit.StartsWith("c") ?
                                 (scorePoint.PointX * planTotalDoseGy) / (scoreCardTotalDose / 100.0) :
                                 scorePoint.PointX * planTotalDoseGy / scoreCardTotalDose;
                         }
@@ -204,22 +219,22 @@ namespace PlanScoreCard.ViewModels
                     if (!template.InputUnit.Contains("%"))
                     {
                         template.InputValue = template.InputUnit.StartsWith("c") ?
-                            (template.InputValue * planTotalDoseGy ) / (scoreCardTotalDose / 100.0) :
-                            template.InputValue * planTotalDoseGy  / scoreCardTotalDose;
+                            (template.InputValue * planTotalDoseGy) / (scoreCardTotalDose / 100.0) :
+                            template.InputValue * planTotalDoseGy / scoreCardTotalDose;
                     }
                 }
                 else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.HomogeneityIndex)
                 {
                     if (!template.HI_TargetUnit.Contains("%"))
                     {
-                        template.HI_Target = template.HI_TargetUnit.StartsWith("c")  ?
-                            (template.HI_Target * planTotalDoseGy) / (scoreCardTotalDose / 100.0)  :
-                            template.InputValue * planTotalDoseGy  / scoreCardTotalDose;
+                        template.HI_Target = template.HI_TargetUnit.StartsWith("c") ?
+                            (template.HI_Target * planTotalDoseGy) / (scoreCardTotalDose / 100.0) :
+                            template.InputValue * planTotalDoseGy / scoreCardTotalDose;
                     }
                 }
             }
             _bScaled = true;
-            ScoreCard.DosePerFraction  = DosePerFraction= planTotalDoseGy / (int)(Plan as PlanSetup).NumberOfFractions;
+            ScoreCard.DosePerFraction = DosePerFraction = planTotalDoseGy / (int)(Plan as PlanSetup).NumberOfFractions;
             ScoreCard.NumberOfFractions = NumberOfFractions = (int)(Plan as PlanSetup).NumberOfFractions;
             ScorePlan();
         }
@@ -306,6 +321,8 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand NormalizePlanCommand { get; set; }
         public DelegateCommand ExportScoreCardCommand { get; set; }
         public DelegateCommand PrintReportCommand { get; private set; }
+        public DelegateCommand OpenWarningCommand { get; private set; }
+        public DelegateCommand OpenFlagCommand { get; private set; }
 
         // Plugin Visibility
 
@@ -354,13 +371,14 @@ namespace PlanScoreCard.ViewModels
             set { SetProperty(ref _flags, value); }
         }
 
-
+        public MessageView MessageView { get; set; }
 
         // Constructor
         public ScoreCardViewModel(Application app, Patient patient, Course course, PlanSetup plan, IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService, StructureDictionaryService structureDictionaryService)
         {
             // Set the Initial Variables Passed In
-            Validated = ConfigurationManager.AppSettings["ValidForClinicalUse"] != "true";
+            ScoreCardTitle = ConfigurationManager.AppSettings["ValidForClinicalUse"] != "true" ?
+                "Plan ScoreCard **Not Validated for Clinical Use**" : "Plan ScoreCard";
             Application = app;
             Patient = patient;
             Course = course;
@@ -379,6 +397,7 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<ScorePlanEvent>().Subscribe(ScorePlan);
             EventAggregator.GetEvent<PlanSelectedEvent>().Subscribe(ScorePlan);
             EventAggregator.GetEvent<FreePrimarySelectionEvent>().Subscribe(OnPrimaryChanged);
+            EventAggregator.GetEvent<CloseMessageViewEvent>().Subscribe(OnCloseMessage);
 
             MaxScore = 0;
 
@@ -393,6 +412,8 @@ namespace PlanScoreCard.ViewModels
             NormalizePlanCommand = new DelegateCommand(NormalizePlan);
             ExportScoreCardCommand = new DelegateCommand(ExportScoreCard, CanExportScorecard);
             PrintReportCommand = new DelegateCommand(OnPrintReport, CanPrintReport);
+            OpenWarningCommand = new DelegateCommand(OnOpenWarning);
+            OpenFlagCommand = new DelegateCommand(OnOpenFlag);
             bRxScalingVisibility = true;
             // Sets If no Plan is Passed In
             if (Plan != null)
@@ -401,6 +422,42 @@ namespace PlanScoreCard.ViewModels
             InitializeClass();
             //I moved this down here so that the scoreplan doesn't run until after the plans have already been setup (the event aggregator was running on every plan).
             EventAggregator.GetEvent<PlanChangedEvent>().Subscribe(OnPlanChanged);
+        }
+
+        private void OnCloseMessage()
+        {
+            MessageView.Close();
+            MessageView = null;
+        }
+
+        private void OnOpenFlag()
+        {
+            if (MessageView == null)
+            {
+                MessageView = new MessageView();
+            }
+            else
+            {
+                MessageView = null;
+                MessageView = new MessageView();
+            }
+            MessageView.DataContext = new MessageViewModel("Scorecard Flags", Flags, EventAggregator);
+            MessageView.ShowDialog();
+        }
+
+        private void OnOpenWarning()
+        {
+            if (MessageView == null)
+            {
+                MessageView = new MessageView();
+            }
+            else
+            {
+                MessageView = null;
+                MessageView = new MessageView();
+            }
+            MessageView.DataContext = new MessageViewModel("Scorecard Warnings", Warnings, EventAggregator);
+            MessageView.ShowDialog();
         }
 
         private void OnPrimaryChanged(PlanModel obj)
@@ -414,8 +471,8 @@ namespace PlanScoreCard.ViewModels
                         plan.bPrimary = false;
                     }
                 }
-                Plan = obj.bPlanSum?
-                    Patient.Courses.FirstOrDefault(x=>x.Id == obj.CourseId).PlanSums.FirstOrDefault(x=>x.Id == obj.PlanId) as PlanningItem:
+                Plan = obj.bPlanSum ?
+                    Patient.Courses.FirstOrDefault(x => x.Id == obj.CourseId).PlanSums.FirstOrDefault(x => x.Id == obj.PlanId) as PlanningItem :
                     Patient.Courses.FirstOrDefault(x => x.Id == obj.CourseId).PlanSetups.FirstOrDefault(x => x.Id == obj.PlanId) as PlanningItem;
                 _bScaled = false;
                 bRxScaling = false;
@@ -658,7 +715,7 @@ namespace PlanScoreCard.ViewModels
                         string pid = pc.planId;
 
                         double planTotal = planScores.Sum(x => x.ScoreValues.FirstOrDefault(y => y.PlanId == pc.planId && y.CourseId == pc.courseId).Score);
-                        ScoreTotalText += $"\n\t\t[{cid}] {pid}: {planTotal:F2}/{planScores.Sum(x => x.ScoreMax):F2} ({planTotal / planScores.Sum(x => x.ScoreMax) * 100.0:F2}%)";
+                        ScoreTotalText += $"\t[{cid}] {pid}: {planTotal:F2}/{planScores.Sum(x => x.ScoreMax):F2} ({planTotal / planScores.Sum(x => x.ScoreMax) * 100.0:F2}%)\n\t";
 
                         PlanModel plan = Plans.FirstOrDefault(p => p.PlanId == pid && p.CourseId == cid);
 
@@ -791,7 +848,7 @@ namespace PlanScoreCard.ViewModels
                 }
                 if (importSuccess)
                 {
-                    if (bRxScaling && Plan is PlanSetup && DosePerFraction!=0.0 && NumberOfFractions !=0)
+                    if (bRxScaling && Plan is PlanSetup && DosePerFraction != 0.0 && NumberOfFractions != 0)
                     {
                         bool bDoseMatch, bFxMatch;
                         CheckPlanRx(out bDoseMatch, out bFxMatch);

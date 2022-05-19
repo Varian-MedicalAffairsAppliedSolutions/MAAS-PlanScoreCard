@@ -76,7 +76,12 @@
                                         <ColumnDefinition Width="1.5*"/>
                                     </Grid.ColumnDefinitions>
                                     <Label Content="{Binding PlanId}" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                                    <Label Content="{Binding Value, Converter={StaticResource localDoubleConverter}}" Foreground="Black" HorizontalAlignment="Stretch" Grid.Column="1" HorizontalContentAlignment="Center"/>
+                                    <Label Foreground="Black" HorizontalAlignment="Stretch" Grid.Column="1" HorizontalContentAlignment="Center">
+                                        <TextBlock>
+                                            <Run Text="{Binding Value, Converter={StaticResource localDoubleConverter}}"/>
+                                            <Run Text="{Binding OutputUnit}"/>
+                                        </TextBlock>
+                                    </Label>
                                     <Label Content="{Binding Score, Converter={StaticResource localDoubleConverter}}" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Grid.Column="2"/>
                                 </Grid>
                             </DataTemplate>

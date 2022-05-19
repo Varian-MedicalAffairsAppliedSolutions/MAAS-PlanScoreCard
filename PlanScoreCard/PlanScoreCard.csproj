@@ -161,6 +161,7 @@
     <Compile Include="Events\FreePrimarySelectionEvent.cs" />
     <Compile Include="Events\HelperWindows\CancelEvent.cs" />
     <Compile Include="Events\HelperWindows\CloseEulaEvent.cs" />
+    <Compile Include="Events\HelperWindows\CloseMessageViewEvent.cs" />
     <Compile Include="Events\HelperWindows\NoEvent.cs" />
     <Compile Include="Events\HelperWindows\StructureDictionaryAddedEvent.cs" />
     <Compile Include="Events\HelperWindows\YesEvent.cs" />
@@ -278,6 +279,7 @@
     <Compile Include="ViewModels\StructureGenerationViewModel.cs" />
     <Compile Include="ViewModels\VMHelpers\AskAddDictionaryStructureViewModel.cs" />
     <Compile Include="ViewModels\VMHelpers\EULAViewModel.cs" />
+    <Compile Include="ViewModels\VMHelpers\MessageViewModel.cs" />
     <Compile Include="ViewModels\VMHelpers\StructureDictionarySelectorViewModel.cs" />
     <Compile Include="ViewModels\VolumeAtDoseViewModel.cs" />
     <Compile Include="Views\BuildStructureView.xaml.cs">
@@ -295,6 +297,9 @@
     </Compile>
     <Compile Include="Views\HelperWindows\EULAView.xaml.cs">
       <DependentUpon>EULAView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HelperWindows\MessageView.xaml.cs">
+      <DependentUpon>MessageView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\HelperWindows\ProgressView.xaml.cs">
       <DependentUpon>ProgressView.xaml</DependentUpon>
@@ -420,6 +425,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\HelperWindows\EULAView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\HelperWindows\MessageView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

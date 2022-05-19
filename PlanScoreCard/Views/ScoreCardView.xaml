@@ -10,7 +10,7 @@
         xmlns:converters="clr-namespace:PlanScoreCard.Converters"
         xmlns:helpers="clr-namespace:PlanScoreCard.Views.HelperClasses"
         mc:Ignorable="d"
-        Title="ScoreCardView" Height="800" Width="1600" ResizeMode="NoResize">
+        Title="{Binding ScoreCardTitle}" Height="800" Width="1600" ResizeMode="NoResize">
     <metro:MetroWindow.Resources>
         <ResourceDictionary>
             <converters:BoolVisibilityConverter x:Key="localVisibilityConverter"/>
@@ -76,6 +76,7 @@
                             <RowDefinition Height="40"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="40"/>
+                            <RowDefinition Height="20"/>
                         </Grid.RowDefinitions>
 
                         <Label Grid.Row="0" Content="Patient ID"/>
@@ -85,8 +86,8 @@
                                 <ColumnDefinition Width="40"/>
                             </Grid.ColumnDefinitions>
                             <ComboBox Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" />
-                            <TextBox Text="{Binding PatientId, Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" />
-                            <Button Content="{icons:FontAwesome Kind=UserPlusSolid}" ToolTip="Open Patient" Grid.Column="1" Margin="5" Width="30"/>
+                            <TextBox IsEnabled="False" Text="{Binding PatientId, Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" />
+                            <!--<Button Content="{icons:FontAwesome Kind=UserPlusSolid}" ToolTip="Open Patient" Grid.Column="1" Margin="5" Width="30"/>-->
                         </Grid>
 
                         <!--<Label Grid.Row="2" Content="Course ID"/>
@@ -196,7 +197,10 @@
                             </Button>
 
                         </Grid>
-
+                        <TextBlock Grid.Row="4" HorizontalAlignment="Center">
+                            <Run Text="Bound by the terms of the "/>
+                            <helpers:HyperlinkCommander NavigateUri="http://medicalaffairs.varian.com/download/VarianLUSLA.pdf">VarianLUSLA</helpers:HyperlinkCommander>
+                        </TextBlock>
                     </Grid>
                 </GroupBox>
             </Grid>
@@ -218,13 +222,13 @@
                 <GroupBox Grid.Row="1" Margin="5" FontWeight="Bold" Background="WhiteSmoke">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="50"/>
                             <RowDefinition Height="30"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="20"/>
+                            <!--<RowDefinition Height="20"/>-->
                         </Grid.RowDefinitions>
-                        <TextBlock Text="**NOT VALID FOR CLINICAL USE**" HorizontalAlignment="Center" Foreground="Red" Visibility="{Binding Validated, Converter={StaticResource localVisibilityConverter}}"/>
+                        <!--<TextBlock Text="**NOT VALID FOR CLINICAL USE**" HorizontalAlignment="Center" Foreground="Red" Visibility="{Binding Validated, Converter={StaticResource localVisibilityConverter}}"/>-->
 
                         <Grid Grid.Row="1" Margin="3">
                             <Grid.ColumnDefinitions>
@@ -276,24 +280,23 @@
                             </ScrollViewer>
                         </Border>
 
-                        <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" Margin="3" Grid.Row="3">
-                            <StackPanel>
-                                <TextBlock Text="Summary:" Margin="2"/>
+                        <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" Margin="3" Grid.Row="0">
+                            <ScrollViewer Height="40">
+                            <!--<StackPanel>-->
+                                <!--<TextBlock Text="Summary:" Margin="2"/>-->
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding ScoreTotalText}" Foreground="{Binding bFlag, Converter={StaticResource localBoolToColorFlagConverter}}" Margin="2"/>
-                                    <Label Margin="18 2 2 2" Background="Yellow" Visibility="{Binding bWarning, Converter={StaticResource localVisibilityConverter}}" ToolTip="{Binding Warnings}">
+                                    <Button Command="{Binding OpenWarningCommand}" Height="30" Margin="18 0 2 0" Background="Yellow" Visibility="{Binding bWarning, Converter={StaticResource localVisibilityConverter}}" ToolTip="{Binding Warnings}" VerticalAlignment="Top">
                                         <icons:FontAwesome Kind="ExclamationTriangleSolid"/>
-                                    </Label>
-                                    <Label Margin="2" Background="Red" Visibility="{Binding bFlag, Converter={StaticResource localVisibilityConverter}}" ToolTip="{Binding Flags}">
-                                        <icons:FontAwesome Kind="TimesCircleSolid"/>
-                                    </Label>
+                                    </Button>
+                                    <Button Command="{Binding OpenFlagCommand}" Height="30" Margin="2 0 0 0" Background="Red" Visibility="{Binding bFlag, Converter={StaticResource localVisibilityConverter}}" ToolTip="{Binding Flags}" VerticalAlignment="Top">
+                                        <icons:FontAwesome Kind="TimesCircleSolid" />
+                                    </Button>
                                 </StackPanel>
-                            </StackPanel>
+                            <!--</StackPanel>-->
+                            </ScrollViewer>
                         </Border>
-                        <TextBlock Grid.Row="4" HorizontalAlignment="Center">
-                            <Run Text="Bound by the terms of the "/>
-                            <helpers:HyperlinkCommander NavigateUri="http://medicalaffairs.varian.com/download/VarianLUSLA.pdf">VarianLUSLA</helpers:HyperlinkCommander>
-                        </TextBlock>
+                        
                     </Grid>
 
 

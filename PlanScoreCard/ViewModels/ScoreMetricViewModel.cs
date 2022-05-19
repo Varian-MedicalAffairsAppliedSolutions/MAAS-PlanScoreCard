@@ -88,6 +88,8 @@ namespace PlanScoreCard.ViewModels
         }
 
         public string SelectedDoseValueMetric { get; set; }
+
+
         public ObservableCollection<StructureModel> StructureIds { get; set; }
         public DelegateCommand AddPointCommand { get; private set; }
         public ViewResolvingPlotModel ScoreMetricPlotModel { get; set; }
