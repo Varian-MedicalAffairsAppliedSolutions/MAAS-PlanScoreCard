@@ -20,8 +20,8 @@ namespace PlanScoreCard.Models
             {
                 structureId = value;
 
-                if(String.IsNullOrWhiteSpace(structureId))
-                    TemplateStructureId = structureId;
+                //if(String.IsNullOrWhiteSpace(structureId))
+                //    TemplateStructureId = structureId;
 
                 NotifyPropertyChanged();
             } 

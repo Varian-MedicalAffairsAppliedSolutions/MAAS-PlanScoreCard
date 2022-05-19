@@ -8,13 +8,13 @@
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:converters="clr-namespace:PlanScoreCard.Converters"
-        Title="Add Structure to Dictionary" Height="550" WindowStartupLocation="CenterScreen" Width="550" ResizeMode="NoResize">
+        Title="Add Structure to Dictionary" Height="650" WindowStartupLocation="CenterScreen" Width="550" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="2*"/>
             <RowDefinition Height="2*"/>
-            <RowDefinition Height="4*"/>
+            <RowDefinition Height="6*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel>
@@ -54,6 +54,32 @@
                     <Button Command="{Binding OpenDictionaryFileCommand}" Content="..." Margin="5"/>
                     <TextBlock Text="{Binding FileToMergeText}" Margin="5"/>
                 </StackPanel>
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Content="Delete Match" IsChecked="{Binding bDeleteMatch}" VerticalAlignment="Top"/>
+                    <ScrollViewer Grid.Column="1" Height="200" Margin="2">
+                        <ListView ItemsSource="{Binding DictionaryKeys}" SelectedItem="{Binding SelectedDictionaryKeyForModification}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </ScrollViewer>
+                    <ScrollViewer Grid.Column="2" Height="200" Margin="2">
+                        <ItemsControl ItemsSource="{Binding DictionaryValues}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding bChecked}" Content="{Binding Value}"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
             </StackPanel>
         </Grid>
         <Button Content="Cancel" Grid.Row="4" HorizontalAlignment="Left" Width="100" Height="25" Margin="25 10 0 10 " VerticalAlignment="Top" Command="{Binding CancelCommand}"/>

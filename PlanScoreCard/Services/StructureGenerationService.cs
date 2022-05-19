@@ -231,7 +231,7 @@ namespace PlanScoreCard.Services
                     structure_starter = true;
                     structureGroups.Last().steps.Add(new StructureStep());
                 }
-                
+
                 if (outsideGroup && s == ' ')
                 {
                     checkGroupOperation = true;
@@ -245,55 +245,70 @@ namespace PlanScoreCard.Services
             int groupCount = 0;
             string groupOperationKeep = String.Empty;
             int groupNumKeep = 0;
-            foreach(var group in structureGroups.OrderByDescending(x=>x.groupDepth).ThenBy(x=>x.groupNum))
+            //check if any structure has high resolution segment.
+            bool bAnyHighRes = false;
+            foreach (var step in structureGroups.OrderByDescending(x => x.groupDepth).ThenBy(x => x.groupNum).SelectMany(x => x.steps))
+            {
+                var structure = FindStructureByString(plan, step.structureId);
+                if (structure == null) { return null; }
+                if (structure.IsHighResolution)
+                {
+                    bAnyHighRes = true;
+                    break;
+                }
+            }
+            List<Structure> structuresToDelete = new List<Structure>();
+            foreach (var group in structureGroups.OrderByDescending(x => x.groupDepth).ThenBy(x => x.groupNum))
             {
                 //current_depth = group.groupDepth;
                 SegmentVolume segmentStep = null;
                 string operationKeep = String.Empty;
-                foreach(var structureStep in group.steps)
+                foreach (var structureStep in group.steps)
                 {
-                    if(structureStep == group.steps.First())
+                    if (structureStep == group.steps.First())
                     {
                         var structure = FindStructureByString(plan, structureStep.structureId);
-                        if(structure == null) { return null; }
-                        else
+                        if (structure == null) { return null; }
+                        if (bAnyHighRes)
                         {
-                            segmentStep = structureStep.structureMargin != 0 
-                                ? structure.SegmentVolume.LargeMargin(structureStep.structureMargin) 
-                                : structure.SegmentVolume;
+                            structure = MakeStructureHiRes(plan, structuresToDelete, structure);
                         }
+                        segmentStep = structureStep.structureMargin != 0
+                            ? structure.SegmentVolume.LargeMargin(structureStep.structureMargin)
+                            : structure.SegmentVolume;
                     }
                     else
                     {
                         var structure = FindStructureByString(plan, structureStep.structureId);
                         if (structure == null) { return null; }
-                        else
+                        if (bAnyHighRes)
                         {
-                            switch (operationKeep)
-                            {
-                                case "AND":
-                                    segmentStep = structureStep.structureMargin != 0 ?
-                                        segmentStep.And(structure.SegmentVolume.LargeMargin(structureStep.structureMargin)):
-                                        segmentStep.And(structure.SegmentVolume);
-                                    break;
-                                case "OR":
-                                    segmentStep = structureStep.structureMargin != 0 ?
-                                        segmentStep.Or(structure.SegmentVolume.LargeMargin(structureStep.structureMargin)) :
-                                        segmentStep.Or(structure.SegmentVolume);
-                                    break;
-                                case "SUB":
-                                    segmentStep = structureStep.structureMargin != 0 ?
-                                       segmentStep.Sub(structure.SegmentVolume.LargeMargin(structureStep.structureMargin)) :
-                                       segmentStep.Sub(structure.SegmentVolume);
-                                    break;
-                                default:
-                                    return null;
-                            }
+                            structure = MakeStructureHiRes(plan, structuresToDelete, structure);
+                        }
+                        switch (operationKeep)
+                        {
+                            case "AND":
+                                segmentStep = structureStep.structureMargin != 0 ?
+                                    segmentStep.And(structure.SegmentVolume.LargeMargin(structureStep.structureMargin)) :
+                                    segmentStep.And(structure.SegmentVolume);
+                                break;
+                            case "OR":
+                                segmentStep = structureStep.structureMargin != 0 ?
+                                    segmentStep.Or(structure.SegmentVolume.LargeMargin(structureStep.structureMargin)) :
+                                    segmentStep.Or(structure.SegmentVolume);
+                                break;
+                            case "SUB":
+                                segmentStep = structureStep.structureMargin != 0 ?
+                                   segmentStep.Sub(structure.SegmentVolume.LargeMargin(structureStep.structureMargin)) :
+                                   segmentStep.Sub(structure.SegmentVolume);
+                                break;
+                            default:
+                                return null;
                         }
                     }
                     operationKeep = structureStep.structureOperation;
                 }
-                if(groupCount == 0)
+                if (groupCount == 0)
                 {
                     segment = group.groupMargin != 0 ? segmentStep.LargeMargin(group.groupMargin) : segmentStep;
                     groupOperationKeep = group.groupOperation;
@@ -352,7 +367,7 @@ namespace PlanScoreCard.Services
                 }
                 groupNumKeep = group.groupNum;
                 groupCount++;
-                
+
             }
             #region groupTests
             //foreach (var s in comment.Split('{'))
@@ -457,7 +472,67 @@ namespace PlanScoreCard.Services
             //    depth_keeper = group.groupDepth;
             //}
             #endregion groupSteps
+            //remove hi-res structures generated
+            foreach (var deleteStructures in structuresToDelete)
+            {
+                plan.StructureSet.RemoveStructure(deleteStructures);
+            }
             return segment;
+        }
+
+        private static Structure MakeStructureHiRes(PlanningItem plan, List<Structure> structuresToDelete, Structure structure)
+        {
+            bool bHiRes = structure.IsHighResolution;
+            string structureId = structure.Id;
+            structure = CheckHiResStructre(plan, structureId, out string hiResStructure)
+                ? plan.StructureSet.Structures.FirstOrDefault(x => x.Id == hiResStructure)
+                : plan.StructureSet.AddStructure("CONTROL", hiResStructure);
+            if (bHiRes)
+            {
+                structure.ConvertToHighResolution();
+                structure.SegmentVolume = plan.StructureSet.Structures.FirstOrDefault(x => x.Id == structureId).SegmentVolume;
+            }
+            else
+            {
+                structure.SegmentVolume = plan.StructureSet.Structures.FirstOrDefault(x => x.Id == structureId).SegmentVolume;
+                structure.ConvertToHighResolution();
+            }
+            structuresToDelete.Add(structure);
+            return structure;
+        }
+
+        private static string BuildHiResStructureId(string structureId)
+        {
+            if (structureId.Length < 12)
+            {
+                return structureId + "HR";
+            }
+            else
+            {
+                return structureId.Substring(0, 11) + "HR";
+            }
+        }
+
+        private static bool CheckHiResStructre(PlanningItem plan, string structureId, out string hiResStructure)
+        {
+            if (structureId.Length < 12)
+            {
+                if (plan.StructureSet.Structures.Any(x => x.Id == structureId + "HR"))
+                {
+                    hiResStructure = structureId + "HR";
+                    return true;
+                }
+            }
+            else
+            {
+                if (plan.StructureSet.Structures.Any(x => x.Id == structureId.Substring(0, 11) + "HR"))
+                {
+                    hiResStructure = structureId.Substring(0, 11) + "HR";
+                    return true;
+                }
+            }
+            hiResStructure = BuildHiResStructureId(structureId);
+            return false;
         }
 
         private static Structure FindStructureByString(PlanningItem plan, string id)
@@ -503,7 +578,7 @@ namespace PlanScoreCard.Services
             public string groupComment { get; set; }
             public int groupMargin { get; set; }
             public string groupOperation { get; set; }
-           // public SegmentVolume segment { get; set; }
+            // public SegmentVolume segment { get; set; }
             public List<StructureStep> steps { get; set; }
             public StructureGrouping(int num, int depth, string comment, int margin, string operation)
             {
@@ -523,7 +598,7 @@ namespace PlanScoreCard.Services
             public string structureOperation { get; set; }
 
         }
-  
+
         //private static SegmentVolume BuildSegment(PlanningItem plan, string comment)
         //{
         //    List<int> operation_indexes = new List<int>();
@@ -650,7 +725,7 @@ namespace PlanScoreCard.Services
 
 
     }
-    
+
     static class StructureExtension
     {
         public static SegmentVolume LargeMargin(this SegmentVolume base_segment, int base_margin)

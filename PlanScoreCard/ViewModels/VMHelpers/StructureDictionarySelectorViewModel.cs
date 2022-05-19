@@ -23,6 +23,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         //private string NewStructureId;
 
         public ObservableCollection<string> DictionaryKeys { get; private set; }
+        public ObservableCollection<DictionaryValue> DictionaryValues { get; private set; }
 
         private string _selectedDictionaryKey;
 
@@ -56,6 +57,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                     bAddNewEntry = false;
                     bDeleteStructureDictionaryEntry = false;
                     bMergeDictionaryFromFile = false;
+                    bDeleteMatch = false;
                 }
             }
         }
@@ -73,6 +75,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                     bAddToDictionary = false;
                     bDeleteStructureDictionaryEntry = false;
                     bMergeDictionaryFromFile = false;
+                    bDeleteMatch = false;
                 }
             }
         }
@@ -90,6 +93,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                     bAddNewEntry = false;
                     bAddToDictionary = false;
                     bMergeDictionaryFromFile = false;
+                    bDeleteMatch = false;
                 }
             }
         }
@@ -98,12 +102,32 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         public bool bMergeDictionaryFromFile
         {
             get { return _bMergeDictionaryFromFile; }
-            set { SetProperty(ref _bMergeDictionaryFromFile,value);
+            set
+            {
+                SetProperty(ref _bMergeDictionaryFromFile, value);
                 if (bMergeDictionaryFromFile)
                 {
                     bAddNewEntry = false;
                     bAddToDictionary = false;
                     bDeleteStructureDictionaryEntry = false;
+                    bDeleteMatch = false;
+                }
+            }
+        }
+        private bool _bDeleteMatch;
+
+        public bool bDeleteMatch
+        {
+            get { return _bDeleteMatch; }
+            set 
+            { 
+                SetProperty(ref _bDeleteMatch,value);
+                if (bDeleteMatch)
+                {
+                    bMergeDictionaryFromFile = false;
+                    bAddToDictionary = false;
+                    bDeleteStructureDictionaryEntry = false;
+                    bAddNewEntry = false;
                 }
             }
         }
@@ -122,6 +146,25 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             get { return _fileToMergeText; }
             set { SetProperty(ref _fileToMergeText, value); }
         }
+        private string _selectedDictionaryKeyForModification;
+
+        public string SelectedDictionaryKeyForModification
+        {
+            get { return _selectedDictionaryKeyForModification; }
+            set
+            {
+                SetProperty(ref _selectedDictionaryKeyForModification, value);
+                if (SelectedDictionaryKeyForModification != null)
+                {
+                    DictionaryValues.Clear();
+                    foreach (var dictValue in StructureDictionaryService.StructureDictionary.FirstOrDefault(x => x.StructureID == SelectedDictionaryKeyForModification).StructureSynonyms)
+                    {
+                        DictionaryValues.Add(new DictionaryValue { Value = dictValue });
+                    }
+                }
+            }
+        }
+
 
 
         public DelegateCommand CancelCommand { get; private set; }
@@ -136,6 +179,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             _templateStructureId = templateStructureId;
             StructureDictionaryService = structureDictionaryService;
             DictionaryKeys = new ObservableCollection<string>();
+            DictionaryValues = new ObservableCollection<DictionaryValue>();
             //DictionaryStructures = new List<string>();
             CancelCommand = new DelegateCommand(OnCancel);
             UpdateDictionaryCommand = new DelegateCommand(OnDictionaryUpdate);
@@ -149,9 +193,9 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             var ofd = new OpenFileDialog();
             ofd.Filter = "JSON(*.json)|*.json";
             ofd.Title = "Open Structure Dictionary File to Merge";
-            if(ofd.ShowDialog() == true)
+            if (ofd.ShowDialog() == true)
             {
-                FileToMergeText = ofd.FileName; 
+                FileToMergeText = ofd.FileName;
             }
         }
 
@@ -180,7 +224,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             }
             if (bDeleteStructureDictionaryEntry)
             {
-                if(SelectedDictionaryKey != null)
+                if (SelectedDictionaryKey != null)
                 {
                     StructureDictionaryService.DeleteStructure(SelectedDictionaryKey);
                 }
@@ -190,11 +234,19 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                 if (!String.IsNullOrEmpty(FileToMergeText))
                 {
                     StructureDictionaryService.MergeDictionary(FileToMergeText);
+                    //these events don't seem to be assigned anywhere.
                     EventAggregator.GetEvent<StructureDictionaryAddedEvent>().Publish();
                 }
                 else
                 {
                     System.Windows.MessageBox.Show("No Merge File Selected");
+                }
+            }
+            if (bDeleteMatch)
+            {
+                foreach(var deleteSyn in DictionaryValues.Where(x => x.bChecked))
+                {
+                    StructureDictionaryService.DeleteSynonym(SelectedDictionaryKeyForModification, deleteSyn.Value);
                 }
             }
             CloseAction.Invoke();
@@ -258,4 +310,16 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             Close();
         }*/
     }
+    public class DictionaryValue : BindableBase
+    {
+        private bool _bChecked;
+
+        public bool bChecked
+        {
+            get { return _bChecked; }
+            set { SetProperty(ref _bChecked, value); }
+        }
+        public string Value { get; set; }
+    }
+
 }

@@ -85,6 +85,17 @@ namespace PlanScoreCard.Services
             return true;
 
         }
+        public bool DeleteSynonym(string structureID, string synonym)
+        {
+            StructureDictionaryModel structureMatch = StructureDictionary.FirstOrDefault(s => s.StructureID == structureID);
+            if(structureMatch == null)
+            {
+                return false;
+            }
+            structureMatch.StructureSynonyms.Remove(synonym);
+            UpdateStructureDictionaryConfig();
+            return true;
+        }
 
         public bool AddStructure(string structureID)
         {
