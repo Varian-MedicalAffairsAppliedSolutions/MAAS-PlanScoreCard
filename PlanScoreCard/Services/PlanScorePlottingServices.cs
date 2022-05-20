@@ -167,6 +167,8 @@ namespace PlanScoreCard.Services
                     return $"Mean Dose Score";
                 case MetricTypeEnum.MaxDose:
                     return $"Max Dose Score";
+                case MetricTypeEnum.ConformityIndex:
+                    return "Conformity Index";
                 case MetricTypeEnum.InhomogeneityIndex:
                     return $"Inhomogeneity Index Score";
                 case MetricTypeEnum.ModifiedGradientIndex:

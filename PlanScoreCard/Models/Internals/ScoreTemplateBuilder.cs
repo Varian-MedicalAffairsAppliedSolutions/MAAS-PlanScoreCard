@@ -294,11 +294,11 @@ namespace PlanScoreCard.Models.Internals
                     scoreMetric.HI_Hi = template.HI_HiValue.ToString();
                     scoreMetric.HI_Lo = template.HI_LowValue.ToString();
                     scoreMetric.HI_Target = template.HI_Target.ToString();
-                    scoreMetric.OutputUnit = template.HI_TargetUnit;
+                    scoreMetric.InputUnit = template.HI_TargetUnit;
                 }
                 else if (scoreMetric.MetricType == MetricTypeEnum.ConformityIndex)
                 {
-                    scoreMetric.OutputUnit = template.InputUnit;
+                    scoreMetric.InputUnit = template.InputUnit;
                     scoreMetric.InputValue = template.InputValue.ToString();
                 }
                 else if(scoreMetric.MetricType == MetricTypeEnum.ModifiedGradientIndex)

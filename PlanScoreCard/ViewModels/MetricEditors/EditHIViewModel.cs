@@ -84,7 +84,7 @@ namespace PlanScoreCard.ViewModels.MetricEditors
         private void SetMetric(ScoreMetricModel scoreMetric)
         {
 			ScoreMetric = scoreMetric;
-			SelectedDoseUnit = scoreMetric.OutputUnit;
+			SelectedDoseUnit = scoreMetric.InputUnit;
 			HI_HiValue = Convert.ToDouble(scoreMetric.HI_Hi);
 			HI_LowValue = Convert.ToDouble(scoreMetric.HI_Lo);
 			TargetValue = Convert.ToDouble(scoreMetric.HI_Target);

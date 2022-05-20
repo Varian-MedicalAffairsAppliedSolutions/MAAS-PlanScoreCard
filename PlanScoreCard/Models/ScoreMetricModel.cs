@@ -168,7 +168,10 @@ namespace PlanScoreCard.Models
         public string MetricComment
         {
             get { return _metricComment; }
-            set { SetProperty(ref _metricComment,value); }
+            set 
+            {
+                SetProperty(ref _metricComment,value);
+            }
         }
 
         // Available Structures

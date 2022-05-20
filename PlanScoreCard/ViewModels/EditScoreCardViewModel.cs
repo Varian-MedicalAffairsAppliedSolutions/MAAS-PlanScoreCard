@@ -191,6 +191,8 @@ namespace PlanScoreCard.ViewModels
                 }
             }
         }
+        //this is set to false each time this viewmodel is opened by doing it in the SetPlan method near where the structures are cleared.
+        //the comment above is still true, but uneccessary because now the VM is unsubscribing from all Events when the plan is scored. 
         private bool readyEdit = false;
         private void KeepDictionaryStructure(StructureModel structureModel, string structureId)
         {
@@ -269,7 +271,7 @@ namespace PlanScoreCard.ViewModels
             get { return selectedStructure; }
             set
             {
-                if (readyEdit && SelectedStructure == null && value != null && !String.IsNullOrWhiteSpace(value.StructureId) && !String.IsNullOrEmpty(SelectedScoreMetric.Structure?.TemplateStructureId))
+                if (readyEdit && SelectedStructure == null && value != null && !String.IsNullOrWhiteSpace(value.StructureId) && !String.IsNullOrEmpty(SelectedScoreMetric.Structure?.TemplateStructureId) && value.StructureId != SelectedScoreMetric.Structure?.TemplateStructureId)
                 {
                     KeepDictionaryStructure(SelectedScoreMetric.Structure, value.StructureId);
                 }
@@ -470,10 +472,8 @@ namespace PlanScoreCard.ViewModels
             set
             {
                 SetProperty(ref _metricComment, value);
-                if (!String.IsNullOrEmpty(MetricComment))
-                {
-                    selectedMetric.MetricComment = MetricComment;
-                }
+                SelectedScoreMetric.MetricComment = MetricComment;
+
             }
         }
 
@@ -595,7 +595,7 @@ namespace PlanScoreCard.ViewModels
 
         private void OnUpdateTemplateId()
         {
-            if (SelectedStructure != null && SelectedScoreMetric!=null) 
+            if (SelectedStructure != null && SelectedScoreMetric != null)
             {
                 SelectedScoreMetric.Structure = new StructureModel
                 {
@@ -771,7 +771,15 @@ namespace PlanScoreCard.ViewModels
                 {
                     if (String.IsNullOrEmpty(scoremetric.OutputUnit))
                     {
-                        MessageBox.Show($"Metric {scoremetric.Id + 1} does not have a dose unit selected.");
+                        MessageBox.Show($"Metric {scoremetric.Id} does not have a dose unit selected.");
+                        return false;
+                    }
+                }
+                if (scoremetric.MetricType == MetricTypeEnum.ConformityIndex)
+                {
+                    if (String.IsNullOrEmpty(scoremetric.InputUnit))
+                    {
+                        MessageBox.Show($"Metric {scoremetric.Id} does not have a dose unit selected.");
                         return false;
                     }
                 }
@@ -781,9 +789,25 @@ namespace PlanScoreCard.ViewModels
 
         private void ScorePlan()
         {
-            var scoreTemplate = ScoreTemplateBuilder.Build(ScoreMetrics.ToList(), Structures.ToList());
-            ScoreCard.ScoreMetrics = scoreTemplate;
-            EventAggregator.GetEvent<ScorePlanEvent>().Publish(ScoreCard);
+            if (ValidateMetrics())
+            {
+                var scoreTemplate = ScoreTemplateBuilder.Build(ScoreMetrics.ToList(), Structures.ToList());
+                ScoreCard.ScoreMetrics = scoreTemplate;
+                EventAggregator.GetEvent<ScorePlanEvent>().Publish(ScoreCard);
+            }
+            EventAggregator.GetEvent<LoadEditScoreCardViewEvent>().Unsubscribe(LoadScoreCard);
+            EventAggregator.GetEvent<EditScoreCardSetUserEvent>().Unsubscribe(SetUser);
+            EventAggregator.GetEvent<EditScoreCardSetPlanEvent>().Unsubscribe(SetPlan);
+            EventAggregator.GetEvent<MetricRankChangedEvent>().Unsubscribe(ReRankMetrics);
+            EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Unsubscribe(UpdateScoreMetricPlotModel);
+            EventAggregator.GetEvent<ReRankMetricPointsEvent>().Unsubscribe(ReRankPoints);
+            EventAggregator.GetEvent<UpdateScorePointGridEvent>().Unsubscribe(ReloadScorePoints);
+            //EventAggregator.GetEvent<UpdateScorePointGridEvent>().Subscribe(ReloadScorePoints);
+            EventAggregator.GetEvent<UpdateMetricEditorEvent>().Unsubscribe(ChangeMetricEditor);
+            EventAggregator.GetEvent<AddStructureEvent>().Unsubscribe(AddNewStructure);
+            EventAggregator.GetEvent<UpdateScroreMetricsEvent>().Unsubscribe(UpdateMetrics);
+            EventAggregator.GetEvent<YesEvent>().Unsubscribe(OnDictionaryYes);
+            EventAggregator.GetEvent<NoEvent>().Unsubscribe(OnDictionaryNo);
         }
 
         private void PointDown()
@@ -988,6 +1012,8 @@ namespace PlanScoreCard.ViewModels
                 return;
 
             PlanModel = planModel;
+            Structures.Clear();
+            readyEdit = false;
             foreach (var structure in PlanModel.Structures.OrderBy(s => s.StructureId))
             {
                 Structures.Add(structure);

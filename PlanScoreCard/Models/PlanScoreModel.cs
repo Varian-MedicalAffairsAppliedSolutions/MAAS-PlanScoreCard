@@ -516,12 +516,16 @@ namespace PlanScoreCard.Models
                             System.Windows.MessageBox.Show("No single body structure found.");
                             scoreValue.Value = ScoreMax = scoreValue.Score = -1000; return;
                         }
+                        //goahead and make the DVH absolute volume for conformity index (not saved in template). 
+                        template.OutputUnit = "cc";
                         var dvh_body = PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, body, _dvhResolution);
                         var dvh = PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, structure, _dvhResolution);
                         var body_vol = 0.0;
                         var target_vol = 0.0;
                         PlanScoreCalculationServices.GetVolumesFromDVH(template, dvh_body, dvh, out body_vol, out target_vol);
                         scoreValue.Value = body_vol / structure.Volume;
+                        template.OutputUnit = String.Empty;
+
                     }
                     else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.InhomogeneityIndex)
                     {
