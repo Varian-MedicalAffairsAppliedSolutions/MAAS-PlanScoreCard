@@ -74,6 +74,7 @@ J. Score Rx scaling disappears if PRIMARY plan Rx matches the scorecard
 ![image](https://user-images.githubusercontent.com/78000769/169746611-97aa32f2-1412-4f85-b6db-8f31b73998d7.png)
 ![image](https://user-images.githubusercontent.com/78000769/169746641-7c228fea-ccca-44fc-b66e-9890d2f6331a.png)
 * Then you'll have 2 synonym entries in there so make sure that if you have 2 matches in your structure set, maybe you don't know which one the tool is going to choose (but I'd assume the first in order). Notice when I reload the tool they all match to "Hearts" because that's the first in the list.
+
 ![image](https://user-images.githubusercontent.com/78000769/169746989-26210997-7a36-49c4-bfa2-d2879e9a8211.png)
 * If you wanted to modify the actual scorecard, there is a new button to do that. This should allow you to maybe change the scorecard to a new naming convention you'd want to use.
 ![image](https://user-images.githubusercontent.com/78000769/169747053-a6138210-3985-45e6-8d65-35c34d2f83bb.png)
