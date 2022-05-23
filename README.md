@@ -33,6 +33,7 @@
 #### Improvements:
 ![MainScreenChanges](https://user-images.githubusercontent.com/78000769/169741261-04f08e03-1d04-47dd-a3e4-93f7f0198f6a.png)
 * MainScreen UI improvements:
+
 A. Not Validated for Clinical USE moved to title
 
 B. The word Summary Removed
