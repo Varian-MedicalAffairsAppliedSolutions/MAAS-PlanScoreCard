@@ -98,13 +98,13 @@ J. Score Rx scaling disappears if PRIMARY plan Rx matches the scorecard
 * Set the structure collection to clear each time so it should only show the primary plan's structures.
 * Can now delete metric comment all the way
   
-### Known issues
+### Known issues:
 * Unable to change metric type or edit metrics after clicking recalculate score (must restart PlanScoreCard and reload to edit)
 * No longer real time plot updating in Metric Editor
 * Intermittent color change on adjacent label in qualitative label/edit color picker
 * Certain patients cause crash on launching PlanScoreCard (only seen in V17)
  
-### Feature roadmap
+### Feature roadmap:
 * guided structure builder (aka: simple mode, to be in front of current advanced structure builder)
 * reload current patient from Eclipse button
 * command line interface
