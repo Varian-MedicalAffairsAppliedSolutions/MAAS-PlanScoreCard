@@ -30,7 +30,7 @@
 
 ### Common Troubleshooting
 
-##### Unblock .zip
+##### Unblock .zip prior to unzipping
 ![ZipFileUnblockedPriorToExtract](https://user-images.githubusercontent.com/78000769/169857843-a342b6b8-5f6f-41d5-9b2e-32995778280d.png)
 
 ##### Permissions on Directory with executable
