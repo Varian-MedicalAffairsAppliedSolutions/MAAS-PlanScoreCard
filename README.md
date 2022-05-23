@@ -2,13 +2,13 @@
 
 ##### Medical Affairs Applied Solutions ESAPI tool to create dosimetric ScoreCards and score plans.
 ##### Features:
-* Quantitative peicewise linear scoring functions for each metric
+* Quantitative piecewise linear scoring functions for each metric
   * optional: flag for point where "variation acceptable" sited on referenced protocol
   * optional: note section to site referenced protocol or justification for metric (points)
-  * optional: qualititive colors and labels for metric points, ie: orange="Just OK"
+  * optional: qualitative colors and labels for metric points, ie: orange="Just OK"
 * Compare multiple plans in multiple courses at the same time for a given patient
-* Advanced scoring critera supported
-* Advanced structure matching logic with integrated customizable preloaded json stucture dictionary
+* Advanced scoring criteria supported
+* Advanced structure matching logic with integrated customizable preloaded json structure dictionary
 * In-metric Structure Boolean/expansions created dynamically for scoring 
   * optionally save back to Plan if script approval/writable
 * Normalize dose to max score
@@ -99,7 +99,7 @@ J. Score Rx scaling disappears if PRIMARY plan Rx matches the scorecard
 * Can now delete metric comment all the way
   
 ### Known issues
-* Unable to change metric type or edit metrics after clicking recalulate score (must restart PlanScoreCard and reload to edit)
+* Unable to change metric type or edit metrics after clicking recalculate score (must restart PlanScoreCard and reload to edit)
 * No longer real time plot updating in Metric Editor
 * Intermittent color change on adjacent label in qualitative label/edit color picker
 * Certain patients cause crash on launching PlanScoreCard (only seen in V17)
