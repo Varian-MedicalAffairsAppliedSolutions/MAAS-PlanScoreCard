@@ -57,6 +57,7 @@ J. Score Rx scaling disappears if PRIMARY plan Rx matches the scorecard
 
 #### ScoreCard Builder improvements: Fixed issues with "Do Not Ask Again" on structure matching.
 * Initial structure dictionary
+
 ![image](https://user-images.githubusercontent.com/78000769/169745487-1388db2e-346e-412b-b8c0-56751c0662fb.png)
 * If a structure is unrecognized it will be unmatched.
 ![image](https://user-images.githubusercontent.com/78000769/169745557-ec7d929d-6493-4583-8d47-ec84177e1190.png)
@@ -65,6 +66,7 @@ J. Score Rx scaling disappears if PRIMARY plan Rx matches the scorecard
 * If you say yes, you should see all the structures get matched. (just use the default) selection
 ![image](https://user-images.githubusercontent.com/78000769/169746037-52205861-2daf-4d4b-9f7d-243b26bd7e6c.png)
 * Now the dictionary looks like this:
+
 ![image](https://user-images.githubusercontent.com/78000769/169746162-5eeffc0c-0332-40bd-a633-497c39193047.png)
 * Note that you have to click on the new row to get the text in the structure column to update.
 ![image](https://user-images.githubusercontent.com/78000769/169746208-183c168a-e16b-45dd-bfde-bd9e1d673800.png)
