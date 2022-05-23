@@ -28,8 +28,15 @@
 ### Structure Builder
 ![StructureBuilder1 0 0](https://user-images.githubusercontent.com/78000769/169741212-82f16a0d-1e11-4ee4-863d-ac2446486c5b.png)
 
+### Common Troubleshooting
 
-## V1.0.0-05.19.2022
+##### Unblock .zip
+![ZipFileUnblockedPriorToExtract](https://user-images.githubusercontent.com/78000769/169857843-a342b6b8-5f6f-41d5-9b2e-32995778280d.png)
+
+##### Permissions on Directory with executable
+![NTFSpermissionsDir](https://user-images.githubusercontent.com/78000769/169858109-43550451-13da-4de4-afff-893afecfd4cd.png)
+
+## Current version: V1.0.0-05.19.2022
 ### Improvements:
 ![MainScreenChanges](https://user-images.githubusercontent.com/78000769/169741261-04f08e03-1d04-47dd-a3e4-93f7f0198f6a.png)
 ##### MainScreen UI improvements:
@@ -101,10 +108,12 @@ J. Score Rx scaling disappears if PRIMARY plan Rx matches the scorecard
 ### Known issues:
 * Unable to change metric type or edit metrics after clicking recalculate score (must restart PlanScoreCard and reload to edit)
 * No longer real time plot updating in Metric Editor
-* Intermittent color change on adjacent label in qualitative label/edit color picker
+* Intermittent color/label change on adjacent color/label in qualitative label/edit color picker
 * Certain patients cause crash on launching PlanScoreCard (only seen in V17)
+* Reparse existing structurebuilder structures for editing (currently must delete and re-create)
+* Modified gradient index crashes if values left blank
  
-### Feature roadmap:
+### 1.X Feature roadmap:
 * guided structure builder (aka: simple mode, to be in front of current advanced structure builder)
 * reload current patient from Eclipse button
 * command line interface
