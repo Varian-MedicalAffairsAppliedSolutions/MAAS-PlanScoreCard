@@ -117,5 +117,5 @@ J. Score Rx scaling disappears if PRIMARY plan Rx matches the scorecard
 * guided structure builder (aka: simple mode, to be in front of current advanced structure builder)
 * reload current patient from Eclipse button
 * command line interface to output plan scores to the CLI or automate generation of CSV/PDF
-* Import/Export buttons on Structure Builder to support opening and saving various file types
+* Import/Export buttons on ScoreCard Builder to support opening and saving various file types
 * optional DVH rendering below UI with horizontal(D@V)+vertical(V@D) scoring brackets per selected structure
