@@ -19,7 +19,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using VMS.TPS.Common.Model.API;
 
-[assembly: ESAPIScript(IsWriteable = true)]
 namespace PlanScoreCard
 {
     /// <summary>
@@ -100,7 +99,8 @@ namespace PlanScoreCard
                 DateTime endDate = DateTime.Now;
                 var configUpdate = GetUpdatedConfigFile();
                 var eulaValue = configUpdate.AppSettings.Settings["EulaAgree"].Value;
-                if (configUpdate!=null && DateTime.TryParse("06/30/2022", provider, DateTimeStyles.None, out endDate) && eulaValue == "true")
+                var asmCa = typeof(StartupCore).Assembly.CustomAttributes.FirstOrDefault(ca => ca.AttributeType == typeof(AssemblyExpirationDate));
+                if (configUpdate != null && DateTime.TryParse(asmCa.ConstructorArguments.FirstOrDefault().Value as string, provider, DateTimeStyles.None, out endDate) && eulaValue == "true")
                 {
                     if (DateTime.Now <= endDate)
                     {
