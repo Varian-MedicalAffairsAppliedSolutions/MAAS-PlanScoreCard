@@ -1,9 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31612.314
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32510.428
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanScoreCard", "PlanScoreCard\PlanScoreCard.csproj", "{08D671CB-3A1D-4DFE-A561-6BCB5F6C3F69}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHubActions", "GitHubActions", "{031FB88B-3F02-4016-8840-4049EDE34FD0}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build-MAAS-PlanScoreCard-156.yml = .github\workflows\build-MAAS-PlanScoreCard-156.yml
+		.github\workflows\changeESAPIHintPaths.ps1 = .github\workflows\changeESAPIHintPaths.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

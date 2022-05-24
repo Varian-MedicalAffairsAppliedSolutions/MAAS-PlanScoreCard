@@ -235,9 +235,7 @@
     <Compile Include="Models\StructureModelNestingModel.cs" />
     <Compile Include="Models\StructureOperationEnum.cs" />
     <Compile Include="Models\StructureOperationModel.cs" />
-    <Compile Include="PlanScorecardLauncher.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
+    <Compile Include="Properties\AssemblyExpirationDate.cs" />
     <Compile Include="Services\NormalizationService.cs" />
     <Compile Include="Services\PatientSelectService.cs" />
     <Compile Include="Services\PlanScoreCalculationServices.cs" />
@@ -367,6 +365,12 @@
     <Compile Include="Views\testView.xaml.cs">
       <DependentUpon>testView.xaml</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ContentWithTargetPath Include="Launcher\PlanScorecardLauncher.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>PlanScorecardLauncher.cs</TargetPath>
+    </ContentWithTargetPath>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
