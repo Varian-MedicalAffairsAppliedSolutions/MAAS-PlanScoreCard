@@ -1,8 +1,8 @@
 ﻿using Prism.Events;
 
-namespace PlanScoreCard.Events.Plugin
+namespace PlanScoreCard.Events.Plugins
 {
-    public class PlotUpdateEvent : PubSubEvent<string>
+    public class PlotUpdateEvent:PubSubEvent<string>
     {
     }
 }

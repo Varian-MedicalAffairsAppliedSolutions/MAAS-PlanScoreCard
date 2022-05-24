@@ -634,13 +634,13 @@ namespace PlanScoreCard.ViewModels
             }
 
             //Plans.First().bPrimary = true;
-
+            ScorePlan();
         }
 
         // Score Plan
         private void ScorePlan()
         {
-            if (ScoreCard != null)
+            if (ScoreCard != null && Plans.Count()>0 && Plans.Any(x=>x.bPrimary))
                 ScorePlan(ScoreCard);
 
             ProgressViewService.Close();

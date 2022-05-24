@@ -3,6 +3,7 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using PlanScoreCard.Events;
 using PlanScoreCard.Events.Plugin;
+using PlanScoreCard.Events.Plugins;
 using PlanScoreCard.Services;
 using Prism.Commands;
 using Prism.Events;

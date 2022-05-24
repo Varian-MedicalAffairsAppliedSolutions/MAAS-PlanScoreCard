@@ -79,7 +79,7 @@ namespace PlanScoreCard
         }
         public void StartupApp(object sender, StartupEventArgs e, IEventAggregator eventAggregator)
         {
-            
+
             try
             {
 
@@ -88,7 +88,7 @@ namespace PlanScoreCard
                 //configFile.AppSettings.Settings.Remove("EULAAgree");
                 //configFile.AppSettings.Settings["EULAAgree"].Value = "true";
                 var configFile = GetUpdatedConfigFile();
-                if (configFile!=null && configFile.AppSettings.Settings["EulaAgree"].Value != "true")
+                if (configFile != null && configFile.AppSettings.Settings["EulaAgree"].Value != "true")
                 {
                     eventAggregator.GetEvent<CloseEulaEvent>().Subscribe(OnCloseEula);
                     eulaView = new EULAView();
@@ -197,8 +197,14 @@ namespace PlanScoreCard
             //NavigationViewModel.DisposePlugin();
             _app.ClosePatient();
             var _patient = _app.OpenPatientById(_patientId);
-            var _course = _patient.Courses.FirstOrDefault(x => x.Id == _courseId);
-            var _plan = _course.PlanSetups.FirstOrDefault(x => x.Id == _planId);
+            var bnewCourse = feedback.Split('\n').Last().Contains(';') ? _patient.Courses.Any(x => x.Id == feedback.Split('\n').Last().Split(';').First()) : false;
+            var _course = bnewCourse?
+                _patient.Courses.FirstOrDefault(x=>x.Id == feedback.Split('\n').Last().Split(';').First()) 
+                :_patient.Courses.FirstOrDefault(x => x.Id == _courseId);
+            var bnewPlan = feedback.Split('\n').Last().Contains(';') ? _course.PlanSetups.Any(x => x.Id == feedback.Split('\n').Last().Split(';').Last()) : false;
+            var _plan = bnewPlan?
+                _course.PlanSetups.FirstOrDefault(x=>x.Id == feedback.Split('\n').Last().Split(';').Last())
+                :_course.PlanSetups.FirstOrDefault(x => x.Id == _planId);
             (view.DataContext as ScoreCardViewModel).UpdatePlanModel(_patient, _course, _plan);
             //ScoreCardViewModel.UpdatePlanModel(_patient, _course, _plan);
             //NavigationViewModel.UpdatePlanParameters(_patient, _course, _plan, feedbacks);

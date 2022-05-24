@@ -1,4 +1,5 @@
 ﻿using PlanScoreCard.Events.Plugin;
+using PlanScoreCard.Events.Plugins;
 using PlanScoreCard.Models;
 using PlanScoreCard.Models.Internals;
 using Prism.Events;
