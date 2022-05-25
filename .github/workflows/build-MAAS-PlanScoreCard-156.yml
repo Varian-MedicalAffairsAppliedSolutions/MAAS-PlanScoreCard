@@ -17,8 +17,8 @@ jobs:
   build:
     runs-on: windows-2019
     env:
-      GITHUB_WORKSPACE_PACKAGES_PATH: packages\ESAPI.15.6.0\lib\net45\
-      CSPROJ_PATH: DateTimeLessTest.csproj
+      GITHUB_WORKSPACE_PACKAGES_PATH: ..\packages\ESAPI.15.6.0\lib\net45\
+      CSPROJ_PATH: PlanScoreCard/PlanScoreCard.csproj
       PROJECT_NAME: PlanScoreCard
 
     steps:
@@ -36,7 +36,7 @@ jobs:
     - name: Update Expiration Date
       uses: rshillington/file-content-replacer@master
       with:
-        files: "${{ github.workspace }}/Properties/AssemblyInfo.cs"
+        files: "${{ github.workspace }}/PlanScoreCard/Properties/AssemblyInfo.cs"
         from: "EXPIRATION_DATE"
         to: "${{ github.event.inputs.dateInput }}"
         
@@ -45,22 +45,25 @@ jobs:
       with:
         nuget-version: latest
         
+    - name: Download nuget packages
+      run: nuget install PlanScoreCard/packages.config -OutputDirectory packages
+        
     - name: Add VIC GitHub NuGet repository
       run: nuget source add -Name github -Source "https://nuget.pkg.github.com/Varian-Innovation-Center/index.json" -UserName pszentiv -Password ${{ secrets.ESAPI_READ_TOKEN }} -StorePasswordInClearText         
      
-    - name: Download nuget package
-      run: nuget install ESAPI -Version 15.6.0 -OutputDirectory packages
+    - name: Download internal ESAPI nuget package
+      run: nuget install ESAPI -Version 15.6.0 -OutputDirectory packages    
 
     - name: Update hint paths in the csproj file
       run: .\.github\workflows\changeESAPIHintPaths.ps1
       
     - name: Build Solution
-      run: msbuild.exe DateTimeLessTest.sln /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="x64" /p:configuration="Release"
+      run: msbuild.exe PlanScoreCard.sln /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="x64" /p:configuration="Release"
       
     - name: Zip
       shell: powershell
       run: |
-        Compress-Archive -Path "$($env:GITHUB_WORKSPACE)/bin/x64/Release/*" -DestinationPath "$($env:GITHUB_WORKSPACE)/$($env:PROJECT_NAME).zip"
+        Compress-Archive -Path "$($env:GITHUB_WORKSPACE)/PlanScoreCard/bin/x64/Release/*" -DestinationPath "$($env:GITHUB_WORKSPACE)/$($env:PROJECT_NAME).zip"
         
     - name: Create Release
       id: create_release
