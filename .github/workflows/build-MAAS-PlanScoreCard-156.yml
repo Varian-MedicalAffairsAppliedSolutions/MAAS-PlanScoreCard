@@ -63,7 +63,7 @@ jobs:
     - name: Zip
       shell: powershell
       run: |
-        Compress-Archive -Path "$($env:GITHUB_WORKSPACE)/bin/x64/Release/*" -DestinationPath "$($env:GITHUB_WORKSPACE)/$($env:PROJECT_NAME).zip"
+        Compress-Archive -Path "$($env:GITHUB_WORKSPACE)/PlanScoreCard/bin/x64/Release/*" -DestinationPath "$($env:GITHUB_WORKSPACE)/$($env:PROJECT_NAME).zip"
         
     - name: Create Release
       id: create_release
