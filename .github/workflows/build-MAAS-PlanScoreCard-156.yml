@@ -45,14 +45,14 @@ jobs:
       with:
         nuget-version: latest
         
+    - name: Download nuget packages
+      run: nuget install PlanScoreCard/packages.config -OutputDirectory packages
+        
     - name: Add VIC GitHub NuGet repository
       run: nuget source add -Name github -Source "https://nuget.pkg.github.com/Varian-Innovation-Center/index.json" -UserName pszentiv -Password ${{ secrets.ESAPI_READ_TOKEN }} -StorePasswordInClearText         
      
     - name: Download internal ESAPI nuget package
-      run: nuget install ESAPI -Version 15.6.0 -OutputDirectory packages
-    
-    - name: Download nuget packages
-      run: nuget install PlanScoreCard/packages.config -OutputDirectory packages
+      run: nuget install ESAPI -Version 15.6.0 -OutputDirectory packages    
 
     - name: Update hint paths in the csproj file
       run: .\.github\workflows\changeESAPIHintPaths.ps1
