@@ -650,12 +650,16 @@ namespace PlanScoreCard.ViewModels
         {
             if (EditScoreCardView != null)
             {
+                
                 if (EditScoreCardView.IsVisible)
                 { EditScoreCardView.Hide(); }
             }
 
             ScoreCard = scoreCard;
-
+            //the scorecard rx may have changed
+            DosePerFraction= scoreCard.DosePerFraction;
+            NumberOfFractions = scoreCard.NumberOfFractions;
+            //SetRxMessage();
             ProgressViewService.ShowProgress("Scoring Plans", 100, true);
             ProgressViewService.SendToFront();
 

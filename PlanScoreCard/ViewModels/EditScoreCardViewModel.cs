@@ -795,19 +795,19 @@ namespace PlanScoreCard.ViewModels
                 ScoreCard.ScoreMetrics = scoreTemplate;
                 EventAggregator.GetEvent<ScorePlanEvent>().Publish(ScoreCard);
             }
-            EventAggregator.GetEvent<LoadEditScoreCardViewEvent>().Unsubscribe(LoadScoreCard);
-            EventAggregator.GetEvent<EditScoreCardSetUserEvent>().Unsubscribe(SetUser);
-            EventAggregator.GetEvent<EditScoreCardSetPlanEvent>().Unsubscribe(SetPlan);
-            EventAggregator.GetEvent<MetricRankChangedEvent>().Unsubscribe(ReRankMetrics);
-            EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Unsubscribe(UpdateScoreMetricPlotModel);
-            EventAggregator.GetEvent<ReRankMetricPointsEvent>().Unsubscribe(ReRankPoints);
-            EventAggregator.GetEvent<UpdateScorePointGridEvent>().Unsubscribe(ReloadScorePoints);
-            //EventAggregator.GetEvent<UpdateScorePointGridEvent>().Subscribe(ReloadScorePoints);
-            EventAggregator.GetEvent<UpdateMetricEditorEvent>().Unsubscribe(ChangeMetricEditor);
-            EventAggregator.GetEvent<AddStructureEvent>().Unsubscribe(AddNewStructure);
-            EventAggregator.GetEvent<UpdateScroreMetricsEvent>().Unsubscribe(UpdateMetrics);
-            EventAggregator.GetEvent<YesEvent>().Unsubscribe(OnDictionaryYes);
-            EventAggregator.GetEvent<NoEvent>().Unsubscribe(OnDictionaryNo);
+            //EventAggregator.GetEvent<LoadEditScoreCardViewEvent>().Unsubscribe(LoadScoreCard);
+            //EventAggregator.GetEvent<EditScoreCardSetUserEvent>().Unsubscribe(SetUser);
+            //EventAggregator.GetEvent<EditScoreCardSetPlanEvent>().Unsubscribe(SetPlan);
+            //EventAggregator.GetEvent<MetricRankChangedEvent>().Unsubscribe(ReRankMetrics);
+            //EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Unsubscribe(UpdateScoreMetricPlotModel);
+            //EventAggregator.GetEvent<ReRankMetricPointsEvent>().Unsubscribe(ReRankPoints);
+            //EventAggregator.GetEvent<UpdateScorePointGridEvent>().Unsubscribe(ReloadScorePoints);
+            ////EventAggregator.GetEvent<UpdateScorePointGridEvent>().Subscribe(ReloadScorePoints);
+            //EventAggregator.GetEvent<UpdateMetricEditorEvent>().Unsubscribe(ChangeMetricEditor);
+            //EventAggregator.GetEvent<AddStructureEvent>().Unsubscribe(AddNewStructure);
+            //EventAggregator.GetEvent<UpdateScroreMetricsEvent>().Unsubscribe(UpdateMetrics);
+            //EventAggregator.GetEvent<YesEvent>().Unsubscribe(OnDictionaryYes);
+            //EventAggregator.GetEvent<NoEvent>().Unsubscribe(OnDictionaryNo);
         }
 
         private void PointDown()
