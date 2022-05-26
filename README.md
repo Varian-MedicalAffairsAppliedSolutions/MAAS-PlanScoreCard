@@ -36,7 +36,7 @@
 ##### Permissions on Directory with executable
 ![NTFSpermissionsDir](https://user-images.githubusercontent.com/78000769/169858109-43550451-13da-4de4-afff-893afecfd4cd.png)
 
-## Current version: V1.0.1-05.25.2022
+## Current version: V2.5.6.8-05/26/2022
 ### Improvements:
 N/A
 
@@ -62,7 +62,7 @@ N/A
 
 ## Changelog
 
-## V1.0.0-05.19.2022
+## V2.5.0.6-05/19/2022
 ### Improvements:
 ![MainScreenChanges](https://user-images.githubusercontent.com/78000769/169741261-04f08e03-1d04-47dd-a3e4-93f7f0198f6a.png)
 ##### MainScreen UI improvements:
