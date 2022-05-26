@@ -60,8 +60,9 @@ N/A
 * optional DVH rendering below UI with horizontal(D@V)+vertical(V@D) scoring brackets per selected structure
 
 
-##Changelog
-##V1.0.0-05.19.2022
+## Changelog
+
+## V1.0.0-05.19.2022
 ### Improvements:
 ![MainScreenChanges](https://user-images.githubusercontent.com/78000769/169741261-04f08e03-1d04-47dd-a3e4-93f7f0198f6a.png)
 ##### MainScreen UI improvements:
