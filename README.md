@@ -48,9 +48,12 @@ N/A
 * Fixed change the Rx in the scorecard editor, back on scorecard page the Rx isn't updated
   
 ### Known issues:
-* Intermittent color/label change on adjacent color/label in qualitative label/edit color picker
-* Certain patients cause crash on launching PlanScoreCard (only seen in V17)
-* Reparse existing structurebuilder structures for editing (currently must delete and re-create)
+* ScoreCardBuilder Intermittent color/label change also changes lowest color/label in qualitative label/edit color picker
+* ScoreCardBuilder Selecting metric value for variation does not update plot
+* ScoreCardBuilder Possible to select multiple variation values in a single metric 
+* ScoreCardBuilder Copying metric without structure assigned crashes app
+* Main Certain patients cause crash on launching PlanScoreCard (only seen in V17)
+* StructureBuilder Reparse existing structurebuilder structures for editing (currently must delete and re-create)
  
 ### 1.X Feature roadmap:
 * guided structure builder (aka: simple mode, to be in front of current advanced structure builder)
