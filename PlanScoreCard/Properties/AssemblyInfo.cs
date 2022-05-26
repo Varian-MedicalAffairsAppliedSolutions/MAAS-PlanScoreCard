@@ -16,7 +16,7 @@ using VMS.TPS.Common.Model.API;
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyExpirationDate("06/30/2022")]
+[assembly: AssemblyExpirationDate("EXPIRATION_DATE")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to
@@ -56,6 +56,5 @@ using VMS.TPS.Common.Model.API;
 //
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.5.0.6")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("2.5.6")]
+[assembly: AssemblyFileVersion("2.5.6")]
