@@ -36,7 +36,32 @@
 ##### Permissions on Directory with executable
 ![NTFSpermissionsDir](https://user-images.githubusercontent.com/78000769/169858109-43550451-13da-4de4-afff-893afecfd4cd.png)
 
-## Current version: V1.0.0-05.19.2022
+## Current version: V1.0.1-05.25.2022
+### Improvements:
+N/A
+
+### Bugfixes:
+* Fixed unable to change metric type or edit metrics after clicking recalculate score (must restart PlanScoreCard and reload to edit)
+* Fixed no longer real time plot updating in Metric Editor
+* Fixed modified gradient index crashes if values left blank
+* Fixed metrics, structures, and Rx from a previously opened scorecard are propagated to the editor
+* Fixed change the Rx in the scorecard editor, back on scorecard page the Rx isn't updated
+  
+### Known issues:
+* Intermittent color/label change on adjacent color/label in qualitative label/edit color picker
+* Certain patients cause crash on launching PlanScoreCard (only seen in V17)
+* Reparse existing structurebuilder structures for editing (currently must delete and re-create)
+ 
+### 1.X Feature roadmap:
+* guided structure builder (aka: simple mode, to be in front of current advanced structure builder)
+* reload current patient from Eclipse button
+* command line interface to output plan scores to the CLI or automate generation of CSV/PDF
+* Import/Export buttons on ScoreCard Builder to support opening and saving various file types
+* optional DVH rendering below UI with horizontal(D@V)+vertical(V@D) scoring brackets per selected structure
+
+
+##Changelog
+##V1.0.0-05.19.2022
 ### Improvements:
 ![MainScreenChanges](https://user-images.githubusercontent.com/78000769/169741261-04f08e03-1d04-47dd-a3e4-93f7f0198f6a.png)
 ##### MainScreen UI improvements:
