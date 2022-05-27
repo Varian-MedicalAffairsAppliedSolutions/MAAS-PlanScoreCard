@@ -278,6 +278,7 @@
     <Compile Include="ViewModels\VMHelpers\AskAddDictionaryStructureViewModel.cs" />
     <Compile Include="ViewModels\VMHelpers\EULAViewModel.cs" />
     <Compile Include="ViewModels\VMHelpers\MessageViewModel.cs" />
+    <Compile Include="ViewModels\VMHelpers\ObservableCollectionEx.cs" />
     <Compile Include="ViewModels\VMHelpers\StructureDictionarySelectorViewModel.cs" />
     <Compile Include="ViewModels\VolumeAtDoseViewModel.cs" />
     <Compile Include="Views\BuildStructureView.xaml.cs">

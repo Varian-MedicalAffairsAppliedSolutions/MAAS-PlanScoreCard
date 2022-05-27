@@ -622,10 +622,10 @@ namespace PlanScoreCard.ViewModels
             // For each course, add all the Plans
             foreach (Course course in Patient.Courses)
             {
-                foreach (PlanSetup plan in course.PlanSetups)
+                foreach (PlanSetup plan in course.PlanSetups.Where(x=>x.StructureSet!=null))
                     Plans.Add(new PlanModel(plan, EventAggregator));
             }
-            if (Plan != null)
+            if (Plan != null && Plan.StructureSet!=null)
             {
                 if (Plans.Any(x => x.PlanId == Plan.Id && x.CourseId == Course.Id))
                 {

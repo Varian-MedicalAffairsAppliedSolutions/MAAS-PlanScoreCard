@@ -91,6 +91,7 @@ namespace PlanScoreCard.Models
             set
             {
                 SetProperty(ref _bMetricChecked, value);
+                NotifyPropertyChanged();
                 _eventAggregator.GetEvent<VariationCheckedEvent>().Publish(new Tuple<int, int>(MetricId, PointId));
             }
         }

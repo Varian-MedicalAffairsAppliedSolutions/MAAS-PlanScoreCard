@@ -418,7 +418,7 @@ namespace PlanScoreCard.Models
                 OnAddPlotScorePoint(ids.Item1);
             }
         }
-
+        //NOT USED
         private void OnPointUp(Tuple<int, int> ids)
         {
             if (Id == ids.Item1)
@@ -466,7 +466,7 @@ namespace PlanScoreCard.Models
                 OnAddPlotScorePoint(ids.Item1);
             }
         }
-
+        //NOT USED
         private void OnPointDown(Tuple<int, int> ids)
         {
             if (Id == ids.Item1 && ids.Item2 < ScorePoints.Count())
@@ -517,7 +517,7 @@ namespace PlanScoreCard.Models
 
         private void OnVariationChanged(Tuple<int, int> ids)
         {
-            if (Id == ids.Item1 && ScorePoints.Count() != 0 && ScorePoints.Any(x => x.PointId == ids.Item2))
+            if (Id == ids.Item1+1 && ScorePoints.Count() != 0 && ScorePoints.Any(x => x.PointId == ids.Item2))
             {
                 if (ScorePoints.FirstOrDefault(x => x.PointId == ids.Item2).bMetricChecked)
                 {
@@ -526,12 +526,12 @@ namespace PlanScoreCard.Models
                     {
                         if (metric.PointId != ids.Item2)
                         {
-                            metric.bMidMetric = false;
+                            metric.bMetricChecked = metric.bMidMetric =  false;
                         }
                     }
                     OnAddPlotScorePoint(Id);
                 }
-                else
+                if(ScorePoints.All(x=>!x.bMetricChecked))
                 {
                     OnAddPlotScorePoint(Id);
                 }

@@ -234,7 +234,9 @@
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
-                                    <DataGridCheckBoxColumn Header="Variation" Binding="{Binding bMetricChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <DataGridCheckBoxColumn Header="Variation" Binding="{Binding Path=bMetricChecked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                                        
+                                    </DataGridCheckBoxColumn>
                                     <DataGridTemplateColumn Header="Color">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
