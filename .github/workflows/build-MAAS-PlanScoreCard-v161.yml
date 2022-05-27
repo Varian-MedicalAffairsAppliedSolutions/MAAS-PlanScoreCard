@@ -76,8 +76,8 @@ jobs:
       shell: powershell
       run: |
         Compress-Archive `
-          -Path "${{ github.workspace }}/bin/x64/Release/*" `
-          -DestinationPath "${{ env.PROJECT_ROOT }}/${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}-EclipseV161.zip"
+          -Path "${{ env.PROJECT_ROOT }}/bin/x64/Release/*" `
+          -DestinationPath "${{ github.workspace }}/${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}-EclipseV161.zip"
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
