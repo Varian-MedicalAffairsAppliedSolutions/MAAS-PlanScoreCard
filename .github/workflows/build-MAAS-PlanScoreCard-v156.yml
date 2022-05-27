@@ -1,0 +1,95 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Build for v15.6
+
+on: 
+  workflow_dispatch:
+    inputs:
+      dateInput:
+        description: 'Expiration Date'
+        required: true
+        default: '8/24/2022'
+
+jobs:
+  build:
+    runs-on: windows-2019
+    env:
+      GITHUB_WORKSPACE_PACKAGES_PATH: ..\packages\ESAPI.15.6.0\lib\net45\
+      PROJECT_NAME: PlanScoreCard
+      PROJECT_ROOT: ${{ github.workspace }}/PlanScoreCard
+      CSPROJ_FILE_NAME: PlanScoreCard.csproj
+      SOLUTION_NAME: PlanScoreCard.sln
+      BUILD_NUMBER: ${{ github.run_number }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.0.2
+      
+    - name: Navigate to Workspace
+      run: cd $GITHUB_WORKSPACE
+    
+    - name: Update AssemblyInfo.cs (Expiration date and Version number)
+      id: update_assembly_info
+      run: |
+        .\.github\workflows\Update-AssemblyInfo.ps1 `
+          -AssemblyInfoFilePath ${{ env.PROJECT_ROOT }}/Properties/AssemblyInfo.cs `
+          -ExpirationDate "${{ github.event.inputs.dateInput }}" `
+          -BuildNumber ${{ env.BUILD_NUMBER }} `
+          -ProjectName ${{ env.PROJECT_NAME }}
+
+    - name: Setup NuGet.exe for use with actions
+      uses: NuGet/setup-nuget@v1.0.6
+      with:
+        nuget-version: latest
+        
+    - name: Download nuget packages
+      run: nuget install ${{ env.PROJECT_ROOT }}/packages.config -OutputDirectory packages
+        
+    - name: Add VIC GitHub NuGet repository
+      run: nuget source add `
+           -Name github `
+           -Source "https://nuget.pkg.github.com/Varian-Innovation-Center/index.json" `
+           -UserName pszentiv `
+           -Password ${{ secrets.ESAPI_READ_TOKEN }} `
+           -StorePasswordInClearText         
+     
+    - name: Download internal ESAPI nuget package
+      run: nuget install ESAPI -Version 15.6.0 -OutputDirectory packages    
+
+    - name: Update hint paths in the csproj file
+      run: |
+        .\.github\workflows\Update-EsapiHintPaths.ps1 `
+        -CsprojFilePath ${{ env.PROJECT_ROOT }} `
+        -CsprojFileName ${{ env.CSPROJ_FILE_NAME }}
+        
+    - name: Build Solution
+      run: msbuild.exe ${{ env.SOLUTION_NAME }} /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="x64" /p:configuration="Release"
+      
+    - name: Zip
+      shell: powershell
+      run: |
+        Compress-Archive `
+          -Path "${{ env.PROJECT_ROOT }}/bin/x64/Release/*" `
+          -DestinationPath "${{ github.workspace }}/${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}-EclipseV156.zip"
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: ${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-EclipseV15.6
+        tag_name: ${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-EclipseV15.6
+        token: ${{ secrets.GITHUB_TOKEN }}
+        draft: false
+        prerelease: false
+        body: |
+          This is an official release of the **`${{ env.PROJECT_NAME }}`** project.
+          Supported Eclipse version: `v15.6`.
+          The generated dll is valid until `${{ github.event.inputs.dateInput }}`, and generated on `${{ steps.update_assembly_info.outputs.CURRENT_DATE }}`.
+        files: ${{ github.workspace }}/${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}-EclipseV156.zip

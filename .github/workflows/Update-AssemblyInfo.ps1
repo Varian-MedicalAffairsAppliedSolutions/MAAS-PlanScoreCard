@@ -2,7 +2,13 @@
 param (
     [Parameter(Mandatory=$true)]
     [String]
+    $ProjectName,
+    [Parameter(Mandatory=$true)]
+    [String]
     $AssemblyInfoFilePath,
+    [Parameter(Mandatory=$true)]
+    [String]
+    $ExpirationDate,
     [Parameter(Mandatory=$true)]
     [String]
     $BuildNumber,
@@ -52,7 +58,17 @@ Foreach-Object {
         $newBuildNumber = $BuildNumber
 
         $updatedLine = $_ -replace '((\d+)\.?)+', "$newMajorVersion.$newMinorVersion.$newPatchVersion.$newBuildNumber"
-        Write-Host "Changing $_ to $updatedLine"
+        Write-Host "Updated $_ to $updatedLine"
+        $updatedLine
+    }
+    elseif ($_ -match '^\[assembly: AssemblyExpirationDate')
+    {
+        $_ -match "AssemblyExpirationDate\(`"(?<CurrentExpiration>\S+)`"\)" | Out-Null
+        Write-Host "Changing expiration date from $($matches.CurrentExpiration) to $ExpirationDate"
+        
+        $updatedLine = $_ -replace "AssemblyExpirationDate\(\S+\)","AssemblyExpirationDate(`"$ExpirationDate`")"
+        Write-Host "Updated $_ to $updatedLine"
+
         $updatedLine
     }
     else
@@ -61,9 +77,13 @@ Foreach-Object {
     }
 }
 
-$versionString = "$newMajorVersion.$newMinorVersion.$newPatchVersion.$newBuildNumber"
-
-Write-Output "::set-output name=CURRENT_DATE::$(Get-Date -Format 'MM/dd/yyyy')"
-Write-Output "::set-output name=RELEASE_VERSION::$($versionString)"
-
 Set-Content -Path $AssemblyInfoFilePath -Value $updatedContent
+
+$versionString = "$newMajorVersion.$newMinorVersion.$newPatchVersion.$newBuildNumber"
+$releaseName = "$ProjectName-V$versionString-$(Get-Date -Format 'MM/dd/yyyy')($ExpirationDate)"
+$normalizedReleaseName = "$ProjectName-V$versionString-$(Get-Date -Format 'MM-dd-yyyy').$($ExpirationDate -replace '/','-')"
+
+Write-Output "::set-output name=RELEASE_VERSION::$($versionString)"
+Write-Output "::set-output name=RELEASE_NAME::$($releaseName)"
+Write-Output "::set-output name=CURRENT_DATE::$(Get-Date -Format 'MM/dd/yyyy')"
+Write-Output "::set-output name=RELEASE_FILE_NAME::$($normalizedReleaseName)"

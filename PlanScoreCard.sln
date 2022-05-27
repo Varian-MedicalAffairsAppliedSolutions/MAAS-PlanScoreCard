@@ -7,8 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanScoreCard", "PlanScoreC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHubActions", "GitHubActions", "{031FB88B-3F02-4016-8840-4049EDE34FD0}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\build-MAAS-PlanScoreCard-156.yml = .github\workflows\build-MAAS-PlanScoreCard-156.yml
-		.github\workflows\changeESAPIHintPaths.ps1 = .github\workflows\changeESAPIHintPaths.ps1
+		.github\workflows\build-MAAS-PlanScoreCard-v170.yml = .github\workflows\build-MAAS-PlanScoreCard-v170.yml
+		.github\workflows\build-MAAS-PlanScoreCard-v156.yml = .github\workflows\build-MAAS-PlanScoreCard-v156.yml
+		.github\workflows\build-MAAS-PlanScoreCard-v161.yml = .github\workflows\build-MAAS-PlanScoreCard-v161.yml
+		.github\workflows\Update-AssemblyInfo.ps1 = .github\workflows\Update-AssemblyInfo.ps1
+		.github\workflows\Update-EsapiHintPaths.ps1 = .github\workflows\Update-EsapiHintPaths.ps1
 	EndProjectSection
 EndProject
 Global
