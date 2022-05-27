@@ -81,7 +81,7 @@ Set-Content -Path $AssemblyInfoFilePath -Value $updatedContent
 
 $versionString = "$newMajorVersion.$newMinorVersion.$newPatchVersion.$newBuildNumber"
 $releaseName = "$ProjectName-V$versionString-$(Get-Date -Format 'MM/dd/yyyy')($ExpirationDate)"
-$normalizedReleaseName = "$ProjectName-V$versionString-$(Get-Date -Format 'MM-dd-yyyy')$($ExpirationDate -replace '/','-')"
+$normalizedReleaseName = "$ProjectName-V$versionString-$(Get-Date -Format 'MM-dd-yyyy').$($ExpirationDate -replace '/','-')"
 
 Write-Output "::set-output name=RELEASE_VERSION::$($versionString)"
 Write-Output "::set-output name=RELEASE_NAME::$($releaseName)"
