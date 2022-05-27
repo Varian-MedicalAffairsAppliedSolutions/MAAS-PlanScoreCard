@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build MAAS-PlanScoreCard v15.6
+name: Build for v15.6
 
 on: 
   workflow_dispatch:
