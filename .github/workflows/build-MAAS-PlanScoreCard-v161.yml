@@ -48,7 +48,7 @@ jobs:
     - name: Update Target Framework Version to 4.6.1
       uses: rshillington/file-content-replacer@master
       with:
-        files: ${{ github.workspace }}/DateTimeLessTest.csproj
+        files: ${{ env.PROJECT_ROOT }}/${{ env.CSPROJ_FILE_NAME }}
         from: "TargetFrameworkVersion>v[\\d\\.]+<"
         to: 'TargetFrameworkVersion>v4.6.1<'
 
