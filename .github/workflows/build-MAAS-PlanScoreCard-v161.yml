@@ -42,7 +42,15 @@ jobs:
         .\.github\workflows\Update-AssemblyInfo.ps1 `
           -AssemblyInfoFilePath ${{ env.PROJECT_ROOT }}/Properties/AssemblyInfo.cs `
           -ExpirationDate "${{ github.event.inputs.dateInput }}" `
-          -BuildNumber ${{ env.BUILD_NUMBER }}    
+          -BuildNumber ${{ env.BUILD_NUMBER }}`
+          -ProjectName ${{ env.PROJECT_NAME }}
+
+    - name: Update Target Framework Version to 4.6.1
+      uses: rshillington/file-content-replacer@master
+      with:
+        files: ${{ github.workspace }}/DateTimeLessTest.csproj
+        from: "TargetFrameworkVersion>v[\\d\\.]+<"
+        to: 'TargetFrameworkVersion>v4.6.1<'
 
     - name: Setup NuGet.exe for use with actions
       uses: NuGet/setup-nuget@v1.0.6
@@ -82,8 +90,8 @@ jobs:
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
-        name: ${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-EclipseV161
-        tag_name: ${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-EclipseV161
+        name: ${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-EclipseV16.1
+        tag_name: ${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-EclipseV16.1
         token: ${{ secrets.GITHUB_TOKEN }}
         draft: false
         prerelease: false

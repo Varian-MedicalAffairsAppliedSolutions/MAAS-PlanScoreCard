@@ -42,7 +42,8 @@ jobs:
         .\.github\workflows\Update-AssemblyInfo.ps1 `
           -AssemblyInfoFilePath ${{ env.PROJECT_ROOT }}/Properties/AssemblyInfo.cs `
           -ExpirationDate "${{ github.event.inputs.dateInput }}" `
-          -BuildNumber ${{ env.BUILD_NUMBER }}    
+          -BuildNumber ${{ env.BUILD_NUMBER }} `
+          -ProjectName ${{ env.PROJECT_NAME }}
 
     - name: Setup NuGet.exe for use with actions
       uses: NuGet/setup-nuget@v1.0.6
@@ -82,8 +83,8 @@ jobs:
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
-        name: ${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-EclipseV156
-        tag_name: ${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-EclipseV156
+        name: ${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-EclipseV15.6
+        tag_name: ${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-EclipseV15.6
         token: ${{ secrets.GITHUB_TOKEN }}
         draft: false
         prerelease: false
