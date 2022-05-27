@@ -66,7 +66,7 @@ jobs:
     - name: Update hint paths in the csproj file
       run: |
         .\.github\workflows\Update-EsapiHintPaths.ps1 `
-        -CsprojFileName ${{ env.PROJECT_ROOT }}/${{ env.CSPROJ_FILE_NAME }}
+        -CsprojFileName ${{ env.CSPROJ_FILE_NAME }}
         
     - name: Build Solution
       run: msbuild.exe ${{ env.SOLUTION_NAME }} /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="x64" /p:configuration="Release"
