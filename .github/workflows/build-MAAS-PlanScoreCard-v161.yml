@@ -42,7 +42,7 @@ jobs:
         .\.github\workflows\Update-AssemblyInfo.ps1 `
           -AssemblyInfoFilePath ${{ env.PROJECT_ROOT }}/Properties/AssemblyInfo.cs `
           -ExpirationDate "${{ github.event.inputs.dateInput }}" `
-          -BuildNumber ${{ env.BUILD_NUMBER }}`
+          -BuildNumber ${{ env.BUILD_NUMBER }} `
           -ProjectName ${{ env.PROJECT_NAME }}
 
     - name: Update Target Framework Version to 4.6.1
