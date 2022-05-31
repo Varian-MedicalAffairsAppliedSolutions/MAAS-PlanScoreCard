@@ -137,7 +137,9 @@ namespace PlanScoreCard.Models
                     DosePerFraction = (plan as PlanSetup).DosePerFraction.Dose;
                 }
             }
-            NumberOfFractions = (plan is PlanSetup) ? (int)(plan as PlanSetup).NumberOfFractions : 0;
+            NumberOfFractions = (plan is PlanSetup) ?
+                (plan as PlanSetup)?.NumberOfFractions == null ? 0 : (int)(plan as PlanSetup).NumberOfFractions
+                : 0;
             //DoseUnit = (plan is PlanSetup) ? (plan as PlanSetup).TotalDose.UnitAsString : String.Empty;
             _eventAggregator = eventAggregator;
             Structures = new ObservableCollection<StructureModel>();
