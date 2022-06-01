@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build for v15.6
+name: Release for v15.6
 
 on: 
   workflow_dispatch:
@@ -78,13 +78,13 @@ jobs:
       run: |
         Compress-Archive `
           -Path "${{ env.PROJECT_ROOT }}/bin/x64/Release/*" `
-          -DestinationPath "${{ github.workspace }}/${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}-EclipseV156.zip"
+          -DestinationPath "${{ github.workspace }}/V15.6-${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}.zip"
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
-        name: ${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-EclipseV15.6
-        tag_name: ${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-EclipseV15.6
+        name: V15.6-${{ steps.update_assembly_info.outputs.RELEASE_NAME }}
+        tag_name: V15.6-${{ steps.update_assembly_info.outputs.RELEASE_NAME }}
         token: ${{ secrets.GITHUB_TOKEN }}
         draft: false
         prerelease: false
@@ -92,4 +92,4 @@ jobs:
           This is an official release of the **`${{ env.PROJECT_NAME }}`** project.
           Supported Eclipse version: `v15.6`.
           The generated dll is valid until `${{ github.event.inputs.dateInput }}`, and generated on `${{ steps.update_assembly_info.outputs.CURRENT_DATE }}`.
-        files: ${{ github.workspace }}/${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}-EclipseV156.zip
+        files: ${{ github.workspace }}/V15.6-${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}.zip

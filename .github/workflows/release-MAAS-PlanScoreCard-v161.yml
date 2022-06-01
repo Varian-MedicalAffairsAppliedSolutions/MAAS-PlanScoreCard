@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build for v17.0
+name: Release for v16.1
 
 on: 
   workflow_dispatch:
@@ -17,7 +17,7 @@ jobs:
   build:
     runs-on: windows-2019
     env:
-      GITHUB_WORKSPACE_PACKAGES_PATH: ..\packages\ESAPI.17.0.0\lib\net48\
+      GITHUB_WORKSPACE_PACKAGES_PATH: ..\packages\ESAPI.16.1.0\lib\net461\
       PROJECT_NAME: PlanScoreCard
       PROJECT_ROOT: ${{ github.workspace }}/PlanScoreCard
       CSPROJ_FILE_NAME: PlanScoreCard.csproj
@@ -45,12 +45,12 @@ jobs:
           -BuildNumber ${{ env.BUILD_NUMBER }} `
           -ProjectName ${{ env.PROJECT_NAME }}
 
-    - name: Update Target Framework Version to 4.8
+    - name: Update Target Framework Version to 4.6.1
       uses: rshillington/file-content-replacer@master
       with:
         files: ${{ env.PROJECT_ROOT }}/${{ env.CSPROJ_FILE_NAME }}
         from: "TargetFrameworkVersion>v[\\d\\.]+<"
-        to: 'TargetFrameworkVersion>v4.8<'
+        to: 'TargetFrameworkVersion>v4.6.1<'
 
     - name: Setup NuGet.exe for use with actions
       uses: NuGet/setup-nuget@v1.0.6
@@ -69,7 +69,7 @@ jobs:
            -StorePasswordInClearText         
      
     - name: Download internal ESAPI nuget package
-      run: nuget install ESAPI -Version 17.0.0 -OutputDirectory packages    
+      run: nuget install ESAPI -Version 16.1.0 -OutputDirectory packages    
 
     - name: Update hint paths in the csproj file
       run: |
@@ -85,18 +85,18 @@ jobs:
       run: |
         Compress-Archive `
           -Path "${{ env.PROJECT_ROOT }}/bin/x64/Release/*" `
-          -DestinationPath "${{ github.workspace }}/${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}-EclipseV170.zip"
+          -DestinationPath "${{ github.workspace }}/$V16.1-{{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}.zip"
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
-        name: ${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-EclipseV17.0
-        tag_name: ${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-EclipseV17.0
+        name: V16.1-${{ steps.update_assembly_info.outputs.RELEASE_NAME }}
+        tag_name: V16.1-${{ steps.update_assembly_info.outputs.RELEASE_NAME }}
         token: ${{ secrets.GITHUB_TOKEN }}
         draft: false
         prerelease: false
         body: |
           This is an official release of the **`${{ env.PROJECT_NAME }}`** project.
-          Supported Eclipse version: `v17.0`.
+          Supported Eclipse version: `v16.1`.
           The generated dll is valid until `${{ github.event.inputs.dateInput }}`, and generated on `${{ steps.update_assembly_info.outputs.CURRENT_DATE }}`.
-        files: ${{ github.workspace }}/${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}-EclipseV170.zip
+        files: ${{ github.workspace }}/V16.1-${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}.zip
