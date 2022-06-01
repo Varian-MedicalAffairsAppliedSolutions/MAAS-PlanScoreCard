@@ -10,7 +10,7 @@
 * Advanced scoring criteria supported
 * Advanced structure matching logic with integrated customizable preloaded json structure dictionary
 * In-metric Structure Boolean/expansions created dynamically for scoring 
-  * optionally save back to Plan if script approval/writable
+  * optionally save back to Plan if script approval/writable (to auto-create optimization tuning structures)
 * Normalize dose to max score
   * removes noise during plan comparison from suboptimal normalization impacting relative scores
   * re-normalized to max score plans saved into a new course
