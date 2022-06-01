@@ -62,7 +62,7 @@ N/A
 * ScoreCardBuilder Copying metric without structure assigned crashes app
 * StructureBuilder Reparse existing structurebuilder structures for editing (currently must delete and re-create)
  
-### 1.X Feature roadmap:
+### 2.X Feature roadmap:
 * guided structure builder (aka: simple mode, to be in front of current advanced structure builder)
 * reload current patient from Eclipse button
 * command line interface to output plan scores to the CLI or automate generation of CSV/PDF
@@ -149,7 +149,7 @@ J. Score Rx scaling disappears if PRIMARY plan Rx matches the scorecard
 * Reparse existing structurebuilder structures for editing (currently must delete and re-create)
 * Modified gradient index crashes if values left blank
  
-### 1.X Feature roadmap:
+### 2.X Feature roadmap:
 * guided structure builder (aka: simple mode, to be in front of current advanced structure builder)
 * reload current patient from Eclipse button
 * command line interface to output plan scores to the CLI or automate generation of CSV/PDF
