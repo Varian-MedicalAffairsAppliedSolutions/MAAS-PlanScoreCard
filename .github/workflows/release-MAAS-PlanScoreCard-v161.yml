@@ -85,7 +85,7 @@ jobs:
       run: |
         Compress-Archive `
           -Path "${{ env.PROJECT_ROOT }}/bin/x64/Release/*" `
-          -DestinationPath "${{ github.workspace }}/$V16.1-{{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}.zip"
+          -DestinationPath "${{ github.workspace }}/V16.1-${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}.zip"
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
