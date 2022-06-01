@@ -30,6 +30,13 @@
 
 ### Common Troubleshooting
 
+##### error after accepting the EULA (legal agreement) because the software can't write to the config file over a network (UNC path)
+This error:
+![image](https://user-images.githubusercontent.com/78000769/171474668-a270a5c5-308e-4b37-86e6-18184eae8c48.png)
+Can be worked around by maunaully editing the planscorecard.exe.config, set EULAAgree to "true" manually
+![image](https://user-images.githubusercontent.com/78000769/171475445-79840679-78fb-4057-84b2-0a0174e918f4.png)
+
+
 ##### Unblock .zip prior to unzipping
 ![ZipFileUnblockedPriorToExtract](https://user-images.githubusercontent.com/78000769/169857843-a342b6b8-5f6f-41d5-9b2e-32995778280d.png)
 
@@ -46,13 +53,13 @@ N/A
 * Fixed modified gradient index crashes if values left blank
 * Fixed metrics, structures, and Rx from a previously opened scorecard are propagated to the editor
 * Fixed change the Rx in the scorecard editor, back on scorecard page the Rx isn't updated
+* Fixed ScoreCardBuilder Selecting metric value for variation does not update plot
+* Fixed ScoreCardBuilder Possible to select multiple variation values in a single metric
+* Fixed certain patients cause crash on launching PlanScoreCard (only seen in V17)
   
 ### Known issues:
 * ScoreCardBuilder Intermittent color/label change also changes lowest color/label in qualitative label/edit color picker
-* ScoreCardBuilder Selecting metric value for variation does not update plot
-* ScoreCardBuilder Possible to select multiple variation values in a single metric 
 * ScoreCardBuilder Copying metric without structure assigned crashes app
-* Main Certain patients cause crash on launching PlanScoreCard (only seen in V17)
 * StructureBuilder Reparse existing structurebuilder structures for editing (currently must delete and re-create)
  
 ### 1.X Feature roadmap:
