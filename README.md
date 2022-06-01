@@ -43,7 +43,7 @@ Can be worked around by maunaully editing the planscorecard.exe.config, set EULA
 ##### Permissions on Directory with executable
 ![NTFSpermissionsDir](https://user-images.githubusercontent.com/78000769/169858109-43550451-13da-4de4-afff-893afecfd4cd.png)
 
-## Current version: V2.5.6.8-05/26/2022
+## Current version: V2.5.6.X-06/01/2022
 ### Improvements:
 N/A
 
