@@ -396,6 +396,10 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Content Include="..\license.txt">
+      <Link>license.txt</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\AndBoolean.PNG">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
