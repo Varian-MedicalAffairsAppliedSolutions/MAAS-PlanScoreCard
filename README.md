@@ -92,7 +92,7 @@
 
 * Copy the name of the PlanScoreCard software directory
 
-![image](https://user-images.githubusercontent.com/78000769/171966951-6011984c-68c1-485d-afae-921879513427.png)
+![image](https://user-images.githubusercontent.com/78000769/171970450-7352d92c-de7b-40fb-8f3d-be738791a4a2.png)
 
 
 * Open the PlanScoreCardLauncher.cs file with Notepad, highlight "SubDirectory", right click and "Paste"
