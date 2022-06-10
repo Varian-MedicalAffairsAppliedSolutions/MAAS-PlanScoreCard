@@ -631,6 +631,10 @@ namespace PlanScoreCard.ViewModels
                 {
                     Plans.FirstOrDefault(x => x.PlanId == Plan.Id && x.CourseId == Course.Id).bPrimary = true;
                 }
+                if(!String.IsNullOrEmpty(old_course) && !String.IsNullOrEmpty(old_plan) && Plans.Any(x=>x.PlanId == old_plan && x.CourseId == old_course))
+                {
+                    Plans.FirstOrDefault(x => x.PlanId == Plan.Id && x.CourseId == Course.Id).bSelected = true;
+                }
             }
 
             //Plans.First().bPrimary = true;
@@ -913,8 +917,12 @@ namespace PlanScoreCard.ViewModels
                 PluginWidth = 0;
             }
         }
+        private string old_course;
+        private string old_plan;
         public void UpdatePlanModel(Patient patient, Course course, PlanSetup plan)
         {
+            old_course = Plans.FirstOrDefault(x => x.bPrimary)?.CourseId;//Course.Id;
+            old_plan = Plans.FirstOrDefault(x=>x.bPrimary)?.PlanId;
             Patient = patient;
             Course = course;
             Plan = plan;
