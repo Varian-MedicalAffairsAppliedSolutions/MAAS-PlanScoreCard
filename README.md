@@ -146,8 +146,10 @@ N/A
 * Fixed certain patients cause crash on launching PlanScoreCard (only seen in V17)
   
 ### Known issues:
+* Main When Structure ID = null not automatching to TemplateStructureId
 * ScoreCardBuilder Intermittent color/label change also changes lowest color/label in qualitative label/edit color picker
-* ScoreCardBuilder Copying metric without structure assigned crashes app
+* ScoreCardBuilder Copying metric without structure assigned or color assigned crashes app
+* ScoreCardBuilder Re-rank button reranks metrics based on score on the screen but the changes are not saved (either: to file / click off and back on that metric)
 * StructureBuilder Reparse existing structurebuilder structures for editing (currently must delete and re-create)
  
 ### 2.X Feature roadmap:
