@@ -540,7 +540,8 @@ namespace PlanScoreCard.Models
 
         private void OnColorUpdate(Tuple<int, int, string, string> obj)
         {
-            if (Id == obj.Item1 && ScorePoints.Count() != 0 && ScorePoints.Any(x => x.PointId == obj.Item2))
+            //if (Id == obj.Item1 && ScorePoints.Count() != 0 && ScorePoints.Any(x => x.PointId == obj.Item2))
+            if(ScorePoints.Any(x=>x.MetricId == obj.Item1 && x.PointId == obj.Item2))
             {
                 foreach (var metric in ScorePoints)
                 {

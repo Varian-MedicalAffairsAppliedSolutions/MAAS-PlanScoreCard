@@ -55,6 +55,7 @@ namespace PlanScoreCard.ViewModels
                 SetProperty(ref scoreCard, value);
                 ExportScoreCardCommand.RaiseCanExecuteChanged();
                 PrintReportCommand.RaiseCanExecuteChanged();
+                NormalizePlanCommand.RaiseCanExecuteChanged();
             }
         }
         //private bool _validated;
@@ -295,6 +296,7 @@ namespace PlanScoreCard.ViewModels
                 SetProperty(ref selectedPlan, value);
                 ExportScoreCardCommand.RaiseCanExecuteChanged();
                 PrintReportCommand.RaiseCanExecuteChanged();
+                NormalizePlanCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -409,7 +411,7 @@ namespace PlanScoreCard.ViewModels
             ScorePlanCommand = new DelegateCommand(ScorePlan);
             ImportScoreCardCommand = new DelegateCommand(ImportScoreCard);
             EditScoreCardCommand = new DelegateCommand(EditScoreCard);
-            NormalizePlanCommand = new DelegateCommand(NormalizePlan);
+            NormalizePlanCommand = new DelegateCommand(NormalizePlan, CanNormalizePlan);
             ExportScoreCardCommand = new DelegateCommand(ExportScoreCard, CanExportScorecard);
             PrintReportCommand = new DelegateCommand(OnPrintReport, CanPrintReport);
             OpenWarningCommand = new DelegateCommand(OnOpenWarning);
@@ -424,6 +426,7 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<PlanChangedEvent>().Subscribe(OnPlanChanged);
         }
 
+       
         private void OnCloseMessage()
         {
             MessageView.Close();
@@ -590,6 +593,10 @@ namespace PlanScoreCard.ViewModels
             }
             System.Windows.MessageBox.Show("Export Successful");
         }
+        private bool CanNormalizePlan()
+        {
+            return Plans.Any(x => x.bPrimary) && ScoreTemplates != null;
+        }
 
         private void NormalizePlan()
         {
@@ -682,13 +689,15 @@ namespace PlanScoreCard.ViewModels
             int metric_id = 0;
 
             // Loop through each Metric (ScoreTemplateModel)
+            bWarning = false;
+            bFlag = false;
             Warnings = String.Empty;
             Flags = String.Empty;
             foreach (ScoreTemplateModel template in scoreCard.ScoreMetrics)
             {
                 // PlanScoreModel
                 PlanScoreModel psm = new PlanScoreModel(Application, StructureDictionaryService);
-                psm.BuildPlanScoreFromTemplate(selectedPlanCollection, template, metric_id, Plans.FirstOrDefault(x => x.bPrimary).CourseId, Plans.FirstOrDefault(x => x.bPrimary).PlanId);
+                psm.BuildPlanScoreFromTemplate(selectedPlanCollection, template, metric_id, Plans.FirstOrDefault(x => x.bPrimary).CourseId, Plans.FirstOrDefault(x => x.bPrimary).PlanId, true);
                 PlanScores.Add(psm);
                 if (template.ScorePoints.Any(x => x.Variation) && psm.ScoreValues.Any(x => x.Score < template.ScorePoints.FirstOrDefault(y => y.Variation).Score))
                 {

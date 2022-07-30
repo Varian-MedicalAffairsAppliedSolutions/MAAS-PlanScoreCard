@@ -833,7 +833,7 @@ namespace PlanScoreCard.ViewModels
         private void ReloadScorePoints(SolidColorBrush obj)
         {
             SelectedMetricPointModel.PlanScoreBackgroundColor = obj;
-            ScoreMetrics.FirstOrDefault(s => s.Id == SelectedScoreMetric.Id).ScorePoints.FirstOrDefault(p => p.MetricId == SelectedMetricPointModel.MetricId).PlanScoreBackgroundColor = obj;
+            ScoreMetrics.FirstOrDefault(s => s.Id == SelectedScoreMetric.Id).ScorePoints.FirstOrDefault(p => p.MetricId == SelectedMetricPointModel.MetricId && p.PointId == SelectedMetricPointModel.PointId).PlanScoreBackgroundColor = obj;
         }
 
         private void DeletePoint()
@@ -921,20 +921,23 @@ namespace PlanScoreCard.ViewModels
             // Structures
             foreach (StructureModel structure in selectedMetric.Structures)
                 metricModel.Structures.Add(structure);
-
-            metricModel.Structure = metricModel.Structures.FirstOrDefault(s => s.StructureId == SelectedScoreMetric.Structure.StructureId);
-
+            if (SelectedScoreMetric.Structure != null)
+            {
+                metricModel.Structure = metricModel.Structures.FirstOrDefault(s => s.StructureId == SelectedScoreMetric.Structure.StructureId);
+            }
             // ScorePoints
             foreach (ScorePointModel scorePoint in selectedMetric.ScorePoints)
             {
-                ScorePointModel point = new ScorePointModel(scorePoint.MetricId, scorePoint.PointId, EventAggregator);
+                ScorePointModel point = new ScorePointModel(scorePoint.MetricId + 1, scorePoint.PointId, EventAggregator);
                 point.Score = scorePoint.Score;
                 point.PointX = scorePoint.PointX;
-
-                PlanScoreColorModel colorModel = scorePoint.Colors;
-                point.PlanScoreBackgroundColor = scorePoint.PlanScoreBackgroundColor;
-                colorModel.PlanScoreBackgroundColor = scorePoint.PlanScoreBackgroundColor;
-                point.Colors = colorModel;
+                if (scorePoint.Colors != null)
+                {
+                    PlanScoreColorModel colorModel = scorePoint.Colors;
+                    point.PlanScoreBackgroundColor = scorePoint.PlanScoreBackgroundColor;
+                    colorModel.PlanScoreBackgroundColor = scorePoint.PlanScoreBackgroundColor;
+                    point.Colors = colorModel;
+                }
                 point.bMetricChecked = scorePoint.bMetricChecked;
                 point.bMidMetric = scorePoint.bMidMetric;
 
@@ -1072,7 +1075,12 @@ namespace PlanScoreCard.ViewModels
             }
 
             MetricPointModels.OrderBy(o => o.PointId);
-
+            //update the actual collection
+            SelectedScoreMetric.ScorePoints.Clear();
+            foreach (var metric in MetricPointModels)
+            {
+                SelectedScoreMetric.ScorePoints.Add(metric);
+            }
         }
 
         // Show Metric / Points 

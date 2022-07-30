@@ -105,7 +105,16 @@ namespace PlanScoreCard.Services
                     //    structure.SegmentVolume = BuildSegment(plan, comment);
                     //}
                     #endregion OldStructureBuilder
-                    structure.SegmentVolume = BuildStructureFromComment(plan, comment);
+                    string SBMessage = string.Empty;
+                    var segmentVolume = BuildStructureFromComment(plan, comment, out SBMessage);
+                    if (segmentVolume != null)
+                    {
+                        structure.SegmentVolume = segmentVolume;
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show($"Segment could not be generated from comment:\n{comment}\nMessage:{SBMessage}");
+                    }
                     if (ConfigurationManager.AppSettings["AddStructures"] == "true")
                     {
                         app.SaveModifications();
@@ -121,7 +130,7 @@ namespace PlanScoreCard.Services
             }
         }
 
-        private static SegmentVolume BuildStructureFromComment(PlanningItem plan, string comment)
+        private static SegmentVolume BuildStructureFromComment(PlanningItem plan, string comment, out string output)
         {
             SegmentVolume segment = null;
             //parse this string.
@@ -250,7 +259,7 @@ namespace PlanScoreCard.Services
             foreach (var step in structureGroups.OrderByDescending(x => x.groupDepth).ThenBy(x => x.groupNum).SelectMany(x => x.steps))
             {
                 var structure = FindStructureByString(plan, step.structureId);
-                if (structure == null) { return null; }
+                if (structure == null) { output = $"Could not find structure {step.structureId} from structureset or dictionary"; return null; }
                 if (structure.IsHighResolution)
                 {
                     bAnyHighRes = true;
@@ -268,7 +277,7 @@ namespace PlanScoreCard.Services
                     if (structureStep == group.steps.First())
                     {
                         var structure = FindStructureByString(plan, structureStep.structureId);
-                        if (structure == null) { return null; }
+                        if (structure == null) { output = $"Could not find structure {structureStep.structureId} from structureset or dictionary"; return null; }
                         if (bAnyHighRes)
                         {
                             structure = MakeStructureHiRes(plan, structuresToDelete, structure);
@@ -280,7 +289,7 @@ namespace PlanScoreCard.Services
                     else
                     {
                         var structure = FindStructureByString(plan, structureStep.structureId);
-                        if (structure == null) { return null; }
+                        if (structure == null) { output = $"Could not find structure {structureStep.structureId} from structureset or dictionary"; return null; }
                         if (bAnyHighRes)
                         {
                             structure = MakeStructureHiRes(plan, structuresToDelete, structure);
@@ -303,6 +312,7 @@ namespace PlanScoreCard.Services
                                    segmentStep.Sub(structure.SegmentVolume);
                                 break;
                             default:
+                                output = $"Could not determine operation {operationKeep}";
                                 return null;
                         }
                     }
@@ -336,6 +346,7 @@ namespace PlanScoreCard.Services
                                     segment.Sub(segmentStep);
                                 break;
                             default:
+                                output = $"Could not determine operation {groupOperationKeep}";
                                 return null;
                         }
                         groupOperationKeep = group.groupOperation;
@@ -361,6 +372,7 @@ namespace PlanScoreCard.Services
                                     segmentStep.Sub(segment);
                                 break;
                             default:
+                                output = $"Could not determine operation {group.groupOperation}";
                                 return null;
                         }
                     }
@@ -477,6 +489,7 @@ namespace PlanScoreCard.Services
             {
                 plan.StructureSet.RemoveStructure(deleteStructures);
             }
+            output = "Segment generated";
             return segment;
         }
 

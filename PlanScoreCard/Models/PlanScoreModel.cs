@@ -290,7 +290,7 @@ namespace PlanScoreCard.Models
             TemplateStructureVisibility = Visibility.Visible;
             bShowPrintComment = true;
         }
-        public void BuildPlanScoreFromTemplate(ObservableCollection<PlanningItem> plans, ScoreTemplateModel template, int metricId, string primaryCourseId, string primaryPlanId)
+        public void BuildPlanScoreFromTemplate(ObservableCollection<PlanningItem> plans, ScoreTemplateModel template, int metricId, string primaryCourseId, string primaryPlanId, bool canBuildStructure)
         {
             ScoreMax = template.ScorePoints.Count() == 0 ? -1000 : template.ScorePoints.Max(x => x.Score);
             string id = template.Structure?.StructureId;
@@ -332,7 +332,7 @@ namespace PlanScoreCard.Models
             foreach (var plan in plans)
             {
                 // The id and the code are from the template Structure
-                Structure structure = String.IsNullOrEmpty(id)?null:GetStructureFromTemplate(id, templateId, code, auto, comment, plan);
+                Structure structure = String.IsNullOrEmpty(id)&& String.IsNullOrEmpty(templateId)?null:GetStructureFromTemplate(id, templateId, code, auto, comment, plan, canBuildStructure);
                 if (structure != null)
                 {
                     template.Structure.StructureId = structure.Id;
@@ -847,13 +847,17 @@ namespace PlanScoreCard.Models
         /// <param name="comment">Structure Comment that details how to generate the structure.</param>
         /// <param name="plan">Plan whereby to look for the structure.</param>
         /// <returns></returns>
-        public Structure GetStructureFromTemplate(string id, string templateId, string code, bool autoGenerate, string comment, PlanningItem plan)
+        public Structure GetStructureFromTemplate(string id, string templateId, string code, bool autoGenerate, string comment, PlanningItem plan, bool canBuildStructure)
         {
             // 
             // This method is where we will want to add the logic to the Structure Matching w/ Dictionary
             // - Case Insensitive (Overwrite string.Compare() to automatically do this)
 
             bool writeable = ConfigurationManager.AppSettings["WriteEnabled"] == "true";
+            if(String.IsNullOrEmpty(id) && !String.IsNullOrEmpty(templateId))
+            {
+                id = templateId;
+            }
             // FIRST: Check for an exact Match
             if (id != null && code != null)
             {
@@ -878,7 +882,7 @@ namespace PlanScoreCard.Models
                 {
                     return structure;
                 }
-                else if (structure.IsEmpty && autoGenerate && writeable)//generate structure if empty.
+                else if (structure.IsEmpty && autoGenerate && writeable && canBuildStructure)//generate structure if empty.
                 {
                     var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan, StructureDictionaryService);
                     return new_structure;
@@ -932,7 +936,7 @@ namespace PlanScoreCard.Models
                 {
                     return structure;
                 }
-                else if (structure != null && structure.IsEmpty && autoGenerate && writeable)//generate structure if empty.
+                else if (structure != null && structure.IsEmpty && autoGenerate && writeable && canBuildStructure)//generate structure if empty.
                 {
                     var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan, StructureDictionaryService);
                     return new_structure;
@@ -949,7 +953,7 @@ namespace PlanScoreCard.Models
             }
 
             // If no match, create it. 
-            if (autoGenerate && writeable && !String.IsNullOrEmpty(comment))
+            if (autoGenerate && writeable && !String.IsNullOrEmpty(comment) && canBuildStructure)
             {
                 var structure = StructureGenerationService.BuildStructureWithESAPI(_app, id, comment, false, plan, StructureDictionaryService);
                 return structure;
