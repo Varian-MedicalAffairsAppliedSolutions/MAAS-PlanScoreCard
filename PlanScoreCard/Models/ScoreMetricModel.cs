@@ -556,7 +556,11 @@ namespace PlanScoreCard.Models
                             metric.Colors = new Models.Internals.PlanScoreColorModel(new List<double> { byteA, byteB, byteC }, $"{obj.Item3}[{metric.Score}]");
 
                             System.Windows.Media.SolidColorBrush PlanScoreBackgroundColor = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(byteA,byteB,byteC));
-
+                            //set all other colors to white so that they show up in the list.
+                            foreach(var point in ScorePoints.Where(x=>x.Colors == null))
+                            {
+                                point.Colors = new Internals.PlanScoreColorModel(new List<double> { 255, 255, 255 }, $"[{point.Score}]");
+                            }
                             EventAggregator.GetEvent<UpdateScorePointGridEvent>().Publish(PlanScoreBackgroundColor);
                         }
                         catch (Exception ex)

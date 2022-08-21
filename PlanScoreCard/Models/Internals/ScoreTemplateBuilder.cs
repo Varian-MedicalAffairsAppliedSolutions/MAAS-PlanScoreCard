@@ -323,23 +323,26 @@ namespace PlanScoreCard.Models.Internals
                     pointModel.PointX = Convert.ToDecimal(scorepoint.PointX);
                     pointModel.Score = scorepoint.Score;
                     pointModel.bMetricChecked = scorepoint.Variation;
-
-                    if (scorepoint.Colors.Count() > 0)
+                    //this section is only used if any of the colors are set. 
+                    if (template.ScorePoints.Any(sp => sp.Colors.Any()))
                     {
-                        pointModel.PlanScoreBackgroundColor = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(Convert.ToByte(scorepoint.Colors.ElementAt(0)),
-                            Convert.ToByte(scorepoint.Colors.ElementAt(1)),
-                            Convert.ToByte(scorepoint.Colors.ElementAt(2))));
+                        if (scorepoint.Colors.Count() > 0)
+                        {
+                            pointModel.PlanScoreBackgroundColor = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(Convert.ToByte(scorepoint.Colors.ElementAt(0)),
+                                Convert.ToByte(scorepoint.Colors.ElementAt(1)),
+                                Convert.ToByte(scorepoint.Colors.ElementAt(2))));
 
-                        if (scorepoint.Colors.Count() > 2)
-                            pointModel.Colors = new PlanScoreColorModel(new List<double> { scorepoint.Colors.First(), scorepoint.Colors.ElementAt(1), scorepoint.Colors.ElementAt(2) }, scorepoint.Label);
-                    }
-                    else
-                    {
-                        pointModel.PlanScoreBackgroundColor = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(
-                            Convert.ToByte(255),
-                            Convert.ToByte(255),
-                            Convert.ToByte(255)));
-                        pointModel.Colors = new PlanScoreColorModel(new List<double> { 0, 0, 0 }, $"{(!String.IsNullOrEmpty(scorepoint.Label)?scorepoint.Label:$"[{scorepoint.Score}]")}");
+                            if (scorepoint.Colors.Count() > 2)
+                                pointModel.Colors = new PlanScoreColorModel(new List<double> { scorepoint.Colors.First(), scorepoint.Colors.ElementAt(1), scorepoint.Colors.ElementAt(2) }, scorepoint.Label);
+                        }
+                        else
+                        {
+                            pointModel.PlanScoreBackgroundColor = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(
+                                Convert.ToByte(255),
+                                Convert.ToByte(255),
+                                Convert.ToByte(255)));
+                            pointModel.Colors = new PlanScoreColorModel(new List<double> { 0, 0, 0 }, $"{(!String.IsNullOrEmpty(scorepoint.Label) ? scorepoint.Label : $"[{scorepoint.Score}]")}");
+                        }
                     }
                     scoreMetric.ScorePoints.Add(pointModel);
                     scorePointId++;

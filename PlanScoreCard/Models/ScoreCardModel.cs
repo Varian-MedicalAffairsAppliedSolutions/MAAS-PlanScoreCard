@@ -29,15 +29,19 @@ namespace PlanScoreCard.Models
             SiteGroup = siteGroup;
             ScoreMetrics = scoreMetrics;
             //set color to white if no color determined.
-            foreach(var sm in ScoreMetrics)
+            if (ScoreMetrics != null)
             {
-                if (sm.ScorePoints.Any(sp => !sp.Colors.Any()))
+                foreach (var sm in ScoreMetrics)
                 {
-                    foreach(var sp in sm.ScorePoints.Where(sp => !sp.Colors.Any()))
+                    //at least one color must be set, but another must not be set. Then set to white. 
+                    if (sm.ScorePoints.Any(sp => !sp.Colors.Any()) && sm.ScorePoints.Any(sp => sp.Colors.Any()))
                     {
-                        sp.Colors = new List<double> { 255, 255, 255 };
-                        sp.Label = $"[{sp.Score}]";
-                        sp.ColorValue = sp.Score;
+                        foreach (var sp in sm.ScorePoints.Where(sp => !sp.Colors.Any()))
+                        {
+                            sp.Colors = new List<double> { 255, 255, 255 };
+                            sp.Label = $"[{sp.Score}]";
+                            sp.ColorValue = sp.Score;
+                        }
                     }
                 }
             }

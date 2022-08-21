@@ -135,6 +135,7 @@ namespace PlanScoreCard.Models
         {
             if (MetricId == obj.Item1 && PointId == obj.Item2)
             {
+                
                 PlanScoreBackgroundColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString(obj.Item4));
                 //if (obj.Item4.Contains("#00000000"))
                 //{
@@ -150,8 +151,11 @@ namespace PlanScoreCard.Models
                     byte byteC = Convert.ToByte(obj.Item4.Substring(7, 2), 16);
 
                     Colors = new Models.Internals.PlanScoreColorModel(new List<double> { byteA, byteB, byteC }, $"{obj.Item3}[{Score}]");
+                
                 //}
                 //if its a deleted metric the application is still holding onto the metricid and point id (check null colorpicker). 
+                //set other empty colors to white so that they don't get skiped.
+
                 if (_colorPicker != null) { _colorPicker.Close(); }
                 _eventAggregator.GetEvent<ColorUpdateEvent>().Publish(obj);
             }

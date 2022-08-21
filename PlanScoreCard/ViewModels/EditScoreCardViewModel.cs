@@ -280,7 +280,7 @@ namespace PlanScoreCard.ViewModels
                 //&& String.IsNullOrWhiteSpace(SelectedScoreMetric.Structure.StructureId)
 
                 //if (SelectedScoreMetric.Structure == null)
-                if (SelectedStructure != null)
+                if (SelectedStructure != null && SelectedScoreMetric != null)
                 {
                     string temp_templateStructureId = SelectedScoreMetric.Structure?.TemplateStructureId;
 
@@ -858,14 +858,18 @@ namespace PlanScoreCard.ViewModels
         private void AddPoint()
         {
             int selectedIndex = MetricPointModels.IndexOf(SelectedMetricPointModel);
-            ScorePointModel metricModel = new ScorePointModel(selectedIndex + 1, selectedIndex+1, EventAggregator);
+            ScorePointModel metricModel = new ScorePointModel(selectedIndex + 1, selectedIndex + 1, EventAggregator);
             //if new metrics start with a "white" color it can be changed. 
-            metricModel.Colors = new PlanScoreColorModel(new List<double> { 255, 255, 255 }, "[0]");
+            //but should only be if colors are being used for this metric at all. 
+            if (SelectedScoreMetric.ScorePoints.Any(sp => sp.Colors != null))
+            {
+                metricModel.Colors = new PlanScoreColorModel(new List<double> { 255, 255, 255 }, "[0]");
+            }
             SelectedMetricPointModel = metricModel;
             MetricPointModels.Insert(selectedIndex + 1, metricModel);
             //SelectedScoreMetric.ScorePoints = MetricPointModels;
 
-            ScoreMetrics.FirstOrDefault(s => s.Id == SelectedScoreMetric.Id).ScorePoints.Insert(selectedIndex+1, metricModel);
+            ScoreMetrics.FirstOrDefault(s => s.Id == SelectedScoreMetric.Id).ScorePoints.Insert(selectedIndex + 1, metricModel);
 
             // THIS WORKS ^^
             ReRankPoints();
