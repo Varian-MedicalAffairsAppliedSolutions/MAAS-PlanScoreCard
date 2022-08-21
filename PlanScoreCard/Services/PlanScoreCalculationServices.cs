@@ -14,6 +14,7 @@ namespace PlanScoreCard.Services
     {
         internal static double CalculatePKPosition(List<PlanScoreColorModel> Colors, bool increasing, double score,double width)
         {
+            double halfWidth = 7;
             if (increasing)
             {
                 if (Colors.IndexOf(Colors.LastOrDefault(x => score >= x.ColorValue)) != -1)
@@ -21,7 +22,7 @@ namespace PlanScoreCard.Services
                     int index = Colors.IndexOf(Colors.LastOrDefault(x => score >= x.ColorValue));
                     if (index == Colors.Count() - 1)
                     {
-                        return width * (double)Colors.Count();
+                        return width * (double)Colors.Count()- halfWidth;
                     }
                     else
                     {
@@ -29,10 +30,10 @@ namespace PlanScoreCard.Services
                         double pkValue = Colors.ElementAt(index).ColorValue;
                         double position = (double)index * width + (score - pkValue) * (width / (pkNextValue - pkValue));
                         //(60.0*(pkNextValue-spoint_value.Score)/(pkNextValue-PKColors.ElementAt(index).PKColorValue));
-                        return position;
+                        return position - halfWidth;
                     }
                 }
-                else { return 60.0 * Colors.Count(); }//the score must be higher than the template allows (maybe not possible). 
+                else { return 60.0 * Colors.Count() - halfWidth; }//the score must be higher than the template allows (maybe not possible). 
             }
             else
             {
@@ -41,19 +42,19 @@ namespace PlanScoreCard.Services
                     int index = Colors.IndexOf(Colors.FirstOrDefault(x => x.ColorValue <= score));
                     if (index == -1)//-1 returned if IndexOf returns nothing.
                     {
-                        return 0.0;
+                        return 0.0 - halfWidth;
                     }
                     else
                     {
                         double pkPrevValue = Colors.ElementAt(index - 1).ColorValue;
                         double pkValue = Colors.ElementAt(index).ColorValue;
                         var position = (double)index * width + (pkPrevValue - score) * (width / (pkPrevValue - pkValue));
-                        return position;
+                        return position- halfWidth;
                     }
                 }
                 else
                 {
-                    return 0.0;
+                    return 0.0 - halfWidth;
                 }
             }
         }

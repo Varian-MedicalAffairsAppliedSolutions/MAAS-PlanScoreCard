@@ -333,7 +333,14 @@ namespace PlanScoreCard.Models.Internals
                         if (scorepoint.Colors.Count() > 2)
                             pointModel.Colors = new PlanScoreColorModel(new List<double> { scorepoint.Colors.First(), scorepoint.Colors.ElementAt(1), scorepoint.Colors.ElementAt(2) }, scorepoint.Label);
                     }
-                    
+                    else
+                    {
+                        pointModel.PlanScoreBackgroundColor = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(
+                            Convert.ToByte(255),
+                            Convert.ToByte(255),
+                            Convert.ToByte(255)));
+                        pointModel.Colors = new PlanScoreColorModel(new List<double> { 0, 0, 0 }, $"{(!String.IsNullOrEmpty(scorepoint.Label)?scorepoint.Label:$"[{scorepoint.Score}]")}");
+                    }
                     scoreMetric.ScorePoints.Add(pointModel);
                     scorePointId++;
                 }

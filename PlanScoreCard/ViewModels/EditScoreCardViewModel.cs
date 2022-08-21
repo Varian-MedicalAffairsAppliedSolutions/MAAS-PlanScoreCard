@@ -858,12 +858,14 @@ namespace PlanScoreCard.ViewModels
         private void AddPoint()
         {
             int selectedIndex = MetricPointModels.IndexOf(SelectedMetricPointModel);
-            ScorePointModel metricModel = new ScorePointModel(selectedIndex + 1, selectedIndex + 1, EventAggregator);
+            ScorePointModel metricModel = new ScorePointModel(selectedIndex + 1, selectedIndex+1, EventAggregator);
+            //if new metrics start with a "white" color it can be changed. 
+            metricModel.Colors = new PlanScoreColorModel(new List<double> { 255, 255, 255 }, "[0]");
             SelectedMetricPointModel = metricModel;
             MetricPointModels.Insert(selectedIndex + 1, metricModel);
             //SelectedScoreMetric.ScorePoints = MetricPointModels;
 
-            ScoreMetrics.FirstOrDefault(s => s.Id == SelectedScoreMetric.Id).ScorePoints.Insert(selectedIndex + 1, metricModel);
+            ScoreMetrics.FirstOrDefault(s => s.Id == SelectedScoreMetric.Id).ScorePoints.Insert(selectedIndex+1, metricModel);
 
             // THIS WORKS ^^
             ReRankPoints();
@@ -899,6 +901,13 @@ namespace PlanScoreCard.ViewModels
             foreach (ScorePointModel scorePoint in SelectedScoreMetric.ScorePoints.ToList())
             {
                 SelectedScoreMetric.OnAddPlotScorePoint(SelectedScoreMetric.Id);
+                //update label in case the score value has changed
+                if (scorePoint.Colors != null)
+                {
+                    scorePoint.Colors.ColorLabel = $"{scorePoint.Colors.ColorLabel.Split('[').First().Trim()}[{scorePoint.Score}]";
+                    scorePoint.Colors.ColorValue = scorePoint.Score;
+                }
+
             }
 
             ScoreMetricPlotModel.InvalidatePlot(true);
@@ -1065,7 +1074,7 @@ namespace PlanScoreCard.ViewModels
         private void ReRankPoints()
         {
             // Re-Rank in Collection Order
-            int rankCounter = 1;
+            int rankCounter = 0;
             foreach (ScorePointModel metric in MetricPointModels)
             {
                 metric.CanReOrder = false;

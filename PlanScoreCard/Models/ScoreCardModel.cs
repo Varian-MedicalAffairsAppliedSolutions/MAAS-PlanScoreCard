@@ -28,6 +28,19 @@ namespace PlanScoreCard.Models
             Name = name; 
             SiteGroup = siteGroup;
             ScoreMetrics = scoreMetrics;
+            //set color to white if no color determined.
+            foreach(var sm in ScoreMetrics)
+            {
+                if (sm.ScorePoints.Any(sp => !sp.Colors.Any()))
+                {
+                    foreach(var sp in sm.ScorePoints.Where(sp => !sp.Colors.Any()))
+                    {
+                        sp.Colors = new List<double> { 255, 255, 255 };
+                        sp.Label = $"[{sp.Score}]";
+                        sp.ColorValue = sp.Score;
+                    }
+                }
+            }
             DosePerFraction = dosePerFraction;
             NumberOfFractions = numberOfFractions;
 

@@ -73,6 +73,9 @@ namespace PlanScoreCard.ViewModels
             set { SetProperty(ref _scoreCardTitle, value); }
         }
         // ScoreTemplates - Legacy?
+        //Scorecard should be used going forward but ScoreTemplates is currently the variable that gets the score card metrics on import.
+        //Then 'ScoreCard' gets the template name, creator, Rx and ScoreTemplates is the ScoreMetrics property of ScoreCard.
+        //But ScoreCard gets updated on change so use that after. 
         private List<ScoreTemplateModel> ScoreTemplates;
 
         // Template Information
@@ -595,19 +598,19 @@ namespace PlanScoreCard.ViewModels
         }
         private bool CanNormalizePlan()
         {
-            return Plans.Any(x => x.bPrimary) && ScoreTemplates != null;
+            return Plans.Any(x => x.bPrimary) && ScoreCard != null;
         }
 
         private void NormalizePlan()
         {
-            if (Plans.Any(x => x.bPrimary) && ScoreTemplates.Count() > 0)
+            if (Plans.Any(x => x.bPrimary) && ScoreCard.ScoreMetrics.Count() > 0)
             {
                 PluginViewService pluginViewService = new PluginViewService(EventAggregator);
                 PluginViewModel pluginViewModel = new PluginViewModel(EventAggregator, pluginViewService);
 
                 EventAggregator.GetEvent<ShowPluginViewEvent>().Publish();
 
-                NormalizationService normService = new NormalizationService(Application, Patient, Plans.FirstOrDefault(x => x.bPrimary), ScoreTemplates, EventAggregator, StructureDictionaryService);
+                NormalizationService normService = new NormalizationService(Application, Patient, Plans.FirstOrDefault(x => x.bPrimary), ScoreCard.ScoreMetrics, EventAggregator, StructureDictionaryService);
 
                 var newplan = normService.GetPlan();
                 Plans.Add(newplan);
@@ -865,6 +868,7 @@ namespace PlanScoreCard.ViewModels
                 }
                 if (importSuccess)
                 {
+                    //any empty colors should be white.
                     if (bRxScaling && Plan is PlanSetup && DosePerFraction != 0.0 && NumberOfFractions != 0)
                     {
                         bool bDoseMatch, bFxMatch;

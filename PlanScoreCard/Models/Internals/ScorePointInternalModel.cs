@@ -23,6 +23,6 @@ namespace PlanScoreCard.Models.Internals
         public bool Variation { get; set; }
         public List<double> Colors { get; set; }
         public string Label { get; set; }
-        public double ColorValue { get; }
+        public double ColorValue { get; set; }
     }
 }

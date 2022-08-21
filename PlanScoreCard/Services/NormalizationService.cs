@@ -93,21 +93,23 @@ namespace PlanScoreCard.Services
                 ScorePlanAtNormValue(newPlan, planScores, initial_norm, i);
             }
             var maxScore = planScores.Max(x => x.Item2);
-            var maxNorm = planScores.FirstOrDefault(x => x.Item2 == maxScore).Item1;
+            //The max Norm used should be closest to the initial norm where the max score is selected. 
+            //this is in the event multiple normalization values yield the max score. 
+            var maxNorm = planScores.OrderBy(n=>Math.Abs(initial_norm-n.Item1)).FirstOrDefault(x => x.Item2 == maxScore).Item1;
             planScores.Clear();
             for (double i = -2; i < 2; i += 0.2)
             {
                 ScorePlanAtNormValue(newPlan, planScores, maxNorm, i);
             }
             maxScore = planScores.Max(x => x.Item2);
-            maxNorm = planScores.FirstOrDefault(x => x.Item2 == maxScore).Item1;
+            maxNorm = planScores.OrderBy(n=>Math.Abs(initial_norm-n.Item1)).FirstOrDefault(x => x.Item2 == maxScore).Item1;
             planScores.Clear();
             for (double i = -0.2; i < 0.2; i += 0.01)
             {
                 ScorePlanAtNormValue(newPlan, planScores, maxNorm, i);
             }
             maxScore = planScores.Max(x => x.Item2);
-            maxNorm = planScores.FirstOrDefault(x => x.Item2 == maxScore).Item1;
+            maxNorm = planScores.OrderBy(n=>Math.Abs(initial_norm-n.Item1)).FirstOrDefault(x => x.Item2 == maxScore).Item1;
             planScores.Clear();
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\n\tMax Score {maxScore:F3} \n\nScoreCard Normalization: {maxNorm}");
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\n * Activate Plan * \nCourseID: {newPlan.Course}; \nPlanID: {newPlan}");

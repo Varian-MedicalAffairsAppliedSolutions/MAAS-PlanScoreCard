@@ -112,7 +112,7 @@
                                     </Grid>
                                     <icons:PackIconFontAwesome Kind="CaretUpSolid" Foreground="Purple" Margin="{Binding PKPosition}"
                                                                Visibility="{Binding bPKColor,Converter={StaticResource localVisibilityConverter}}"
-                                                               HorizontalAlignment="Left"/>
+                                                               HorizontalAlignment="Left" Width="30"/>
                                 </StackPanel>
                             </Grid>
                             </Border>
