@@ -2,33 +2,31 @@
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using System.Xml;
 
 namespace PlanScoreCard.ViewModels.VMHelpers
 {
     public class EULAViewModel : BindableBase
     {
-        private string _licenseText;
         private IEventAggregator _eventAggregator;
 
+        private string _licenseText;
         public string LicenseText
         {
             get { return _licenseText; }
             set { _licenseText = value; }
         }
+
         public DelegateCommand EULAAgreeCommand { get; private set; }
         public DelegateCommand EULADisagreeCommand { get; private set; }
+
         public EULAViewModel(IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
-            GetLicenseText();
+            SetLicenseText();
             EULAAgreeCommand = new DelegateCommand(OnAgree);
             EULADisagreeCommand = new DelegateCommand(OnDisagree);
         }
@@ -42,7 +40,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         {
             //check if config can be modified
             var exePath = Assembly.GetExecutingAssembly().Location;
-            var configPath = exePath+".config";
+            var configPath = $"{exePath}.config";
             using (var fileStream = new FileStream(configPath, FileMode.Open))
             {
                 if (!fileStream.CanWrite)
@@ -51,18 +49,27 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                     return;
                 }
             }
-            //this needs to be the path running the application
-            var configFile = ConfigurationManager.OpenExeConfiguration(exePath);
 
-            //var value = ConfigurationManager.AppSettings["EULAAgree"];
-            //configFile.AppSettings.Settings.Remove("EULAAgree");
-            configFile.AppSettings.Settings["EULAAgree"].Value = "true";
-            configFile.Save(ConfigurationSaveMode.Modified);
-            ConfigurationManager.RefreshSection("appSettings");
+            UpdateAppSettings("EULAAgree", "true");
+
             OnDisagree();
         }
 
-        private void GetLicenseText()
+        private void UpdateAppSettings(string appSettingsKey, string newValue) 
+        {
+            var exePath = Assembly.GetExecutingAssembly().Location;
+            var configPath = $"{exePath}.config";
+
+            XmlDocument XmlDoc = new XmlDocument();
+            XmlDoc.Load(configPath);
+            XmlNode eulaAgreeNode = XmlDoc.SelectSingleNode($"configuration/appSettings/add[@key='{appSettingsKey}']");
+            eulaAgreeNode.Attributes["value"].Value = newValue;
+            XmlDoc.Save(configPath);
+
+            ConfigurationManager.RefreshSection("appSettings");
+        }
+
+        private void SetLicenseText()
         {
             LicenseText = "This Limited Use Software License Agreement(the \"Agreement\") is a legal agreement between you , the " +
     "user(\"You\"), and Varian Medical Systems, Inc. (\"Varian\").By downloading or otherwise accessing the " +
