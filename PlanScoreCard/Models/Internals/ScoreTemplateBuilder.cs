@@ -320,7 +320,7 @@ namespace PlanScoreCard.Models.Internals
                 foreach (ScorePointInternalModel scorepoint in template.ScorePoints)
                 {
                     ScorePointModel pointModel = new ScorePointModel(score_newId, scorePointId, _eventAggregator);
-                    pointModel.PointX = Convert.ToDecimal(scorepoint.PointX);
+                    pointModel.PointX = Convert.ToDouble(scorepoint.PointX);
                     pointModel.Score = scorepoint.Score;
                     pointModel.bMetricChecked = scorepoint.Variation;
                     //this section is only used if any of the colors are set. 
@@ -396,7 +396,7 @@ namespace PlanScoreCard.Models.Internals
             {
                 //var smetric = new ScorePointModel(score_newId, scorePointId, eventAggregator);
                 scoreMetricVM.ScoreMetric.ScorePoints.Add(new ScorePointModel(score_newId, scorePointId, eventAggregator));
-                scoreMetricVM.ScoreMetric.ScorePoints.Last().PointX = Convert.ToDecimal(scorepoint.PointX);
+                scoreMetricVM.ScoreMetric.ScorePoints.Last().PointX = Convert.ToDouble(scorepoint.PointX);
                 scoreMetricVM.ScoreMetric.ScorePoints.Last().Score = scorepoint.Score;
                 scoreMetricVM.ScoreMetric.ScorePoints.Last().bMetricChecked = scorepoint.Variation;
                 if (scorepoint.Colors.Count() > 2)

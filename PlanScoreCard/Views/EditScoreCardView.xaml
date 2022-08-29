@@ -16,6 +16,7 @@
             <converters:StructureToStructureDisplayNameConverter x:Key="structureNameConverter"/>
             <converters:StructureToBoldConverter x:Key="structureBoldConverter"/>
             <converters:BoolVisibilityConverter x:Key="boolVisibilityConverter"/>
+            <converters:NullToDoubleConverter x:Key="nullDoubleConverter"/>
         </ResourceDictionary>
     </metro:MetroWindow.Resources>
     <Grid>
@@ -213,14 +214,14 @@
 
                             <Button Command="{Binding PointUpCommand}" Content="{icons:FontAwesome Kind=CaretUpSolid}" Width="30" Height="30" Grid.Column="11"/>
                             <Button Command="{Binding PointDownCommand}" Content="{icons:FontAwesome Kind=CaretDownSolid}" Width="30" Height="30" Grid.Column="12"/>
-
-                        </Grid>
+                            <Button Command="{Binding ClearColorCommand}" Content="{icons:FontAwesome Kind=SprayCanSolid}" Width="30" Height="30" Grid.Column="4" ToolTip="Clear all colors"/>
+                        </Grid> 
 
                         <Border Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="DarkGray" BorderThickness="1" Margin="2" CornerRadius="3">
                             <DataGrid SelectedItem="{Binding SelectedMetricPointModel}" ItemsSource="{Binding MetricPointModels}" Grid.Row="1" AutoGenerateColumns="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
                                 <DataGrid.Columns>
                                     <metro:DataGridNumericUpDownColumn Header="Rank" Binding="{Binding PointId}" FontWeight="Normal" FontSize="12"/>
-                                    <DataGridTextColumn Header="Value" Binding="{Binding PointX , Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12">
+                                    <DataGridTextColumn Header="Value" Binding="{Binding PointX , Mode=TwoWay, UpdateSourceTrigger=LostFocus, Converter={StaticResource nullDoubleConverter}}" FontWeight="Normal" FontSize="12">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="HorizontalAlignment" Value="Center" />
@@ -273,7 +274,7 @@
                             </Grid.ColumnDefinitions>
 
                             <TextBox Height="30" IsReadOnly="True" Grid.Column="0" Grid.Row="1" Text="{Binding SelectedScoreMetric.Structure.TemplateStructureId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,0,5,0" />
-                            <Button Height="30" Grid.Column="1" Content="{icons:FontAwesome Kind=ArrowAltCircleLeftRegular}" Width="30" Margin="2" Command="{Binding UpdateTemplateIdCommand}" ToolTip="Open Structure Dictionary Editor"/>
+                            <Button Height="30" Grid.Column="1" Content="{icons:FontAwesome Kind=ArrowAltCircleLeftRegular}" Width="30" Margin="2" Command="{Binding UpdateTemplateIdCommand}" ToolTip="Push plan structure Id to template."/>
                         </Grid>
                         <Label Grid.Column="1" Grid.Row="0" FontSize="12" Content="Plan Structure" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
                         <Grid Grid.Row="1" Grid.Column="1">

@@ -707,7 +707,7 @@ namespace PlanScoreCard.ViewModels
                     bWarning = true;
                     foreach (var scoreBelowVariation in psm.ScoreValues.Where(x => x.Score < template.ScorePoints.FirstOrDefault(y => y.Variation).Score))
                     {
-                        Warnings += $"Course [{scoreBelowVariation.CourseId}]. Plan [{scoreBelowVariation.PlanId}. Metric {psm.MetricId + 1} -- {psm.MetricText} below variation\n";
+                        Warnings += $"Course [{scoreBelowVariation.CourseId}]. Plan [{scoreBelowVariation.PlanId}. Metric {psm.MetricId + 1}. Structure {psm.StructureId}. -- {psm.MetricText} below variation\n";
                     }
                 }
                 if (psm.ScoreValues.Any(x => x.Score == 0))
@@ -715,7 +715,7 @@ namespace PlanScoreCard.ViewModels
                     bFlag = true;
                     foreach (var zeroScore in psm.ScoreValues.Where(x => x.Score == 0))
                     {
-                        Flags += $"Course [{zeroScore.CourseId}]. Plan [{zeroScore.PlanId}. Metric {psm.MetricId + 1} -- {psm.MetricText}. Score is 0.\n";
+                        Flags += $"Course [{zeroScore.CourseId}]. Plan [{zeroScore.PlanId}. Metric {psm.MetricId + 1}. Structure {psm.StructureId}. -- {psm.MetricText}. Score is 0.\n";
                     }
                 }
                 metric_id++;

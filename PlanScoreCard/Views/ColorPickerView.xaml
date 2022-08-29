@@ -31,7 +31,8 @@
             <Button Background="#00FFFFFF" Content="Transparent (no color)" FontWeight="Bold" Width="200" Height="30"
                     Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
         </Border>
-        <TextBlock Text="Label:" FontWeight="Bold" Foreground="White" FontSize="14" Grid.Column="2"/>
+        <TextBlock Text="Point Label:" FontWeight="Bold" Foreground="Black" FontSize="14" Grid.Column="2"/>
+       
         <TextBox Text="{Binding ColorLabel}" FontWeight="Bold" Grid.Column="3" Grid.ColumnSpan="2"/>
         <!--#region Red-->
 

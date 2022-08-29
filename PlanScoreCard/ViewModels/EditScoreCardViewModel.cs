@@ -161,6 +161,7 @@ namespace PlanScoreCard.ViewModels
                 CopyMetricCommand.RaiseCanExecuteChanged();
                 MetricUpCommand.RaiseCanExecuteChanged();
                 MetricDownCommand.RaiseCanExecuteChanged();
+                ClearColorCommand.RaiseCanExecuteChanged();
                 ShowScorePointModels(SelectedScoreMetric);
 
                 if (SelectedScoreMetric == null)
@@ -518,6 +519,7 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand OrderPointsByValueCommand { get; private set; }
         public DelegateCommand AddNewStructureCommand { get; private set; }
         public DelegateCommand UpdateTemplateIdCommand { get; private set; }
+        public DelegateCommand ClearColorCommand { get; private set; }
         public StructureDictionarySelectorView StructureSelectorView { get; private set; }
         //this property is used to determine whether to open the structure dictionary editor.
         private bool _askEditDictionary { get; set; }
@@ -583,6 +585,7 @@ namespace PlanScoreCard.ViewModels
             AddNewStructureCommand = new DelegateCommand(OnAddNewStructure);
             OpenDictionaryEditorCommand = new DelegateCommand(OnOpenDictionaryEditor, CanOpenDictionaryEditor);
             UpdateTemplateIdCommand = new DelegateCommand(OnUpdateTemplateId);
+            ClearColorCommand = new DelegateCommand(OnClearColor, CanClearColor);
             // Inititate Collections
             Structures = new ObservableCollection<StructureModel>();
             ScoreMetrics = new ObservableCollection<ScoreMetricModel>();
@@ -591,6 +594,20 @@ namespace PlanScoreCard.ViewModels
             MetricTypes = new ObservableCollection<MetricTypeEnum>();
 
             Bind();
+        }
+
+        private bool CanClearColor()
+        {
+            return SelectedScoreMetric != null;
+        }
+
+        private void OnClearColor()
+        {
+           foreach(var sp in SelectedScoreMetric.ScorePoints)
+            {
+                sp.Colors = null;
+                sp.PlanScoreBackgroundColor = null;
+            }
         }
 
         private void OnUpdateTemplateId()
@@ -783,6 +800,10 @@ namespace PlanScoreCard.ViewModels
                         return false;
                     }
                 }
+                //if(scoremetric.ScorePoints.Any(sp => sp.Score is null || sp.PointX is null))
+                //{
+
+                //}
             }
             return true;
         }

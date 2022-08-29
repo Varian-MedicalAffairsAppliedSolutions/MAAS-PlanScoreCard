@@ -31,9 +31,9 @@ namespace PlanScoreCard.Models
             }
         }
 
-        private decimal _pointX;
+        private double _pointX;
 
-        public decimal PointX
+        public double PointX
         {
             get { return _pointX; }
             set
@@ -104,9 +104,12 @@ namespace PlanScoreCard.Models
             set 
             { 
                 SetProperty(ref _colors, value);
-                _colors.Colors = value.Colors;
-                _colors.ColorValue = value.ColorValue;
-                _colors.ColorLabel = value.ColorLabel;
+                if (_colors != null)
+                {
+                    _colors.Colors = value.Colors;
+                    _colors.ColorValue = value.ColorValue;
+                    _colors.ColorLabel = value.ColorLabel;
+                }
             }
         }
 
