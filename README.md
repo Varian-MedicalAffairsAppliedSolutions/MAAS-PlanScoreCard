@@ -29,92 +29,9 @@
 ### Structure Builder
 ![StructureBuilder1 0 0](https://user-images.githubusercontent.com/78000769/169741212-82f16a0d-1e11-4ee4-863d-ac2446486c5b.png)
 
-### Installation Guide: Quick-Start
-* Click "releases" on the right side of this window
+### Installation Guide: [Quick-Start](../master/BasicInstallQuickStart.md)
 
-![image](https://user-images.githubusercontent.com/78000769/171961163-8c195302-3da5-4262-b736-1a1f033c9db1.png)
-
-
-* Find your Eclipse version, expand "Assests" and click the largest ".zip" file to download
-
-![image](https://user-images.githubusercontent.com/78000769/171961712-54f94f81-e079-49cc-b0d5-821b2e56f7df.png)
-
-
-* Locate the downloaded file and move it to a location that can be acessed by your Eclipse system
-
-![image](https://user-images.githubusercontent.com/78000769/171962212-ca132966-3335-400a-9e4e-d448ecf729ab.png)
-
-
-* Once the .zip file has been moved to where Eclipse can acccess, right click select "properties" and unblock (if blocked)
-
-![ZipFileUnblockedPriorToExtract](https://user-images.githubusercontent.com/78000769/169857843-a342b6b8-5f6f-41d5-9b2e-32995778280d.png)
-
-
-* Extract the .zip file to create a directory by right clicking the file and selecting "Extract All...", click next until finished
-
-![image](https://user-images.githubusercontent.com/78000769/171962899-1f5adcdd-4e62-40d0-a6cf-342eff3ce981.png)
-
-
-* In Ecllipse, click Tools from the menu bar and select "Scripts", click folder, then "Change Folder..."
-
-![image](https://user-images.githubusercontent.com/78000769/171963870-6710d081-453a-4fcd-8c96-997ed816f0b2.png)
-
-
-* Browse into the directory you created after extracting the file above and click "Open" 
-
-![image](https://user-images.githubusercontent.com/78000769/171964365-6ade7378-4d06-4167-8c41-b4f90f013a77.png)
-
-
-* Run the PlanScoreCardLauncher.cs
-
-![image](https://user-images.githubusercontent.com/78000769/171964099-6a1c4aca-18c2-4140-b9b6-c1e1b28f58c6.png)
-
-
-### Installation Guide: Move PlanScoreCard to system scripts directory, copy and edit launcher (optional)
-* Open your system scripts directory, click "System Scripts", "Open Folder...", OK
-
-![image](https://user-images.githubusercontent.com/78000769/171965379-e0658fb9-da77-4661-9ba0-52e568d18e9d.png)
-
-
-* Cut/paste or drag/drop the directory you extracted from the .zip above into the PublishedScripts directory  
-
-![image](https://user-images.githubusercontent.com/78000769/171965727-461e080a-306f-4819-a667-5ab46eb3fab3.png)
-
-
-* Open the directory containing the PlanScoreCard software and right click PlanScoreCardLauncher.cs, select Copy
-
-![image](https://user-images.githubusercontent.com/78000769/171966328-14f39ae5-c69e-4186-9c7f-7c71dd3b25f1.png)
-
-
-* Go up a directory, back to the PublishedScripts directory and paste the PlanScoreCardLauncher.cs there
-
-![image](https://user-images.githubusercontent.com/78000769/171969497-0b4fb95c-a5a6-49f5-991a-fd2a2b1b8a7e.png)
-
-
-* Copy the name of the PlanScoreCard software directory
-
-![image](https://user-images.githubusercontent.com/78000769/171970450-7352d92c-de7b-40fb-8f3d-be738791a4a2.png)
-
-
-* Open the PlanScoreCardLauncher.cs file with Notepad, highlight "SubDirectory", right click and "Paste"
-
-![image](https://user-images.githubusercontent.com/78000769/171969622-f9897a81-83dd-4929-9165-3ca247431670.png)
-
-
-* Cut the "//" comment from that line of the file
-
-![image](https://user-images.githubusercontent.com/78000769/171967588-518ea190-93e5-4e36-8c30-0975e831d625.png)
-
-
-* Paste it onto the beginning the following line instead and save the file, close Notepad
-
-![image](https://user-images.githubusercontent.com/78000769/171967903-c2ddb857-45e1-4f1a-8124-5eec884bfbca.png)
-
-
-* Reopen the Scripts window in Eclipse, click System Scripts, select PlanScoreCardLauncher.cs and select "Run"
-
-![image](https://user-images.githubusercontent.com/78000769/171968258-bb9e05eb-e306-4aee-bdea-08b91a7d01d2.png)
-
+### Installation Guide Part 2: [Move PlanScoreCard to system scripts directory, copy and edit launcher (optional)](../master/InstallGuidePart2IntoSystemScriptsDirectory,md)
 
 ### Common Troubleshooting
 
