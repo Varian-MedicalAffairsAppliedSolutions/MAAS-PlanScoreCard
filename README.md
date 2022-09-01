@@ -31,7 +31,7 @@
 
 ### Installation Guide: [Quick-Start](../master/BasicInstallQuickStart.md)
 
-### Installation Guide Part 2: [Move PlanScoreCard to system scripts directory, copy and edit launcher (optional)](../master/InstallGuidePart2IntoSystemScriptsDirectory,md)
+### Installation Guide Part2: [Move PlanScoreCard to system scripts directory, copy and edit launcher (optional)](../master/InstallGuidePart2IntoSystemScriptsDirectory,md)
 
 ### Common Troubleshooting
 
