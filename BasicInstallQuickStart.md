@@ -38,3 +38,4 @@
 
 ![image](https://user-images.githubusercontent.com/78000769/171964099-6a1c4aca-18c2-4140-b9b6-c1e1b28f58c6.png)
 
+[Install Guide Part2](../master/InstallGuidePart2IntoSystemScriptsDirectory.md)
