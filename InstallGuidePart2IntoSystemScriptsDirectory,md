@@ -1,4 +1,5 @@
-### Installation Guide: Move PlanScoreCard to system scripts directory, copy and edit launcher (optional)
+[Installation Guide Part1](../master/BasicInstallQuickStart.md)
+### Installation Guide Part2: Move PlanScoreCard to system scripts directory, copy and edit launcher (optional)
 * Open your system scripts directory, click "System Scripts", "Open Folder...", OK
 
 ![image](https://user-images.githubusercontent.com/78000769/171965379-e0658fb9-da77-4661-9ba0-52e568d18e9d.png)
