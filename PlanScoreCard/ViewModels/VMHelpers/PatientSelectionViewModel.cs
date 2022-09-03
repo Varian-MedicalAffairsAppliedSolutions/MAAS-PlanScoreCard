@@ -19,7 +19,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
 
         public ObservableCollection<PatientSummaryModel> Patients { get; private set; }
 
-        private SmartSearchService smartSearch;
+        //private SmartSearchService smartSearch;
         private PatientSummaryModel _selectedPatient;
 
         public PatientSummaryModel SelectedPatient
