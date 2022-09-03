@@ -145,6 +145,7 @@
     <Compile Include="Converters\MetricEditorConverter.cs" />
     <Compile Include="Converters\MetricIdConverter.cs" />
     <Compile Include="Converters\NullToDoubleConverter.cs" />
+    <Compile Include="Converters\PrimaryToColorConverter.cs" />
     <Compile Include="Converters\ScoreToTextConverter.cs" />
     <Compile Include="Converters\StructureToBoldConverter.cs" />
     <Compile Include="Converters\StructureToStructureDisplayNameConverter.cs" />
@@ -280,6 +281,7 @@
     <Compile Include="ViewModels\VMHelpers\EULAViewModel.cs" />
     <Compile Include="ViewModels\VMHelpers\MessageViewModel.cs" />
     <Compile Include="ViewModels\VMHelpers\ObservableCollectionEx.cs" />
+    <Compile Include="ViewModels\VMHelpers\PatientSelectionViewModel.cs" />
     <Compile Include="ViewModels\VMHelpers\StructureDictionarySelectorViewModel.cs" />
     <Compile Include="ViewModels\VolumeAtDoseViewModel.cs" />
     <Compile Include="Views\BuildStructureView.xaml.cs">
@@ -300,6 +302,9 @@
     </Compile>
     <Compile Include="Views\HelperWindows\MessageView.xaml.cs">
       <DependentUpon>MessageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HelperWindows\PatientSelectionView.xaml.cs">
+      <DependentUpon>PatientSelectionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\HelperWindows\ProgressView.xaml.cs">
       <DependentUpon>ProgressView.xaml</DependentUpon>
@@ -439,6 +444,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\HelperWindows\MessageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\HelperWindows\PatientSelectionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

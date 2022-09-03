@@ -10,7 +10,7 @@
         xmlns:converters="clr-namespace:PlanScoreCard.Converters"
         xmlns:helpers="clr-namespace:PlanScoreCard.Views.HelperClasses"
         mc:Ignorable="d"
-        Title="{Binding ScoreCardTitle}" Height="800" Width="1600" ResizeMode="NoResize">
+        Title="{Binding ScoreCardTitle}" Height="800" Width="1800" ResizeMode="NoResize">
     <metro:MetroWindow.Resources>
         <ResourceDictionary>
             <converters:BoolVisibilityConverter x:Key="localVisibilityConverter"/>
@@ -20,6 +20,7 @@
             <converters:MaxScoreToHeaderConverter x:Key="localScoreHeaderConverter"/>
             <converters:BoolToColorConverter x:Key="localBoolToColorConverter"/>
             <converters:BoolToColorFlagConverter x:Key="localBoolToColorFlagConverter"/>
+            <converters:PrimaryToColorConverter x:Key="localPrimaryColorConverter"/>
         </ResourceDictionary>
     </metro:MetroWindow.Resources>
     <Grid x:FieldModifier="public"  x:Name="TotalGrid">
@@ -87,15 +88,30 @@
                             </Grid.ColumnDefinitions>
                             <ComboBox Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" />
                             <TextBox IsEnabled="False" Text="{Binding PatientId, Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" />
-                            <!--<Button Content="{icons:FontAwesome Kind=UserPlusSolid}" ToolTip="Open Patient" Grid.Column="1" Margin="5" Width="30"/>-->
+                            <Button Content="{icons:FontAwesome Kind=UserPlusSolid}" ToolTip="Open Patient" Grid.Column="1" Margin="5" Width="30"
+                                    Command="{Binding OpenPatientSelectionCommand}"/>
+                            
                         </Grid>
 
                         <!--<Label Grid.Row="2" Content="Course ID"/>
                         <ComboBox Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" />-->
 
                         <Border Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="DarkGray" BorderThickness="1" Margin="2" CornerRadius="3">
-                            <DataGrid SelectedItem="{Binding SelectedPlan}" ItemsSource="{Binding Plans, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" AutoGenerateColumns="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
+                            <!--Removed SelectedItem = {Binding SelectedPlan} attribute -->
+                            <DataGrid ItemsSource="{Binding Plans, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" AutoGenerateColumns="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
                                 <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding PatientId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12" Width="125">
+                                        <DataGridTextColumn.HeaderTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="Patient"/>
+                                            </DataTemplate>
+                                        </DataGridTextColumn.HeaderTemplate>
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
                                     <DataGridTextColumn Binding="{Binding CourseId , Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12" Width="65">
                                         <DataGridTextColumn.HeaderTemplate>
                                             <DataTemplate>
@@ -121,13 +137,23 @@
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
                                     <DataGridCheckBoxColumn Binding="{Binding bSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <DataGridCheckBoxColumn.ElementStyle>
+                                            <Style TargetType="CheckBox">
+                                                <Setter Property="Background" Value="{Binding bPrimary, Converter={StaticResource localPrimaryColorConverter}}"/>
+                                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridCheckBoxColumn.ElementStyle>
                                         <DataGridCheckBoxColumn.HeaderTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="Selected"/>
+                                                <TextBlock ToolTip="Select Twice to make Primary">
+                                                    <Run Text="Selected"/>
+                                                    <!--<LineBreak/>
+                                                    <Run Text="[Primary]"/>-->
+                                                </TextBlock>
                                             </DataTemplate>
                                         </DataGridCheckBoxColumn.HeaderTemplate>
                                     </DataGridCheckBoxColumn>
-                                    <DataGridTemplateColumn>
+                                    <!--<DataGridTemplateColumn>
                                         <DataGridTemplateColumn.HeaderTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="Primary"/>
@@ -138,7 +164,7 @@
                                                 <RadioButton  Height="20" GroupName="Primary" IsChecked="{Binding bPrimary, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" HorizontalAlignment="Center"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
+                                    </DataGridTemplateColumn>-->
                                     <DataGridTextColumn Binding="{Binding PlanScore, Converter={StaticResource localScoreTextConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontWeight="Normal" FontSize="12" Width="90" IsReadOnly="True">
                                         <DataGridTextColumn.HeaderTemplate>
                                             <DataTemplate>

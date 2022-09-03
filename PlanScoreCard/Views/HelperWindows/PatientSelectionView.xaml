@@ -1,0 +1,68 @@
+﻿<metro:MetroWindow x:Class="PlanScoreCard.Views.HelperWindows.PatientSelectionView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:local="clr-namespace:PlanScoreCard.Views.HelperWindows"
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+        
+        mc:Ignorable="d"
+        Title="PatientSelectionView" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Patient Selection" HorizontalAlignment="Center" FontWeight="Bold" FontSize="16" Margin="5"/>
+        <DockPanel Grid.Row="1">
+            <StackPanel DockPanel.Dock="Left">
+                <TextBlock Text="Patients" FontWeight="Bold" HorizontalAlignment="Center" Margin="5"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBox Width="150" Text="{Binding AddPatientId, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" Margin="5">
+                        
+                    </TextBox>
+                    <Button Margin="5,0,0,0" Command="{Binding AddPatientCommand}">
+                        <icons:FontAwesome Kind="UserCheckSolid"/>
+                    </Button>
+                </StackPanel>
+                <ListBox ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <Run Text="{Binding PatientId}"/>
+                                <LineBreak/>
+                                <Run Text="{Binding PatientName}"/>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+            <Grid DataContext="{Binding SelectedPatient}" DockPanel.Dock="Right">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock FontWeight="Bold" HorizontalAlignment="Center">
+                    <Run Text="Plan selection for "/>
+                    <Run Text="{Binding PatientId}"/>
+                </TextBlock>
+                <ItemsControl ItemsSource="{Binding Plans}" Grid.Row="1">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding bSelected}">
+                                <CheckBox.Content>
+                                    <MultiBinding StringFormat="{}{0}: {1}">
+                                <Binding Path="{Binding CourseId}"/>
+                                <Binding Path="{Binding PlanId}"/>
+                                    </MultiBinding>
+                                </CheckBox.Content>
+                            </CheckBox>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </DockPanel>
+    </Grid>
+</metro:MetroWindow>

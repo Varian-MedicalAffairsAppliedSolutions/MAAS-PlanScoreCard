@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PlanScoreCard.Views.HelperWindows"
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
-        Title="{Binding MessageTitle}" Height="450" Width="500" Background="WhiteSmoke">
+        Title="{Binding MessageTitle}" Height="450" Width="600" Background="WhiteSmoke">
     <Grid Background="LightSlateGray">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

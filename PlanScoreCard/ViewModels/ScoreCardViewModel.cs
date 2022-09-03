@@ -328,6 +328,7 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand PrintReportCommand { get; private set; }
         public DelegateCommand OpenWarningCommand { get; private set; }
         public DelegateCommand OpenFlagCommand { get; private set; }
+        public DelegateCommand OpenPatientSelectionCommand { get; private set; }
 
         // Plugin Visibility
 
@@ -419,6 +420,7 @@ namespace PlanScoreCard.ViewModels
             PrintReportCommand = new DelegateCommand(OnPrintReport, CanPrintReport);
             OpenWarningCommand = new DelegateCommand(OnOpenWarning);
             OpenFlagCommand = new DelegateCommand(OnOpenFlag);
+            OpenPatientSelectionCommand = new DelegateCommand(OnOpenPatientSelector);
             bRxScalingVisibility = true;
             // Sets If no Plan is Passed In
             if (Plan != null)
@@ -429,7 +431,11 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<PlanChangedEvent>().Subscribe(OnPlanChanged);
         }
 
-       
+        private void OnOpenPatientSelector()
+        {
+            throw new NotImplementedException();
+        }
+
         private void OnCloseMessage()
         {
             MessageView.Close();
@@ -654,7 +660,7 @@ namespace PlanScoreCard.ViewModels
         // Score Plan
         private void ScorePlan()
         {
-            if (ScoreCard != null && Plans.Count()>0 && Plans.Any(x=>x.bPrimary))
+            if (ScoreCard != null && Plans.Count()>0 && Plans.Any(x=>x.bSelected))
                 ScorePlan(ScoreCard);
 
             ProgressViewService.Close();
@@ -700,14 +706,30 @@ namespace PlanScoreCard.ViewModels
             {
                 // PlanScoreModel
                 PlanScoreModel psm = new PlanScoreModel(Application, StructureDictionaryService);
-                psm.BuildPlanScoreFromTemplate(selectedPlanCollection, template, metric_id, Plans.FirstOrDefault(x => x.bPrimary).CourseId, Plans.FirstOrDefault(x => x.bPrimary).PlanId, true);
+                if (Plans.Any(pl => pl.bPrimary))
+                {
+                    psm.BuildPlanScoreFromTemplate(selectedPlanCollection, template, metric_id, Plans.FirstOrDefault(x => x.bPrimary).CourseId, Plans.FirstOrDefault(x => x.bPrimary).PlanId, true);
+                }
+                else if (Plans.Any(pl => pl.bSelected)) 
+                {
+                    Plans.FirstOrDefault(pl => pl.bSelected).bPrimary = true;
+                    //psm.BuildPlanScoreFromTemplate(selectedPlanCollection, template, metric_id, Plans.FirstOrDefault(x => x.bPrimary).CourseId, Plans.FirstOrDefault(x => x.bPrimary).PlanId, true);
+                    return;
+                }
+                else
+                {
+                    //System.Windows.MessageBox.Show("Must select a plan for building");
+                    System.Threading.Thread.Sleep(700);
+                    ProgressViewService.Close();
+                    return;
+                }
                 PlanScores.Add(psm);
                 if (template.ScorePoints.Any(x => x.Variation) && psm.ScoreValues.Any(x => x.Score < template.ScorePoints.FirstOrDefault(y => y.Variation).Score))
                 {
                     bWarning = true;
                     foreach (var scoreBelowVariation in psm.ScoreValues.Where(x => x.Score < template.ScorePoints.FirstOrDefault(y => y.Variation).Score))
                     {
-                        Warnings += $"Course [{scoreBelowVariation.CourseId}]. Plan [{scoreBelowVariation.PlanId}. Metric {psm.MetricId + 1}. Structure {psm.StructureId}. -- {psm.MetricText} below variation\n";
+                        Warnings += $"Course [{scoreBelowVariation.CourseId}]. Plan [{scoreBelowVariation.PlanId}]. Metric {psm.MetricId + 1}. Structure {psm.StructureId}. -- {psm.MetricText} below variation\n";
                     }
                 }
                 if (psm.ScoreValues.Any(x => x.Score == 0))
@@ -715,7 +737,7 @@ namespace PlanScoreCard.ViewModels
                     bFlag = true;
                     foreach (var zeroScore in psm.ScoreValues.Where(x => x.Score == 0))
                     {
-                        Flags += $"Course [{zeroScore.CourseId}]. Plan [{zeroScore.PlanId}. Metric {psm.MetricId + 1}. Structure {psm.StructureId}. -- {psm.MetricText}. Score is 0.\n";
+                        Flags += $"Course [{zeroScore.CourseId}]. Plan [{zeroScore.PlanId}]. Metric {psm.MetricId + 1}. Structure {psm.StructureId}. -- {psm.MetricText}. Score is 0.\n";
                     }
                 }
                 metric_id++;

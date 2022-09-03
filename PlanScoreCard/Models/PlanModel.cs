@@ -29,6 +29,13 @@ namespace PlanScoreCard.Models
             get { return courseId; }
             set { SetProperty(ref courseId, value); }
         }
+        private string _patientId;
+
+        public string PatientId
+        {
+            get { return _patientId; }
+            set { SetProperty(ref _patientId, value); }
+        }
 
         public string DisplayTxt { get; set; }
 
@@ -39,6 +46,16 @@ namespace PlanScoreCard.Models
             get { return _bselected; }
             set
             {
+                if(!value && !bPrimary && bSelected)
+                {
+                    bPrimary = true;
+                    value = true;
+                }
+                if(!value && bPrimary && bSelected)
+                {
+                    bPrimary = false;
+                    value = false;
+                }
                 SetProperty(ref _bselected, value);
 
                 if (!bSelected && bPrimary)
@@ -62,8 +79,10 @@ namespace PlanScoreCard.Models
                 if (bPrimary)
                 {
                     _eventAggregator.GetEvent<FreePrimarySelectionEvent>().Publish(this);
-
-                    bSelected = bPrimary;
+                    if (!bSelected)
+                    {
+                        bSelected = bPrimary;
+                    }
                 }
                 //don't need to call PlanSelected event because bSelected already calls it.
                 //if (bPrimary)
@@ -151,6 +170,7 @@ namespace PlanScoreCard.Models
         {
             PlanId = bPlanSum ? PlanSum.Id : Plan.Id;
             CourseId = bPlanSum ? PlanSum.PlanSetups.FirstOrDefault().Course.Id : Plan.Course.Id;
+            PatientId = bPlanSum ? PlanSum.Course.Patient.Id : Plan.Course.Patient.Id;
             bPrimary = false;
             bSelected = false;
         }
