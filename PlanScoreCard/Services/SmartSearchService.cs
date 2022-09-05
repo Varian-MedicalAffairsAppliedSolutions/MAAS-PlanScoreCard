@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace PlanScoreCard.Services
 {
-    public static class SmartSearchService
+    public class SmartSearchService
     {
         private const int MaximumResults = 10;
         private readonly IEnumerable<PatientSummaryModel> Patients;
 
-        public static SmartSearchService(IEnumerable<PatientSummaryModel> patientSummaries)
+        public SmartSearchService(IEnumerable<PatientSummaryModel> patientSummaries)
         {
             Patients = patientSummaries;
         }
 
-        public static IEnumerable<PatientSummaryModel> GetMatchingPatients(string search)
+        public IEnumerable<PatientSummaryModel> GetMatchingPatients(string search)
         {
             return !string.IsNullOrEmpty(search)
             ? Patients

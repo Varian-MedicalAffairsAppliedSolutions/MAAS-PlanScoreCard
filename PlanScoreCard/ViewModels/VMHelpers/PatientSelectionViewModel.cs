@@ -1,5 +1,6 @@
 ﻿using PlanScoreCard.Models;
 using PlanScoreCard.Services;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using System;
@@ -12,56 +13,96 @@ using VMS.TPS.Common.Model.API;
 
 namespace PlanScoreCard.ViewModels.VMHelpers
 {
-    public class PatientSelectionViewModel:BindableBase
+    public class PatientSelectionViewModel : BindableBase
     {
         private IEventAggregator _eventAggregator;
         private Application _app;
 
-        public ObservableCollection<PatientSummaryModel> Patients { get; private set; }
+        public ObservableCollection<PatientPlanSearchModel> Patients { get; private set; }
+        public List<PatientSummaryModel> PatientSummaries { get; private set; }
+        public ObservableCollection<PatientSelectModel> PatientMatches { get; private set; }
 
         //private SmartSearchService smartSearch;
-        private PatientSummaryModel _selectedPatient;
+        private PatientPlanSearchModel _selectedPatient;
 
-        public PatientSummaryModel SelectedPatient
+        public PatientPlanSearchModel SelectedPatient
         {
+
             get { return _selectedPatient; }
-            set { SetProperty(ref _selectedPatient,value); }
+            set 
+            { 
+                SetProperty(ref _selectedPatient, value); 
+            }
         }
-        private string _addPatientId;
+        private PatientSelectModel _selectedPatientMatch;
 
-        public string AddPatientId
+        public PatientSelectModel SelectedPatientMatch
         {
-            get { return _addPatientId; }
-            set { 
-                SetProperty(ref _addPatientId,value);
-                UpdatePatientsOnId();
+            get { return _selectedPatientMatch; }
+            set 
+            { 
+                _selectedPatientMatch = value;
+                if (SelectedPatientMatch!=null)
+                {
+                    SearchText = SelectedPatientMatch.ID;
+                }
             }
         }
 
+        private string _searchText;
+
+        public string SearchText
+        {
+            get { return _searchText; }
+            set
+            {
+                SetProperty(ref _searchText, value);
+                SearchPatient();
+            }
+        }
+        public DelegateCommand SearchPatientCommand { get; private set; }
+        public DelegateCommand OpenPatientCommand { get; private set; }
+        public PatientSelectService PatientSelectService { get; }
 
         public PatientSelectionViewModel(IEventAggregator eventAggregator, Application app)
         {
             _eventAggregator = eventAggregator;
             _app = app;
-            Patients = new ObservableCollection<PatientSummaryModel>();
+            Patients = new ObservableCollection<PatientPlanSearchModel>();
+            PatientMatches = new ObservableCollection<PatientSelectModel>();
+            PatientSummaries = new List<PatientSummaryModel>();
+            OpenPatientCommand = new DelegateCommand(OnOpenPatient);
             GetPatientSummaryies();
+            PatientSelectService = new PatientSelectService(new SmartSearchService(PatientSummaries));
+            SearchPatient();
             //TODO add patient smart search -- can add from redcurry example
             //https://github.com/redcurry/EsapiEssentials
             //smartSearch = new SmartSearchService(Patients);
             //Patients = new SmartSearchService(app.PatientSummaries).GetMatchingPatients(AddPatientId);
         }
 
+        private void OnOpenPatient()
+        {
+            _app.ClosePatient();
+            var patient = _app.OpenPatientById(SearchText);
+            Patients.Add(new PatientPlanSearchModel(patient, _eventAggregator));
+        }
+
         private void GetPatientSummaryies()
         {
-            foreach(var patientSummary in _app.PatientSummaries)
+            foreach (var patientSummary in _app.PatientSummaries)
             {
-                Patients.Add(new PatientSummaryModel(patientSummary));
+                PatientSummaries.Add(new PatientSummaryModel(patientSummary));
             }
         }
 
-        private void UpdatePatientsOnId()
+        private void SearchPatient()
         {
-            throw new NotImplementedException();
+            PatientMatches.Clear();
+            foreach(var ps in PatientSelectService.GetPatientOptions(SearchText))
+            {
+                PatientMatches.Add(ps);
+            }
         }
     }
 }

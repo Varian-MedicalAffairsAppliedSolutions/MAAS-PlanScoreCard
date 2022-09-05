@@ -430,10 +430,12 @@ namespace PlanScoreCard.ViewModels
             //I moved this down here so that the scoreplan doesn't run until after the plans have already been setup (the event aggregator was running on every plan).
             EventAggregator.GetEvent<PlanChangedEvent>().Subscribe(OnPlanChanged);
         }
-
+        public PatientSelectionView patientSelectionView;
         private void OnOpenPatientSelector()
         {
-            throw new NotImplementedException();
+            patientSelectionView = new PatientSelectionView();
+            patientSelectionView.DataContext = new PatientSelectionViewModel(EventAggregator, Application);
+            patientSelectionView.ShowDialog();
         }
 
         private void OnCloseMessage()

@@ -219,6 +219,7 @@
     <Compile Include="Models\Internals\ScoreTemplateModel.cs" />
     <Compile Include="Models\MetricTypeEnum.cs" />
     <Compile Include="Models\OperationModel.cs" />
+    <Compile Include="Models\PatientPlanSearchModel.cs" />
     <Compile Include="Models\PatientSelectModel.cs" />
     <Compile Include="Models\PatientSummaryModel.cs" />
     <Compile Include="Models\PlanModel.cs" />

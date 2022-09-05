@@ -6,7 +6,7 @@
         xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:local="clr-namespace:PlanScoreCard.Views.HelperWindows"
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
-        
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Title="PatientSelectionView" Height="450" Width="800">
     <Grid>
@@ -20,13 +20,43 @@
             <StackPanel DockPanel.Dock="Left">
                 <TextBlock Text="Patients" FontWeight="Bold" HorizontalAlignment="Center" Margin="5"/>
                 <StackPanel Orientation="Horizontal">
-                    <TextBox Width="150" Text="{Binding AddPatientId, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" Margin="5">
-                        
+                    <DockPanel>
+                    <TextBox DockPanel.Dock="Top" Width="150" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" Margin="5">
+                            <!-- I don't think I need this command as I'm linking a method to the setter of the patient search text.-->
+
+                            <!--<i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SourceUpdated">
+                                    <i:InvokeCommandAction Command="{Binding SearchPatientCommand}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>-->
                     </TextBox>
-                    <Button Margin="5,0,0,0" Command="{Binding AddPatientCommand}">
+                        <!--Patient Matches-->
+                        <ScrollViewer DockPanel.Dock="Top" Margin="0,5,0,0" Height="50">
+                        <ListBox
+                            DockPanel.Dock="Top" ItemsSource="{Binding PatientMatches}"
+                            SelectedItem="{Binding SelectedPatientMatch, NotifyOnSourceUpdated=True}">
+                            <!--<i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SourceUpdated">
+                                    <i:InvokeCommandAction Command="{Binding AddPatientCommand}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>-->
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <Run Text="{Binding LastName}"/>, 
+                                        <Run Text="{Binding FirstName}"/>
+                                        (<Run Text="{Binding ID}"/>)
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        </ScrollViewer>
+                    </DockPanel>
+                    <Button Margin="5,0,0,0" Command="{Binding OpenPatientCommand}" Height="30" VerticalAlignment="Top">
                         <icons:FontAwesome Kind="UserCheckSolid"/>
                     </Button>
                 </StackPanel>
+                <TextBlock Margin="5" Text="Selected Patients" FontWeight="Bold" HorizontalAlignment="Center"/>
                 <ListBox ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
