@@ -34,9 +34,9 @@ namespace PlanScoreCard.ViewModels
         // Class Variables 
 
         private Application Application;
-        private Patient Patient;
-        private Course Course;
-        private PlanningItem Plan;
+        //private Patient Patient;
+        //private Course Course;
+        private PlanModel Plan;
         private IEventAggregator EventAggregator;
         private ViewLauncherService ViewLauncherService;
         private ProgressViewService ProgressViewService;
@@ -101,7 +101,7 @@ namespace PlanScoreCard.ViewModels
             {
                 SetProperty(ref _numberOfFractions, value);
                 SetRxMessage();
-                
+
 
             }
         }
@@ -116,7 +116,7 @@ namespace PlanScoreCard.ViewModels
             }
             else
             {
-                if (Plan is PlanSetup)
+                if (!Plan.bPlanSum)
                 {
                     CheckPlanRx(out bDoseMatch, out bFxMatch);
                     if (!bDoseMatch || !bFxMatch)
@@ -153,14 +153,14 @@ namespace PlanScoreCard.ViewModels
         private void CheckPlanRx(out bool bDoseMatch, out bool bFxMatch)
         {
             bool bGyUnit = true;
-            if ((Plan as PlanSetup).TotalDose.Unit != VMS.TPS.Common.Model.Types.DoseValue.DoseUnit.Gy)
+            if (Plan.DoseUnit != VMS.TPS.Common.Model.Types.DoseValue.DoseUnit.Gy)
             {
                 bGyUnit = false;
             }
             bDoseMatch = bGyUnit ?
-                Math.Abs(DosePerFraction - (Plan as PlanSetup).DosePerFraction.Dose) < 0.1 :
-                Math.Abs(DosePerFraction - (Plan as PlanSetup).DosePerFraction.Dose / 100.0) < 0.1;
-            bFxMatch = Math.Abs(NumberOfFractions - (int)(Plan as PlanSetup).NumberOfFractions) < 1;
+                Math.Abs(DosePerFraction - Plan.DosePerFraction) < 0.1 :
+                Math.Abs(DosePerFraction - Plan.DosePerFraction / 100.0) < 0.1;
+            bFxMatch = Math.Abs(NumberOfFractions - Plan.NumberOfFractions) < 1;
         }
 
         private string _rxMessage;
@@ -183,9 +183,9 @@ namespace PlanScoreCard.ViewModels
                 SetProperty(ref _bRxScaling, value);
                 if (bRxScaling)
                 {
-                    if (Plan is PlanSetup)
+                    if (!Plan.bPlanSum)
                     {
-                        ScaleScorecard(DosePerFraction * NumberOfFractions, (Plan as PlanSetup).TotalDose.Dose, (Plan as PlanSetup).TotalDose.UnitAsString);
+                        ScaleScorecard(DosePerFraction * NumberOfFractions, Plan.DosePerFraction * Plan.NumberOfFractions, Plan.DoseUnit.ToString());
                     }
                 }
             }
@@ -238,8 +238,8 @@ namespace PlanScoreCard.ViewModels
                 }
             }
             _bScaled = true;
-            ScoreCard.DosePerFraction = DosePerFraction = planTotalDoseGy / (int)(Plan as PlanSetup).NumberOfFractions;
-            ScoreCard.NumberOfFractions = NumberOfFractions = (int)(Plan as PlanSetup).NumberOfFractions;
+            ScoreCard.DosePerFraction = DosePerFraction = planTotalDoseGy / Plan.NumberOfFractions;
+            ScoreCard.NumberOfFractions = NumberOfFractions = Plan.NumberOfFractions;
             ScorePlan();
         }
 
@@ -380,15 +380,15 @@ namespace PlanScoreCard.ViewModels
         public MessageView MessageView { get; set; }
 
         // Constructor
-        public ScoreCardViewModel(Application app, Patient patient, Course course, PlanSetup plan, IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService, StructureDictionaryService structureDictionaryService)
+        public ScoreCardViewModel(Application app, List<PlanModel> plans, IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService, StructureDictionaryService structureDictionaryService)
         {
             // Set the Initial Variables Passed In
             ScoreCardTitle = ConfigurationManager.AppSettings["ValidForClinicalUse"] != "true" ?
                 "Plan ScoreCard **Not Validated for Clinical Use**" : "Plan ScoreCard";
             Application = app;
-            Patient = patient;
-            Course = course;
-            Plan = plan;
+            //Patient = patient;
+            //Course = course;
+            //Plan = plan;
             EventAggregator = eventAggregator;
 
             // Initiate Services
@@ -410,7 +410,10 @@ namespace PlanScoreCard.ViewModels
             // Initiate Collections
             PlanScores = new ObservableCollection<PlanScoreModel>();
             Plans = new ObservableCollection<PlanModel>();
-
+            foreach (var planModel in plans)
+            {
+                Plans.Add(planModel);
+            }
             // Delegate Commands
             ScorePlanCommand = new DelegateCommand(ScorePlan);
             ImportScoreCardCommand = new DelegateCommand(ImportScoreCard);
@@ -423,9 +426,13 @@ namespace PlanScoreCard.ViewModels
             OpenPatientSelectionCommand = new DelegateCommand(OnOpenPatientSelector);
             bRxScalingVisibility = true;
             // Sets If no Plan is Passed In
-            if (Plan != null)
-                OnPlanChanged(new List<PlanModel> { new PlanModel(Plan as PlanningItem, eventAggregator) { PlanId = Plan.Id, CourseId = Course.Id, bSelected = true } });
 
+            //if (Plan != null)
+            //    OnPlanChanged(new List<PlanModel> { });
+            if (plans.Any(p => p.bPrimary))
+            {
+                OnPlanChanged(Plans.ToList());
+            }
             InitializeClass();
             //I moved this down here so that the scoreplan doesn't run until after the plans have already been setup (the event aggregator was running on every plan).
             EventAggregator.GetEvent<PlanChangedEvent>().Subscribe(OnPlanChanged);
@@ -434,7 +441,7 @@ namespace PlanScoreCard.ViewModels
         private void OnOpenPatientSelector()
         {
             patientSelectionView = new PatientSelectionView();
-            patientSelectionView.DataContext = new PatientSelectionViewModel(EventAggregator, Application);
+            patientSelectionView.DataContext = new PatientSelectionViewModel(EventAggregator, Application, Plans.ToList());
             patientSelectionView.ShowDialog();
         }
 
@@ -485,9 +492,9 @@ namespace PlanScoreCard.ViewModels
                         plan.bPrimary = false;
                     }
                 }
-                Plan = obj.bPlanSum ?
-                    Patient.Courses.FirstOrDefault(x => x.Id == obj.CourseId).PlanSums.FirstOrDefault(x => x.Id == obj.PlanId) as PlanningItem :
-                    Patient.Courses.FirstOrDefault(x => x.Id == obj.CourseId).PlanSetups.FirstOrDefault(x => x.Id == obj.PlanId) as PlanningItem;
+                Plan = obj;//obj.bPlanSum ?
+                           //Patient.Courses.FirstOrDefault(x => x.Id == obj.CourseId).PlanSums.FirstOrDefault(x => x.Id == obj.PlanId) as PlanningItem :
+                           //Patient.Courses.FirstOrDefault(x => x.Id == obj.CourseId).PlanSetups.FirstOrDefault(x => x.Id == obj.PlanId) as PlanningItem;
                 _bScaled = false;
                 bRxScaling = false;
                 SetRxMessage();
@@ -618,7 +625,7 @@ namespace PlanScoreCard.ViewModels
 
                 EventAggregator.GetEvent<ShowPluginViewEvent>().Publish();
 
-                NormalizationService normService = new NormalizationService(Application, Patient, Plans.FirstOrDefault(x => x.bPrimary), ScoreCard.ScoreMetrics, EventAggregator, StructureDictionaryService);
+                NormalizationService normService = new NormalizationService(Application, Plans.FirstOrDefault(x => x.bPrimary), ScoreCard.ScoreMetrics, EventAggregator, StructureDictionaryService);
 
                 var newplan = normService.GetPlan();
                 Plans.Add(newplan);
@@ -631,29 +638,29 @@ namespace PlanScoreCard.ViewModels
         {
 
             // Set the PatientID
-            PatientId = Patient.Id;
+            PatientId = Plan.PatientId;
 
             // Add the Plans
             // Clear the Collection of Plans
-            Plans.Clear();
+            //Plans.Clear();
 
             // For each course, add all the Plans
-            foreach (Course course in Patient.Courses)
-            {
-                foreach (PlanSetup plan in course.PlanSetups.Where(x=>x.StructureSet!=null))
-                    Plans.Add(new PlanModel(plan, EventAggregator));
-            }
-            if (Plan != null && Plan.StructureSet!=null)
-            {
-                if (Plans.Any(x => x.PlanId == Plan.Id && x.CourseId == Course.Id))
-                {
-                    Plans.FirstOrDefault(x => x.PlanId == Plan.Id && x.CourseId == Course.Id).bPrimary = true;
-                }
-                if(!String.IsNullOrEmpty(old_course) && !String.IsNullOrEmpty(old_plan) && Plans.Any(x=>x.PlanId == old_plan && x.CourseId == old_course))
-                {
-                    Plans.FirstOrDefault(x => x.PlanId == Plan.Id && x.CourseId == Course.Id).bSelected = true;
-                }
-            }
+            //foreach (Course course in Patient.Courses)
+            //{
+            //    foreach (PlanSetup plan in course.PlanSetups.Where(x=>x.StructureSet!=null))
+            //        Plans.Add(new PlanModel(plan, EventAggregator));
+            //}
+            //if (Plan != null && Plan.StructureSet!=null)
+            //{
+            //    if (Plans.Any(x => x.PlanId == Plan.Id && x.CourseId == Course.Id))
+            //    {
+            //        Plans.FirstOrDefault(x => x.PlanId == Plan.Id && x.CourseId == Course.Id).bPrimary = true;
+            //    }
+            //    if(!String.IsNullOrEmpty(old_course) && !String.IsNullOrEmpty(old_plan) && Plans.Any(x=>x.PlanId == old_plan && x.CourseId == old_course))
+            //    {
+            //        Plans.FirstOrDefault(x => x.PlanId == Plan.Id && x.CourseId == Course.Id).bSelected = true;
+            //    }
+            //}
 
             //Plans.First().bPrimary = true;
             ScorePlan();
@@ -662,7 +669,7 @@ namespace PlanScoreCard.ViewModels
         // Score Plan
         private void ScorePlan()
         {
-            if (ScoreCard != null && Plans.Count()>0 && Plans.Any(x=>x.bSelected))
+            if (ScoreCard != null && Plans.Count() > 0 && Plans.Any(x => x.bSelected))
                 ScorePlan(ScoreCard);
 
             ProgressViewService.Close();
@@ -672,14 +679,14 @@ namespace PlanScoreCard.ViewModels
         {
             if (EditScoreCardView != null)
             {
-                
+
                 if (EditScoreCardView.IsVisible)
                 { EditScoreCardView.Hide(); }
             }
 
             ScoreCard = scoreCard;
             //the scorecard rx may have changed
-            DosePerFraction= scoreCard.DosePerFraction;
+            DosePerFraction = scoreCard.DosePerFraction;
             NumberOfFractions = scoreCard.NumberOfFractions;
             //SetRxMessage();
             ProgressViewService.ShowProgress("Scoring Plans", 100, true);
@@ -689,7 +696,8 @@ namespace PlanScoreCard.ViewModels
             PlanScores.Clear();
 
             // Get Collection of SelectedPlans
-            List<PlanningItem> selectedPlans = Plans.Where(p => p.bSelected == true).Select(s => s.Plan as PlanningItem).ToList();
+            List<PlanningItem> selectedPlans = GetPlansPlanModel();
+            //Plans.Where(p => p.bSelected == true).Select(s => s.Plan as PlanningItem).ToList();
 
             // Convert the List to an Observable Collection
             ObservableCollection<PlanningItem> selectedPlanCollection = new ObservableCollection<PlanningItem>();
@@ -712,7 +720,7 @@ namespace PlanScoreCard.ViewModels
                 {
                     psm.BuildPlanScoreFromTemplate(selectedPlanCollection, template, metric_id, Plans.FirstOrDefault(x => x.bPrimary).CourseId, Plans.FirstOrDefault(x => x.bPrimary).PlanId, true);
                 }
-                else if (Plans.Any(pl => pl.bSelected)) 
+                else if (Plans.Any(pl => pl.bSelected))
                 {
                     Plans.FirstOrDefault(pl => pl.bSelected).bPrimary = true;
                     //psm.BuildPlanScoreFromTemplate(selectedPlanCollection, template, metric_id, Plans.FirstOrDefault(x => x.bPrimary).CourseId, Plans.FirstOrDefault(x => x.bPrimary).PlanId, true);
@@ -784,6 +792,11 @@ namespace PlanScoreCard.ViewModels
             ProgressViewService.Close();
         }
 
+        private List<PlanningItem> GetPlansPlanModel()
+        {
+            throw new NotImplementedException();
+        }
+
         private void EditScoreCard()
         {
             // Show the Progress Bar
@@ -793,7 +806,7 @@ namespace PlanScoreCard.ViewModels
             EditScoreCardView = ViewLauncherService.GetEditScoreCardView();
 
             // Events
-            EventAggregator.GetEvent<EditScoreCardSetPlanEvent>().Publish(new PlanModel(Plan, EventAggregator)); // Push the SelectedPlan
+            EventAggregator.GetEvent<EditScoreCardSetPlanEvent>().Publish(Plan); // Push the SelectedPlan
             EventAggregator.GetEvent<LoadEditScoreCardViewEvent>().Publish(scoreCard); // Push the ScoreCardModel to the ViewModel
             EventAggregator.GetEvent<EditScoreCardSetUserEvent>().Publish(Application.CurrentUser); // Push the User
 
@@ -893,13 +906,13 @@ namespace PlanScoreCard.ViewModels
                 if (importSuccess)
                 {
                     //any empty colors should be white.
-                    if (bRxScaling && Plan is PlanSetup && DosePerFraction != 0.0 && NumberOfFractions != 0)
+                    if (bRxScaling && !Plan.bPlanSum && DosePerFraction != 0.0 && NumberOfFractions != 0)
                     {
                         bool bDoseMatch, bFxMatch;
                         CheckPlanRx(out bDoseMatch, out bFxMatch);
                         if (!bDoseMatch || !bFxMatch && !_bScaled)
                         {
-                            ScaleScorecard(ScoreCard.NumberOfFractions * ScoreCard.DosePerFraction, (Plan as PlanSetup).TotalDose.Dose, (Plan as PlanSetup).TotalDose.UnitAsString);
+                            ScaleScorecard(ScoreCard.NumberOfFractions * ScoreCard.DosePerFraction, Plan.NumberOfFractions * Plan.DosePerFraction, Plan.DoseUnit.ToString());
                             return;
                         }
                     }
@@ -918,15 +931,15 @@ namespace PlanScoreCard.ViewModels
                 Plans.Clear();
                 foreach (var plan in obj.OrderByDescending(x => x.bPrimary))
                 {
-                    Plan = Patient.Courses.FirstOrDefault(x => x.Id == plan.CourseId).PlanSetups.FirstOrDefault(x => x.Id == plan.PlanId && x.Course.Id == plan.CourseId);
-                    if (Plan == null)
-                    {
-                        Plan = Patient.Courses.FirstOrDefault(x => x.Id == plan.CourseId).PlanSums.FirstOrDefault(x => x.Id == plan.PlanId && x.Course.Id == plan.CourseId);
-                    }
-                    if (Plan != null)
-                    {
-                        Plans.Add(plan);
-                    }
+                    Plan = plan;// Patient.Courses.FirstOrDefault(x => x.Id == plan.CourseId).PlanSetups.FirstOrDefault(x => x.Id == plan.PlanId && x.Course.Id == plan.CourseId);
+                                //if (Plan == null)
+                                //{
+                                //    Plan = Patient.Courses.FirstOrDefault(x => x.Id == plan.CourseId).PlanSums.FirstOrDefault(x => x.Id == plan.PlanId && x.Course.Id == plan.CourseId);
+                                //}
+                                //if (Plan != null)
+                                //{
+                    Plans.Add(plan);
+                    //}
                 }
                 PlanScores.Clear();
 
@@ -959,10 +972,10 @@ namespace PlanScoreCard.ViewModels
         public void UpdatePlanModel(Patient patient, Course course, PlanSetup plan)
         {
             old_course = Plans.FirstOrDefault(x => x.bPrimary)?.CourseId;//Course.Id;
-            old_plan = Plans.FirstOrDefault(x=>x.bPrimary)?.PlanId;
-            Patient = patient;
-            Course = course;
-            Plan = plan;
+            old_plan = Plans.FirstOrDefault(x => x.bPrimary)?.PlanId;
+            //Patient = patient;
+            //Course = course;
+            //Plan = plan;
             //Plans.Clear();
             InitializeClass();
             //OnPlanChanged(new List<PlanModel> { new PlanModel(Plan as PlanningItem, EventAggregator) { PlanId = Plan.Id, CourseId = Course.Id, bSelected = true } });

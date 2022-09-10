@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using PlanScoreCard.Events;
 using PlanScoreCard.Events.HelperWindows;
+using PlanScoreCard.Models;
 using PlanScoreCard.Startup;
 using PlanScoreCard.ViewModels;
 using PlanScoreCard.ViewModels.VMHelpers;
@@ -149,9 +150,29 @@ namespace PlanScoreCard
                                 {
                                     _plan = _course.PlanSetups.FirstOrDefault(x => x.Id == _planId);
                                 }
-
+                                //construct a planmodel and send that to the bootstrap instead.
+                                List<PlanModel> plans = new List<PlanModel>();
+                                foreach(var course in _patient.Courses)
+                                {
+                                    foreach(var plan in course.PlanSetups)
+                                    {
+                                        var localPlan = new PlanModel(plan, eventAggregator);
+                                        if(plan.Id == _plan.Id && course.Id == _course.Id)
+                                        {
+                                            localPlan.bPrimary = true;
+                                        }
+                                        plans.Add(localPlan);
+                                    }
+                                    foreach (var planSum in course.PlanSums)
+                                    {
+                                        if (planSum.PlanSetups.Any())
+                                        {
+                                            plans.Add(new PlanModel(planSum, eventAggregator));
+                                        }
+                                    }
+                                }
                                 var bootstrap = new Bootstrapper();
-                                var container = bootstrap.Bootstrap(_patient, _course, _plan, _app.CurrentUser, _app, eventAggregator);
+                                var container = bootstrap.Bootstrap(plans, _app.CurrentUser, _app, eventAggregator);
                                 view = container.Resolve<ScoreCardView>();
                                 eventAggregator.GetEvent<UILaunchedEvent>().Publish();
                                 view.ShowDialog();

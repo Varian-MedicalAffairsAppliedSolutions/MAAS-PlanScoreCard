@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using PlanScoreCard.Events.HelperWindows;
+using PlanScoreCard.Models;
 using PlanScoreCard.Services;
 using PlanScoreCard.ViewModels;
 using PlanScoreCard.ViewModels.MetricEditors;
@@ -7,21 +8,23 @@ using PlanScoreCard.Views;
 using PlanScoreCard.Views.HelperWindows;
 using PlanScoreCard.Views.MetricEditors;
 using Prism.Events;
+using System.Collections.Generic;
 using VMS.TPS.Common.Model.API;
 
 namespace PlanScoreCard.Startup
 {
     public class Bootstrapper
     {
-        public IContainer Bootstrap(Patient patient, Course course, PlanSetup plan, User user, Application app, IEventAggregator eventAggregator)
+        public IContainer Bootstrap(List<PlanModel> plans, User user, Application app, IEventAggregator eventAggregator)
         {
             var container = new ContainerBuilder();
             //esapi components.
-            container.RegisterInstance<Patient>(patient);
-            container.RegisterInstance<Course>(course);
-            container.RegisterInstance<PlanSetup>(plan);
+            //container.RegisterInstance<Patient>(patient);
+            //container.RegisterInstance<Course>(course);
+            //container.RegisterInstance<PlanSetup>(plan);
             container.RegisterInstance<User>(user);
             container.RegisterInstance<Application>(app);
+            container.RegisterInstance<List<PlanModel>>(plans);
 
             //view models
             container.RegisterType<NavigationViewModel>().AsSelf();

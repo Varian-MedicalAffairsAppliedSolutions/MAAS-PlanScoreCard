@@ -24,18 +24,18 @@ namespace PlanScoreCard.Services
         private Application _app;
         private Patient _patient;
 
-        public NormalizationService(Application app, Patient patient, PlanModel plan,
+        public NormalizationService(Application app, PlanModel plan,
             List<ScoreTemplateModel> templates, IEventAggregator eventAggregator, StructureDictionaryService structureDictionaryService)
         {
             StructureDictionaryService = structureDictionaryService;
-            _patient = patient;
+            //_patient = patient;
             _templates = templates;
             _eventAggregator = eventAggregator;
             _app = app;
-
+            _app.ClosePatient();
+            _patient = _app.OpenPatientById(plan.PatientId);
             PlanScores = new ObservableCollection<PlanScoreModel>();
             _planModel = plan;
-
         }
 
         public PlanModel GetPlan()

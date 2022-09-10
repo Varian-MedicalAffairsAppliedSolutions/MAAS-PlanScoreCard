@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VMS.TPS.Common.Model.API;
+using VMS.TPS.Common.Model.Types;
 
 namespace PlanScoreCard.Models
 {
@@ -122,6 +123,14 @@ namespace PlanScoreCard.Models
             get { return _dosePerFraction; }
             set { SetProperty(ref _dosePerFraction, value); }
         }
+        private DoseValue.DoseUnit _doseUnit;
+
+        public DoseValue.DoseUnit DoseUnit
+        {
+            get { return _doseUnit; }
+            set { _doseUnit = value; }
+        }
+
         private int _numberOfFractions;
 
         public int NumberOfFractions
@@ -129,9 +138,17 @@ namespace PlanScoreCard.Models
             get { return _numberOfFractions; }
             set { SetProperty(ref _numberOfFractions, value); }
         }
+        private string _planText;
+
+        public string PlanText
+        {
+            get { return _planText; }
+            set { SetProperty(ref _planText,value); }
+        }
+
         public bool bPlanSum;
-        public PlanSetup Plan;
-        public PlanSum PlanSum;
+        //public PlanSetup Plan;
+        //public PlanSum PlanSum;
         private IEventAggregator _eventAggregator;
 
         public ObservableCollection<StructureModel> Structures { get; set; }
@@ -140,13 +157,13 @@ namespace PlanScoreCard.Models
             if (plan is PlanSum)
             {
                 bPlanSum = true;
-                PlanSum = plan as PlanSum;
+                //PlanSum = plan as PlanSum;
             }
             //
             //Dose per Fraction is always in Gy
             if (plan is PlanSetup)
             {
-                Plan = plan as PlanSetup;
+                //Plan = plan as PlanSetup;
                 if ((plan as PlanSetup).TotalDose.Unit == VMS.TPS.Common.Model.Types.DoseValue.DoseUnit.cGy)
                 {
                     DosePerFraction = (plan as PlanSetup).DosePerFraction.Dose / 100.0;
@@ -163,16 +180,18 @@ namespace PlanScoreCard.Models
             _eventAggregator = eventAggregator;
             Structures = new ObservableCollection<StructureModel>();
             GenerateStructures(plan);
-            SetParameters();
+            SetParameters(plan);
         }
 
-        private void SetParameters()
+        private void SetParameters(PlanningItem plan)
         {
-            PlanId = bPlanSum ? PlanSum.Id : Plan.Id;
-            CourseId = bPlanSum ? PlanSum.PlanSetups.FirstOrDefault().Course.Id : Plan.Course.Id;
-            PatientId = bPlanSum ? PlanSum.Course.Patient.Id : Plan.Course.Patient.Id;
+            PlanId = bPlanSum ? (plan as PlanSum).Id : (plan as PlanSetup).Id;
+            CourseId = bPlanSum ? (plan as PlanSum).Course.Id : (plan as PlanSetup).Course.Id;
+            PatientId = bPlanSum ? (plan as PlanSum).Course.Patient.Id : (plan as PlanSetup).Course.Patient.Id;
+            DoseUnit = bPlanSum ? (plan as PlanSum).PlanSetups.FirstOrDefault().TotalDose.Unit : (plan as PlanSetup).TotalDose.Unit;
             bPrimary = false;
             bSelected = false;
+            PlanText = $"{CourseId}: {PlanId}";
         }
 
         /// <summary>

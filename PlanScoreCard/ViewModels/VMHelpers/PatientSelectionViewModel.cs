@@ -64,7 +64,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         public DelegateCommand OpenPatientCommand { get; private set; }
         public PatientSelectService PatientSelectService { get; }
 
-        public PatientSelectionViewModel(IEventAggregator eventAggregator, Application app)
+        public PatientSelectionViewModel(IEventAggregator eventAggregator, Application app, List<PlanModel> plans)
         {
             _eventAggregator = eventAggregator;
             _app = app;
@@ -79,13 +79,27 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             //https://github.com/redcurry/EsapiEssentials
             //smartSearch = new SmartSearchService(Patients);
             //Patients = new SmartSearchService(app.PatientSummaries).GetMatchingPatients(AddPatientId);
+            foreach(var patient in plans.GroupBy(p => p.PatientId))
+            {
+                _app.ClosePatient();
+                var localPatient = _app.OpenPatientById(patient.Key);
+                var localPatientSelectModel = new PatientPlanSearchModel(localPatient,eventAggregator);
+                foreach(var plan in patient)
+                {
+                    localPatientSelectModel.Plans.Add(plan);
+                }
+                Patients.Add(localPatientSelectModel);
+            }
         }
 
         private void OnOpenPatient()
         {
-            _app.ClosePatient();
-            var patient = _app.OpenPatientById(SearchText);
-            Patients.Add(new PatientPlanSearchModel(patient, _eventAggregator));
+            if (!Patients.Any(p => p.PatientId == SearchText))//should not be able to open the same patient twice.
+            {
+                _app.ClosePatient();
+                var patient = _app.OpenPatientById(SearchText);
+                Patients.Add(new PatientPlanSearchModel(patient, _eventAggregator));
+            }
         }
 
         private void GetPatientSummaryies()
