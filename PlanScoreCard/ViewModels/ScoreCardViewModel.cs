@@ -404,6 +404,8 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<PlanSelectedEvent>().Subscribe(ScorePlan);
             EventAggregator.GetEvent<FreePrimarySelectionEvent>().Subscribe(OnPrimaryChanged);
             EventAggregator.GetEvent<CloseMessageViewEvent>().Subscribe(OnCloseMessage);
+            EventAggregator.GetEvent<UpdatePatientPlansEvent>().Subscribe(OnUpdatePatientPlans);
+            EventAggregator.GetEvent<ClosePatientSelectionEvent>().Subscribe(OnClosePatientSelection);
 
             MaxScore = 0;
 
@@ -437,6 +439,21 @@ namespace PlanScoreCard.ViewModels
             //I moved this down here so that the scoreplan doesn't run until after the plans have already been setup (the event aggregator was running on every plan).
             EventAggregator.GetEvent<PlanChangedEvent>().Subscribe(OnPlanChanged);
         }
+
+        private void OnUpdatePatientPlans(List<PatientPlanSearchModel> obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnClosePatientSelection()
+        {
+            if (patientSelectionView != null)
+            {
+                patientSelectionView.Close();
+                patientSelectionView = null;
+            }
+        }
+
         public PatientSelectionView patientSelectionView;
         private void OnOpenPatientSelector()
         {

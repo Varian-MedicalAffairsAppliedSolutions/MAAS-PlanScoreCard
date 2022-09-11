@@ -164,8 +164,10 @@
     <Compile Include="Events\HelperWindows\CancelEvent.cs" />
     <Compile Include="Events\HelperWindows\CloseEulaEvent.cs" />
     <Compile Include="Events\HelperWindows\CloseMessageViewEvent.cs" />
+    <Compile Include="Events\HelperWindows\ClosePatientSelectionEvent.cs" />
     <Compile Include="Events\HelperWindows\NoEvent.cs" />
     <Compile Include="Events\HelperWindows\StructureDictionaryAddedEvent.cs" />
+    <Compile Include="Events\HelperWindows\UpdatePatientPlansEvent.cs" />
     <Compile Include="Events\HelperWindows\YesEvent.cs" />
     <Compile Include="Events\LoadEditScoreCardViewEvent.cs" />
     <Compile Include="Events\MetricDownEvent.cs" />
@@ -219,6 +221,7 @@
     <Compile Include="Models\Internals\ScoreTemplateModel.cs" />
     <Compile Include="Models\MetricTypeEnum.cs" />
     <Compile Include="Models\OperationModel.cs" />
+    <Compile Include="Models\PatientPlanModel.cs" />
     <Compile Include="Models\PatientPlanSearchModel.cs" />
     <Compile Include="Models\PatientSelectModel.cs" />
     <Compile Include="Models\PatientSummaryModel.cs" />

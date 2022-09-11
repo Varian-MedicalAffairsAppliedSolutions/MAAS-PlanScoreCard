@@ -25,31 +25,36 @@
         <DockPanel Grid.Row="1">
             <StackPanel DockPanel.Dock="Left">
                 <TextBlock Text="Patients" FontWeight="Bold" HorizontalAlignment="Center" Margin="5"/>
+                <Button Margin="5" ToolTip="Import from JSON" Command="{Binding PatientImportCommand}">
+                    <icons:FontAwesome Kind="UsersSolid"/>
+                </Button>
                 <StackPanel Orientation="Horizontal">
                     <DockPanel>
-                    <TextBox DockPanel.Dock="Top" Width="150" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" Margin="5">
-                    </TextBox>
+                        <TextBox DockPanel.Dock="Top" Width="150" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" Margin="5">
+                        </TextBox>
                         <!--Patient Matches-->
                         <ScrollViewer DockPanel.Dock="Top" Margin="0,5,0,0" Height="50">
                             <Border BorderBrush="DarkSlateGray">
-                            <ListBox
+                                <ListBox
                             DockPanel.Dock="Top" ItemsSource="{Binding PatientMatches}"
                             SelectedItem="{Binding SelectedPatientMatch, NotifyOnSourceUpdated=True}">
-                            <!--<i:Interaction.Triggers>
+                                    <!--<i:Interaction.Triggers>
                                 <i:EventTrigger EventName="SourceUpdated">
                                     <i:InvokeCommandAction Command="{Binding AddPatientCommand}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>-->
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock FontStyle="Italic">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="Gray" BorderThickness="1">
+                                                <TextBlock FontStyle="Italic">
                                         <Run Text="{Binding LastName}"/>, 
                                         <Run Text="{Binding FirstName}"/>
                                         (<Run Text="{Binding ID}"/>)
-                                    </TextBlock>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                                                </TextBlock>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </Border>
                         </ScrollViewer>
                     </DockPanel>
@@ -59,17 +64,17 @@
                 </StackPanel>
                 <TextBlock Margin="5" Text="Selected Patients" FontWeight="Bold" HorizontalAlignment="Center"/>
                 <ScrollViewer Height="300">
-                <ListBox ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock>
+                    <ListBox ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
                                 <Run Text="{Binding PatientId}"/>
                                 <LineBreak/>
                                 <Run Text="{Binding PatientName}"/>
-                            </TextBlock>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </ScrollViewer>
             </StackPanel>
             <Grid DataContext="{Binding SelectedPatient}" DockPanel.Dock="Right">
@@ -82,28 +87,28 @@
                     <Run Text="{Binding PatientId}"/>
                 </TextBlock>
                 <ScrollViewer Grid.Row="1" Height="350">
-                <ItemsControl ItemsSource="{Binding Plans}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
+                    <ItemsControl ItemsSource="{Binding Plans}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
                                 <Border Background="{Binding bPrimary, Converter={StaticResource localPrimaryColorConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                <CheckBox IsChecked="{Binding bSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                    <CheckBox IsChecked="{Binding bSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                       Content="{Binding PlanText}">
-                            </CheckBox>
+                                    </CheckBox>
                                 </Border>
                             </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </ScrollViewer>
             </Grid>
-            
+
         </DockPanel>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Content="Save Patient Selections" Margin="5" Background="CornflowerBlue" Foreground="White" FontWeight="Bold"/>
-            <Button Content="Cancel Patient Selections" Grid.Column="1" Margin="5" Background="CornflowerBlue" Foreground="White" FontWeight="Bold"/>
+            <Button Content="Save Patient Selections" Margin="5" Background="CornflowerBlue" Foreground="White" FontWeight="Bold" Command="{Binding SavePlansCommand}"/>
+            <Button Content="Cancel Patient Selections" Grid.Column="1" Margin="5" Background="CornflowerBlue" Foreground="White" FontWeight="Bold" Command="{Binding CancelPlansCommand}"/>
         </Grid>
     </Grid>
 </metro:MetroWindow>

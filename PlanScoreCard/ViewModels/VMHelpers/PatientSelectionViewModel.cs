@@ -1,4 +1,7 @@
-﻿using PlanScoreCard.Models;
+﻿using Microsoft.Win32;
+using Newtonsoft.Json;
+using PlanScoreCard.Events.HelperWindows;
+using PlanScoreCard.Models;
 using PlanScoreCard.Services;
 using Prism.Commands;
 using Prism.Events;
@@ -6,6 +9,7 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -62,6 +66,9 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         }
         public DelegateCommand SearchPatientCommand { get; private set; }
         public DelegateCommand OpenPatientCommand { get; private set; }
+        public DelegateCommand PatientImportCommand { get; private set; }
+        public DelegateCommand SavePlansCommand { get; private set; }
+        public DelegateCommand CancelPlansCommand { get; private set; }
         public PatientSelectService PatientSelectService { get; }
 
         public PatientSelectionViewModel(IEventAggregator eventAggregator, Application app, List<PlanModel> plans)
@@ -70,8 +77,11 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             _app = app;
             Patients = new ObservableCollection<PatientPlanSearchModel>();
             PatientMatches = new ObservableCollection<PatientSelectModel>();
+            SavePlansCommand = new DelegateCommand(OnSavePlans);
+            CancelPlansCommand = new DelegateCommand(OnCancelPlans);
             PatientSummaries = new List<PatientSummaryModel>();
             OpenPatientCommand = new DelegateCommand(OnOpenPatient);
+            PatientImportCommand = new DelegateCommand(OnImportPatients);
             GetPatientSummaryies();
             PatientSelectService = new PatientSelectService(new SmartSearchService(PatientSummaries));
             SearchPatient();
@@ -89,6 +99,49 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                     localPatientSelectModel.Plans.Add(plan);
                 }
                 Patients.Add(localPatientSelectModel);
+            }
+        }
+
+        private void OnCancelPlans()
+        {
+            _eventAggregator.GetEvent<ClosePatientSelectionEvent>().Publish();
+        }
+
+        private void OnSavePlans()
+        {
+            _eventAggregator.GetEvent<UpdatePatientPlansEvent>().Publish(Patients.ToList());
+            OnCancelPlans();
+        }
+
+        private void OnImportPatients()
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "JSON File (*.json)|*.json";
+            if (ofd.ShowDialog() == true)
+            {
+                try
+                {
+                    List<PatientPlanModel> patients = JsonConvert.DeserializeObject<List<PatientPlanModel>>(File.ReadAllText(ofd.FileName));
+                    foreach (var patient in patients)
+                    {
+                        if(!Patients.Any(x=>x.PatientId == patient.PatientId))
+                        {
+                            SearchText = patient.PatientId;
+                            OnOpenPatient();
+                        }
+                        if (Patients.Any(p => p.PatientId == patient.PatientId))
+                        {
+                            if (Patients.First(p => p.PatientId == patient.PatientId).Plans.Any(pl => pl.CourseId == patient.CourseId && pl.PlanId == patient.PlanId))
+                            {
+                                Patients.FirstOrDefault(p => p.PatientId == patient.PatientId).Plans.FirstOrDefault(p => p.CourseId == patient.CourseId && p.PlanId == patient.PlanId).bSelected = true;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show($"Could not parse file {ofd.FileName}\n{ex.Message}");
+                }
             }
         }
 
