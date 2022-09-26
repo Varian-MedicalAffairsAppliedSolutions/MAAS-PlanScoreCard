@@ -953,7 +953,10 @@ namespace PlanScoreCard.ViewModels
                         try
                         {
                             ScoreTemplates = JsonConvert.DeserializeObject<List<ScoreTemplateModel>>(File.ReadAllText(ofd.FileName));
-                            importSuccess = true;
+                            if (ScoreTemplates.Any(st => !String.IsNullOrEmpty(st.MetricType)))
+                            {
+                                importSuccess = true;
+                            }
                         }
                         catch
                         {
@@ -972,11 +975,12 @@ namespace PlanScoreCard.ViewModels
                     }
 
 
-                    ScoreCard = new ScoreCardModel(TemplateName, TemplateSite, DosePerFraction, NumberOfFractions, ScoreTemplates);
 
                 }
                 if (importSuccess)
                 {
+                    ScoreCard = new ScoreCardModel(TemplateName, TemplateSite, DosePerFraction, NumberOfFractions, ScoreTemplates);
+
                     //any empty colors should be white.
                     if (bRxScaling && !Plan.bPlanSum && DosePerFraction != 0.0 && NumberOfFractions != 0)
                     {
