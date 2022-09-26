@@ -31,7 +31,8 @@ namespace PlanScoreCard.Models
             {
                 foreach(var plan in course.PlanSetups)
                 {
-                    Plans.Add(new PlanModel(plan, _eventAggregator));
+                    var localPlan = new PlanModel(plan, _eventAggregator);
+                    Plans.Add(localPlan);
                 }
             }
         }

@@ -126,7 +126,7 @@ namespace PlanScoreCard.Services
             foreach (var template in _templates)
             {
                 var psm = new PlanScoreModel(_app, StructureDictionaryService);
-                psm.BuildPlanScoreFromTemplate(new ObservableCollection<PlanningItem> { newPlan }, template, metricId, String.Empty, string.Empty, false);
+                psm.BuildPlanScoreFromTemplate(new List<PlanningItem> { newPlan }, template, metricId, String.Empty, string.Empty, false);
                 //false added at end because normalization service cannot build structures, they should have already been built by the scorecard being loaded.
                 metricId++;
                 PlanScores.Add(psm);

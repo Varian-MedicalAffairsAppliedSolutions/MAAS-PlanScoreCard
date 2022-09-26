@@ -185,12 +185,12 @@ namespace PlanScoreCard.Models
 
         private void SetParameters(PlanningItem plan)
         {
-            PlanId = bPlanSum ? (plan as PlanSum).Id : (plan as PlanSetup).Id;
+            PlanId = plan.Id;
             CourseId = bPlanSum ? (plan as PlanSum).Course.Id : (plan as PlanSetup).Course.Id;
             PatientId = bPlanSum ? (plan as PlanSum).Course.Patient.Id : (plan as PlanSetup).Course.Patient.Id;
             DoseUnit = bPlanSum ? (plan as PlanSum).PlanSetups.FirstOrDefault().TotalDose.Unit : (plan as PlanSetup).TotalDose.Unit;
-            bPrimary = false;
-            bSelected = false;
+            //bPrimary = false;
+            //bSelected = false;
             PlanText = $"{CourseId}: {PlanId}";
         }
 

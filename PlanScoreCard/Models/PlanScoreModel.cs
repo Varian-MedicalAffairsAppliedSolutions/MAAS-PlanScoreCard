@@ -290,7 +290,7 @@ namespace PlanScoreCard.Models
             TemplateStructureVisibility = Visibility.Visible;
             bShowPrintComment = true;
         }
-        public void BuildPlanScoreFromTemplate(ObservableCollection<PlanningItem> plans, ScoreTemplateModel template, int metricId, string primaryCourseId, string primaryPlanId, bool canBuildStructure)
+        public void BuildPlanScoreFromTemplate(List<PlanningItem> plans, ScoreTemplateModel template, int metricId, string primaryCourseId, string primaryPlanId, bool canBuildStructure)
         {
             ScoreMax = template.ScorePoints.Count() == 0 ? -1000 : template.ScorePoints.Max(x => x.Score);
             string id = template.Structure?.StructureId;

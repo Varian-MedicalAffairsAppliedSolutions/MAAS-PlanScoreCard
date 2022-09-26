@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using Newtonsoft.Json;
+using PlanScoreCard.Events;
 using PlanScoreCard.Events.HelperWindows;
 using PlanScoreCard.Models;
 using PlanScoreCard.Services;
@@ -33,9 +34,9 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         {
 
             get { return _selectedPatient; }
-            set 
-            { 
-                SetProperty(ref _selectedPatient, value); 
+            set
+            {
+                SetProperty(ref _selectedPatient, value);
             }
         }
         private PatientSelectModel _selectedPatientMatch;
@@ -43,10 +44,10 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         public PatientSelectModel SelectedPatientMatch
         {
             get { return _selectedPatientMatch; }
-            set 
-            { 
+            set
+            {
                 _selectedPatientMatch = value;
-                if (SelectedPatientMatch!=null)
+                if (SelectedPatientMatch != null)
                 {
                     SearchText = SelectedPatientMatch.ID;
                 }
@@ -89,16 +90,40 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             //https://github.com/redcurry/EsapiEssentials
             //smartSearch = new SmartSearchService(Patients);
             //Patients = new SmartSearchService(app.PatientSummaries).GetMatchingPatients(AddPatientId);
-            foreach(var patient in plans.GroupBy(p => p.PatientId))
+            foreach (var patient in plans.GroupBy(p => p.PatientId))
             {
                 _app.ClosePatient();
                 var localPatient = _app.OpenPatientById(patient.Key);
-                var localPatientSelectModel = new PatientPlanSearchModel(localPatient,eventAggregator);
-                foreach(var plan in patient)
+                var localPatientSelectModel = new PatientPlanSearchModel(localPatient, eventAggregator);
+
+                foreach (var plan in patient)
                 {
-                    localPatientSelectModel.Plans.Add(plan);
+                    var localPlan = localPatientSelectModel.Plans.FirstOrDefault(pl => pl.PatientId == plan.PatientId
+                    && pl.CourseId == plan.CourseId
+                    && pl.PlanId == plan.PlanId);
+                    localPlan.bSelected = plan.bSelected;
+                    localPlan.bPrimary = plan.bPrimary;
                 }
                 Patients.Add(localPatientSelectModel);
+            }
+           // SearchText = String.Empty;
+            _eventAggregator.GetEvent<FreePrimarySelectionEvent>().Subscribe(OnResetPrimaryPlan);
+        }
+
+        private void OnResetPrimaryPlan(PlanModel obj)
+        {
+            if (obj.bPrimary)
+            {
+                foreach (var patient in Patients)
+                {
+                    foreach (var plan in patient.Plans)
+                    {
+                        if (plan != obj)
+                        {
+                            plan.bPrimary = false;
+                        }
+                    }
+                }
             }
         }
 
@@ -116,15 +141,31 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         private void OnImportPatients()
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "JSON File (*.json)|*.json";
+            ofd.Filter = "CSV File (*.csv)|*.csv|JSON File (*.json)|*.json";
             if (ofd.ShowDialog() == true)
             {
                 try
                 {
-                    List<PatientPlanModel> patients = JsonConvert.DeserializeObject<List<PatientPlanModel>>(File.ReadAllText(ofd.FileName));
+                    List<PatientPlanModel> patients = new List<PatientPlanModel>();
+                    if (ofd.FileName.EndsWith("csv"))
+                    {
+                        foreach(var line in File.ReadAllLines(ofd.FileName))
+                        {
+                            patients.Add(new PatientPlanModel
+                            {
+                                PatientId = line.Split(',').First(),
+                                CourseId = line.Split(',').ElementAt(1),
+                                PlanId = line.Split(',').Last()
+                            });
+                        }
+                    }
+                    else
+                    {
+                        patients = JsonConvert.DeserializeObject<List<PatientPlanModel>>(File.ReadAllText(ofd.FileName));
+                    }
                     foreach (var patient in patients)
                     {
-                        if(!Patients.Any(x=>x.PatientId == patient.PatientId))
+                        if (!Patients.Any(x => x.PatientId == patient.PatientId))
                         {
                             SearchText = patient.PatientId;
                             OnOpenPatient();
@@ -166,7 +207,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         private void SearchPatient()
         {
             PatientMatches.Clear();
-            foreach(var ps in PatientSelectService.GetPatientOptions(SearchText))
+            foreach (var ps in PatientSelectService.GetPatientOptions(SearchText))
             {
                 PatientMatches.Add(ps);
             }

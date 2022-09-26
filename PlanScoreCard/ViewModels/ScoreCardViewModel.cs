@@ -34,7 +34,9 @@ namespace PlanScoreCard.ViewModels
         // Class Variables 
 
         private Application Application;
-        //private Patient Patient;
+        private string _patientId;
+        private Patient _patient;
+        private bool _isWindowActive;
         //private Course Course;
         private PlanModel Plan;
         private IEventAggregator EventAggregator;
@@ -442,23 +444,37 @@ namespace PlanScoreCard.ViewModels
 
         private void OnUpdatePatientPlans(List<PatientPlanSearchModel> obj)
         {
-            throw new NotImplementedException();
+            Plans.Clear();
+            foreach (var planSearchModel in obj)
+            {
+                if (planSearchModel.Plans.Any(psm => psm.bSelected))
+                {
+                    foreach (var plan in planSearchModel.Plans.Where(pl => pl.bSelected))
+                    {
+                        Plans.Add(plan);
+                    }
+                }
+            }
         }
 
         private void OnClosePatientSelection()
         {
+            _isWindowActive = true;
             if (patientSelectionView != null)
             {
                 patientSelectionView.Close();
                 patientSelectionView = null;
             }
+            ScorePlan();
         }
 
         public PatientSelectionView patientSelectionView;
         private void OnOpenPatientSelector()
         {
+            _isWindowActive = false;
             patientSelectionView = new PatientSelectionView();
             patientSelectionView.DataContext = new PatientSelectionViewModel(EventAggregator, Application, Plans.ToList());
+            
             patientSelectionView.ShowDialog();
         }
 
@@ -656,7 +672,7 @@ namespace PlanScoreCard.ViewModels
 
             // Set the PatientID
             PatientId = Plan.PatientId;
-
+            _isWindowActive = true;
             // Add the Plans
             // Clear the Collection of Plans
             //Plans.Clear();
@@ -686,7 +702,7 @@ namespace PlanScoreCard.ViewModels
         // Score Plan
         private void ScorePlan()
         {
-            if (ScoreCard != null && Plans.Count() > 0 && Plans.Any(x => x.bSelected))
+            if (_isWindowActive && ScoreCard != null && Plans.Count() > 0 && Plans.Any(x => x.bSelected))
                 ScorePlan(ScoreCard);
 
             ProgressViewService.Close();
@@ -713,13 +729,13 @@ namespace PlanScoreCard.ViewModels
             PlanScores.Clear();
 
             // Get Collection of SelectedPlans
-            List<PlanningItem> selectedPlans = GetPlansPlanModel();
+
             //Plans.Where(p => p.bSelected == true).Select(s => s.Plan as PlanningItem).ToList();
 
             // Convert the List to an Observable Collection
-            ObservableCollection<PlanningItem> selectedPlanCollection = new ObservableCollection<PlanningItem>();
-            foreach (PlanningItem plan in selectedPlans)
-                selectedPlanCollection.Add(plan);
+            //ObservableCollection<PlanningItem> selectedPlanCollection = new ObservableCollection<PlanningItem>();
+            //foreach (PlanningItem plan in selectedPlans)
+            //    selectedPlanCollection.Add(plan);
 
             // Initiate the MetricId Counter
             int metric_id = 0;
@@ -731,26 +747,51 @@ namespace PlanScoreCard.ViewModels
             Flags = String.Empty;
             foreach (ScoreTemplateModel template in scoreCard.ScoreMetrics)
             {
-                // PlanScoreModel
-                PlanScoreModel psm = new PlanScoreModel(Application, StructureDictionaryService);
-                if (Plans.Any(pl => pl.bPrimary))
+                //plans must be selected.
+                if (!Plans.Any(pl => pl.bSelected))
                 {
-                    psm.BuildPlanScoreFromTemplate(selectedPlanCollection, template, metric_id, Plans.FirstOrDefault(x => x.bPrimary).CourseId, Plans.FirstOrDefault(x => x.bPrimary).PlanId, true);
-                }
-                else if (Plans.Any(pl => pl.bSelected))
-                {
-                    Plans.FirstOrDefault(pl => pl.bSelected).bPrimary = true;
-                    //psm.BuildPlanScoreFromTemplate(selectedPlanCollection, template, metric_id, Plans.FirstOrDefault(x => x.bPrimary).CourseId, Plans.FirstOrDefault(x => x.bPrimary).PlanId, true);
-                    return;
-                }
-                else
-                {
-                    //System.Windows.MessageBox.Show("Must select a plan for building");
                     System.Threading.Thread.Sleep(700);
                     ProgressViewService.Close();
                     return;
                 }
-                PlanScores.Add(psm);
+                if (!Plans.Any(pl => pl.bPrimary))
+                {
+                    Plans.FirstOrDefault(pl => pl.bSelected).bPrimary = true;
+                }
+                PlanScoreModel psm = null;
+                if (!PlanScores.Any(ps => ps.MetricId == metric_id))
+                {
+                    psm = new PlanScoreModel(Application, StructureDictionaryService);
+                }
+                else
+                {
+                    psm = PlanScores.FirstOrDefault(p => p.MetricId == metric_id);
+                }
+                foreach (var patient in Plans.OrderByDescending(pl => pl.bPrimary).GroupBy(p => p.PatientId).Where(pa => pa.Any(pl => pl.bSelected)))
+                {
+                    List<PlanningItem> selectedPlans = GetPlansPlanModel(patient.Key);
+                    // PlanScoreModel
+
+                    //if (!Plans.Any(pl => pl.bPrimary))
+                    //{
+                    psm.BuildPlanScoreFromTemplate(selectedPlans, template, metric_id, Plans.FirstOrDefault(x => x.bPrimary).CourseId, Plans.FirstOrDefault(x => x.bPrimary).PlanId, true);
+                    //}
+                    //else if (Plans.Any(pl => pl.bSelected))
+                    //{
+                    //    Plans.FirstOrDefault(pl => pl.bSelected).bPrimary = true;
+                    //    //psm.BuildPlanScoreFromTemplate(selectedPlanCollection, template, metric_id, Plans.FirstOrDefault(x => x.bPrimary).CourseId, Plans.FirstOrDefault(x => x.bPrimary).PlanId, true);
+                    //    return;
+                    //}
+                    //else
+                    //{
+                    //System.Windows.MessageBox.Show("Must select a plan for building");
+
+                    //}
+                    if (!PlanScores.Any(ps => ps.MetricId == metric_id))
+                    {
+                        PlanScores.Add(psm);
+                    }
+                }
                 if (template.ScorePoints.Any(x => x.Variation) && psm.ScoreValues.Any(x => x.Score < template.ScorePoints.FirstOrDefault(y => y.Variation).Score))
                 {
                     bWarning = true;
@@ -767,8 +808,8 @@ namespace PlanScoreCard.ViewModels
                         Flags += $"Course [{zeroScore.CourseId}]. Plan [{zeroScore.PlanId}]. Metric {psm.MetricId + 1}. Structure {psm.StructureId}. -- {psm.MetricText}. Score is 0.\n";
                     }
                 }
-                metric_id++;
 
+                metric_id++;
             }
 
             //remove score points from metrics that didn't have the
@@ -807,11 +848,25 @@ namespace PlanScoreCard.ViewModels
             // Will delay for 3 seconds
             System.Threading.Thread.Sleep(700);
             ProgressViewService.Close();
+            //remove patient for next time score plan is run we should access the patient again.
+            _patient = null;
+            _patientId = String.Empty;
         }
 
-        private List<PlanningItem> GetPlansPlanModel()
+        private List<PlanningItem> GetPlansPlanModel(string patientId)
         {
-            throw new NotImplementedException();
+            List<PlanningItem> planItems = new List<PlanningItem>();
+            if (!patientId.Equals(_patientId))
+            {
+                Application.ClosePatient();
+                _patient = Application.OpenPatientById(patientId);
+                _patientId = patientId;
+            }
+            foreach (var planModel in Plans.Where(pl => pl.PatientId.Equals(_patientId)).Where(pl => pl.bSelected))
+            {
+                planItems.Add(_patient.Courses.FirstOrDefault(c => c.Id.Equals(planModel.CourseId)).PlanSetups.FirstOrDefault(ps => ps.Id.Equals(planModel.PlanId)));
+            }
+            return planItems;
         }
 
         private void EditScoreCard()

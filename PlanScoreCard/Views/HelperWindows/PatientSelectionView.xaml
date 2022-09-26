@@ -67,11 +67,13 @@
                     <ListBox ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock>
-                                <Run Text="{Binding PatientId}"/>
-                                <LineBreak/>
-                                <Run Text="{Binding PatientName}"/>
-                                </TextBlock>
+                                <Border BorderBrush="PowderBlue" BorderThickness="1">
+                                    <TextBlock>
+                                        <Run Text="{Binding PatientId}"/>
+                                        <LineBreak/>
+                                        <Run Text="{Binding PatientName}"/>
+                                    </TextBlock>
+                                </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>

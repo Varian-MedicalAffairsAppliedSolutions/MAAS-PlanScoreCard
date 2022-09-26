@@ -221,7 +221,7 @@ namespace PlanScoreCard.ViewModels
 
             //_eventAggregator = eventAggregator;
             //_eventAggregator.GetEvent<PlanSelectedEvent>().Subscribe(OnPlanSelectionChanged);
-            _eventAggregator.GetEvent<FreePrimarySelectionEvent>().Subscribe(SetPrimarySelections);
+            //_eventAggregator.GetEvent<FreePrimarySelectionEvent>().Subscribe(SetPrimarySelections);
             //_eventAggregator.GetEvent<UpdateTemplatesEvent>().Subscribe(OnTemplateUpdated);
             _scoreTemplates = new List<ScoreTemplateModel>();
             Plans = new ObservableCollection<PlanModel>();
