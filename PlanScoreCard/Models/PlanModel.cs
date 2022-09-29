@@ -1,5 +1,6 @@
 ﻿using PlanScoreCard.Events;
 using PlanScoreCard.Services;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using System;
@@ -37,7 +38,7 @@ namespace PlanScoreCard.Models
             get { return _patientId; }
             set { SetProperty(ref _patientId, value); }
         }
-
+        private bool _deselect;
         public string DisplayTxt { get; set; }
 
         private bool _bselected;
@@ -47,12 +48,12 @@ namespace PlanScoreCard.Models
             get { return _bselected; }
             set
             {
-                if(!value && !bPrimary && bSelected)
+                if (!value && !bPrimary && bSelected && !_deselect)
                 {
                     bPrimary = true;
                     value = true;
                 }
-                if(!value && bPrimary && bSelected)
+                if (!value && bPrimary && bSelected)
                 {
                     bPrimary = false;
                     value = false;
@@ -61,9 +62,15 @@ namespace PlanScoreCard.Models
 
                 if (!bSelected && bPrimary)
                     bSelected = true;
-                //if (bSelected)
+                //if (bSelected && !bPrimary)
+                if (!bPrimary)
+                {
+                    _eventAggregator.GetEvent<PlanSelectedEvent>().Publish();
+                }
+                //TODO Implement a way to only hide the score if its deselected, you shouldn't have to score all over again.
+                //if(!bSelected && !bPrimary)
                 //{
-                _eventAggregator.GetEvent<PlanSelectedEvent>().Publish();
+                //    _eventAggregator.GetEvent<RemovePlanFromScoreEvent>().Publish(this);
                 //}
             }
         }
@@ -86,7 +93,7 @@ namespace PlanScoreCard.Models
                     }
                 }
                 //don't need to call PlanSelected event because bSelected already calls it.
-                //if (bPrimary)
+                //if (bPrizmary)
                 //{
                 //    _eventAggregator.GetEvent<PlanSelectedEvent>().Publish();
                 //}
@@ -143,7 +150,7 @@ namespace PlanScoreCard.Models
         public string PlanText
         {
             get { return _planText; }
-            set { SetProperty(ref _planText,value); }
+            set { SetProperty(ref _planText, value); }
         }
 
         public bool bPlanSum;
@@ -152,6 +159,7 @@ namespace PlanScoreCard.Models
         private IEventAggregator _eventAggregator;
 
         public ObservableCollection<StructureModel> Structures { get; set; }
+        public DelegateCommand DeselectCommand { get; private set; }
         public PlanModel(PlanningItem plan, IEventAggregator eventAggregator)
         {
             if (plan is PlanSum)
@@ -179,8 +187,19 @@ namespace PlanScoreCard.Models
             //DoseUnit = (plan is PlanSetup) ? (plan as PlanSetup).TotalDose.UnitAsString : String.Empty;
             _eventAggregator = eventAggregator;
             Structures = new ObservableCollection<StructureModel>();
+            DeselectCommand = new DelegateCommand(OnDeselect);
             GenerateStructures(plan);
             SetParameters(plan);
+        }
+
+        private void OnDeselect()
+        {
+            if (this.bSelected)
+            {
+                _deselect = true;
+                bSelected = false;
+                _deselect = false;
+            }
         }
 
         private void SetParameters(PlanningItem plan)

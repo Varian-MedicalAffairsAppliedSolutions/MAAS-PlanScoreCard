@@ -126,15 +126,17 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                 }
             }
         }
-
+        private bool _isSaved;
         private void OnCancelPlans()
         {
-            _eventAggregator.GetEvent<ClosePatientSelectionEvent>().Publish();
+            _eventAggregator.GetEvent<ClosePatientSelectionEvent>().Publish(_isSaved);
+            //_isSaved = false;
         }
 
         private void OnSavePlans()
         {
             _eventAggregator.GetEvent<UpdatePatientPlansEvent>().Publish(Patients.ToList());
+            _isSaved = true;
             OnCancelPlans();
         }
 

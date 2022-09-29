@@ -34,10 +34,10 @@ namespace PlanScoreCard.ViewModels
         // Class Variables 
 
         private Application Application;
-        private string _patientId;
+        private string _patientId;                      
         private Patient _patient;
         private bool _isWindowActive;
-        //private Course Course;
+        //private Course Course;            
         private PlanModel Plan;
         private IEventAggregator EventAggregator;
         private ViewLauncherService ViewLauncherService;
@@ -408,6 +408,7 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<CloseMessageViewEvent>().Subscribe(OnCloseMessage);
             EventAggregator.GetEvent<UpdatePatientPlansEvent>().Subscribe(OnUpdatePatientPlans);
             EventAggregator.GetEvent<ClosePatientSelectionEvent>().Subscribe(OnClosePatientSelection);
+            //EventAggregator.GetEvent<RemovePlanFromScoreEvent>().Subscribe(OnRemovePlanFromScore);
 
             MaxScore = 0;
 
@@ -442,6 +443,11 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<PlanChangedEvent>().Subscribe(OnPlanChanged);
         }
 
+        private void OnRemovePlanFromScore(PlanModel obj)
+        {
+            throw new NotImplementedException();
+        }
+
         private void OnUpdatePatientPlans(List<PatientPlanSearchModel> obj)
         {
             Plans.Clear();
@@ -457,7 +463,7 @@ namespace PlanScoreCard.ViewModels
             }
         }
 
-        private void OnClosePatientSelection()
+        private void OnClosePatientSelection(bool isSaved)
         {
             _isWindowActive = true;
             if (patientSelectionView != null)
@@ -465,7 +471,10 @@ namespace PlanScoreCard.ViewModels
                 patientSelectionView.Close();
                 patientSelectionView = null;
             }
-            ScorePlan();
+            if (isSaved)
+            {
+                ScorePlan();
+            }
         }
 
         public PatientSelectionView patientSelectionView;
@@ -631,12 +640,12 @@ namespace PlanScoreCard.ViewModels
             {
                 using (StreamWriter sw = new StreamWriter(sfd.FileName))
                 {
-                    sw.WriteLine("Metric Id,Course Id,Plan Id,StructureId,Metric Text,Metric Value,Score,Max Score");
+                    sw.WriteLine("Metric Id,Patient Id,Course Id,Plan Id,StructureId,Metric Text,Metric Value,Score,Max Score");
                     foreach (var template in PlanScores)
                     {
                         foreach (var point in template.ScoreValues)
                         {
-                            sw.WriteLine($"{template.MetricId},{point.CourseId},{point.PlanId},{template.StructureId},{template.MetricText},{point.Value},{point.Score},{template.ScoreMax}");
+                            sw.WriteLine($"{template.MetricId},{point.PatientId},{point.PlanId},{point.CourseId},{point.PlanId},{template.StructureId},{template.MetricText},{point.Value},{point.Score},{template.ScoreMax}");
                         }
                     }
                     sw.Flush();

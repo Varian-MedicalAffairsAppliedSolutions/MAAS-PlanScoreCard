@@ -2,7 +2,7 @@
 
 namespace PlanScoreCard.Events.HelperWindows
 {
-    internal class ClosePatientSelectionEvent:PubSubEvent
+    internal class ClosePatientSelectionEvent:PubSubEvent<bool>
     {
     }
 }

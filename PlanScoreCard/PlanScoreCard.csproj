@@ -145,6 +145,7 @@
     <Compile Include="Converters\MetricEditorConverter.cs" />
     <Compile Include="Converters\MetricIdConverter.cs" />
     <Compile Include="Converters\NullToDoubleConverter.cs" />
+    <Compile Include="Converters\PrimaryForegroundConverter.cs" />
     <Compile Include="Converters\PrimaryToColorConverter.cs" />
     <Compile Include="Converters\ScoreToTextConverter.cs" />
     <Compile Include="Converters\StructureToBoldConverter.cs" />
@@ -182,6 +183,7 @@
     <Compile Include="Events\Plugins\PluginVisibilityEvent.cs" />
     <Compile Include="Events\PointDownEvent.cs" />
     <Compile Include="Events\PointUpEvent.cs" />
+    <Compile Include="Events\RemovePlanFromScoreEvent.cs" />
     <Compile Include="Events\ReRankMetricPointsEvent.cs" />
     <Compile Include="Events\ScoreMetricPlotModelUpdatedEvent.cs" />
     <Compile Include="Events\ScorePlanEvent.cs" />

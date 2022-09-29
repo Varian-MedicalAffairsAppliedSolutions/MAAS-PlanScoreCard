@@ -338,16 +338,19 @@ namespace PlanScoreCard.Models
                     template.Structure.StructureId = structure.Id;
                 }
                 ScoreValueModel scoreValue = new ScoreValueModel();
+                //scoreValue.bVisible = true;
                 scoreValue.OutputUnit = template.OutputUnit;
                 scoreValue.PlanId = plan.Id;
 
                 if (plan is PlanSetup)
                 {
                     scoreValue.CourseId = (plan as PlanSetup).Course.Id;
+                    scoreValue.PatientId = (plan as PlanSetup).Course.Patient.Id;
                 }
                 else if (plan is PlanSum)
                 {
                     scoreValue.CourseId = (plan as PlanSum).Course.Id;
+                    scoreValue.PatientId = (plan as PlanSum).Course.Patient.Id;
                 }
 
                 StructureId = structure == null ? " - " : structure.Id;

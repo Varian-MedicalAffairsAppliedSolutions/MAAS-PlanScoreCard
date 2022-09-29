@@ -141,12 +141,19 @@
                                             <Style TargetType="CheckBox">
                                                 <Setter Property="Background" Value="{Binding bPrimary, Converter={StaticResource localPrimaryColorConverter}}"/>
                                                 <Setter Property="HorizontalAlignment" Value="Center"/>
-                                            </Style>
+                                                <Setter Property="ContextMenu">
+                                                    <Setter.Value>
+                                                        <ContextMenu>
+                                                            <MenuItem Header="Deselect" Command="{Binding DeselectCommand}"/>
+                                                        </ContextMenu>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>                        
                                         </DataGridCheckBoxColumn.ElementStyle>
                                         <DataGridCheckBoxColumn.HeaderTemplate>
                                             <DataTemplate>
                                                 <TextBlock ToolTip="Select Twice to make Primary">
-                                                    <Run Text="Selected"/>
+                                                    <Run Text="&#x2611;"/>
                                                     <!--<LineBreak/>
                                                     <Run Text="[Primary]"/>-->
                                                 </TextBlock>

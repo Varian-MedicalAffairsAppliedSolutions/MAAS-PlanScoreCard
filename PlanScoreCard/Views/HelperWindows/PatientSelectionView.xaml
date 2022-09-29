@@ -13,6 +13,7 @@
     <metro:MetroWindow.Resources>
         <ResourceDictionary>
             <converters:PrimaryToColorConverter x:Key="localPrimaryColorConverter"/>
+            <converters:PrimaryForegroundConverter x:Key="localPrimaryForegroundConverter"/>
         </ResourceDictionary>
     </metro:MetroWindow.Resources>
     <Grid>
@@ -94,7 +95,14 @@
                             <DataTemplate>
                                 <Border Background="{Binding bPrimary, Converter={StaticResource localPrimaryColorConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                     <CheckBox IsChecked="{Binding bSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                      Content="{Binding PlanText}">
+                                      Content="{Binding PlanText}" Foreground="{Binding bPrimary, Converter={StaticResource localPrimaryForegroundConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                              metro:CheckBoxHelper.ForegroundChecked="{Binding bPrimary, Converter={StaticResource localPrimaryForegroundConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                              metro:CheckBoxHelper.ForegroundCheckedMouseOver="LightGray">
+                                        <CheckBox.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Deselect" Command="{Binding DeselectComamnd}"/>
+                                            </ContextMenu>
+                                        </CheckBox.ContextMenu>
                                     </CheckBox>
                                 </Border>
                             </DataTemplate>
@@ -108,9 +116,13 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Content="Save Patient Selections" Margin="5" Background="CornflowerBlue" Foreground="White" FontWeight="Bold" Command="{Binding SavePlansCommand}"/>
-            <Button Content="Cancel Patient Selections" Grid.Column="1" Margin="5" Background="CornflowerBlue" Foreground="White" FontWeight="Bold" Command="{Binding CancelPlansCommand}"/>
+            <Button Content="Score Selections" Margin="5" Background="CornflowerBlue" Foreground="White" FontWeight="Bold" Command="{Binding SavePlansCommand}"/>
+            <Button Content="Save Patient Selections" Grid.Column="1" IsEnabled="False" Margin="5"/>
+            <Button Content="Clear Selections" Grid.Column="2" IsEnabled="False" Margin="5"/>
+            <Button Content="Cancel  Selections" Grid.Column="3" Margin="5" Background="CornflowerBlue" Foreground="White" FontWeight="Bold" Command="{Binding CancelPlansCommand}"/>
         </Grid>
     </Grid>
 </metro:MetroWindow>
