@@ -765,7 +765,10 @@ namespace PlanScoreCard.ViewModels
                 }
                 if (!Plans.Any(pl => pl.bPrimary))
                 {
+                    //swap deselect so it doesn't call the scoreplan method again. 
+                    Plans.FirstOrDefault(pl => pl.bSelected)._deselect = true;
                     Plans.FirstOrDefault(pl => pl.bSelected).bPrimary = true;
+                    Plans.FirstOrDefault(pl => pl.bSelected)._deselect = false;
                 }
                 PlanScoreModel psm = null;
                 if (!PlanScores.Any(ps => ps.MetricId == metric_id))
@@ -806,7 +809,7 @@ namespace PlanScoreCard.ViewModels
                     bWarning = true;
                     foreach (var scoreBelowVariation in psm.ScoreValues.Where(x => x.Score < template.ScorePoints.FirstOrDefault(y => y.Variation).Score))
                     {
-                        Warnings += $"Course [{scoreBelowVariation.CourseId}]. Plan [{scoreBelowVariation.PlanId}]. Metric {psm.MetricId + 1}. Structure {psm.StructureId}. -- {psm.MetricText} below variation\n";
+                        Warnings += $"Patient [{scoreBelowVariation.PatientId}]. Course [{scoreBelowVariation.CourseId}]. Plan [{scoreBelowVariation.PlanId}]. Metric {psm.MetricId + 1}. Structure {psm.StructureId}. -- {psm.MetricText} below variation\n";
                     }
                 }
                 if (psm.ScoreValues.Any(x => x.Score == 0))
@@ -814,7 +817,7 @@ namespace PlanScoreCard.ViewModels
                     bFlag = true;
                     foreach (var zeroScore in psm.ScoreValues.Where(x => x.Score == 0))
                     {
-                        Flags += $"Course [{zeroScore.CourseId}]. Plan [{zeroScore.PlanId}]. Metric {psm.MetricId + 1}. Structure {psm.StructureId}. -- {psm.MetricText}. Score is 0.\n";
+                        Flags += $"Patient [{zeroScore.PatientId}]. Course [{zeroScore.CourseId}]. Plan [{zeroScore.PlanId}]. Metric {psm.MetricId + 1}. Structure {psm.StructureId}. -- {psm.MetricText}. Score is 0.\n";
                     }
                 }
 
@@ -828,15 +831,16 @@ namespace PlanScoreCard.ViewModels
                 ScoreTotalText = $"Plan Scores: ";
                 if (planScores.Count() != 0)
                 {
-                    foreach (var pc in planScores.FirstOrDefault().ScoreValues.Select(x => new { planId = x.PlanId, courseId = x.CourseId }))
+                    foreach (var pc in planScores.FirstOrDefault().ScoreValues.Select(x => new { patientId = x.PatientId, planId = x.PlanId, courseId = x.CourseId }))
                     {
+                        string patid = pc.patientId;
                         string cid = pc.courseId;
                         string pid = pc.planId;
 
-                        double planTotal = planScores.Sum(x => x.ScoreValues.FirstOrDefault(y => y.PlanId == pc.planId && y.CourseId == pc.courseId).Score);
-                        ScoreTotalText += $"\t[{cid}] {pid}: {planTotal:F2}/{planScores.Sum(x => x.ScoreMax):F2} ({planTotal / planScores.Sum(x => x.ScoreMax) * 100.0:F2}%)\n\t";
+                        double planTotal = planScores.Sum(x => x.ScoreValues.FirstOrDefault(y => y.PlanId == pc.planId && y.CourseId == pc.courseId && y.PatientId == pc.patientId).Score);
+                        ScoreTotalText += $"\t{patid}: [{cid}] {pid}: {planTotal:F2}/{planScores.Sum(x => x.ScoreMax):F2} ({planTotal / planScores.Sum(x => x.ScoreMax) * 100.0:F2}%)\n\t";
 
-                        PlanModel plan = Plans.FirstOrDefault(p => p.PlanId == pid && p.CourseId == cid);
+                        PlanModel plan = Plans.FirstOrDefault(p => p.PlanId == pid && p.CourseId == cid && p.PatientId == patid);
 
                         if (plan.PlanScore == null)
                             plan.PlanScore = 0;

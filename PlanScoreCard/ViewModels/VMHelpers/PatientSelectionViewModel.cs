@@ -63,6 +63,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             {
                 SetProperty(ref _searchText, value);
                 SearchPatient();
+                OpenPatientCommand.RaiseCanExecuteChanged();
             }
         }
         public DelegateCommand SearchPatientCommand { get; private set; }
@@ -70,6 +71,8 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         public DelegateCommand PatientImportCommand { get; private set; }
         public DelegateCommand SavePlansCommand { get; private set; }
         public DelegateCommand CancelPlansCommand { get; private set; }
+        public DelegateCommand SavePatientListCommand { get; private set; }
+        public DelegateCommand ClearPatientListCommand { get; private set; }
         public PatientSelectService PatientSelectService { get; }
 
         public PatientSelectionViewModel(IEventAggregator eventAggregator, Application app, List<PlanModel> plans)
@@ -81,8 +84,10 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             SavePlansCommand = new DelegateCommand(OnSavePlans);
             CancelPlansCommand = new DelegateCommand(OnCancelPlans);
             PatientSummaries = new List<PatientSummaryModel>();
-            OpenPatientCommand = new DelegateCommand(OnOpenPatient);
+            OpenPatientCommand = new DelegateCommand(OnOpenPatient, CanOpenPatient);
             PatientImportCommand = new DelegateCommand(OnImportPatients);
+            SavePatientListCommand = new DelegateCommand(OnSavePatientList);
+            ClearPatientListCommand = new DelegateCommand(OnClearPatientList);
             GetPatientSummaryies();
             PatientSelectService = new PatientSelectService(new SmartSearchService(PatientSummaries));
             SearchPatient();
@@ -108,6 +113,44 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             }
            // SearchText = String.Empty;
             _eventAggregator.GetEvent<FreePrimarySelectionEvent>().Subscribe(OnResetPrimaryPlan);
+        }
+
+        private bool CanOpenPatient()
+        {
+            return !String.IsNullOrEmpty(SearchText);
+        }
+
+        private void OnClearPatientList()
+        {
+            SelectedPatient = null;
+            Patients.Clear();
+            SearchText = String.Empty;
+        }
+
+        private void OnSavePatientList()
+        {
+            List<PatientPlanModel> localPatientPlanModel = new List<PatientPlanModel>();
+            foreach(var patient in Patients)
+            {
+                foreach(var plan in patient.Plans)
+                {
+                    if (plan.bSelected)
+                    {
+                        localPatientPlanModel.Add(new PatientPlanModel
+                        {
+                            PatientId = plan.PatientId,
+                            CourseId = plan.CourseId,
+                            PlanId = plan.PlanId
+                        });
+                    }
+                }
+            }
+            SaveFileDialog saver = new SaveFileDialog();
+            saver.Filter = "JSON Files (*.json)|*.json";
+            if (saver.ShowDialog() == true)
+            {
+                File.WriteAllText(saver.FileName, JsonConvert.SerializeObject(localPatientPlanModel));
+            }
         }
 
         private void OnResetPrimaryPlan(PlanModel obj)
@@ -190,11 +233,15 @@ namespace PlanScoreCard.ViewModels.VMHelpers
 
         private void OnOpenPatient()
         {
-            if (!Patients.Any(p => p.PatientId == SearchText))//should not be able to open the same patient twice.
+
+            if (!Patients.Any(p => p.PatientId == SearchText) && !String.IsNullOrEmpty(SearchText))//should not be able to open the same patient twice.
             {
                 _app.ClosePatient();
                 var patient = _app.OpenPatientById(SearchText);
-                Patients.Add(new PatientPlanSearchModel(patient, _eventAggregator));
+                if (patient != null)
+                {
+                    Patients.Add(new PatientPlanSearchModel(patient, _eventAggregator));
+                }
             }
         }
 

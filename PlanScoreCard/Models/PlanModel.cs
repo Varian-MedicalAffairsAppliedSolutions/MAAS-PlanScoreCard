@@ -38,7 +38,7 @@ namespace PlanScoreCard.Models
             get { return _patientId; }
             set { SetProperty(ref _patientId, value); }
         }
-        private bool _deselect;
+        public bool _deselect;
         public string DisplayTxt { get; set; }
 
         private bool _bselected;
@@ -84,7 +84,7 @@ namespace PlanScoreCard.Models
                 SetProperty(ref _bPrimary, value);
 
 
-                if (bPrimary)
+                if (bPrimary && !_deselect)
                 {
                     _eventAggregator.GetEvent<FreePrimarySelectionEvent>().Publish(this);
                     if (!bSelected)

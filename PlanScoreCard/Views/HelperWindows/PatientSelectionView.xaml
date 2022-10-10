@@ -120,8 +120,8 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Button Content="Score Selections" Margin="5" Background="CornflowerBlue" Foreground="White" FontWeight="Bold" Command="{Binding SavePlansCommand}"/>
-            <Button Content="Save Patient Selections" Grid.Column="1" IsEnabled="False" Margin="5"/>
-            <Button Content="Clear Selections" Grid.Column="2" IsEnabled="False" Margin="5"/>
+            <Button Content="Save Patient Selections" Background="CornflowerBlue" Foreground="White" Grid.Column="1" Margin="5" Command="{Binding SavePatientListCommand}"/>
+            <Button Content="Clear Selections" Background="CornflowerBlue" Foreground="White" Grid.Column="2" Margin="5" Command="{Binding ClearPatientListCommand}"/>
             <Button Content="Cancel  Selections" Grid.Column="3" Margin="5" Background="CornflowerBlue" Foreground="White" FontWeight="Bold" Command="{Binding CancelPlansCommand}"/>
         </Grid>
     </Grid>
