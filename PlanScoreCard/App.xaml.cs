@@ -63,6 +63,9 @@ namespace PlanScoreCard
         public ScoreCardView view;
         public VMS.TPS.Common.Model.API.Application _app;
         private EULAView eulaView;
+        public List<PlanModel> plans;
+        private IEventAggregator _eventAggregator;
+
         public Configuration GetUpdatedConfigFile()
         {
             var exePath = Assembly.GetExecutingAssembly().Location;
@@ -80,7 +83,7 @@ namespace PlanScoreCard
         }
         public void StartupApp(object sender, StartupEventArgs e, IEventAggregator eventAggregator)
         {
-
+            _eventAggregator = eventAggregator;
             try
             {
 
@@ -151,13 +154,13 @@ namespace PlanScoreCard
                                     _plan = _course.PlanSetups.FirstOrDefault(x => x.Id == _planId);
                                 }
                                 //construct a planmodel and send that to the bootstrap instead.
-                                List<PlanModel> plans = new List<PlanModel>();
-                                foreach(var course in _patient.Courses)
+                                plans = new List<PlanModel>();
+                                foreach (var course in _patient.Courses)
                                 {
-                                    foreach(var plan in course.PlanSetups)
+                                    foreach (var plan in course.PlanSetups)
                                     {
                                         var localPlan = new PlanModel(plan, eventAggregator);
-                                        if(plan.Id == _plan.Id && course.Id == _course.Id)
+                                        if (plan.Id == _plan.Id && course.Id == _course.Id)
                                         {
                                             localPlan.bPrimary = true;
                                         }
@@ -216,17 +219,49 @@ namespace PlanScoreCard
         public void ResetApplication(string feedback)
         {
             //NavigationViewModel.DisposePlugin();
-            _app.ClosePatient();
-            var _patient = _app.OpenPatientById(_patientId);
-            var bnewCourse = feedback.Split('\n').Last().Contains(';') ? _patient.Courses.Any(x => x.Id == feedback.Split('\n').Last().Split(';').First()) : false;
-            var _course = bnewCourse?
-                _patient.Courses.FirstOrDefault(x=>x.Id == feedback.Split('\n').Last().Split(';').First()) 
-                :_patient.Courses.FirstOrDefault(x => x.Id == _courseId);
-            var bnewPlan = feedback.Split('\n').Last().Contains(';') ? _course.PlanSetups.Any(x => x.Id == feedback.Split('\n').Last().Split(';').Last()) : false;
-            var _plan = bnewPlan?
-                _course.PlanSetups.FirstOrDefault(x=>x.Id == feedback.Split('\n').Last().Split(';').Last())
-                :_course.PlanSetups.FirstOrDefault(x => x.Id == _planId);
-            (view.DataContext as ScoreCardViewModel).UpdatePlanModel(_patient, _course, _plan);
+            string _patientIdKeep = String.Empty;
+            Patient _patient = null;
+            List<PlanModel> plans = new List<PlanModel>();
+            foreach (var line in feedback.Split('\n').Where(l => l.Contains("SelectedPlan:")))
+            {
+                string patientId = line.Split(':').Last().Split(';').First();
+                //if (!patientId.Equals(_patientIdKeep))
+                {
+                    _app.ClosePatient();
+                    _patient = _app.OpenPatientById(patientId);
+                    _patientIdKeep = patientId;
+                }
+                if (_patient != null & line.Count(l => l == ';') > 1)
+                {
+                    bool bCourseExists = _patient.Courses.Any(c => c.Id.Equals(line.Split(';').ElementAt(1)));
+                    if (bCourseExists)
+                    {
+                        Course course = _patient.Courses.First(c => c.Id.Equals(line.Split(';').ElementAt(1)));
+                        bool bPlanExists = course.PlanSetups.Any(ps => ps.Id.Equals(line.Split(';').Last().TrimEnd('\r')));
+                        if (bPlanExists)
+                        {
+                            PlanningItem plan = course.PlanSetups.First(ps => ps.Id.Equals(line.Split(';').Last().TrimEnd('\r')));
+                            PlanModel planModel = new PlanModel(plan, _eventAggregator)
+                            {
+                                bSelected = true,
+                            };
+                            plans.Add(planModel);
+                        }
+                    }
+
+                }
+
+                //var bnewCourse = feedback.Split('\n').Last().Contains(';') ? _patient.Courses.Any(x => x.Id == feedback.Split('\n').Last().Split(';').First()) : false;
+                //var _course = bnewCourse ?
+                //    _patient.Courses.FirstOrDefault(x => x.Id == feedback.Split('\n').Last().Split(';').First())
+                //    : _patient.Courses.FirstOrDefault(x => x.Id == _courseId);
+                //var bnewPlan = feedback.Split('\n').Last().Contains(';') ? _course.PlanSetups.Any(x => x.Id == feedback.Split('\n').Last().Split(';').Last()) : false;
+                //var _plan = bnewPlan ?
+                //    _course.PlanSetups.FirstOrDefault(x => x.Id == feedback.Split('\n').Last().Split(';').Last())
+                //    : _course.PlanSetups.FirstOrDefault(x => x.Id == _planId);
+            }
+                (view.DataContext as ScoreCardViewModel).UpdatePlanModel(plans);
+
             //ScoreCardViewModel.UpdatePlanModel(_patient, _course, _plan);
             //NavigationViewModel.UpdatePlanParameters(_patient, _course, _plan, feedbacks);
             //_eventAggregator.GetEvent<PlanChangedEvent>().Publish(NavigationViewModel.SelectedPlans.ToList());

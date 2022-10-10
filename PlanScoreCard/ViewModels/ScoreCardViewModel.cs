@@ -1054,14 +1054,18 @@ namespace PlanScoreCard.ViewModels
         }
         private string old_course;
         private string old_plan;
-        public void UpdatePlanModel(Patient patient, Course course, PlanSetup plan)
+        public void UpdatePlanModel(List<PlanModel> plans)
         {
             old_course = Plans.FirstOrDefault(x => x.bPrimary)?.CourseId;//Course.Id;
             old_plan = Plans.FirstOrDefault(x => x.bPrimary)?.PlanId;
             //Patient = patient;
             //Course = course;
             //Plan = plan;
-            //Plans.Clear();
+            Plans.Clear();
+            foreach(var plan in plans)
+            {
+                Plans.Add(plan);
+            }
             InitializeClass();
             //OnPlanChanged(new List<PlanModel> { new PlanModel(Plan as PlanningItem, EventAggregator) { PlanId = Plan.Id, CourseId = Course.Id, bSelected = true } });
         }
