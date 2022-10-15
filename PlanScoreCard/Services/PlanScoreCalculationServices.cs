@@ -96,19 +96,19 @@ namespace PlanScoreCard.Services
         {
             if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.DoseAtVolume)
             {
-                return $"Dose at {template.InputValue}{template.InputUnit} [{template.OutputUnit}]";
+                return $"Dose at {(template.InputValue.ToString().Length > 8 ? template.InputValue.ToString("F2"):template.InputValue.ToString())}{template.InputUnit} [{template.OutputUnit}]";
             }
             else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.VolumeAtDose)
             {
-                return $"Volume at {template.InputValue}{template.InputUnit} [{template.OutputUnit}]";
+                return $"Volume at {(template.InputValue.ToString().Length > 8 ? template.InputValue.ToString("F2") : template.InputValue.ToString())}{template.InputUnit} [{template.OutputUnit}]";
             }
             else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.VolumeOfRegret)
             {
-                return $"Volume of Regret [{template.InputValue}{template.InputUnit}] [{template.OutputUnit}]";
+                return $"Volume of Regret [{(template.InputValue.ToString().Length > 8 ? template.InputValue.ToString("F2") : template.InputValue.ToString())}{template.InputUnit}] [{template.OutputUnit}]";
             }
             else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.ConformationNumber)
             {
-                return $"Conformation No. at [{template.InputValue}{template.InputUnit}]";
+                return $"Conformation No. at [{(template.InputValue.ToString().Length > 8 ? template.InputValue.ToString("F2") : template.InputValue.ToString())}{template.InputUnit}]";
             }
             else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.HomogeneityIndex)
             {
@@ -124,7 +124,7 @@ namespace PlanScoreCard.Services
             }
             else if((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum),template.MetricType) == MetricTypeEnum.DoseAtSubVolume)
             {
-                return $"D At (V - {template.InputValue}CC)";
+                return $"D At (V - {(template.InputValue.ToString().Length > 8 ? template.InputValue.ToString("F2") : template.InputValue.ToString())}CC)";
             }
             else
             {

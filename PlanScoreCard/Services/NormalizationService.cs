@@ -6,6 +6,7 @@ using Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,8 @@ namespace PlanScoreCard.Services
     {
         public ObservableCollection<PlanScoreModel> PlanScores { get; private set; }
         private StructureDictionaryService StructureDictionaryService;
+        private double _normTailPoint;
+        private double _normTailValue;
         private PlanModel _planModel;
         private String _patientId;
         private List<ScoreTemplateModel> _templates;
@@ -28,14 +31,62 @@ namespace PlanScoreCard.Services
             List<ScoreTemplateModel> templates, IEventAggregator eventAggregator, StructureDictionaryService structureDictionaryService)
         {
             StructureDictionaryService = structureDictionaryService;
+            _normTailPoint = Convert.ToDouble(ConfigurationManager.AppSettings["NormTailToleranceLimit"]);
+            _normTailValue = Convert.ToDouble(ConfigurationManager.AppSettings["NormTailPenalty"]);
             //_patient = patient;
-            _templates = templates;
+            ProcessTails(templates);
             _eventAggregator = eventAggregator;
             _app = app;
             _app.ClosePatient();
             _patient = _app.OpenPatientById(plan.PatientId);
             PlanScores = new ObservableCollection<PlanScoreModel>();
             _planModel = plan;
+        }
+
+        private void ProcessTails(List<ScoreTemplateModel> templates)
+        {
+            List<ScoreTemplateModel> localTemplates = new List<ScoreTemplateModel>();
+            foreach(var template in templates)
+            {
+                ScoreTemplateModel scoreTemplate = null;
+                if((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.HomogeneityIndex)
+                {
+                    scoreTemplate = new ScoreTemplateModel(
+                        template.Structure,
+                        MetricTypeEnum.HomogeneityIndex,
+                        template.MetricComment,
+                        template.InputValue,
+                        template.InputUnit,
+                        template.OutputUnit,
+                        new List<ScorePointInternalModel>());
+                }
+                else
+                {
+                    MetricTypeEnum metricType;
+                    Enum.TryParse(template.MetricType, out metricType);
+                    scoreTemplate = new ScoreTemplateModel(template.Structure,
+                        metricType,
+                        template.MetricComment,
+                        template.InputValue,
+                        template.InputUnit,
+                        template.OutputUnit,
+                        new List<ScorePointInternalModel>());
+                }
+                foreach(var score in template.ScorePoints)
+                {
+                    ScorePointInternalModel scorePoint = new ScorePointInternalModel(score.PointX,
+                        score.Score == 0?_normTailValue: score.Score,
+                        score.Variation,
+                        null);
+                    scoreTemplate.ScorePoints.Add(scorePoint);
+                    if(scorePoint.Score== _normTailValue)
+                    {
+                        scoreTemplate.ScorePoints.Add(new ScorePointInternalModel(_normTailPoint,0,false,null));
+                    }
+                }
+                localTemplates.Add(scoreTemplate);
+            }
+            _templates = localTemplates;
         }
 
         public PlanModel GetPlan()

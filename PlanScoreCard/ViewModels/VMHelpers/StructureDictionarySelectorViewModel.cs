@@ -69,6 +69,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             set
             {
                 SetProperty(ref _bAddNewEntry, value);
+                UpdateDictionaryCommand.RaiseCanExecuteChanged();
                 if (bAddNewEntry)
                 {
                     SelectedDictionaryKey = null;
@@ -137,7 +138,11 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         public string EntryKey
         {
             get { return _entryKey; }
-            set { SetProperty(ref _entryKey, value); }
+            set 
+            { 
+                SetProperty(ref _entryKey, value);
+                UpdateDictionaryCommand.RaiseCanExecuteChanged();
+            }
         }
         private string _fileToMergeText;
 
@@ -182,10 +187,20 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             DictionaryValues = new ObservableCollection<DictionaryValue>();
             //DictionaryStructures = new List<string>();
             CancelCommand = new DelegateCommand(OnCancel);
-            UpdateDictionaryCommand = new DelegateCommand(OnDictionaryUpdate);
+            UpdateDictionaryCommand = new DelegateCommand(OnDictionaryUpdate, CanUpdateDictionary);
             OpenDictionaryFileCommand = new DelegateCommand(OnOpenDictionaryFile);
             //CloseAction = new Action(OnClose);
             Bind();
+        }
+
+        private bool CanUpdateDictionary()
+        {
+            bool canUpdate = true;
+            if(bAddNewEntry && String.IsNullOrEmpty(EntryKey))
+            {
+                canUpdate = false;
+            }
+            return canUpdate;
         }
 
         private void OnOpenDictionaryFile()

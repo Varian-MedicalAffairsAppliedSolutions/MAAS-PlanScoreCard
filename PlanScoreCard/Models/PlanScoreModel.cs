@@ -208,7 +208,7 @@ namespace PlanScoreCard.Models
             }
         }
 
-        private void CheckOutsideBounds()
+        public  void CheckOutsideBounds()
         {
             // First get the max and the min of the plot
             if (ScorePlotModel == null)
@@ -216,7 +216,8 @@ namespace PlanScoreCard.Models
 
             double max = MaxXValue;
             double min = MinXValue;
-
+            //CountBelowMin = 0;
+            //CountAboveMax = 0;//reset to 0 so just last time entering this method will count all out of bounds. 
             // This loops through to see the outside Bounds
             foreach (ScoreValueModel scoreValue in ScoreValues)
             {
@@ -290,6 +291,11 @@ namespace PlanScoreCard.Models
             TemplateStructureVisibility = Visibility.Visible;
             bShowPrintComment = true;
         }
+        public void InputTemplate(ScoreTemplateModel template)
+        {
+            MetricText = PlanScoreCalculationServices.GetMetricTextFromTemplate(template);
+            SetInitialPlotParameters(template);
+        }
         public void BuildPlanScoreFromTemplate(List<PlanningItem> plans, ScoreTemplateModel template, int metricId, string primaryCourseId, string primaryPlanId, bool canBuildStructure)
         {
             ScoreMax = template.ScorePoints.Count() == 0 ? -1000 : template.ScorePoints.Max(x => x.Score);
@@ -324,8 +330,8 @@ namespace PlanScoreCard.Models
                       template.ScorePoints.Max(x => x.PointX))).Score;
             }
 
-            MetricText = PlanScoreCalculationServices.GetMetricTextFromTemplate(template);
-            SetInitialPlotParameters(template);
+            //MetricText = PlanScoreCalculationServices.GetMetricTextFromTemplate(template);
+            //SetInitialPlotParameters(template);
             MetricId = metricId;
             MetricComment = template.MetricComment;
 
@@ -744,7 +750,7 @@ namespace PlanScoreCard.Models
                 ScoreValues.Add(scoreValue);
             }
 
-            CheckOutsideBounds();
+           //CheckOutsideBounds();
 
             if (ScoreValues.Count() > 1)
             {
@@ -767,10 +773,10 @@ namespace PlanScoreCard.Models
             {
                 MinXValue = template.ScorePoints.Min(x => x.PointX);
                 MaxXValue = template.ScorePoints.Max(x => x.PointX);
-                CheckOutsideBounds();
+                //CheckOutsideBounds();
                 XAxisLabel = template.ScorePoints.Any(x => x.Variation) ?
                     $"Variation @ {template.ScorePoints.FirstOrDefault(x => x.Variation).PointX}{template.OutputUnit}"
-                    : $"{MetricText.Split(' ').FirstOrDefault()} [{template.OutputUnit}]";
+                    : $"{((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.HomogeneityIndex ? MetricText: $"{MetricText.Split(' ').FirstOrDefault()} [{template.OutputUnit}]")}";
             }
             ScorePlotModel.Series.Clear();
             ScorePlotModel.Axes.Add(new LinearAxis

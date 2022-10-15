@@ -37,6 +37,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             set
             {
                 SetProperty(ref _selectedPatient, value);
+                RemovePatientCommand.RaiseCanExecuteChanged();
             }
         }
         private PatientSelectModel _selectedPatientMatch;
@@ -72,7 +73,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         public DelegateCommand SavePlansCommand { get; private set; }
         public DelegateCommand CancelPlansCommand { get; private set; }
         public DelegateCommand SavePatientListCommand { get; private set; }
-        public DelegateCommand ClearPatientListCommand { get; private set; }
+        public DelegateCommand RemovePatientCommand { get; private set; }
         public PatientSelectService PatientSelectService { get; }
 
         public PatientSelectionViewModel(IEventAggregator eventAggregator, Application app, List<PlanModel> plans)
@@ -87,7 +88,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             OpenPatientCommand = new DelegateCommand(OnOpenPatient, CanOpenPatient);
             PatientImportCommand = new DelegateCommand(OnImportPatients);
             SavePatientListCommand = new DelegateCommand(OnSavePatientList);
-            ClearPatientListCommand = new DelegateCommand(OnClearPatientList);
+            RemovePatientCommand = new DelegateCommand(OnClearPatientList, CanRemovePatient);
             GetPatientSummaryies();
             PatientSelectService = new PatientSelectService(new SmartSearchService(PatientSummaries));
             SearchPatient();
@@ -115,6 +116,11 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             _eventAggregator.GetEvent<FreePrimarySelectionEvent>().Subscribe(OnResetPrimaryPlan);
         }
 
+        private bool CanRemovePatient()
+        {
+            return SelectedPatient != null;
+        }
+
         private bool CanOpenPatient()
         {
             return !String.IsNullOrEmpty(SearchText);
@@ -122,9 +128,13 @@ namespace PlanScoreCard.ViewModels.VMHelpers
 
         private void OnClearPatientList()
         {
-            SelectedPatient = null;
-            Patients.Clear();
-            SearchText = String.Empty;
+            if (SelectedPatient != null)
+            {
+                Patients.Remove(SelectedPatient);
+                SelectedPatient = null;
+                //Patients.Clear();
+                //SearchText = String.Empty;
+            }
         }
 
         private void OnSavePatientList()

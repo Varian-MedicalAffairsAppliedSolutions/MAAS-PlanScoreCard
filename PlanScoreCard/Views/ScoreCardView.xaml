@@ -175,7 +175,8 @@
                                     <DataGridTextColumn Binding="{Binding PlanScore, Converter={StaticResource localScoreTextConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontWeight="Normal" FontSize="12" Width="90" IsReadOnly="True">
                                         <DataGridTextColumn.HeaderTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding DataContext.MaxScore, Converter={StaticResource localScoreHeaderConverter}, RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                                                <TextBlock Text="{Binding DataContext.MaxScore, Converter={StaticResource localScoreHeaderConverter}, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                           Visibility="{Binding DataContext.bPlanScoreValid, Converter={StaticResource localVisibilityConverter}, RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
                                             </DataTemplate>
                                         </DataGridTextColumn.HeaderTemplate>
                                         <DataGridTextColumn.ElementStyle>

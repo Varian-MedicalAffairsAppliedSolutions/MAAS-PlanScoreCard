@@ -199,7 +199,9 @@ namespace PlanScoreCard.ViewModels
             {
                 return;
             }
-            var planTotalDoseGy = planDoseUnit.StartsWith("c") ? planTotalDose / 100.0 : planTotalDose;
+            InvalidateScores();
+            //Reminder plan.DosePerFraction is always in Gy
+            //var planTotalDoseGy = planDoseUnit.StartsWith("c") ? planTotalDose  : planTotalDose;
 
             foreach (var template in ScoreCard.ScoreMetrics)
             {
@@ -212,9 +214,8 @@ namespace PlanScoreCard.ViewModels
                     {
                         foreach (var scorePoint in template.ScorePoints)
                         {
-                            scorePoint.PointX = template.OutputUnit.StartsWith("c") ?
-                                (scorePoint.PointX * planTotalDoseGy) / (scoreCardTotalDose / 100.0) :
-                                scorePoint.PointX * planTotalDoseGy / scoreCardTotalDose;
+                            //conversions not needed because planTotalDose and scoreCardTotalDose are in the same unit (Gy)
+                            scorePoint.PointX =  scorePoint.PointX * planTotalDose / scoreCardTotalDose;
                         }
                     }
                 }
@@ -224,23 +225,19 @@ namespace PlanScoreCard.ViewModels
                 {
                     if (!template.InputUnit.Contains("%"))
                     {
-                        template.InputValue = template.InputUnit.StartsWith("c") ?
-                            (template.InputValue * planTotalDoseGy) / (scoreCardTotalDose / 100.0) :
-                            template.InputValue * planTotalDoseGy / scoreCardTotalDose;
+                        template.InputValue = template.InputValue * planTotalDose / scoreCardTotalDose;
                     }
                 }
                 else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.HomogeneityIndex)
                 {
                     if (!template.HI_TargetUnit.Contains("%"))
                     {
-                        template.HI_Target = template.HI_TargetUnit.StartsWith("c") ?
-                            (template.HI_Target * planTotalDoseGy) / (scoreCardTotalDose / 100.0) :
-                            template.InputValue * planTotalDoseGy / scoreCardTotalDose;
+                        template.HI_Target = template.HI_Target * planTotalDose / scoreCardTotalDose;
                     }
                 }
             }
             _bScaled = true;
-            ScoreCard.DosePerFraction = DosePerFraction = planTotalDoseGy / Plan.NumberOfFractions;
+            ScoreCard.DosePerFraction = DosePerFraction = planTotalDose / Plan.NumberOfFractions;
             ScoreCard.NumberOfFractions = NumberOfFractions = Plan.NumberOfFractions;
             ScorePlan();
         }
@@ -473,7 +470,7 @@ namespace PlanScoreCard.ViewModels
             }
             if (isSaved)
             {
-                ScorePlan();
+                OnPlanChanged(Plans.ToList());
             }
         }
 
@@ -645,7 +642,7 @@ namespace PlanScoreCard.ViewModels
                     {
                         foreach (var point in template.ScoreValues)
                         {
-                            sw.WriteLine($"{template.MetricId},{point.PatientId},{point.PlanId},{point.CourseId},{point.PlanId},{template.StructureId},{template.MetricText},{point.Value},{point.Score},{template.ScoreMax}");
+                            sw.WriteLine($"{template.MetricId},{point.PatientId},{point.CourseId},{point.PlanId},{template.StructureId},{template.MetricText},{point.Value},{point.Score},{template.ScoreMax}");
                         }
                     }
                     sw.Flush();
@@ -721,7 +718,7 @@ namespace PlanScoreCard.ViewModels
         {
             if (EditScoreCardView != null)
             {
-
+                InvalidateScores();
                 if (EditScoreCardView.IsVisible)
                 { EditScoreCardView.Hide(); }
             }
@@ -779,6 +776,7 @@ namespace PlanScoreCard.ViewModels
                 {
                     psm = PlanScores.FirstOrDefault(p => p.MetricId == metric_id);
                 }
+                psm.InputTemplate(template);
                 foreach (var patient in Plans.OrderByDescending(pl => pl.bPrimary).GroupBy(p => p.PatientId).Where(pa => pa.Any(pl => pl.bSelected)))
                 {
                     List<PlanningItem> selectedPlans = GetPlansPlanModel(patient.Key);
@@ -804,6 +802,7 @@ namespace PlanScoreCard.ViewModels
                         PlanScores.Add(psm);
                     }
                 }
+                psm.CheckOutsideBounds();
                 if (template.ScorePoints.Any(x => x.Variation) && psm.ScoreValues.Any(x => x.Score < template.ScorePoints.FirstOrDefault(y => y.Variation).Score))
                 {
                     bWarning = true;
@@ -875,8 +874,9 @@ namespace PlanScoreCard.ViewModels
                 _patient = Application.OpenPatientById(patientId);
                 _patientId = patientId;
             }
-            foreach (var planModel in Plans.Where(pl => pl.PatientId.Equals(_patientId)).Where(pl => pl.bSelected))
+            foreach (var planModel in Plans.Where(pl => pl.PatientId.Equals(_patientId)).Where(pl => pl.bSelected).OrderByDescending(pl=>pl.bPrimary))
             {
+                //planModel.bPlanScoreValid = true;//make plan score visible.
                 planItems.Add(_patient.Courses.FirstOrDefault(c => c.Id.Equals(planModel.CourseId)).PlanSetups.FirstOrDefault(ps => ps.Id.Equals(planModel.PlanId)));
             }
             return planItems;
@@ -992,6 +992,7 @@ namespace PlanScoreCard.ViewModels
                 }
                 if (importSuccess)
                 {
+                    InvalidateScores();
                     ScoreCard = new ScoreCardModel(TemplateName, TemplateSite, DosePerFraction, NumberOfFractions, ScoreTemplates);
 
                     //any empty colors should be white.
@@ -1007,6 +1008,17 @@ namespace PlanScoreCard.ViewModels
                     }
                     bRxScaling = false;
                     EventAggregator.GetEvent<ScorePlanEvent>().Publish(ScoreCard);
+                }
+            }
+        }
+
+        private void InvalidateScores()
+        {
+            foreach(var planModel in Plans)
+            {
+                if (!planModel.bSelected)
+                {
+                    planModel.PlanScore = null;// = false;
                 }
             }
         }

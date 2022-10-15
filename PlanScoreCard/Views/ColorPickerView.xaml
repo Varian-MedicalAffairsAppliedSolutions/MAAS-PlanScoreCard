@@ -167,6 +167,6 @@
                      Command="{Binding SelectColorCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Background}"/>
         </Border>
         <!--#endregion Violet-->
-        <Button Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="2" Content="Cancel" Margin="5" Command="{Binding CancelColorCommand}"/>
+        <Button Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="2" Content="Clear" Margin="5" Command="{Binding CancelColorCommand}"/>
     </Grid>
 </metro:MetroWindow>

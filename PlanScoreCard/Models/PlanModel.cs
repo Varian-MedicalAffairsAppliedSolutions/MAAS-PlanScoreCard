@@ -154,6 +154,14 @@ namespace PlanScoreCard.Models
         }
 
         public bool bPlanSum;
+        //private bool _bPlanScoreValid;
+
+        //public bool bPlanScoreValid
+        //{
+        //    get { return _bPlanScoreValid; }
+        //    set { SetProperty(ref _bPlanScoreValid,value); }
+        //}
+
         //public PlanSetup Plan;
         //public PlanSum PlanSum;
         private IEventAggregator _eventAggregator;
