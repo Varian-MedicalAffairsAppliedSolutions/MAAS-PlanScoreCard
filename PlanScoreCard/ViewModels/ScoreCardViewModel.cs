@@ -1077,11 +1077,22 @@ namespace PlanScoreCard.ViewModels
             //Patient = patient;
             //Course = course;
             //Plan = plan;
-            Plans.Clear();
+            //Plans.Clear();
             foreach(var plan in plans)
             {
-                Plans.Add(plan);
-            }
+                if (Plans.Any(pl => pl.PlanId.Equals(plan.PlanId) && pl.CourseId.Equals(plan.CourseId) && pl.PatientId.Equals(plan.PatientId)))
+                {
+                    var selectedPlan = Plans.First(pl => pl.PlanId.Equals(plan.PlanId) && pl.CourseId.Equals(plan.CourseId) && pl.PatientId.Equals(plan.PatientId));
+                    if (!selectedPlan.bSelected)
+                    {
+                        selectedPlan.bSelected = true;
+                    }
+                }
+                else
+                {
+                    Plans.Add(plan);
+                }
+                }
             InitializeClass();
             //OnPlanChanged(new List<PlanModel> { new PlanModel(Plan as PlanningItem, EventAggregator) { PlanId = Plan.Id, CourseId = Course.Id, bSelected = true } });
         }
