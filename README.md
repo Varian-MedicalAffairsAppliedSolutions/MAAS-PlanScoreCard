@@ -21,7 +21,8 @@
 * Example ScoreCards can be found here: https://medicalaffairs.varian.com/dose-scorecards
 
 ### Main Screen
-![MainScreen1 0 0](https://user-images.githubusercontent.com/78000769/169741084-0bb83fdc-69f4-4240-a193-e1e41db9c0df.png)
+![MainScreen1 0 0](https://user-images.githubusercontent.com/78000769/200408043-41a14e05-d9e3-4cad-99a0-442bf8e6a654.png)
+
 
 ### ScoreCard Editor
 ![ScoreCardEditor1 0 0](https://user-images.githubusercontent.com/78000769/169741156-a27d6165-616a-4181-80a7-74ed7923e8eb.png)
