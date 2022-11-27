@@ -162,6 +162,7 @@ namespace PlanScoreCard.ViewModels
                 MetricUpCommand.RaiseCanExecuteChanged();
                 MetricDownCommand.RaiseCanExecuteChanged();
                 ClearColorCommand.RaiseCanExecuteChanged();
+                AddPointCommand.RaiseCanExecuteChanged();
                 ShowScorePointModels(SelectedScoreMetric);
 
                 if (SelectedScoreMetric == null)
@@ -575,7 +576,7 @@ namespace PlanScoreCard.ViewModels
             CopyMetricCommand = new DelegateCommand(CopyMetric, CanDeleteMetric);
             MetricUpCommand = new DelegateCommand(MetricUp, CanDeleteMetric);
             MetricDownCommand = new DelegateCommand(MetricDown, CanDeleteMetric);
-            AddPointCommand = new DelegateCommand(AddPoint);
+            AddPointCommand = new DelegateCommand(AddPoint, CanAddPoint);
             DeletePointCommand = new DelegateCommand(DeletePoint, CanDeletePoint);
             PointUpCommand = new DelegateCommand(PointUp, CanDeletePoint);
             PointDownCommand = new DelegateCommand(PointDown, CanDeletePoint);
@@ -595,6 +596,8 @@ namespace PlanScoreCard.ViewModels
 
             Bind();
         }
+
+       
 
         private bool CanClearColor()
         {
@@ -876,24 +879,31 @@ namespace PlanScoreCard.ViewModels
             UpdateScoreMetricPlotModel();
         }
 
+        private bool CanAddPoint()
+        {
+            return SelectedScoreMetric != null;
+        }
         private void AddPoint()
         {
-            int selectedIndex = MetricPointModels.IndexOf(SelectedMetricPointModel);
-            ScorePointModel metricModel = new ScorePointModel(selectedIndex + 1, selectedIndex + 1, EventAggregator);
-            //if new metrics start with a "white" color it can be changed. 
-            //but should only be if colors are being used for this metric at all. 
-            if (SelectedScoreMetric.ScorePoints.Any(sp => sp.Colors != null))
+            if (SelectedScoreMetric != null)
             {
-                metricModel.Colors = new PlanScoreColorModel(new List<double> { 255, 255, 255 }, "[0]");
+                int selectedIndex = MetricPointModels.IndexOf(SelectedMetricPointModel);
+                ScorePointModel metricModel = new ScorePointModel(selectedIndex + 1, selectedIndex + 1, EventAggregator);
+                //if new metrics start with a "white" color it can be changed. 
+                //but should only be if colors are being used for this metric at all. 
+                if (SelectedScoreMetric.ScorePoints.Any(sp => sp.Colors != null))
+                {
+                    metricModel.Colors = new PlanScoreColorModel(new List<double> { 255, 255, 255 }, "[0]");
+                }
+                SelectedMetricPointModel = metricModel;
+                MetricPointModels.Insert(selectedIndex + 1, metricModel);
+                //SelectedScoreMetric.ScorePoints = MetricPointModels;
+
+                ScoreMetrics.FirstOrDefault(s => s.Id == SelectedScoreMetric.Id).ScorePoints.Insert(selectedIndex + 1, metricModel);
+
+                // THIS WORKS ^^
+                ReRankPoints();
             }
-            SelectedMetricPointModel = metricModel;
-            MetricPointModels.Insert(selectedIndex + 1, metricModel);
-            //SelectedScoreMetric.ScorePoints = MetricPointModels;
-
-            ScoreMetrics.FirstOrDefault(s => s.Id == SelectedScoreMetric.Id).ScorePoints.Insert(selectedIndex + 1, metricModel);
-
-            // THIS WORKS ^^
-            ReRankPoints();
         }
 
         private void MetricDown()

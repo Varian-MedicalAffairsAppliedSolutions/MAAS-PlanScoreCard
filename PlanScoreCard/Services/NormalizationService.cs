@@ -55,10 +55,20 @@ namespace PlanScoreCard.Services
                         template.Structure,
                         MetricTypeEnum.HomogeneityIndex,
                         template.MetricComment,
-                        template.InputValue,
+                        template.HI_HiValue,
+                        template.HI_LowValue,
                         template.InputUnit,
-                        template.OutputUnit,
+                        template.HI_Target,
+                        template.HI_TargetUnit,
                         new List<ScorePointInternalModel>());
+                    //scoreTemplate = new ScoreTemplateModel(
+                    //    template.Structure,
+                    //    MetricTypeEnum.HomogeneityIndex,
+                    //    template.MetricComment,
+                    //    template.InputValue,
+                    //    template.InputUnit,
+                    //    template.OutputUnit,
+                    //    new List<ScorePointInternalModel>());
                 }
                 else
                 {
