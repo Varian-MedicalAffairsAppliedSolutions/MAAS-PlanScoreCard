@@ -1,4 +1,7 @@
-﻿using PlanScoreCard.Events;
+﻿using Newtonsoft.Json;
+using PlanScoreCard.Events;
+using PlanScoreCard.Events.HelperWindows;
+using PlanScoreCard.Models.ModelHelpers;
 using PlanScoreCard.Services;
 using Prism.Commands;
 using Prism.Events;
@@ -154,6 +157,28 @@ namespace PlanScoreCard.Models
         }
 
         public bool bPlanSum;
+        private StructureMatchWarningModel _structureMatchIssue;
+        [JsonIgnore]
+        public StructureMatchWarningModel StructureMatchIssue
+        {
+            get { return _structureMatchIssue; }
+            set { SetProperty(ref _structureMatchIssue,value); }
+        }
+        private bool _bStructureValidationFlag;
+        [JsonIgnore]
+        public bool bStructureValidationFlag
+        {
+            get { return _bStructureValidationFlag; }
+            set { SetProperty(ref _bStructureValidationFlag,value); }
+        }
+        private bool _bStructureValidationWarning;
+        [JsonIgnore]
+        public bool bStructureValidationWarning
+        {
+            get { return _bStructureValidationWarning; }
+            set { SetProperty(ref _bStructureValidationWarning,value); }
+        }
+
         //private bool _bPlanScoreValid;
 
         //public bool bPlanScoreValid
@@ -167,9 +192,21 @@ namespace PlanScoreCard.Models
         private IEventAggregator _eventAggregator;
 
         public ObservableCollection<StructureModel> Structures { get; set; }
+        [JsonIgnore]
+        public ObservableCollection<StructureModel> TemplateStructures { get; set; }
+        private StructureModel _selectedStructureValidation;
+        [JsonIgnore]
+        public StructureModel SelectedStructureValidation
+        {
+            get { return _selectedStructureValidation; }
+            set { SetProperty(ref _selectedStructureValidation,value); }
+        }
+
         public DelegateCommand DeselectCommand { get; private set; }
+        public DelegateCommand ValidatePlanCommand { get; private set; }
         public PlanModel(PlanningItem plan, IEventAggregator eventAggregator)
         {
+            TemplateStructures = new ObservableCollection<StructureModel>();
             if (plan is PlanSum)
             {
                 bPlanSum = true;
@@ -196,8 +233,14 @@ namespace PlanScoreCard.Models
             _eventAggregator = eventAggregator;
             Structures = new ObservableCollection<StructureModel>();
             DeselectCommand = new DelegateCommand(OnDeselect);
+            ValidatePlanCommand = new DelegateCommand(OnValidatePlan);
             GenerateStructures(plan);
             SetParameters(plan);
+        }
+
+        private void OnValidatePlan()
+        {
+            _eventAggregator.GetEvent<UpdateSelectedPlanValidationEvent>().Publish(this);
         }
 
         private void OnDeselect()
@@ -235,6 +278,22 @@ namespace PlanScoreCard.Models
                     StructureCode = structure.StructureCodeInfos.FirstOrDefault().Code,
                     StructureComment = structure.Comment
                 });
+            }
+        }
+        public void EvaluateStructureMatches(List<StructureModel> scorecardStructures)
+        {
+            foreach(var structure in scorecardStructures)
+            {
+                TemplateStructures.Add(structure);
+                structure.EvaluateStructureMatch(Structures.ToList());
+            }
+            if (TemplateStructures.Any(ts => !ts.bValidStructure))
+            {
+                bStructureValidationFlag = true;
+            }
+            else if (TemplateStructures.Any(ts => !ts.bDictionaryMatch))
+            {
+                bStructureValidationWarning = true;
             }
         }
     }

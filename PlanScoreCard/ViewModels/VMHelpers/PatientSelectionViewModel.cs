@@ -22,6 +22,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
     {
         private IEventAggregator _eventAggregator;
         private Application _app;
+        private ScoreCardModel _scoreCard;
 
         public ObservableCollection<PatientPlanSearchModel> Patients { get; private set; }
         public List<PatientSummaryModel> PatientSummaries { get; private set; }
@@ -67,6 +68,17 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                 OpenPatientCommand.RaiseCanExecuteChanged();
             }
         }
+        private string _scoreCardUpdateText;
+
+        public string ScoreCardUpdateText
+        {
+            get { return _scoreCardUpdateText; }
+            set
+            {
+                SetProperty(ref _scoreCardUpdateText, value);
+            }
+        }
+
         public DelegateCommand SearchPatientCommand { get; private set; }
         public DelegateCommand OpenPatientCommand { get; private set; }
         public DelegateCommand PatientImportCommand { get; private set; }
@@ -76,10 +88,11 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         public DelegateCommand RemovePatientCommand { get; private set; }
         public PatientSelectService PatientSelectService { get; }
 
-        public PatientSelectionViewModel(IEventAggregator eventAggregator, Application app, List<PlanModel> plans)
+        public PatientSelectionViewModel(IEventAggregator eventAggregator, Application app, List<PlanModel> plans, ScoreCardModel scoreCard)
         {
             _eventAggregator = eventAggregator;
             _app = app;
+            _scoreCard = scoreCard;
             Patients = new ObservableCollection<PatientPlanSearchModel>();
             PatientMatches = new ObservableCollection<PatientSelectModel>();
             SavePlansCommand = new DelegateCommand(OnSavePlans);
@@ -89,6 +102,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             PatientImportCommand = new DelegateCommand(OnImportPatients);
             SavePatientListCommand = new DelegateCommand(OnSavePatientList);
             RemovePatientCommand = new DelegateCommand(OnClearPatientList, CanRemovePatient);
+            SetScoreCardText();
             GetPatientSummaryies();
             PatientSelectService = new PatientSelectService(new SmartSearchService(PatientSummaries));
             SearchPatient();
@@ -110,10 +124,27 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                     localPlan.bSelected = plan.bSelected;
                     localPlan.bPrimary = plan.bPrimary;
                 }
+                localPatientSelectModel.EvaluateStructureMatches(scoreCard.ScoreMetrics.ToList().Select(sm => sm.Structure).ToList());
                 Patients.Add(localPatientSelectModel);
             }
-           // SearchText = String.Empty;
+            // SearchText = String.Empty;
             _eventAggregator.GetEvent<FreePrimarySelectionEvent>().Subscribe(OnResetPrimaryPlan);
+        }
+
+        private void SetScoreCardText()
+        {
+            if (_scoreCard == null)
+            {
+                ScoreCardUpdateText = $"Cannot compare patients to scorecards. No metrics detected.";
+            }
+            else if (_scoreCard.ScoreMetrics.Count() == 0)
+            {
+                ScoreCardUpdateText = "Cannot compare patients to scorecards. No metrics detected.";
+            }
+            else
+            {
+                ScoreCardUpdateText = $"Scorecard imported with {_scoreCard.ScoreMetrics.Count()} metrics";
+            }
         }
 
         private bool CanRemovePatient()
@@ -140,9 +171,9 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         private void OnSavePatientList()
         {
             List<PatientPlanModel> localPatientPlanModel = new List<PatientPlanModel>();
-            foreach(var patient in Patients)
+            foreach (var patient in Patients)
             {
-                foreach(var plan in patient.Plans)
+                foreach (var plan in patient.Plans)
                 {
                     if (plan.bSelected)
                     {
@@ -204,7 +235,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                     List<PatientPlanModel> patients = new List<PatientPlanModel>();
                     if (ofd.FileName.EndsWith("csv"))
                     {
-                        foreach(var line in File.ReadAllLines(ofd.FileName))
+                        foreach (var line in File.ReadAllLines(ofd.FileName))
                         {
                             patients.Add(new PatientPlanModel
                             {

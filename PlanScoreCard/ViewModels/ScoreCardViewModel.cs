@@ -479,7 +479,7 @@ namespace PlanScoreCard.ViewModels
         {
             _isWindowActive = false;
             patientSelectionView = new PatientSelectionView();
-            patientSelectionView.DataContext = new PatientSelectionViewModel(EventAggregator, Application, Plans.ToList());
+            patientSelectionView.DataContext = new PatientSelectionViewModel(EventAggregator, Application, Plans.ToList(), ScoreCard);
             
             patientSelectionView.ShowDialog();
         }
