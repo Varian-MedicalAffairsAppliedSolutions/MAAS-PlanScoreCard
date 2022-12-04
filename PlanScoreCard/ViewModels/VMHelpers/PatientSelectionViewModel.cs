@@ -124,11 +124,37 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                     localPlan.bSelected = plan.bSelected;
                     localPlan.bPrimary = plan.bPrimary;
                 }
-                localPatientSelectModel.EvaluateStructureMatches(scoreCard.ScoreMetrics.ToList().Select(sm => sm.Structure).ToList());
+                if (scoreCard != null)
+                {
+                    localPatientSelectModel.EvaluateStructureMatches(scoreCard.ScoreMetrics.ToList().Select(sm => sm.Structure).ToList());
+                }
                 Patients.Add(localPatientSelectModel);
             }
             // SearchText = String.Empty;
             _eventAggregator.GetEvent<FreePrimarySelectionEvent>().Subscribe(OnResetPrimaryPlan);
+            _eventAggregator.GetEvent<UpdateTemplateMatchesEvent>().Subscribe(OnUpdateTemplateMatches);
+        }
+        //when matching a template structure you can copy to all patients. 
+        private void OnUpdateTemplateMatches(StructureModel obj)
+        {
+            string currentPatientId = SelectedPatient.PatientId;
+            SelectedPatient = null;
+            foreach(var patient in Patients)
+            {
+                foreach(var plan in patient.Plans)
+                {
+                    var templateStructure = plan.TemplateStructures.FirstOrDefault(ts => ts.TemplateStructureInt == obj.TemplateStructureInt);
+                    if(templateStructure != null)
+                    {
+                        if(plan.Structures.Any(s=>s.StructureId == obj.MatchedStructure.StructureId))
+                        {
+                            templateStructure.MatchedStructure = plan.Structures.FirstOrDefault(s => s.StructureId == obj.MatchedStructure.StructureId);
+                        }
+                    }
+                }
+            }
+            SelectedPatient = Patients.FirstOrDefault(p => p.PatientId == currentPatientId);
+            SelectedPatient.EvaluateFlags();
         }
 
         private void SetScoreCardText()

@@ -455,6 +455,25 @@ namespace PlanScoreCard.ViewModels
                     foreach (var plan in planSearchModel.Plans.Where(pl => pl.bSelected))
                     {
                         Plans.Add(plan);
+                        if (ScoreCard != null)
+                        {
+                            int metricTrack = 0;
+                            foreach(var metric in ScoreCard.ScoreMetrics)
+                            {
+                                if(plan.TemplateStructures.Any(ts=>ts.TemplateStructureInt == metricTrack&& ts.MatchedStructure != null && ts.bLocalMatch))
+                                {
+                                    metric.PlanModelOverrides.Add(new PlanModelOverride
+                                    {
+                                        PatientId = plan.PatientId,
+                                        CourseId = plan.CourseId,
+                                        PlanId = plan.PlanId,
+                                        TemplateMetricId = metricTrack,
+                                        MatchedStructureId = plan.TemplateStructures.FirstOrDefault(ts=>ts.TemplateStructureInt == metricTrack).MatchedStructure.StructureId
+                                    });
+                                }
+                                metricTrack++;
+                            }
+                        }
                     }
                 }
             }
@@ -751,6 +770,15 @@ namespace PlanScoreCard.ViewModels
             bFlag = false;
             Warnings = String.Empty;
             Flags = String.Empty;
+            if(scoreCard.ScoreMetrics.All(sm=>sm.TemplateNumber == 0))
+            {
+                int metricNum = 0;
+                foreach(var template in scoreCard.ScoreMetrics)
+                {
+                    template.TemplateNumber = metricNum;
+                    metricNum++;
+                }
+            }
             foreach (ScoreTemplateModel template in scoreCard.ScoreMetrics)
             {
                 //plans must be selected.
@@ -924,7 +952,7 @@ namespace PlanScoreCard.ViewModels
                 {
                     try
                     {
-                        ScoreTemplates = EPeerReviewScoreModel.GetScoreTemplateFromCSV(ofd.FileName);
+                        ScoreTemplates = EPeerReviewScoreModel.GetScoreTemplateFromCSV(ofd.FileName, EventAggregator);
                         importSuccess = true;
                     }
                     catch

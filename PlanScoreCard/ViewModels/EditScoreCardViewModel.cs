@@ -290,7 +290,7 @@ namespace PlanScoreCard.ViewModels
                     {
                         // if (SelectedScoreMetric.Structure == null)
                         //{
-                        SelectedScoreMetric.Structure = new StructureModel
+                        SelectedScoreMetric.Structure = new StructureModel(EventAggregator)
                         {
                             TemplateStructureId = String.IsNullOrEmpty(temp_templateStructureId) ? SelectedStructure.StructureId : temp_templateStructureId,
                             StructureId = SelectedStructure.StructureId,
@@ -617,7 +617,7 @@ namespace PlanScoreCard.ViewModels
         {
             if (SelectedStructure != null && SelectedScoreMetric != null)
             {
-                SelectedScoreMetric.Structure = new StructureModel
+                SelectedScoreMetric.Structure = new StructureModel(EventAggregator)
                 {
                     StructureId = SelectedStructure.StructureId,
                     TemplateStructureId = SelectedStructure.StructureId,

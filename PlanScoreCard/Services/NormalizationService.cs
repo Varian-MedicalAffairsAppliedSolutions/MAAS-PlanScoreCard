@@ -46,12 +46,13 @@ namespace PlanScoreCard.Services
         private void ProcessTails(List<ScoreTemplateModel> templates)
         {
             List<ScoreTemplateModel> localTemplates = new List<ScoreTemplateModel>();
+            int scoreTemplateNum = 0;
             foreach(var template in templates)
             {
                 ScoreTemplateModel scoreTemplate = null;
                 if((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.HomogeneityIndex)
                 {
-                    scoreTemplate = new ScoreTemplateModel(
+                    scoreTemplate = new ScoreTemplateModel(scoreTemplateNum,
                         template.Structure,
                         MetricTypeEnum.HomogeneityIndex,
                         template.MetricComment,
@@ -74,7 +75,9 @@ namespace PlanScoreCard.Services
                 {
                     MetricTypeEnum metricType;
                     Enum.TryParse(template.MetricType, out metricType);
-                    scoreTemplate = new ScoreTemplateModel(template.Structure,
+                    scoreTemplate = new ScoreTemplateModel(
+                        scoreTemplateNum,
+                        template.Structure,
                         metricType,
                         template.MetricComment,
                         template.InputValue,
@@ -94,6 +97,7 @@ namespace PlanScoreCard.Services
                         scoreTemplate.ScorePoints.Add(new ScorePointInternalModel(_normTailPoint,0,false,null));
                     }
                 }
+                scoreTemplateNum++;
                 localTemplates.Add(scoreTemplate);
             }
             _templates = localTemplates;

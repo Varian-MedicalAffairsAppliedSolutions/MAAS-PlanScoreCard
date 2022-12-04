@@ -31,7 +31,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <StackPanel>
                 <TextBlock Text="Patients" FontWeight="Bold" HorizontalAlignment="Center" Margin="5"/>
@@ -137,7 +137,7 @@
                                             </CheckBox.ContextMenu>
                                         </CheckBox>
                                         <StackPanel Orientation="Horizontal" Grid.Column="1">
-                                            <icons:PackIconFontAwesome Background="Yellow" Kind="ExclamationTriangleSolid" ToolTip="One or more plans has a structure matched from the dictionary."
+                                            <icons:PackIconFontAwesome Background="Yellow" Kind="ExclamationTriangleSolid" ToolTip="One or more plans has a structure matched temporarily or matched from the dictionary."
                                                                                    Visibility="{Binding bStructureValidationWarning, Converter={StaticResource localBoolVisibilityConverter}}"/>
                                             <icons:PackIconFontAwesome Background="Red" Kind="TimesCircleRegular" ToolTip="One or more plans has an unmatched structure"
                                                                                    Visibility="{Binding bStructureValidationFlag, Converter={StaticResource localBoolVisibilityConverter}}"/>
@@ -180,6 +180,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="2*"/>
                         </Grid.ColumnDefinitions>
                         <Border BorderBrush="Black" BorderThickness="1">
                             <TextBlock Text="OK" FontWeight="Bold" HorizontalAlignment="Center"/>
@@ -188,7 +189,20 @@
                             <TextBlock Text="Dict Match" FontWeight="Bold" HorizontalAlignment="Center" TextWrapping="Wrap"/>
                         </Border>
                         <Border BorderBrush="Black" BorderThickness="1" Grid.Column="2">
+                            <TextBlock Text="Local Match" FontWeight="Bold" HorizontalAlignment="Center" TextWrapping="Wrap"/>
+                        </Border>
+                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="3">
+                            <StackPanel>
                             <TextBlock Text="Fix" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Add to List" TextWrapping="Wrap" ToolTip="Add match to local patient lists"/>
+                                    <TextBlock Text="Add to Dict" Grid.Column="1" TextWrapping="Wrap" ToolTip="Add match to structure dictionary"/>
+                                </Grid>
+                            </StackPanel>
                         </Border>
                     </Grid>
                 </Grid>
@@ -206,22 +220,41 @@
                                         <TextBlock Text="{Binding StructureId}"/>
                                     </Border>
                                     <Border BorderBrush="Black" BorderThickness="0 0 0 1" Grid.Column="1">
-                                        <ComboBox ItemsSource="{Binding PlanStructureMatches}" SelectedItem="{Binding MatchedStructure}" DisplayMemberPath="StructureId"/>
+                                        <ComboBox ItemsSource="{Binding PlanStructureMatches}" SelectedItem="{Binding MatchedStructure, Mode=TwoWay}" DisplayMemberPath="StructureId"/>
                                     </Border>
                                     <Grid Grid.Column="2">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="2*"/>
                                         </Grid.ColumnDefinitions>
                                         <Border BorderBrush="Black" BorderThickness="0 0 0 1">
-                                            <icons:PackIconFontAwesome Kind="CheckSolid" Visibility="{Binding bValidStructure, Converter={StaticResource localBoolVisibilityConverter}}"/>
+                                            <icons:PackIconFontAwesome Kind="CheckSolid" Visibility="{Binding Converter={StaticResource localBoolVisibilityConverter}, Mode=TwoWay, Path=bValidStructure}"/>
                                         </Border>
                                         <Border BorderBrush="Black" BorderThickness="0 0 0 1" Grid.Column="1">
                                             <icons:PackIconFontAwesome Kind="CheckSolid" Visibility="{Binding bDictionaryMatch, Converter={StaticResource localBoolVisibilityConverter}}"/>
                                         </Border>
-                                        <Border BorderBrush="Black" BorderThickness="0 0 1 1" Grid.Column="2">
-                                            <TextBlock Text="Buttons here"/>
+                                        <Border BorderBrush="Black" BorderThickness="0 0 0 1" Grid.Column="2">
+                                            <icons:PackIconFontAwesome Kind="CheckSolid" Visibility="{Binding bLocalMatch,Converter={StaticResource localBoolVisibilityConverter}, Mode=TwoWay}"/>
+                                        </Border>
+                                        <Border BorderBrush="Black" BorderThickness="0 0 1 1" Grid.Column="3">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                            <Button Margin="5" Command="{Binding AddMatchListCommand}">
+                                                <icons:FontAwesome Kind="ListSolid"/>
+                                            </Button>
+                                            <Button Margin="5" Command="{Binding AddDictionaryCommand}" Grid.Column="1">
+                                                <icons:FontAwesome Kind="BookmarkSolid"/>
+                                            </Button>
+                                            <!--<Button Margin="5" Command="{Binding LaunchStructureMatchCommand}">
+                                                <icons:FontAwesome Kind="ScrewdriverSolid"/>
+                                            </Button>-->
+                                            </Grid>
+
                                         </Border>
                                     </Grid>
                                 </Grid>

@@ -75,7 +75,11 @@
                                         <ColumnDefinition Width="2*"/>
                                         <ColumnDefinition Width="1.5*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Label Content="{Binding PlanId}" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                                    <StackPanel>
+                                        <Label Content="{Binding PlanId}" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                                        <TextBlock Text="{Binding LocalStructureMatch}" FontSize="9" FontStyle="Italic" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+
                                     <Label Foreground="Black" HorizontalAlignment="Stretch" Grid.Column="1" HorizontalContentAlignment="Center">
                                         <TextBlock>
                                             <Run Text="{Binding Value, Converter={StaticResource localDoubleConverter}}"/>

@@ -272,7 +272,7 @@ namespace PlanScoreCard.Models
             foreach (var structure in plan.StructureSet.Structures.Where(x => x.DicomType != "SUPPORT" && x.DicomType != "MARKER"))
             {
                 //TODO work on filters for structures
-                Structures.Add(new StructureModel
+                Structures.Add(new StructureModel(_eventAggregator)
                 {
                     StructureId = structure.Id,
                     StructureCode = structure.StructureCodeInfos.FirstOrDefault().Code,
@@ -282,11 +282,26 @@ namespace PlanScoreCard.Models
         }
         public void EvaluateStructureMatches(List<StructureModel> scorecardStructures)
         {
-            foreach(var structure in scorecardStructures)
+            int tId = 0;
+            foreach (var structure in scorecardStructures)
             {
-                TemplateStructures.Add(structure);
-                structure.EvaluateStructureMatch(Structures.ToList());
+                var localTemplateStructure = new StructureModel(_eventAggregator)
+                {
+                    StructureId = structure.StructureId,
+                    StructureCode = structure.StructureCode,
+                    StructureComment = structure.StructureComment,
+                    TemplateStructureInt = tId
+                };
+                tId++;
+                localTemplateStructure.EvaluateStructureMatch(Structures.ToList());
+                TemplateStructures.Add(localTemplateStructure);
             }
+        }
+
+        public void EvaluatePlanFlags()
+        {
+            bStructureValidationFlag = false;
+            bStructureValidationWarning = false;
             if (TemplateStructures.Any(ts => !ts.bValidStructure))
             {
                 bStructureValidationFlag = true;

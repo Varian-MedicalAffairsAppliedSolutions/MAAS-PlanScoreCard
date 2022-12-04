@@ -55,8 +55,23 @@ namespace PlanScoreCard.Models
             PatientName = $"{patient.LastName}, {patient.FirstName}";
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<UpdateSelectedPlanValidationEvent>().Subscribe(OnSelectedPlanUpdate);
+            _eventAggregator.GetEvent<UpdateSelectedPlanEvent>().Subscribe(OnUpdateSelectedPlan);
+
             GetPlans(patient);
             //EvaluateStructureMatches();
+        }
+        //this one is only used to update visuals after plan selections. 
+        private void OnUpdateSelectedPlan(StructureModel obj)
+        {
+            SelectedPlan = null;
+            foreach(var plan in Plans)
+            {
+                if(plan.TemplateStructures.Any(ts=>ts == obj))
+                {
+                    SelectedPlan = plan;
+                    break;
+                }
+            }
         }
 
         private void OnSelectedPlanUpdate(PlanModel obj)
@@ -77,15 +92,26 @@ namespace PlanScoreCard.Models
         }
         public void EvaluateStructureMatches(List<StructureModel> scorecardStructures)
         {
-            foreach(var plan in Plans)
+            foreach (var plan in Plans)
             {
                 plan.EvaluateStructureMatches(scorecardStructures);
             }
-            if (Plans.Any(pl=>pl.bStructureValidationFlag))
+            EvaluateFlags();
+        }
+
+        public void EvaluateFlags()
+        {
+            bStructureValidationWarning = false;
+            bStructureValidationFlag = false;
+            foreach(var plan in Plans)
+            {
+                plan.EvaluatePlanFlags();
+            }
+            if (Plans.Any(pl => pl.bStructureValidationFlag))
             {
                 bStructureValidationFlag = true;
             }
-            else if (Plans.Any(pl=>pl.bStructureValidationWarning))
+            else if (Plans.Any(pl => pl.bStructureValidationWarning))
             {
                 bStructureValidationWarning = true;
             }

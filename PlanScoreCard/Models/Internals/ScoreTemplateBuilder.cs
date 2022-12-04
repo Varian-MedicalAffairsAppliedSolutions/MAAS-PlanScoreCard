@@ -16,6 +16,7 @@ namespace PlanScoreCard.Models.Internals
         {
             List<ScoreTemplateModel> scoreTemplates = new List<ScoreTemplateModel>();
             _structures = structures;
+            int scoreTemplateNum = 0;
             foreach (var scoreMetric in scoreMetrics)
             {
                 if (scoreMetric.ScoreMetric != null)
@@ -23,6 +24,7 @@ namespace PlanScoreCard.Models.Internals
                     if (scoreMetric.ScoreMetric.MetricType == MetricTypeEnum.HomogeneityIndex|| scoreMetric.ScoreMetric.MetricType == MetricTypeEnum.ModifiedGradientIndex)
                     {
                         scoreTemplates.Add(new ScoreTemplateModel(
+                            scoreTemplateNum,
                             scoreMetric.ScoreMetric.Structure,
                             scoreMetric.ScoreMetric.MetricType,
                             scoreMetric.ScoreMetric.MetricComment,
@@ -36,6 +38,7 @@ namespace PlanScoreCard.Models.Internals
                     else
                     {
                         scoreTemplates.Add(new ScoreTemplateModel(
+                            scoreTemplateNum,
                             scoreMetric.ScoreMetric.Structure,
                             scoreMetric.ScoreMetric.MetricType,
                             scoreMetric.ScoreMetric.MetricComment,
@@ -44,7 +47,9 @@ namespace PlanScoreCard.Models.Internals
                             GetOutputUnit(scoreMetric),
                             GetInternalScorePoint(scoreMetric.ScoreMetric.ScorePoints)));
                     }
+                    
                 }
+                scoreTemplateNum++;
                 //scoreMetric.ScoreMetric.ScorePoints.ToList()));
             }
             return scoreTemplates;
@@ -55,6 +60,7 @@ namespace PlanScoreCard.Models.Internals
         {
             List<ScoreTemplateModel> scoreTemplates = new List<ScoreTemplateModel>();
             _structures = structures;
+            int scoreTemplateNum = 0;
             foreach (var scoreMetric in scoreMetrics)
             {
                 if (scoreMetric != null)
@@ -62,6 +68,7 @@ namespace PlanScoreCard.Models.Internals
                     if (scoreMetric.MetricType == MetricTypeEnum.HomogeneityIndex || scoreMetric.MetricType == MetricTypeEnum.ModifiedGradientIndex)
                     {
                         scoreTemplates.Add(new ScoreTemplateModel(
+                            scoreTemplateNum,
                             scoreMetric.Structure,
                             scoreMetric.MetricType,
                             scoreMetric.MetricComment,
@@ -75,6 +82,7 @@ namespace PlanScoreCard.Models.Internals
                     else
                     {
                         scoreTemplates.Add(new ScoreTemplateModel(
+                            scoreTemplateNum,
                             scoreMetric.Structure,
                             scoreMetric.MetricType,
                             scoreMetric.MetricComment,
@@ -85,6 +93,7 @@ namespace PlanScoreCard.Models.Internals
                     }
                 }
                 //scoreMetric.ScoreMetric.ScorePoints.ToList()));
+                scoreTemplateNum++;
             }
             return scoreTemplates;
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,9 +23,11 @@ namespace PlanScoreCard.Models.Internals
         public double HI_Target { get; set; }
         public string HI_TargetUnit { get; set; }
         public string MetricComment { get; set; }
+        public int TemplateNumber { get; set; }
         public List<ScorePointInternalModel> ScorePoints { get; private set; }
 
-
+        [JsonIgnore]
+        public List<PlanModelOverride> PlanModelOverrides { get; set; } = new List<PlanModelOverride>();
         /// <summary>
         /// Constructor for all dose metrics other than HI. 
         /// </summary>
@@ -34,13 +37,14 @@ namespace PlanScoreCard.Models.Internals
         /// <param name="inputUnit">Unit of Input VAlue</param>
         /// <param name="outputUnit">Unit of Output Value</param>
         /// <param name="scorePoints">Scoring curve</param>
-        public ScoreTemplateModel(StructureModel structure, MetricTypeEnum metricType,
+        public ScoreTemplateModel(int templateNumber, StructureModel structure, MetricTypeEnum metricType,
             string metricComment,
             double inputValue,
             string inputUnit,
             string outputUnit,
             List<ScorePointInternalModel> scorePoints)
         {
+            TemplateNumber = templateNumber;
             Structure = structure;
             MetricType = metricType.ToString();
             InputValue = inputValue;
@@ -63,7 +67,8 @@ namespace PlanScoreCard.Models.Internals
         /// <param name="hi_Target">The denominator in HI calculation</param>
         /// <param name="hi_TargetUnit">Unit of target value</param>
         /// <param name="scorePoints">Scoring Function for HI</param>
-        public ScoreTemplateModel(StructureModel structure, MetricTypeEnum metricType, string metricComment,
+        public ScoreTemplateModel(int templateNumber,
+            StructureModel structure, MetricTypeEnum metricType, string metricComment,
             double hi_HiValue,
             double hi_LowValue,
             string inputUnit,
@@ -71,6 +76,7 @@ namespace PlanScoreCard.Models.Internals
             string hi_TargetUnit,
             List<ScorePointInternalModel> scorePoints)
         {
+            TemplateNumber = templateNumber;
             Structure = structure;
             MetricType = metricType.ToString();
             InputUnit = inputUnit;

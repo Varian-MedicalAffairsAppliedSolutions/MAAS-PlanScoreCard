@@ -1,6 +1,11 @@
 ﻿using Newtonsoft.Json;
+using PlanScoreCard.Events.HelperWindows;
 using PlanScoreCard.Models.ModelHelpers;
 using PlanScoreCard.Services;
+using PlanScoreCard.ViewModels.VMHelpers;
+using PlanScoreCard.Views.HelperWindows;
+using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
@@ -80,22 +85,80 @@ namespace PlanScoreCard.Models
             get { return _bDictionaryMatch; }
             set { SetProperty(ref _bDictionaryMatch, value); }
         }
+        private bool _bLocalMatch;
+        [JsonIgnore]
+        public bool bLocalMatch
+        {
+            get { return _bLocalMatch; }
+            set { SetProperty(ref _bLocalMatch,value) ; }
+        }
+
+        private IEventAggregator _eventAggregator;
+
         [JsonIgnore]
         public ObservableCollection<StructureModel> PlanStructureMatches { get; private set; }
+        [JsonIgnore]
+        private StructureMatchingView StructureMatchingView;
+        
         private StructureModel _matchedStructure;
+
         [JsonIgnore]
         public StructureModel MatchedStructure
         {
             get { return _matchedStructure; }
-            set { SetProperty(ref _matchedStructure, value); }
+            set 
+            { 
+                SetProperty(ref _matchedStructure, value);
+                if (MatchedStructure != null)
+                {
+                    bValidStructure = true;
+                    bLocalMatch = true;
+                    bStructureMatch = true;
+                    _eventAggregator.GetEvent<UpdateSelectedPlanEvent>().Publish(this);
+                }
+            }
         }
-
-        #endregion
-        public StructureModel()
+        [JsonIgnore]
+        public DelegateCommand LaunchStructureMatchCommand { get; private set; }
+        private int _templateStructureInt;
+        [JsonIgnore]
+        public int TemplateStructureInt
         {
+            get { return _templateStructureInt; }
+            set { SetProperty(ref _templateStructureInt,value); }
+        }
+        [JsonIgnore]
+        public DelegateCommand AddMatchListCommand { get; private set; }
+        [JsonIgnore]
+        public DelegateCommand AddDictionaryCommand { get; private set; }
+        #endregion
+        public StructureModel(IEventAggregator eventAggregator)
+        {
+            _eventAggregator = eventAggregator;
             PlanStructureMatches = new ObservableCollection<StructureModel>();
+            LaunchStructureMatchCommand = new DelegateCommand(OnLaunchStructureMatch);
+            AddMatchListCommand = new DelegateCommand(OnAddMatchList);
         }
 
+        private void OnAddMatchList()
+        {
+            _eventAggregator.GetEvent<UpdateTemplateMatchesEvent>().Publish(this);
+        }
+
+        private void OnLaunchStructureMatch()
+        {
+            StructureMatchingView = new StructureMatchingView();
+            StructureMatchingView.DataContext = new StructureMatchingViewModel(this, PlanStructureMatches.ToList());
+            StructureMatchingView.ShowDialog();
+        }
+        public void OnCloseStructureMatch()
+        {
+            if (StructureMatchingView != null)
+            {
+                StructureMatchingView.Close();
+                StructureMatchingView = null;
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         // This method is called by the Set accessor of each property.
@@ -108,6 +171,7 @@ namespace PlanScoreCard.Models
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+        //Method used in patient selection process. Not used in general plan scoring. 
         public void EvaluateStructureMatch(List<StructureModel> planStructures)
         {
             foreach (var structure in planStructures)
@@ -119,6 +183,7 @@ namespace PlanScoreCard.Models
                 MatchedStructure = planStructures.FirstOrDefault(ss => ss.StructureId.Equals(this.StructureId, StringComparison.OrdinalIgnoreCase));
                 bStructureMatch = true;
                 bValidStructure = true;
+                bLocalMatch = false;
                 //return StructureMatchWarningModel.None;
                 return;
             }
@@ -137,6 +202,7 @@ namespace PlanScoreCard.Models
                         MatchedStructure = structure;
                         bValidStructure = true;
                         bDictionaryMatch = true;
+                        bLocalMatch = false;
                         return;
                         //return StructureMatchWarningModel.Warning;
                     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Prism.Events;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace PlanScoreCard.Models.Internals
         /// </summary>
         /// <param name="filename">filename.</param>
         /// <returns></returns>
-        public static List<ScoreTemplateModel> GetScoreTemplateFromCSV(string filename)
+        public static List<ScoreTemplateModel> GetScoreTemplateFromCSV(string filename, IEventAggregator eventAggregator)
         {
             List<ScoreTemplateModel> scoreTemplates = new List<ScoreTemplateModel>();
             var line_count = 0;
@@ -29,8 +30,8 @@ namespace PlanScoreCard.Models.Internals
                     var metricType = MetricTypeEnum.Undefined;
                     ParseDVHObjective(line.Split(',').ElementAt(3), out inputUnit, out outputUnit, out inputValue, out metricType);
                     List<ScorePointInternalModel> scores = ParseScores(line.Split(',').Last());
-                    scoreTemplates.Add(new ScoreTemplateModel(
-                        new StructureModel
+                    scoreTemplates.Add(new ScoreTemplateModel(line_count-1,
+                        new StructureModel(eventAggregator)
                         {
                             StructureId = structureId,
                             StructureCode = structureCode

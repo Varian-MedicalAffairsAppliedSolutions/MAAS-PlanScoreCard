@@ -10,7 +10,8 @@ namespace PlanScoreCard.Models
         public string CourseId { get; set; }
         public string OutputUnit { get; set; }
         public string PatientId { get; set; }
-        
+        public string LocalStructureMatch { get; set; }
+
 
     }
 }
