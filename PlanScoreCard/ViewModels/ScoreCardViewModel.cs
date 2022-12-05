@@ -489,6 +489,7 @@ namespace PlanScoreCard.ViewModels
             }
             if (isSaved)
             {
+                StructureDictionaryService.ReadStructureDictionary();
                 OnPlanChanged(Plans.ToList());
             }
         }

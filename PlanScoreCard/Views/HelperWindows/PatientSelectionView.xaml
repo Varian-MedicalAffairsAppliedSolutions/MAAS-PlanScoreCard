@@ -244,10 +244,10 @@
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
-                                            <Button Margin="5" Command="{Binding AddMatchListCommand}">
+                                            <Button Margin="5" Command="{Binding AddMatchListCommand}" ToolTip="Add structure match to local patient structures.">
                                                 <icons:FontAwesome Kind="ListSolid"/>
                                             </Button>
-                                            <Button Margin="5" Command="{Binding AddDictionaryCommand}" Grid.Column="1">
+                                            <Button Margin="5" Command="{Binding AddDictionaryCommand}" Grid.Column="1" ToolTip="Add structure match to dictionary">
                                                 <icons:FontAwesome Kind="BookmarkSolid"/>
                                             </Button>
                                             <!--<Button Margin="5" Command="{Binding LaunchStructureMatchCommand}">

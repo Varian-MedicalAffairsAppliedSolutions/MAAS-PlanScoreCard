@@ -290,7 +290,9 @@ namespace PlanScoreCard.Models
                     StructureId = structure.StructureId,
                     StructureCode = structure.StructureCode,
                     StructureComment = structure.StructureComment,
-                    TemplateStructureInt = tId
+                    TemplateStructureInt = tId,
+                    MatchedStructure = structure.MatchedStructure,
+                    TemplateStructureId = structure.TemplateStructureId
                 };
                 tId++;
                 localTemplateStructure.EvaluateStructureMatch(Structures.ToList());

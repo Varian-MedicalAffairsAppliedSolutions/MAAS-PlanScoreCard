@@ -402,7 +402,7 @@ namespace PlanScoreCard.Models
 
 
                 // Set the Visibility of tyhe TemplateStructureId
-                if (id.Equals(TemplateStructureId) && !bFromLocal)
+                if (id!=null && id.Equals(TemplateStructureId) && !bFromLocal)
                     TemplateStructureVisibility = Visibility.Hidden;
                 if (bFromLocal)
                 {

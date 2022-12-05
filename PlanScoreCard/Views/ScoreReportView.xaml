@@ -17,6 +17,7 @@
             <converters:MaxScoreToHeaderConverter x:Key="localScoreHeaderConverter"/>
             <converters:BoolToColorConverter x:Key="localBoolToColorConverter"/>
             <converters:BoolToColorFlagConverter x:Key="localBoolToColorFlagConverter"/>
+            <converters:NullStringToVisibilityConverter x:Key="localNullStringVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -77,7 +78,7 @@
                                     </Grid.ColumnDefinitions>
                                     <StackPanel>
                                         <Label Content="{Binding PlanId}" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                                        <TextBlock Text="{Binding LocalStructureMatch}" FontSize="9" FontStyle="Italic" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{Binding LocalStructureMatch}" FontSize="9" FontStyle="Italic" HorizontalAlignment="Center" Visibility="{Binding LocalStructureMatch, Converter={StaticResource localNullStringVisibilityConverter}}"/>
                                     </StackPanel>
 
                                     <Label Foreground="Black" HorizontalAlignment="Stretch" Grid.Column="1" HorizontalContentAlignment="Center">
