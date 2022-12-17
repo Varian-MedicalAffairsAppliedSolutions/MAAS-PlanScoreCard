@@ -6,8 +6,11 @@
   * optional: flag for point where "variation acceptable" sited on referenced protocol
   * optional: note section to site referenced protocol or justification for metric (points)
   * optional: qualitative colors and labels for metric points, ie: orange="Just OK"
-* Compare multiple plans in multiple courses at the same time for a given patient
 * Advanced scoring criteria supported
+  ![image](https://user-images.githubusercontent.com/78000769/208264370-51b853f4-59dd-498a-8dd7-17b093d0e6f2.png)
+* Compare multiple plans in multiple courses at the same time for a given patient
+* Compare plans on multiple patients simultaniously in BatchMode (NEW in v3.X)
+  * save patient/plan batch list to .json file for subsequent re-evalution of a scorecard on that list
 * Advanced structure matching logic with integrated customizable preloaded json structure dictionary
 * In-metric Structure Boolean/expansions created dynamically for scoring 
   * optionally save back to Plan if script approval/writable (to auto-create optimization tuning structures)
@@ -22,7 +25,14 @@
 
 ### Main Screen
 ![MainScreen1 0 0](https://user-images.githubusercontent.com/78000769/200408043-41a14e05-d9e3-4cad-99a0-442bf8e6a654.png)
-
+1) Checks ScoreCard Rx matches Rx in Eclipse: On Rx mismatch, option to scale all doses by the % difference
+2) Open previously saved ScoreCard and score currently selected plan(s)
+3) Create new ScoreCard or edit currently loaded ScoreCard
+4) Open additional patients/plan to additionally score in batch (NEW in v3.X)
+5) Normalize dose in primary selected plan to maxiumum score
+6) Dump values in current ScoreCard evaluation view to CSV (Pandas Dataframe)
+7) Render current ScoreCard evaluation view to PDF for printing/reporting
+8) Solid selected box indicates primary plan selected 
 
 ### ScoreCard Editor
 ![ScoreCardEditor1 0 0](https://user-images.githubusercontent.com/78000769/169741156-a27d6165-616a-4181-80a7-74ed7923e8eb.png)
