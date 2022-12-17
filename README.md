@@ -7,7 +7,9 @@
   * optional: note section to site referenced protocol or justification for metric (points)
   * optional: qualitative colors and labels for metric points, ie: orange="Just OK"
 * Advanced scoring criteria supported
+
   ![image](https://user-images.githubusercontent.com/78000769/208264370-51b853f4-59dd-498a-8dd7-17b093d0e6f2.png)
+  
 * Compare multiple plans in multiple courses at the same time for a given patient
 * Compare plans on multiple patients simultaniously in BatchMode (NEW in v3.X)
   * save patient/plan batch list to .json file for subsequent re-evalution of a scorecard on that list
@@ -46,49 +48,45 @@
 
 ### Errors when launching? See: [Troubleshooting](../master/Troubleshooting.md)
 
-## Current version: 2.5.7.X (8/29/2022)
-### Improvements: 
-* If a structure is used in the structurebuilder that is not in the plan structure set, the user will receive a message indicating which structure(s) are missing
+### Still have questions? See: [FrequentlyAskedQuestions](../master/FAQ.md)
 
-![image](https://user-images.githubusercontent.com/78000769/187831226-fd238085-544f-4d96-9d4b-5bf0d41ad227.png)
+## Current version: 3.0.3.X (11/08/2022)
+### Improvements
+* Batch mode: CSV input with multiple patients/plans and report output 
+![image](https://user-images.githubusercontent.com/78000769/208266047-331154ea-946f-4e5f-9597-7f3a20297e93.png)
+![image](https://user-images.githubusercontent.com/78000769/208266064-b38b04d9-f2d6-4797-8017-e54d4b691f6b.png)
+* Patient ID added to scorecard warnings and flags 
+![image](https://user-images.githubusercontent.com/78000769/208266072-672c2a4f-03d2-4552-b4d6-988bdfe5ded8.png)
+* Implement point falloff logic (tails) once a metric fails (zero points) when normalizing to max score. Tail values can be adjusted in the “PlanScoreCard.exe” config file.
+![image](https://user-images.githubusercontent.com/78000769/208266421-e0f8ca06-cb41-474a-9c87-ea2559cbc623.png)
+![image](https://user-images.githubusercontent.com/78000769/208266434-d454fbb3-784c-45f3-9013-9d02149aaa41.png)
 
-* Added a button to remove all colors from the scorepoints
-
-![image](https://user-images.githubusercontent.com/78000769/187831258-5ec8574f-0385-44fa-b6ff-09cc07a0dd42.png)
-
-* Added a point label to the color picker tool
-
-![image](https://user-images.githubusercontent.com/78000769/187831520-13ff09d5-0aae-4351-8f9b-158da60c41de.png)
-
-* Added the structure Id to the warnings and failures
-
-![image](https://user-images.githubusercontent.com/78000769/187831333-807d6f56-1dd5-4455-99db-c404948745b6.png)
 
 ### Bugfixes: 
-* Flag now resets on rescore so the warning and flag symbols will appear and disappear as needed 
-* Structure matching will now use the template structure id if the structure id is null and template is not null 
-* Removed the structure building from the normalization space. (The normalization button was not intended to build structures) 
-* The normalized button is only made available when a scorecard and plan is selected 
-* Normalizing to max score now uses the most updated scorecard to find the max value of the score (It was using the imported scorecard before) 
-* Normalizing to max score now uses the normalization value with the max score that is closest to the initial plan normalization 
-* Fixed metric copying crash when the color was null 
-* The score labels now automatically update in the color blocks when edited. 
-* Both the ranking in the score metric and in the json file have been fixed by applying changes occurring in the local class to the metric template (Fixed “Order Points By Value” button) 
-* Copying a metric without a structure no longer causes a crash 
-* HI metric now accepts doubles 
-* Color picking tool now only changes the color that was selected when changing the color 
-* Tooltip corrected for structure Id template update button 
+
+* Invalid null structures can no longer be added to the structure dictionary 
+* All unselected plan scores are now cleared in the last column on the following events: rx scaling, scorecard editing, and loading a new scorecard 
+* Volume precision is rounded to the nearest hundredth value when rescaling. 
+* Rescaling now correctly applies to HI metric 
+* Color selection option was changed from “Cancel” to “Clear” 
 
 ### Known issues: 
+
 * Prevent single point metrics from being saved as a template or recalculated. 
 * A crash occurs if the Rx dose is scaled too low and the conformation number metric is used. 
+* Score values on Y-axis during plan normalization are incorrect and sometime tails are wrongly created: normalize to max score not 100% reliable
+* Normalizing with a scorecard that has a HI metric will cause the application to crash 
+* Adding a point before selecting a metric will cause the application to crash 
 
-### 2.X Feature roadmap: 
-* Batch mode: CSV input with multiple patients/plans and report output 
-* Implement point falloff logic (tails) once a metric fails (zero points) when normalizing to max score 
-* Guided structure builder (aka: simple mode, to be in front of current advanced structure builder) 
-* Reload current patient from Eclipse button 
-* Command line interface to output plan scores to the CLI or automate generation of CSV/PDF 
-* DVH rendering popout UI with horizontal(D@V)+vertical(V@D) scoring brackets per selected structure  
-* Import/Export buttons on ScoreCard Builder to support opening and saving various file types 
-* Include support for asymmetric expansions in the advanced structure builder
+### 3.X Feature roadmap: 
+* BatchMode re-optimize multiple plans with RapidPlan model
+*	BatchMode normalize multiple plans to max score
+* DVH view button for popout UI with horizontal(D@V)+vertical(V@D) scoring brackets per selected structure
+*	Guided structure builder (aka: simple mode, to be in front of current advanced structure builder)
+*	Include support for asymmetric expansions in the advanced structure builder
+*	Command line interface to output plan scores to the CLI or automate generation of CSV/PDF
+* DICOM Filemode support to be enabled by importing opensource C# DICOM library
+*	Import/Export buttons on ScoreCard Builder to support opening and saving various file types
+*	Reload current patient from Eclipse button
+* API interface
+
