@@ -1,4 +1,41 @@
 ## Changelog
+## 2.5.7.X (8/29/2022)
+### Improvements: 
+* If a structure is used in the structurebuilder that is not in the plan structure set, the user will receive a message indicating which structure(s) are missing
+
+![image](https://user-images.githubusercontent.com/78000769/187831226-fd238085-544f-4d96-9d4b-5bf0d41ad227.png)
+
+* Added a button to remove all colors from the scorepoints
+
+![image](https://user-images.githubusercontent.com/78000769/187831258-5ec8574f-0385-44fa-b6ff-09cc07a0dd42.png)
+
+* Added a point label to the color picker tool
+
+![image](https://user-images.githubusercontent.com/78000769/187831520-13ff09d5-0aae-4351-8f9b-158da60c41de.png)
+
+* Added the structure Id to the warnings and failures
+
+![image](https://user-images.githubusercontent.com/78000769/187831333-807d6f56-1dd5-4455-99db-c404948745b6.png)
+
+### Bugfixes: 
+* Flag now resets on rescore so the warning and flag symbols will appear and disappear as needed 
+* Structure matching will now use the template structure id if the structure id is null and template is not null 
+* Removed the structure building from the normalization space. (The normalization button was not intended to build structures) 
+* The normalized button is only made available when a scorecard and plan is selected 
+* Normalizing to max score now uses the most updated scorecard to find the max value of the score (It was using the imported scorecard before) 
+* Normalizing to max score now uses the normalization value with the max score that is closest to the initial plan normalization 
+* Fixed metric copying crash when the color was null 
+* The score labels now automatically update in the color blocks when edited. 
+* Both the ranking in the score metric and in the json file have been fixed by applying changes occurring in the local class to the metric template (Fixed “Order Points By Value” button) 
+* Copying a metric without a structure no longer causes a crash 
+* HI metric now accepts doubles 
+* Color picking tool now only changes the color that was selected when changing the color 
+* Tooltip corrected for structure Id template update button 
+
+### Known issues: 
+* Prevent single point metrics from being saved as a template or recalculated. 
+* A crash occurs if the Rx dose is scaled too low and the conformation number metric is used. 
+
 ## V2.5.5.X-06/01/2022
 ### Improvements:
 N/A
