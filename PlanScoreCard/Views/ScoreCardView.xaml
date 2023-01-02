@@ -100,7 +100,7 @@
                             <!--Removed SelectedItem = {Binding SelectedPlan} attribute -->
                             <DataGrid ItemsSource="{Binding Plans, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" AutoGenerateColumns="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Binding="{Binding PatientId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12" Width="125">
+                                    <DataGridTextColumn Binding="{Binding PatientId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" FontWeight="Normal" FontSize="12" Width="125">
                                         <DataGridTextColumn.HeaderTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="Patient"/>
@@ -112,7 +112,7 @@
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Binding="{Binding CourseId , Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12" Width="65">
+                                    <DataGridTextColumn Binding="{Binding CourseId , Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" FontWeight="Normal" FontSize="12" Width="65">
                                         <DataGridTextColumn.HeaderTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="Course"/>
@@ -124,7 +124,7 @@
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Binding="{Binding PlanId , Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12" Width="65">
+                                    <DataGridTextColumn Binding="{Binding PlanId , Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" FontWeight="Normal" FontSize="12" Width="65">
                                         <DataGridTextColumn.HeaderTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="Plan"/>
@@ -172,7 +172,7 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>-->
-                                    <DataGridTextColumn Binding="{Binding PlanScore, Converter={StaticResource localScoreTextConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontWeight="Normal" FontSize="12" Width="90" IsReadOnly="True">
+                                    <DataGridTextColumn Binding="{Binding PlanScore, Converter={StaticResource localScoreTextConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" FontWeight="Normal" FontSize="12" Width="90" IsReadOnly="True">
                                         <DataGridTextColumn.HeaderTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding DataContext.MaxScore, Converter={StaticResource localScoreHeaderConverter}, RelativeSource={RelativeSource AncestorType=DataGrid}}"

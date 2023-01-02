@@ -162,21 +162,21 @@ namespace PlanScoreCard.Models
         public StructureMatchWarningModel StructureMatchIssue
         {
             get { return _structureMatchIssue; }
-            set { SetProperty(ref _structureMatchIssue,value); }
+            set { SetProperty(ref _structureMatchIssue, value); }
         }
         private bool _bStructureValidationFlag;
         [JsonIgnore]
         public bool bStructureValidationFlag
         {
             get { return _bStructureValidationFlag; }
-            set { SetProperty(ref _bStructureValidationFlag,value); }
+            set { SetProperty(ref _bStructureValidationFlag, value); }
         }
         private bool _bStructureValidationWarning;
         [JsonIgnore]
         public bool bStructureValidationWarning
         {
             get { return _bStructureValidationWarning; }
-            set { SetProperty(ref _bStructureValidationWarning,value); }
+            set { SetProperty(ref _bStructureValidationWarning, value); }
         }
 
         //private bool _bPlanScoreValid;
@@ -199,7 +199,7 @@ namespace PlanScoreCard.Models
         public StructureModel SelectedStructureValidation
         {
             get { return _selectedStructureValidation; }
-            set { SetProperty(ref _selectedStructureValidation,value); }
+            set { SetProperty(ref _selectedStructureValidation, value); }
         }
 
         public DelegateCommand DeselectCommand { get; private set; }
@@ -283,20 +283,36 @@ namespace PlanScoreCard.Models
         public void EvaluateStructureMatches(List<StructureModel> scorecardStructures)
         {
             int tId = 0;
+            List<Tuple<string, string>> localTemplateIds = new List<Tuple<string, string>>();
             foreach (var structure in scorecardStructures)
             {
-                var localTemplateStructure = new StructureModel(_eventAggregator)
-                {
-                    StructureId = structure.StructureId,
-                    StructureCode = structure.StructureCode,
-                    StructureComment = structure.StructureComment,
-                    TemplateStructureInt = tId,
-                    MatchedStructure = structure.MatchedStructure,
-                    TemplateStructureId = structure.TemplateStructureId
-                };
-                tId++;
+                //if (!localTemplateIds.Any(lti => lti.Item1.Equals(structure.TemplateStructureId, StringComparison.OrdinalIgnoreCase) &&
+                // lti.Item2.Equals(structure.StructureId, StringComparison.OrdinalIgnoreCase)))
+                //{
+                    var localTemplateStructure = new StructureModel(_eventAggregator)
+                    {
+                        StructureId = structure.StructureId,
+                        StructureCode = structure.StructureCode,
+                        StructureComment = structure.StructureComment,
+                        TemplateStructureInt = tId,
+                        MatchedStructure = structure.MatchedStructure,
+                        TemplateStructureId = structure.TemplateStructureId
+                    };
+                    tId++;
+                    
                 localTemplateStructure.EvaluateStructureMatch(Structures.ToList());
+                if(localTemplateIds.Any(lti => lti.Item1.Equals(structure.TemplateStructureId, StringComparison.OrdinalIgnoreCase)
+                && lti.Item2.Equals(structure.StructureId)))
+                {
+                    localTemplateStructure.bMakeVisibleInPatientSearch = false;
+                }
+                else
+                {
+                    localTemplateStructure.bMakeVisibleInPatientSearch = true;
+                }
+                localTemplateIds.Add(new Tuple<string, string>(structure.TemplateStructureId, structure.StructureId));
                 TemplateStructures.Add(localTemplateStructure);
+                //}
             }
         }
 

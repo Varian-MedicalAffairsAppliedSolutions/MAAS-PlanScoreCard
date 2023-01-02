@@ -460,7 +460,7 @@ namespace PlanScoreCard.ViewModels
                             int metricTrack = 0;
                             foreach(var metric in ScoreCard.ScoreMetrics)
                             {
-                                if(plan.TemplateStructures.Any(ts=>ts.TemplateStructureInt == metricTrack&& ts.MatchedStructure != null && ts.bLocalMatch))
+                                if(plan.TemplateStructures.Any(ts=>ts.TemplateStructureInt == metricTrack && ts.MatchedStructure != null && ts.bLocalMatch))
                                 {
                                     metric.PlanModelOverrides.Add(new PlanModelOverride
                                     {
@@ -468,6 +468,7 @@ namespace PlanScoreCard.ViewModels
                                         CourseId = plan.CourseId,
                                         PlanId = plan.PlanId,
                                         TemplateMetricId = metricTrack,
+                                        //TemplateStructureId = metricTrack
                                         MatchedStructureId = plan.TemplateStructures.FirstOrDefault(ts=>ts.TemplateStructureInt == metricTrack).MatchedStructure.StructureId
                                     });
                                 }
@@ -662,7 +663,7 @@ namespace PlanScoreCard.ViewModels
                     {
                         foreach (var point in template.ScoreValues)
                         {
-                            sw.WriteLine($"{template.MetricId},{point.PatientId},{point.CourseId},{point.PlanId},{template.StructureId},{template.MetricText},{point.Value},{point.Score},{template.ScoreMax}");
+                            sw.WriteLine($"{template.MetricId},{point.PatientId},{point.CourseId},{point.PlanId},{GetStructureMatchId(template, point)},{template.MetricText},{point.Value},{point.Score},{template.ScoreMax}");
                         }
                     }
                     sw.Flush();
@@ -670,6 +671,20 @@ namespace PlanScoreCard.ViewModels
             }
             System.Windows.MessageBox.Show("Export Successful");
         }
+
+        private string GetStructureMatchId(PlanScoreModel template, ScoreValueModel point)
+        {
+            if (!String.IsNullOrEmpty(point.StructureId))
+            {
+                return point.StructureId;
+            }
+            if (String.IsNullOrEmpty(template.StructureId))
+            {
+                return template.TemplateStructureId;
+            }
+            return template.StructureId;
+        }
+
         private bool CanNormalizePlan()
         {
             return Plans.Any(x => x.bPrimary) && ScoreCard != null;
@@ -832,6 +847,21 @@ namespace PlanScoreCard.ViewModels
                     }
                 }
                 psm.CheckOutsideBounds();
+                //moved the following 15 lines from the PlanScoreModel as it needs to work across multiple patients. 
+                //if there are different local structure matches in the score values, then you should show those under the plan
+                if (psm.ScoreValues.Select(sv => sv.StructureId).Distinct().Count() > 1)
+                {
+                    psm.TemplateStructureVisibility = System.Windows.Visibility.Visible;
+                }
+                else if (psm.ScoreValues.Select(sv => sv.StructureId).Distinct().Count() == 1)
+                {
+                    //all structure Ids are the same.
+                    psm.StructureId = psm.ScoreValues.First().StructureId;
+                    foreach (var sv in psm.ScoreValues)
+                    {
+                        sv.StructureId = String.Empty;//disappears the local structure match because they will all be the same structure match.
+                    }
+                }
                 if (template.ScorePoints.Any(x => x.Variation) && psm.ScoreValues.Any(x => x.Score < template.ScorePoints.FirstOrDefault(y => y.Variation).Score))
                 {
                     bWarning = true;

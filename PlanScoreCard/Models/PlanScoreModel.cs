@@ -364,6 +364,7 @@ namespace PlanScoreCard.Models
                         && pmo.PlanId.Equals(plan.Id)
                         && pmo.PatientId.Equals((plan as PlanSetup).Course.Patient.Id)
                         && pmo.TemplateMetricId.Equals(template.TemplateNumber)
+                        //&& pmo
                         && !String.IsNullOrEmpty(pmo.MatchedStructureId)))
                 {
                     matchId = template.PlanModelOverrides.FirstOrDefault(
@@ -402,18 +403,23 @@ namespace PlanScoreCard.Models
 
 
                 // Set the Visibility of tyhe TemplateStructureId
-                if (id!=null && id.Equals(TemplateStructureId) && !bFromLocal)
-                    TemplateStructureVisibility = Visibility.Hidden;
+                //moved this outside the foreach loop. 
+                //if (id!=null && id.Equals(TemplateStructureId) && !bFromLocal)
+                //    TemplateStructureVisibility = Visibility.Hidden;
                 if (bFromLocal)
                 {
                     if (!String.IsNullOrEmpty(matchId))
                     {
-                        scoreValue.LocalStructureMatch = matchId;
+                        scoreValue.StructureId = matchId;
                     }
                     else
                     {
-                        scoreValue.LocalStructureMatch = StructureId;
+                        scoreValue.StructureId = StructureId;
                     }
+                }
+                else
+                {
+                    scoreValue.StructureId = StructureId;
                 }
                 if (structure != null && plan.Dose != null && !structure.IsEmpty)
                 {
@@ -796,6 +802,14 @@ namespace PlanScoreCard.Models
                 ScoreValues.Add(scoreValue);
             }
 
+            if (!StructureId.Equals(TemplateStructureId, StringComparison.OrdinalIgnoreCase))//in the event that the above is unecessary
+            {
+                TemplateStructureVisibility = Visibility.Visible;//still show template structure Id if structure Id doesn't match.
+            }
+            else
+            {
+                TemplateStructureVisibility = Visibility.Hidden;
+            }
             //CheckOutsideBounds();
 
             if (ScoreValues.Count() > 1)

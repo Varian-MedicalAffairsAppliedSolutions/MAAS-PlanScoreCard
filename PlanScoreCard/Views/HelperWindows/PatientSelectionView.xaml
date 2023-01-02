@@ -9,7 +9,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                    xmlns:converters="clr-namespace:PlanScoreCard.Converters"
         mc:Ignorable="d"
-        Title="PatientSelectionView" Height="550" Width="800">
+        Title="PatientSelectionView" Height="650" Width="1200">
     <metro:MetroWindow.Resources>
         <ResourceDictionary>
             <converters:PrimaryToColorConverter x:Key="localPrimaryColorConverter"/>
@@ -81,7 +81,7 @@
                             </Border>
                         </ScrollViewer>
                     </DockPanel>
-                    <Button Margin="5,0,0,0" Command="{Binding OpenPatientCommand}" Height="30" VerticalAlignment="Top">
+                    <Button Margin="5,0,0,0" Command="{Binding OpenPatientCommand}" Height="30" VerticalAlignment="Top" ToolTip="Add Selected Patient">
                         <icons:FontAwesome Kind="UserCheckSolid"/>
                     </Button>
                 </StackPanel>
@@ -143,7 +143,7 @@
                                                                                    Visibility="{Binding bStructureValidationFlag, Converter={StaticResource localBoolVisibilityConverter}}"/>
                                         </StackPanel>
                                         </Grid>
-                                        <Button Command="{Binding ValidatePlanCommand}" Grid.Column="1">
+                                        <Button Command="{Binding ValidatePlanCommand}" Grid.Column="1" ToolTip="Validate Structure Matches">
                                             <icons:FontAwesome Kind="CheckDoubleSolid"/>
                                         </Button>
                                     </Grid>
@@ -170,7 +170,7 @@
                         <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
                     <Border BorderBrush="Black" BorderThickness="1">
-                        <TextBlock FontWeight="Bold" Text="Template Structure" HorizontalAlignment="Center" TextWrapping="Wrap"/>
+                        <TextBlock FontWeight="Bold" Text="Scorecard Structure" HorizontalAlignment="Center" TextWrapping="Wrap"/>
                     </Border>
                     <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1">
                         <TextBlock FontWeight="Bold" Text="Matched Structure" HorizontalAlignment="Center" TextWrapping="Wrap"/>
@@ -210,14 +210,14 @@
                     <ItemsControl ItemsSource="{Binding TemplateStructures}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid>
+                                <Grid Visibility="{Binding bMakeVisibleInPatientSearch, Converter={StaticResource localBoolVisibilityConverter}}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="2*"/>
                                     </Grid.ColumnDefinitions>
                                     <Border BorderBrush="Black" BorderThickness="1 0 0 1">
-                                        <TextBlock Text="{Binding StructureId}"/>
+                                        <TextBlock Text="{Binding TemplateStructureId}"/>
                                     </Border>
                                     <Border BorderBrush="Black" BorderThickness="0 0 0 1" Grid.Column="1">
                                         <ComboBox ItemsSource="{Binding PlanStructureMatches}" SelectedItem="{Binding MatchedStructure, Mode=TwoWay}" DisplayMemberPath="StructureId"/>

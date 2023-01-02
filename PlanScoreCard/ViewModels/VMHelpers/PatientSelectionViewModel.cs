@@ -184,6 +184,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                     {
                         if (plan.Structures.Any(s => s.StructureId == obj.MatchedStructure.StructureId))
                         {
+                            //because of the way MatchedStructure is set up, this will update all the hidden items as well. 
                             templateStructure.MatchedStructure = plan.Structures.FirstOrDefault(s => s.StructureId == obj.MatchedStructure.StructureId);
                         }
                     }

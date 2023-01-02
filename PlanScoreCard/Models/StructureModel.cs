@@ -92,7 +92,7 @@ namespace PlanScoreCard.Models
             get { return _bLocalMatch; }
             set { SetProperty(ref _bLocalMatch, value); }
         }
-
+        public bool bMakeVisibleInPatientSearch { get; set; }
         private IEventAggregator _eventAggregator;
 
         [JsonIgnore]
@@ -114,7 +114,10 @@ namespace PlanScoreCard.Models
                     bValidStructure = true;
                     bLocalMatch = true;
                     bStructureMatch = true;
-                    _eventAggregator.GetEvent<UpdateSelectedPlanEvent>().Publish(this);
+                    if (bMakeVisibleInPatientSearch)
+                    {
+                        _eventAggregator.GetEvent<UpdateSelectedPlanEvent>().Publish(this);
+                    }
                 }
             }
         }
@@ -144,12 +147,12 @@ namespace PlanScoreCard.Models
         private void OnAddDictionary()
         {
             StructureDictionaryService localStructureDictionary = new StructureDictionaryService();
-            var localStructureModel = localStructureDictionary.StructureDictionary.FirstOrDefault(sd => sd.StructureID.Equals(StructureId, StringComparison.OrdinalIgnoreCase));
+            var localStructureModel = localStructureDictionary.StructureDictionary.FirstOrDefault(sd => sd.StructureID.Equals(TemplateStructureId, StringComparison.OrdinalIgnoreCase));
             if (localStructureModel == null)
             {
-                localStructureDictionary.AddStructure(StructureId);
+                localStructureDictionary.AddStructure(TemplateStructureId);
             }
-            localStructureDictionary.AddSynonym(StructureId, MatchedStructure.StructureId);
+            localStructureDictionary.AddSynonym(TemplateStructureId, MatchedStructure.StructureId);
             _eventAggregator.GetEvent<EvaluateStructureMatchesEvent>().Publish();
         }
 
@@ -216,18 +219,19 @@ namespace PlanScoreCard.Models
             StructureDictionaryService localStructureDictionary = new StructureDictionaryService();
             //foreach (var structure in planStructures)
             //{
-            var structureEntry = localStructureDictionary.StructureDictionary.FirstOrDefault(sd => sd.StructureID.Equals(this.StructureId, StringComparison.OrdinalIgnoreCase));
+            var structureEntry = localStructureDictionary.StructureDictionary.FirstOrDefault(sd => sd.StructureID.Equals(this.TemplateStructureId, StringComparison.OrdinalIgnoreCase));
             if (structureEntry != null && structureEntry.StructureSynonyms.Any())
             {
+                //var localStructureMatch = localStructureDictionary.FindMatch(this.TemplateStructureId);
                 foreach (var structure in planStructures)
                 {
-                    var localStructureMatch = localStructureDictionary.FindMatch(structure.StructureId);
-                    if (!String.IsNullOrEmpty(localStructureMatch))
+                    
+                    if (structureEntry.StructureSynonyms.Any(ss=>ss.Equals(structure.StructureId, StringComparison.OrdinalIgnoreCase)))
                     {
                         MatchedStructure = structure;
                         bValidStructure = true;
                         bDictionaryMatch = true;
-                        bLocalMatch = false;
+                        bLocalMatch = true;
                         return;
                         //return StructureMatchWarningModel.Warning;
                     }

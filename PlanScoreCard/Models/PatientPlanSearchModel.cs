@@ -60,9 +60,10 @@ namespace PlanScoreCard.Models
             GetPlans(patient);
             //EvaluateStructureMatches();
         }
-        //this one is only used to update visuals after plan selections. 
+        
         private void OnUpdateSelectedPlan(StructureModel obj)
         {
+            //this one is only used to update visuals after plan selections. 
             SelectedPlan = null;
             foreach(var plan in Plans)
             {
@@ -70,6 +71,17 @@ namespace PlanScoreCard.Models
                 {
                     SelectedPlan = plan;
                     break;
+                }
+            }
+            //some of the structures are hidden as ony unique template and structure id combinations are shown.
+            //find those hidden structures and change them. 
+            if (SelectedPlan != null)
+            {
+                foreach (var structure in SelectedPlan.TemplateStructures.Where(ts => !ts.bMakeVisibleInPatientSearch &&
+                 ts.TemplateStructureId.Equals(obj.TemplateStructureId, StringComparison.OrdinalIgnoreCase) &&
+                 ts.StructureId.Equals(obj.StructureId, StringComparison.OrdinalIgnoreCase)))
+                {
+                    structure.MatchedStructure = obj.MatchedStructure;
                 }
             }
         }
