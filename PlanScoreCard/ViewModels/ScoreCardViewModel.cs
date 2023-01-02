@@ -1061,7 +1061,7 @@ namespace PlanScoreCard.ViewModels
                 Plans.Clear();
                 foreach (var plan in obj.OrderByDescending(x => x.bPrimary))
                 {
-                    Plan = plan;// Patient.Courses.FirstOrDefault(x => x.Id == plan.CourseId).PlanSetups.FirstOrDefault(x => x.Id == plan.PlanId && x.Course.Id == plan.CourseId);
+                    //Plan = plan;// Patient.Courses.FirstOrDefault(x => x.Id == plan.CourseId).PlanSetups.FirstOrDefault(x => x.Id == plan.PlanId && x.Course.Id == plan.CourseId);
                                 //if (Plan == null)
                                 //{
                                 //    Plan = Patient.Courses.FirstOrDefault(x => x.Id == plan.CourseId).PlanSums.FirstOrDefault(x => x.Id == plan.PlanId && x.Course.Id == plan.CourseId);
@@ -1070,6 +1070,10 @@ namespace PlanScoreCard.ViewModels
                                 //{
                     Plans.Add(plan);
                     //}
+                }
+                if(Plans.Any(pl => pl.bPrimary))
+                {
+                    OnPrimaryChanged(Plans.First(pl => pl.bPrimary));
                 }
                 PlanScores.Clear();
 

@@ -47,10 +47,10 @@ namespace PlanScoreCard.Services
         {
             List<ScoreTemplateModel> localTemplates = new List<ScoreTemplateModel>();
             int scoreTemplateNum = 0;
-            foreach(var template in templates)
+            foreach (var template in templates)
             {
                 ScoreTemplateModel scoreTemplate = null;
-                if((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.HomogeneityIndex)
+                if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.HomogeneityIndex)
                 {
                     scoreTemplate = new ScoreTemplateModel(scoreTemplateNum,
                         template.Structure,
@@ -85,22 +85,46 @@ namespace PlanScoreCard.Services
                         template.OutputUnit,
                         new List<ScorePointInternalModel>());
                 }
-                foreach(var score in template.ScorePoints)
+                List<ScorePointInternalModel> scorePoints = new List<ScorePointInternalModel>();
+                bool bIncreasing = CheckIncreasing(template);
+                foreach (var score in template.ScorePoints)
                 {
+
                     ScorePointInternalModel scorePoint = new ScorePointInternalModel(score.PointX,
-                        score.Score == 0?_normTailValue: score.Score,
+                        score.Score == 0 ? _normTailValue : score.Score,
                         score.Variation,
                         null);
-                    scoreTemplate.ScorePoints.Add(scorePoint);
-                    if(scorePoint.Score== _normTailValue)
+                    scorePoints.Add(scorePoint);
+                    if (scorePoint.Score == _normTailValue)
                     {
-                        scoreTemplate.ScorePoints.Add(new ScorePointInternalModel(_normTailPoint,0,false,null));
+                        scorePoints.Add(new ScorePointInternalModel(bIncreasing?scorePoint.PointX+_normTailPoint:scorePoint.PointX-_normTailPoint, 0, false, null));
                     }
                 }
+                scoreTemplate.ScorePoints = scorePoints.OrderBy(sp => sp.PointX).ToList();
                 scoreTemplateNum++;
                 localTemplates.Add(scoreTemplate);
             }
             _templates = localTemplates;
+        }
+
+        private bool CheckIncreasing(ScoreTemplateModel template)
+        {
+            if (template.ScorePoints.Any())
+            {
+                var scorepoints = template.ScorePoints.OrderBy(sp => sp.PointX);
+                if (scorepoints.First().Score < scorepoints.Last().Score)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public PlanModel GetPlan()
@@ -160,21 +184,21 @@ namespace PlanScoreCard.Services
             var maxScore = planScores.Max(x => x.Item2);
             //The max Norm used should be closest to the initial norm where the max score is selected. 
             //this is in the event multiple normalization values yield the max score. 
-            var maxNorm = planScores.OrderBy(n=>Math.Abs(initial_norm-n.Item1)).FirstOrDefault(x => x.Item2 == maxScore).Item1;
+            var maxNorm = planScores.OrderBy(n => Math.Abs(initial_norm - n.Item1)).FirstOrDefault(x => x.Item2 == maxScore).Item1;
             planScores.Clear();
             for (double i = -2; i < 2; i += 0.2)
             {
                 ScorePlanAtNormValue(newPlan, planScores, maxNorm, i);
             }
             maxScore = planScores.Max(x => x.Item2);
-            maxNorm = planScores.OrderBy(n=>Math.Abs(initial_norm-n.Item1)).FirstOrDefault(x => x.Item2 == maxScore).Item1;
+            maxNorm = planScores.OrderBy(n => Math.Abs(initial_norm - n.Item1)).FirstOrDefault(x => x.Item2 == maxScore).Item1;
             planScores.Clear();
             for (double i = -0.2; i < 0.2; i += 0.01)
             {
                 ScorePlanAtNormValue(newPlan, planScores, maxNorm, i);
             }
             maxScore = planScores.Max(x => x.Item2);
-            maxNorm = planScores.OrderBy(n=>Math.Abs(initial_norm-n.Item1)).FirstOrDefault(x => x.Item2 == maxScore).Item1;
+            maxNorm = planScores.OrderBy(n => Math.Abs(initial_norm - n.Item1)).FirstOrDefault(x => x.Item2 == maxScore).Item1;
             planScores.Clear();
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\n\tMax Score {maxScore:F3} \n\nScoreCard Normalization: {maxNorm}");
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\n * Activate Plan * \nCourseID: {newPlan.Course}; \nPlanID: {newPlan}");

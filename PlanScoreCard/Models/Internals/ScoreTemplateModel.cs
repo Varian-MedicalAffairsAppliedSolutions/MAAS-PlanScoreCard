@@ -24,7 +24,7 @@ namespace PlanScoreCard.Models.Internals
         public string HI_TargetUnit { get; set; }
         public string MetricComment { get; set; }
         public int TemplateNumber { get; set; }
-        public List<ScorePointInternalModel> ScorePoints { get; private set; }
+        public List<ScorePointInternalModel> ScorePoints { get; set; }
 
         [JsonIgnore]
         public List<PlanModelOverride> PlanModelOverrides { get; set; } = new List<PlanModelOverride>();
