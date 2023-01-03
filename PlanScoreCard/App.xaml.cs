@@ -155,27 +155,41 @@ namespace PlanScoreCard
                                 {
                                     _plan = _course.PlanSetups.FirstOrDefault(x => x.Id == _planId);
                                 }
-                                //construct a planmodel and send that to the bootstrap instead.
+                                //now only loading first initial plan and then making a button to load all plans. 
                                 plans = new List<PlanModel>();
-                                foreach (var course in _patient.Courses)
+                                if (_plan.StructureSet != null)
                                 {
-                                    foreach (var plan in course.PlanSetups)
-                                    {
-                                        var localPlan = new PlanModel(plan, eventAggregator);
-                                        if (plan.Id == _plan.Id && course.Id == _course.Id)
-                                        {
-                                            localPlan.bPrimary = true;
-                                        }
-                                        plans.Add(localPlan);
-                                    }
-                                    foreach (var planSum in course.PlanSums)
-                                    {
-                                        if (planSum.PlanSetups.Any())
-                                        {
-                                            plans.Add(new PlanModel(planSum, eventAggregator));
-                                        }
-                                    }
+                                    //plans.Add(new PlanModel(_plan,eventAggregator));
+                                    var localPlan = new PlanModel(_plan, eventAggregator);
+                                    localPlan.bPrimary = true;
+                                    plans.Add(localPlan);
                                 }
+                                //construct a planmodel and send that to the bootstrap instead.
+                                
+
+                                //foreach (var course in _patient.Courses)
+                                //{
+                                //    foreach (var plan in course.PlanSetups)
+                                //    {
+                                //        if (plan.StructureSet != null)
+                                //        {
+                                //            var localPlan = new PlanModel(plan, eventAggregator);
+                                //            if (plan.Id == _plan.Id && course.Id == _course.Id)
+                                //            {
+                                //                localPlan.bPrimary = true;
+                                //            }
+                                //            plans.Add(localPlan);
+                                //        }
+                                //    }
+                                //    //no plan sums for right now.
+                                //    //foreach (var planSum in course.PlanSums)
+                                //    //{
+                                //    //    if (planSum.PlanSetups.Any())
+                                //    //    {
+                                //    //        plans.Add(new PlanModel(planSum, eventAggregator));
+                                //    //    }
+                                //    //}
+                                //}
                                 var bootstrap = new Bootstrapper();
                                 var container = bootstrap.Bootstrap(plans, _app.CurrentUser, _app, eventAggregator);
                                 view = container.Resolve<ScoreCardView>();

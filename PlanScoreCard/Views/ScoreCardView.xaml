@@ -85,12 +85,15 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="40"/>
                             </Grid.ColumnDefinitions>
                             <ComboBox Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" />
                             <TextBox IsEnabled="False" Text="{Binding PatientId, Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" />
-                            <Button Content="{icons:FontAwesome Kind=UserPlusSolid}" ToolTip="Open Patient" Grid.Column="1" Margin="5" Width="30"
+                            <Button Content="{icons:FontAwesome Kind=UserPlusSolid}" ToolTip="Open Patient selection" Grid.Column="1" Margin="5" Width="30"
                                     Command="{Binding OpenPatientSelectionCommand}"/>
-                            
+                            <Button Content="{icons:FontAwesome Kind=FolderOpenRegular}" ToolTip="Open all courses and plans" Grid.Column="2"
+                                    Margin="5" Width="30" Command="{Binding LoadPatientPlansCommand}"/>
+
                         </Grid>
 
                         <!--<Label Grid.Row="2" Content="Course ID"/>
@@ -172,7 +175,7 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>-->
-                                    <DataGridTextColumn Binding="{Binding PlanScore, Converter={StaticResource localScoreTextConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" FontWeight="Normal" FontSize="12" Width="90" IsReadOnly="True">
+                                    <DataGridTextColumn Binding="{Binding PlanScore, Converter={StaticResource localScoreTextConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontWeight="Normal" FontSize="12" Width="90" IsReadOnly="True">
                                         <DataGridTextColumn.HeaderTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding DataContext.MaxScore, Converter={StaticResource localScoreHeaderConverter}, RelativeSource={RelativeSource AncestorType=DataGrid}}"

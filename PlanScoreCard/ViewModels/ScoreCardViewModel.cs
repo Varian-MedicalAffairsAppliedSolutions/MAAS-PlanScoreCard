@@ -328,6 +328,7 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand OpenWarningCommand { get; private set; }
         public DelegateCommand OpenFlagCommand { get; private set; }
         public DelegateCommand OpenPatientSelectionCommand { get; private set; }
+        public DelegateCommand LoadPatientPlansCommand { get; private set; }
 
         // Plugin Visibility
 
@@ -426,6 +427,7 @@ namespace PlanScoreCard.ViewModels
             OpenWarningCommand = new DelegateCommand(OnOpenWarning);
             OpenFlagCommand = new DelegateCommand(OnOpenFlag);
             OpenPatientSelectionCommand = new DelegateCommand(OnOpenPatientSelector);
+            LoadPatientPlansCommand = new DelegateCommand(OnLoadPatientPlans, CanLoadPatientPlans);
             bRxScalingVisibility = true;
             // Sets If no Plan is Passed In
 
@@ -438,6 +440,31 @@ namespace PlanScoreCard.ViewModels
             InitializeClass();
             //I moved this down here so that the scoreplan doesn't run until after the plans have already been setup (the event aggregator was running on every plan).
             EventAggregator.GetEvent<PlanChangedEvent>().Subscribe(OnPlanChanged);
+        }
+
+        private bool CanLoadPatientPlans()
+        {
+            return Plans.Select(pl => pl.PatientId).Count() == 1;
+        }
+
+        private void OnLoadPatientPlans()
+        {
+            if (Plans.Select(pl=>pl.PatientId).Count() == 1 && Plans.Any(p => !String.IsNullOrEmpty(p.PatientId)))
+            {
+                string patientId = Plans.FirstOrDefault(pl => !String.IsNullOrEmpty(pl.PatientId)).PatientId;
+                Application.ClosePatient();
+                Patient patient = Application.OpenPatientById(patientId);
+                foreach(var course in patient.Courses)
+                {
+                    foreach(var plan in course.PlanSetups.Where(ps => ps.StructureSet != null))
+                    {
+                        if(!Plans.Any(p=>p.CourseId.Equals(course.Id,StringComparison.OrdinalIgnoreCase) && p.PlanId.Equals(plan.Id, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            Plans.Add(new PlanModel(plan, EventAggregator));
+                        }
+                    }
+                }
+            }
         }
 
         private void OnRemovePlanFromScore(PlanModel obj)
@@ -478,6 +505,7 @@ namespace PlanScoreCard.ViewModels
                     }
                 }
             }
+            LoadPatientPlansCommand.RaiseCanExecuteChanged();
         }
 
         private void OnClosePatientSelection(bool isSaved)

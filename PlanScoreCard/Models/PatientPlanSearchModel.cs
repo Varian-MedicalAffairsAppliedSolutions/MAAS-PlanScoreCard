@@ -95,7 +95,7 @@ namespace PlanScoreCard.Models
         {
             foreach(var course in patient.Courses)
             {
-                foreach(var plan in course.PlanSetups)
+                foreach(var plan in course.PlanSetups.Where(pl=>pl.StructureSet!=null))
                 {
                     var localPlan = new PlanModel(plan, _eventAggregator);
                     Plans.Add(localPlan);
