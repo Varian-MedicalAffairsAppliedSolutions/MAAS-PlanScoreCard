@@ -26,21 +26,51 @@
 * Example ScoreCards can be found here: https://medicalaffairs.varian.com/dose-scorecards
 
 ### Main Screen
-![MainScreen1 0 0](https://user-images.githubusercontent.com/78000769/200408043-41a14e05-d9e3-4cad-99a0-442bf8e6a654.png)
-1) Checks ScoreCard Rx matches Rx in Eclipse: On Rx mismatch, option to scale all doses by the % difference
-2) Open previously saved ScoreCard and score currently selected plan(s)
-3) Create new ScoreCard or edit currently loaded ScoreCard
-4) Open additional patients/plan to additionally score in batch (NEW in v3.X)
-5) Normalize dose in primary selected plan to maxiumum score
-6) Dump values in current ScoreCard evaluation view to CSV (Pandas Dataframe)
-7) Render current ScoreCard evaluation view to PDF for printing/reporting
-8) Solid selected box indicates primary plan selected 
+![image](https://user-images.githubusercontent.com/78000769/210690044-26142a34-6109-4b75-9abf-467ac44f4089.png)
+1.	Checks ScoreCard Rx matches Rx in Eclipse: On Rx mismatch, option to scale all doses by the % difference
+2.	Open previously saved ScoreCard and score currently selected plan(s)
+3.	Create new ScoreCard or edit currently loaded ScoreCard
+4.	Open additional patients/plan to additionally score in batch (NEW in v3.X)
+5.	Open all courses and plans for selected patient
+6.	Normalize dose in primary selected plan to maximum score
+7.	Dump values in current ScoreCard evaluation view to CSV (Pandas Dataframe)
+8.	Render current ScoreCard evaluation view to PDF for printing/reporting
+9.	Solid selected box indicates primary plan selected
+10.	Warnings and flags when a metric is below variation or scores 0 points
+11.	Indication that a plan structure has been matched to a scorecard structure
 
 ### ScoreCard Editor
-![ScoreCardEditor1 0 0](https://user-images.githubusercontent.com/78000769/169741156-a27d6165-616a-4181-80a7-74ed7923e8eb.png)
+![image](https://user-images.githubusercontent.com/78000769/210690412-a6f01bfd-5975-4008-ac33-5bf57c9dcecb.png)
+1.	Add a new metric to score
+2.	Delete selected score metric
+3.	Copy selected score metric
+4.	Opens structure builder
+5.	Moves the rank number (up or down) of selected metric
+6.	Add a new point to the selected score metric
+7.	Delete selected score point on selected score metric
+8.	Order metric points in order of score value (highest to lowest)
+9.	Clears colors and labels from all metric points
+10.	 Moves the rank number (up or down) of the selected metric point
+11.	Pushes the plan structure ID to the scorecard structure ID for the selected metric
+12.	Opens the structure dictionary
+13.	Select metric point that begins the “variation acceptable” range (yellow line) of the piecewise linear function
+14.	Add colors and labels for each metric point
+15.	Select treatment site (options can be edited in config file)
+16.	Recalculates the plan score and returns to the main screen
+17.	Save changes to json file
 
 ### Structure Builder
-![StructureBuilder1 0 0](https://user-images.githubusercontent.com/78000769/169741212-82f16a0d-1e11-4ee4-863d-ac2446486c5b.png)
+![image](https://user-images.githubusercontent.com/78000769/210690982-01ea862b-328b-4a80-a538-42d39de1d89e.png)
+1.	Add a new structure grouping
+2.	Add an operation step to the selected structure group
+3.	Delete operation step
+4.	Edit the operation steps of a selected group
+5.	Select the Boolean operation between two intragroup steps
+6.	Delete the selected group (along with all its operations)
+7.	Choose the Boolean operation between different groups
+8.	Demote/promote the selected group order sequence
+9.	Free text field for the generated structure name
+10.	Creates the plan structure in the metric editor. Note that the structure is not generated until it is assigned to a score metric in the Scorecard editor
 
 ### Installation Guide: [Quick-Start](../master/BasicInstallQuickStart.md)
 
