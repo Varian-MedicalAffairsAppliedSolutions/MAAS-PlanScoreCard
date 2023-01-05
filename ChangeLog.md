@@ -1,4 +1,32 @@
 ## Changelog
+## 3.0.3.X (11/08/2022)
+### Improvements
+* Batch mode: CSV input with multiple patients/plans and report output 
+![image](https://user-images.githubusercontent.com/78000769/208266047-331154ea-946f-4e5f-9597-7f3a20297e93.png)
+![image](https://user-images.githubusercontent.com/78000769/208266064-b38b04d9-f2d6-4797-8017-e54d4b691f6b.png)
+* Patient ID added to scorecard warnings and flags 
+![image](https://user-images.githubusercontent.com/78000769/208266072-672c2a4f-03d2-4552-b4d6-988bdfe5ded8.png)
+* Implement point falloff logic (tails) once a metric fails (zero points) when normalizing to max score. Tail values can be adjusted in the “PlanScoreCard.exe” config file.
+![image](https://user-images.githubusercontent.com/78000769/208266421-e0f8ca06-cb41-474a-9c87-ea2559cbc623.png)
+![image](https://user-images.githubusercontent.com/78000769/208266434-d454fbb3-784c-45f3-9013-9d02149aaa41.png)
+
+
+### Bugfixes: 
+
+* Invalid null structures can no longer be added to the structure dictionary 
+* All unselected plan scores are now cleared in the last column on the following events: rx scaling, scorecard editing, and loading a new scorecard 
+* Volume precision is rounded to the nearest hundredth value when rescaling. 
+* Rescaling now correctly applies to HI metric 
+* Color selection option was changed from “Cancel” to “Clear” 
+
+### Known issues: 
+
+* Prevent single point metrics from being saved as a template or recalculated. 
+* A crash occurs if the Rx dose is scaled too low and the conformation number metric is used. 
+* Score values on Y-axis during plan normalization are incorrect and sometime tails are wrongly created: normalize to max score not 100% reliable
+* Normalizing with a scorecard that has a HI metric will cause the application to crash 
+* Adding a point before selecting a metric will cause the application to crash 
+
 ## 2.5.7.X (8/29/2022)
 ### Improvements: 
 * If a structure is used in the structurebuilder that is not in the plan structure set, the user will receive a message indicating which structure(s) are missing
