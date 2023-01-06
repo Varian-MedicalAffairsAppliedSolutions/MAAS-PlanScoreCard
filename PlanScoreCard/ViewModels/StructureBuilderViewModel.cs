@@ -213,7 +213,7 @@ namespace PlanScoreCard.ViewModels
 
         private void OnAddStructure(Window obj)
         {
-            var structure = new StructureModel
+            var structure = new StructureModel(_eventAggregator)
             {
                 StructureId = StructureIdBuilder,
                 StructureCode = "9999",

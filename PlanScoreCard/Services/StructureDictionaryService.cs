@@ -20,14 +20,18 @@ namespace PlanScoreCard.Services
 
         public StructureDictionaryService()
         {
-
             // Read in the StructureDictionaryPath (Set in the App.config)
-            string structureDictionaryPath = ConfigurationManager.AppSettings["StructureDictionaryPath"].ToString();
-            string sDictionaryFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), structureDictionaryPath);
-            StructureDictionary = JsonConvert.DeserializeObject<List<StructureDictionaryModel>>(File.ReadAllText(sDictionaryFile));
+            ReadStructureDictionary();
 
             // Populates Structure Dictionary Models
             //PopulateStructureModels(structureDictionaryPath);
+        }
+
+        public void ReadStructureDictionary()
+        {
+            string structureDictionaryPath = ConfigurationManager.AppSettings["StructureDictionaryPath"].ToString();
+            string sDictionaryFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), structureDictionaryPath);
+            StructureDictionary = JsonConvert.DeserializeObject<List<StructureDictionaryModel>>(File.ReadAllText(sDictionaryFile));
         }
 
         // Initialization

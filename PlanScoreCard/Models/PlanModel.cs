@@ -1,4 +1,7 @@
-﻿using PlanScoreCard.Events;
+﻿using Newtonsoft.Json;
+using PlanScoreCard.Events;
+using PlanScoreCard.Events.HelperWindows;
+using PlanScoreCard.Models.ModelHelpers;
 using PlanScoreCard.Services;
 using Prism.Commands;
 using Prism.Events;
@@ -154,6 +157,28 @@ namespace PlanScoreCard.Models
         }
 
         public bool bPlanSum;
+        private StructureMatchWarningModel _structureMatchIssue;
+        [JsonIgnore]
+        public StructureMatchWarningModel StructureMatchIssue
+        {
+            get { return _structureMatchIssue; }
+            set { SetProperty(ref _structureMatchIssue, value); }
+        }
+        private bool _bStructureValidationFlag;
+        [JsonIgnore]
+        public bool bStructureValidationFlag
+        {
+            get { return _bStructureValidationFlag; }
+            set { SetProperty(ref _bStructureValidationFlag, value); }
+        }
+        private bool _bStructureValidationWarning;
+        [JsonIgnore]
+        public bool bStructureValidationWarning
+        {
+            get { return _bStructureValidationWarning; }
+            set { SetProperty(ref _bStructureValidationWarning, value); }
+        }
+
         //private bool _bPlanScoreValid;
 
         //public bool bPlanScoreValid
@@ -167,9 +192,21 @@ namespace PlanScoreCard.Models
         private IEventAggregator _eventAggregator;
 
         public ObservableCollection<StructureModel> Structures { get; set; }
+        [JsonIgnore]
+        public ObservableCollection<StructureModel> TemplateStructures { get; set; }
+        private StructureModel _selectedStructureValidation;
+        [JsonIgnore]
+        public StructureModel SelectedStructureValidation
+        {
+            get { return _selectedStructureValidation; }
+            set { SetProperty(ref _selectedStructureValidation, value); }
+        }
+
         public DelegateCommand DeselectCommand { get; private set; }
+        public DelegateCommand ValidatePlanCommand { get; private set; }
         public PlanModel(PlanningItem plan, IEventAggregator eventAggregator)
         {
+            TemplateStructures = new ObservableCollection<StructureModel>();
             if (plan is PlanSum)
             {
                 bPlanSum = true;
@@ -196,8 +233,14 @@ namespace PlanScoreCard.Models
             _eventAggregator = eventAggregator;
             Structures = new ObservableCollection<StructureModel>();
             DeselectCommand = new DelegateCommand(OnDeselect);
+            ValidatePlanCommand = new DelegateCommand(OnValidatePlan);
             GenerateStructures(plan);
             SetParameters(plan);
+        }
+
+        private void OnValidatePlan()
+        {
+            _eventAggregator.GetEvent<UpdateSelectedPlanValidationEvent>().Publish(this);
         }
 
         private void OnDeselect()
@@ -229,12 +272,61 @@ namespace PlanScoreCard.Models
             foreach (var structure in plan.StructureSet.Structures.Where(x => x.DicomType != "SUPPORT" && x.DicomType != "MARKER"))
             {
                 //TODO work on filters for structures
-                Structures.Add(new StructureModel
+                Structures.Add(new StructureModel(_eventAggregator)
                 {
                     StructureId = structure.Id,
                     StructureCode = structure.StructureCodeInfos.FirstOrDefault().Code,
                     StructureComment = structure.Comment
                 });
+            }
+        }
+        public void EvaluateStructureMatches(List<StructureModel> scorecardStructures)
+        {
+            int tId = 0;
+            List<Tuple<string, string>> localTemplateIds = new List<Tuple<string, string>>();
+            foreach (var structure in scorecardStructures)
+            {
+                //if (!localTemplateIds.Any(lti => lti.Item1.Equals(structure.TemplateStructureId, StringComparison.OrdinalIgnoreCase) &&
+                // lti.Item2.Equals(structure.StructureId, StringComparison.OrdinalIgnoreCase)))
+                //{
+                    var localTemplateStructure = new StructureModel(_eventAggregator)
+                    {
+                        StructureId = structure.StructureId,
+                        StructureCode = structure.StructureCode,
+                        StructureComment = structure.StructureComment,
+                        TemplateStructureInt = tId,
+                        MatchedStructure = structure.MatchedStructure,
+                        TemplateStructureId = structure.TemplateStructureId
+                    };
+                    tId++;
+                    
+                localTemplateStructure.EvaluateStructureMatch(Structures.ToList());
+                if(localTemplateIds.Any(lti => lti.Item1.Equals(structure.TemplateStructureId, StringComparison.OrdinalIgnoreCase)
+                && lti.Item2.Equals(structure.StructureId)))
+                {
+                    localTemplateStructure.bMakeVisibleInPatientSearch = false;
+                }
+                else
+                {
+                    localTemplateStructure.bMakeVisibleInPatientSearch = true;
+                }
+                localTemplateIds.Add(new Tuple<string, string>(structure.TemplateStructureId, structure.StructureId));
+                TemplateStructures.Add(localTemplateStructure);
+                //}
+            }
+        }
+
+        public void EvaluatePlanFlags()
+        {
+            bStructureValidationFlag = false;
+            bStructureValidationWarning = false;
+            if (TemplateStructures.Any(ts => !ts.bValidStructure))
+            {
+                bStructureValidationFlag = true;
+            }
+            else if (TemplateStructures.Any(ts => !ts.bDictionaryMatch))
+            {
+                bStructureValidationWarning = true;
             }
         }
     }

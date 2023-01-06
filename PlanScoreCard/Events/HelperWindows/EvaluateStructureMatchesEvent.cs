@@ -2,8 +2,7 @@
 
 namespace PlanScoreCard.Events.HelperWindows
 {
-    public class CancelEvent : PubSubEvent
+    public class EvaluateStructureMatchesEvent:PubSubEvent
     {
-
     }
 }

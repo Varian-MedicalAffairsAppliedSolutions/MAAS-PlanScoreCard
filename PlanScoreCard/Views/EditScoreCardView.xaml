@@ -266,14 +266,14 @@
                         </Grid.ColumnDefinitions>
 
 
-                        <Label Grid.Column="0" Grid.Row="0" FontSize="12" Content="Template Structure Id" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
+                        <Label Grid.Column="0" Grid.Row="0" FontSize="12" Content="Scorecard Structure Id" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="35"/>
                             </Grid.ColumnDefinitions>
 
-                            <TextBox Height="30" IsReadOnly="True" Grid.Column="0" Grid.Row="1" Text="{Binding SelectedScoreMetric.Structure.TemplateStructureId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,0,5,0" />
+                            <TextBox Height="30" Grid.Column="0" Grid.Row="1" Text="{Binding SelectedScoreMetric.Structure.TemplateStructureId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,0,5,0" />
                             <Button Height="30" Grid.Column="1" Content="{icons:FontAwesome Kind=ArrowAltCircleLeftRegular}" Width="30" Margin="2" Command="{Binding UpdateTemplateIdCommand}" ToolTip="Push plan structure Id to template."/>
                         </Grid>
                         <Label Grid.Column="1" Grid.Row="0" FontSize="12" Content="Plan Structure" FontWeight="DemiBold" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>

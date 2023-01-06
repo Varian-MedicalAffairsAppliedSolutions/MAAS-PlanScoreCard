@@ -152,7 +152,7 @@ namespace PlanScoreCard.ViewModels
                     }
                 }
             }
-            var structure = new StructureModel
+            var structure = new StructureModel(_eventAggregator)
             {
                 StructureId = StructureId,
                 TemplateStructureId = StructureId,

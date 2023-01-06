@@ -1,4 +1,5 @@
 ﻿using PlanScoreCard.Models.Internals;
+using Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +8,13 @@ namespace PlanScoreCard.Models.Proknow
 {
     public class PKModel
     {
+        private IEventAggregator _eventAggregator;
+
         public List<pk_computedmodel> computed { get; set; }
         public List<pk_custommodel> custom { get; set; }
-        public PKModel()
+        public PKModel(IEventAggregator eventAggregator)
         {
+            _eventAggregator = eventAggregator;
             computed = new List<pk_computedmodel>();
             custom = new List<pk_custommodel>();
 
@@ -18,6 +22,7 @@ namespace PlanScoreCard.Models.Proknow
         public List<ScoreTemplateModel> ConvertToTemplate()
         {
             List<ScoreTemplateModel> scoreTemplates = new List<ScoreTemplateModel>();
+            int metricNum = 0;
             foreach (var metric in computed)
             {
 
@@ -30,7 +35,7 @@ namespace PlanScoreCard.Models.Proknow
                 ScoreTemplateModel stm = null;
                 if (metricType == MetricTypeEnum.HomogeneityIndex)
                 {
-                    stm = new ScoreTemplateModel(new StructureModel() { StructureId = metric.roi_name },
+                    stm = new ScoreTemplateModel(metricNum,new StructureModel(_eventAggregator) { StructureId = metric.roi_name },
                         metricType,
                         String.Empty,
                         1.0,//PK always uses D1% as high dose value.
@@ -42,7 +47,7 @@ namespace PlanScoreCard.Models.Proknow
                 }
                 else
                 {
-                    stm = new ScoreTemplateModel(new StructureModel() { StructureId = metric.roi_name },
+                    stm = new ScoreTemplateModel(metricNum,new StructureModel(_eventAggregator) { StructureId = metric.roi_name },
                     metricType,
                     String.Empty,
                     inputValue,
@@ -50,6 +55,7 @@ namespace PlanScoreCard.Models.Proknow
                     outputUnit,
                     scores);
                 }
+                metricNum++;
                 //stm.InputUnit = GetMetricUnit(metric.type);
                 scoreTemplates.Add(stm);
 

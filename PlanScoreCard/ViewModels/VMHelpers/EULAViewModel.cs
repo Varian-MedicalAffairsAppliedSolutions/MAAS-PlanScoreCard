@@ -19,7 +19,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             get { return _licenseText; }
             set { _licenseText = value; }
         }
-
+        public bool bAgreed { get; private set; }
         public DelegateCommand EULAAgreeCommand { get; private set; }
         public DelegateCommand EULADisagreeCommand { get; private set; }
 
@@ -33,6 +33,10 @@ namespace PlanScoreCard.ViewModels.VMHelpers
 
         private void OnDisagree()
         {
+            if (!bAgreed)
+            {
+                App.Current.Shutdown();
+            }
             _eventAggregator.GetEvent<CloseEulaEvent>().Publish();
         }
 
@@ -51,7 +55,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             }
 
             UpdateAppSettings("EULAAgree", "true");
-
+            bAgreed = true;
             OnDisagree();
         }
 

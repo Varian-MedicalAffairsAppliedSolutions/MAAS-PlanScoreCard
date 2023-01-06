@@ -144,6 +144,7 @@
     <Compile Include="Converters\MaxScoreToHeaderConverter.cs" />
     <Compile Include="Converters\MetricEditorConverter.cs" />
     <Compile Include="Converters\MetricIdConverter.cs" />
+    <Compile Include="Converters\NullStringToVisibilityConverter.cs" />
     <Compile Include="Converters\NullToDoubleConverter.cs" />
     <Compile Include="Converters\PrimaryForegroundConverter.cs" />
     <Compile Include="Converters\PrimaryToColorConverter.cs" />
@@ -166,9 +167,13 @@
     <Compile Include="Events\HelperWindows\CloseEulaEvent.cs" />
     <Compile Include="Events\HelperWindows\CloseMessageViewEvent.cs" />
     <Compile Include="Events\HelperWindows\ClosePatientSelectionEvent.cs" />
+    <Compile Include="Events\HelperWindows\EvaluateStructureMatchesEvent.cs" />
     <Compile Include="Events\HelperWindows\NoEvent.cs" />
     <Compile Include="Events\HelperWindows\StructureDictionaryAddedEvent.cs" />
     <Compile Include="Events\HelperWindows\UpdatePatientPlansEvent.cs" />
+    <Compile Include="Events\HelperWindows\UpdateSelectedPlanEvent.cs" />
+    <Compile Include="Events\HelperWindows\UpdateSelectedPlanValidationEvent.cs" />
+    <Compile Include="Events\HelperWindows\UpdateTemplateMatchesEvent.cs" />
     <Compile Include="Events\HelperWindows\YesEvent.cs" />
     <Compile Include="Events\LoadEditScoreCardViewEvent.cs" />
     <Compile Include="Events\MetricDownEvent.cs" />
@@ -222,12 +227,14 @@
     <Compile Include="Models\Internals\ScoreTemplateBuilder.cs" />
     <Compile Include="Models\Internals\ScoreTemplateModel.cs" />
     <Compile Include="Models\MetricTypeEnum.cs" />
+    <Compile Include="Models\ModelHelpers\StructureMatchWarningModel.cs" />
     <Compile Include="Models\OperationModel.cs" />
     <Compile Include="Models\PatientPlanModel.cs" />
     <Compile Include="Models\PatientPlanSearchModel.cs" />
     <Compile Include="Models\PatientSelectModel.cs" />
     <Compile Include="Models\PatientSummaryModel.cs" />
     <Compile Include="Models\PlanModel.cs" />
+    <Compile Include="Models\PlanModelOverride.cs" />
     <Compile Include="Models\PlanScoreModel.cs" />
     <Compile Include="Models\Proknow\PKModel.cs" />
     <Compile Include="Models\Proknow\pk_computedmodel.cs" />
@@ -289,6 +296,7 @@
     <Compile Include="ViewModels\VMHelpers\ObservableCollectionEx.cs" />
     <Compile Include="ViewModels\VMHelpers\PatientSelectionViewModel.cs" />
     <Compile Include="ViewModels\VMHelpers\StructureDictionarySelectorViewModel.cs" />
+    <Compile Include="ViewModels\VMHelpers\StructureMatchingViewModel.cs" />
     <Compile Include="ViewModels\VolumeAtDoseViewModel.cs" />
     <Compile Include="Views\BuildStructureView.xaml.cs">
       <DependentUpon>BuildStructureView.xaml</DependentUpon>
@@ -317,6 +325,9 @@
     </Compile>
     <Compile Include="Views\HelperWindows\StructureDictionarySelectorView.xaml.cs">
       <DependentUpon>StructureDictionarySelectorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HelperWindows\StructureMatchingView.xaml.cs">
+      <DependentUpon>StructureMatchingView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MetricEditors\EditCIView.xaml.cs">
       <DependentUpon>EditCIView.xaml</DependentUpon>
@@ -462,6 +473,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\HelperWindows\StructureDictionarySelectorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\HelperWindows\StructureMatchingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

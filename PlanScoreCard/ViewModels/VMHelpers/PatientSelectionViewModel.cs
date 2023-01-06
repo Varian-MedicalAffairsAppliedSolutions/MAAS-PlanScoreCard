@@ -22,6 +22,8 @@ namespace PlanScoreCard.ViewModels.VMHelpers
     {
         private IEventAggregator _eventAggregator;
         private Application _app;
+        private ScoreCardModel _scoreCard;
+        private List<PlanModel> _plans;
 
         public ObservableCollection<PatientPlanSearchModel> Patients { get; private set; }
         public List<PatientSummaryModel> PatientSummaries { get; private set; }
@@ -67,6 +69,17 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                 OpenPatientCommand.RaiseCanExecuteChanged();
             }
         }
+        private string _scoreCardUpdateText;
+
+        public string ScoreCardUpdateText
+        {
+            get { return _scoreCardUpdateText; }
+            set
+            {
+                SetProperty(ref _scoreCardUpdateText, value);
+            }
+        }
+
         public DelegateCommand SearchPatientCommand { get; private set; }
         public DelegateCommand OpenPatientCommand { get; private set; }
         public DelegateCommand PatientImportCommand { get; private set; }
@@ -76,10 +89,12 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         public DelegateCommand RemovePatientCommand { get; private set; }
         public PatientSelectService PatientSelectService { get; }
 
-        public PatientSelectionViewModel(IEventAggregator eventAggregator, Application app, List<PlanModel> plans)
+        public PatientSelectionViewModel(IEventAggregator eventAggregator, Application app, List<PlanModel> plans, ScoreCardModel scoreCard)
         {
             _eventAggregator = eventAggregator;
             _app = app;
+            _scoreCard = scoreCard;
+            _plans = plans;
             Patients = new ObservableCollection<PatientPlanSearchModel>();
             PatientMatches = new ObservableCollection<PatientSelectModel>();
             SavePlansCommand = new DelegateCommand(OnSavePlans);
@@ -89,6 +104,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             PatientImportCommand = new DelegateCommand(OnImportPatients);
             SavePatientListCommand = new DelegateCommand(OnSavePatientList);
             RemovePatientCommand = new DelegateCommand(OnClearPatientList, CanRemovePatient);
+            SetScoreCardText();
             GetPatientSummaryies();
             PatientSelectService = new PatientSelectService(new SmartSearchService(PatientSummaries));
             SearchPatient();
@@ -96,12 +112,22 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             //https://github.com/redcurry/EsapiEssentials
             //smartSearch = new SmartSearchService(Patients);
             //Patients = new SmartSearchService(app.PatientSummaries).GetMatchingPatients(AddPatientId);
-            foreach (var patient in plans.GroupBy(p => p.PatientId))
+            SetPatientsInitial();
+            // SearchText = String.Empty;
+            _eventAggregator.GetEvent<FreePrimarySelectionEvent>().Subscribe(OnResetPrimaryPlan);
+            _eventAggregator.GetEvent<UpdateTemplateMatchesEvent>().Subscribe(OnUpdateTemplateMatches);
+            _eventAggregator.GetEvent<EvaluateStructureMatchesEvent>().Subscribe(OnEvaluateStructureMatches);
+        }
+
+        private void SetPatientsInitial()
+        {
+            Patients.Clear();
+            foreach (var patient in _plans.GroupBy(p => p.PatientId))
             {
                 _app.ClosePatient();
                 var localPatient = _app.OpenPatientById(patient.Key);
-                var localPatientSelectModel = new PatientPlanSearchModel(localPatient, eventAggregator);
-
+                var localPatientSelectModel = new PatientPlanSearchModel(localPatient, _eventAggregator);
+                List<StructureModel> localStructureList = new List<StructureModel>();
                 foreach (var plan in patient)
                 {
                     var localPlan = localPatientSelectModel.Plans.FirstOrDefault(pl => pl.PatientId == plan.PatientId
@@ -109,11 +135,79 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                     && pl.PlanId == plan.PlanId);
                     localPlan.bSelected = plan.bSelected;
                     localPlan.bPrimary = plan.bPrimary;
+                    if (_plans.Any(pl => pl.PlanId == localPlan.PlanId && pl.CourseId == localPlan.CourseId && pl.PatientId == localPlan.PatientId))
+                    {
+                        var inputPlan = _plans.FirstOrDefault(pl => pl.PlanId == localPlan.PlanId && pl.CourseId == localPlan.CourseId && pl.PatientId == localPlan.PatientId);
+                        if (inputPlan.TemplateStructures.Any())
+                        {//in case the patient has already been through the matching process.
+                            localPlan.EvaluateStructureMatches(inputPlan.TemplateStructures.ToList());
+                        }
+                    }
+                }
+                if (_scoreCard != null)
+                {
+                    if (!patient.Any(p => p.TemplateStructures.Any()))//patient has not been through matching process.
+                    {
+                        localPatientSelectModel.EvaluateStructureMatches(_scoreCard.ScoreMetrics.ToList().Select(sm => sm.Structure).ToList());
+                    }
+                    else//evaluate flags for patients that have been through matching process.
+                    {
+                        foreach (var plan in localPatientSelectModel.Plans.Where(p => !p.TemplateStructures.Any()))
+                        {
+                            plan.EvaluateStructureMatches(_scoreCard.ScoreMetrics.ToList().Select(sm => sm.Structure).ToList());
+                        }
+                        localPatientSelectModel.EvaluateFlags();
+                    }
                 }
                 Patients.Add(localPatientSelectModel);
             }
-           // SearchText = String.Empty;
-            _eventAggregator.GetEvent<FreePrimarySelectionEvent>().Subscribe(OnResetPrimaryPlan);
+        }
+
+        private void OnEvaluateStructureMatches()
+        {
+            SelectedPatient = null;
+            Patients.Clear();
+            SetPatientsInitial();
+        }
+
+        //when matching a template structure you can copy to all patients. 
+        private void OnUpdateTemplateMatches(StructureModel obj)
+        {
+            string currentPatientId = SelectedPatient.PatientId;
+            SelectedPatient = null;
+            foreach (var patient in Patients)
+            {
+                foreach (var plan in patient.Plans)
+                {
+                    var templateStructure = plan.TemplateStructures.FirstOrDefault(ts => ts.TemplateStructureInt == obj.TemplateStructureInt);
+                    if (templateStructure != null)
+                    {
+                        if (plan.Structures.Any(s => s.StructureId == obj.MatchedStructure.StructureId))
+                        {
+                            //because of the way MatchedStructure is set up, this will update all the hidden items as well. 
+                            templateStructure.MatchedStructure = plan.Structures.FirstOrDefault(s => s.StructureId == obj.MatchedStructure.StructureId);
+                        }
+                    }
+                }
+            }
+            SelectedPatient = Patients.FirstOrDefault(p => p.PatientId == currentPatientId);
+            SelectedPatient.EvaluateFlags();
+        }
+
+        private void SetScoreCardText()
+        {
+            if (_scoreCard == null)
+            {
+                ScoreCardUpdateText = $"Cannot compare patients to scorecards. No metrics detected.";
+            }
+            else if (_scoreCard.ScoreMetrics.Count() == 0)
+            {
+                ScoreCardUpdateText = "Cannot compare patients to scorecards. No metrics detected.";
+            }
+            else
+            {
+                ScoreCardUpdateText = $"Scorecard imported with {_scoreCard.ScoreMetrics.Count()} metrics";
+            }
         }
 
         private bool CanRemovePatient()
@@ -130,8 +224,13 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         {
             if (SelectedPatient != null)
             {
-                Patients.Remove(SelectedPatient);
+                foreach (var plan in _plans.Where(p => p.PatientId.Equals(SelectedPatient.PatientId)))
+                {
+                    _plans.Remove(plan);
+                }
+                //Patients.Remove(SelectedPatient);
                 SelectedPatient = null;
+                SetPatientsInitial();
                 //Patients.Clear();
                 //SearchText = String.Empty;
             }
@@ -140,9 +239,9 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         private void OnSavePatientList()
         {
             List<PatientPlanModel> localPatientPlanModel = new List<PatientPlanModel>();
-            foreach(var patient in Patients)
+            foreach (var patient in Patients)
             {
-                foreach(var plan in patient.Plans)
+                foreach (var plan in patient.Plans)
                 {
                     if (plan.bSelected)
                     {
@@ -204,7 +303,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                     List<PatientPlanModel> patients = new List<PatientPlanModel>();
                     if (ofd.FileName.EndsWith("csv"))
                     {
-                        foreach(var line in File.ReadAllLines(ofd.FileName))
+                        foreach (var line in File.ReadAllLines(ofd.FileName))
                         {
                             patients.Add(new PatientPlanModel
                             {
@@ -212,11 +311,42 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                                 CourseId = line.Split(',').ElementAt(1),
                                 PlanId = line.Split(',').Last()
                             });
+                            _app.ClosePatient();
+                            var patient = _app.OpenPatientById(line.Split(',').First());
+                            if (patient != null)
+                            {
+                                var course = patient.Courses.FirstOrDefault(c => c.Id.Equals(line.Split(',').ElementAt(1)));
+                                if (course != null)
+                                {
+                                    var planSetup = course.PlanSetups.FirstOrDefault(ps => ps.Id.Equals(line.Split(',').Last()));
+                                    if (planSetup != null)
+                                    {
+                                        _plans.Add(new PlanModel(planSetup, _eventAggregator));
+                                    }
+                                }
+                            }
                         }
                     }
                     else
                     {
                         patients = JsonConvert.DeserializeObject<List<PatientPlanModel>>(File.ReadAllText(ofd.FileName));
+                        foreach (var patient in patients)
+                        {
+                            _app.ClosePatient();
+                            var pat = _app.OpenPatientById(patient.PatientId);
+                            if (pat != null)
+                            {
+                                var course = pat.Courses.FirstOrDefault(c => c.Id == patient.CourseId);
+                                if (course != null)
+                                {
+                                    var planSetup = course.PlanSetups.FirstOrDefault(ps => ps.Id == patient.PlanId);
+                                    if (planSetup != null)
+                                    {
+                                        _plans.Add(new PlanModel(planSetup, _eventAggregator));
+                                    }
+                                }
+                            }
+                        }
                     }
                     foreach (var patient in patients)
                     {
@@ -238,6 +368,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                 {
                     System.Windows.MessageBox.Show($"Could not parse file {ofd.FileName}\n{ex.Message}");
                 }
+                SetPatientsInitial();
             }
         }
 
@@ -250,7 +381,15 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                 var patient = _app.OpenPatientById(SearchText);
                 if (patient != null)
                 {
-                    Patients.Add(new PatientPlanSearchModel(patient, _eventAggregator));
+                    //Patients.Add(new PatientPlanSearchModel(patient, _eventAggregator));
+                    foreach (var course in patient.Courses)
+                    {
+                        foreach (var plan in course.PlanSetups.Where(ps => ps.StructureSet != null))
+                        {
+                            _plans.Add(new PlanModel(plan, _eventAggregator));
+                        }
+                    }
+                    SetPatientsInitial();
                 }
             }
         }

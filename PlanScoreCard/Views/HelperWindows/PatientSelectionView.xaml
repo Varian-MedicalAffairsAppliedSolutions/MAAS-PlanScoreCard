@@ -9,11 +9,12 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                    xmlns:converters="clr-namespace:PlanScoreCard.Converters"
         mc:Ignorable="d"
-        Title="PatientSelectionView" Height="550" Width="800">
+        Title="PatientSelectionView" Height="650" Width="1200">
     <metro:MetroWindow.Resources>
         <ResourceDictionary>
             <converters:PrimaryToColorConverter x:Key="localPrimaryColorConverter"/>
             <converters:PrimaryForegroundConverter x:Key="localPrimaryForegroundConverter"/>
+            <converters:BoolVisibilityConverter x:Key="localBoolVisibilityConverter"/>
         </ResourceDictionary>
     </metro:MetroWindow.Resources>
     <Grid>
@@ -22,9 +23,17 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="Patient Selection" HorizontalAlignment="Center" FontWeight="Bold" FontSize="16" Margin="5"/>
-        <DockPanel Grid.Row="1">
-            <StackPanel DockPanel.Dock="Left">
+        <StackPanel>
+            <TextBlock Text="Patient Selection" HorizontalAlignment="Center" FontWeight="Bold" FontSize="16" Margin="5"/>
+            <TextBlock FontStyle="Italic" Text="{Binding ScoreCardUpdateText}" Margin="5,0,5,5" HorizontalAlignment="Center" Foreground="DarkGray"/>
+        </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel>
                 <TextBlock Text="Patients" FontWeight="Bold" HorizontalAlignment="Center" Margin="5"/>
                 <Button Margin="5" ToolTip="Import from JSON" Command="{Binding PatientImportCommand}">
                     <icons:FontAwesome Kind="UsersSolid"/>
@@ -47,11 +56,24 @@
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <Border BorderBrush="Gray" BorderThickness="1">
-                                                <TextBlock FontStyle="Italic">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock FontStyle="Italic">
                                         <Run Text="{Binding LastName}"/>, 
                                         <Run Text="{Binding FirstName}"/>
                                         (<Run Text="{Binding ID}"/>)
-                                                </TextBlock>
+                                                    </TextBlock>
+                                                    <StackPanel Orientation="Horizontal" Grid.Column="1">
+                                                        <icons:PackIconFontAwesome Background="Yellow" Kind="ExclamationTriangleSolid" ToolTip="One or more plans has a structure matched from the dictionary."
+                                                                                   Visibility="{Binding bStructureValidationWarning, Converter={StaticResource localBoolVisibilityConverter}}"/>
+                                                        <icons:PackIconFontAwesome Background="Red" Kind="TimesCircleRegular" ToolTip="One or more plans has an unmatched structure"
+                                                                                   Visibility="{Binding bStructureValidationFlag, Converter={StaticResource localBoolVisibilityConverter}}"/>
+                                                    </StackPanel>
+                                                </Grid>
+
                                             </Border>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
@@ -59,7 +81,7 @@
                             </Border>
                         </ScrollViewer>
                     </DockPanel>
-                    <Button Margin="5,0,0,0" Command="{Binding OpenPatientCommand}" Height="30" VerticalAlignment="Top">
+                    <Button Margin="5,0,0,0" Command="{Binding OpenPatientCommand}" Height="30" VerticalAlignment="Top" ToolTip="Add Selected Patient">
                         <icons:FontAwesome Kind="UserCheckSolid"/>
                     </Button>
                 </StackPanel>
@@ -80,7 +102,7 @@
                     </ListBox>
                 </ScrollViewer>
             </StackPanel>
-            <Grid DataContext="{Binding SelectedPatient}" DockPanel.Dock="Right">
+            <Grid DataContext="{Binding SelectedPatient}" Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
@@ -94,24 +116,154 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border Background="{Binding bPrimary, Converter={StaticResource localPrimaryColorConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                    <CheckBox IsChecked="{Binding bSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                        <CheckBox IsChecked="{Binding bSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                       Content="{Binding PlanText}" Foreground="{Binding bPrimary, Converter={StaticResource localPrimaryForegroundConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                               metro:CheckBoxHelper.ForegroundChecked="{Binding bPrimary, Converter={StaticResource localPrimaryForegroundConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                               metro:CheckBoxHelper.ForegroundCheckedMouseOver="LightGray">
-                                        <CheckBox.ContextMenu>
-                                            <ContextMenu>
-                                                <MenuItem Header="Deselect" Command="{Binding DeselectComamnd}"/>
-                                            </ContextMenu>
-                                        </CheckBox.ContextMenu>
-                                    </CheckBox>
+                                            <CheckBox.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Deselect" Command="{Binding DeselectComamnd}"/>
+                                                </ContextMenu>
+                                            </CheckBox.ContextMenu>
+                                        </CheckBox>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="1">
+                                            <icons:PackIconFontAwesome Background="Yellow" Kind="ExclamationTriangleSolid" ToolTip="One or more plans has a structure matched temporarily or matched from the dictionary."
+                                                                                   Visibility="{Binding bStructureValidationWarning, Converter={StaticResource localBoolVisibilityConverter}}"/>
+                                            <icons:PackIconFontAwesome Background="Red" Kind="TimesCircleRegular" ToolTip="One or more plans has an unmatched structure"
+                                                                                   Visibility="{Binding bStructureValidationFlag, Converter={StaticResource localBoolVisibilityConverter}}"/>
+                                        </StackPanel>
+                                        </Grid>
+                                        <Button Command="{Binding ValidatePlanCommand}" Grid.Column="1" ToolTip="Validate Structure Matches">
+                                            <icons:FontAwesome Kind="CheckDoubleSolid"/>
+                                        </Button>
+                                    </Grid>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
             </Grid>
+            <Grid DataContext="{Binding SelectedPatient.SelectedPlan}" Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock FontWeight="Bold" HorizontalAlignment="Center">
+                    <Run Text="Validation for "/>
+                    <Run Text="{Binding PlanId}"/>
+                </TextBlock>
+                <Grid Grid.Row="1" Margin="0 0 10 0 ">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border BorderBrush="Black" BorderThickness="1">
+                        <TextBlock FontWeight="Bold" Text="Scorecard Structure" HorizontalAlignment="Center" TextWrapping="Wrap"/>
+                    </Border>
+                    <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1">
+                        <TextBlock FontWeight="Bold" Text="Matched Structure" HorizontalAlignment="Center" TextWrapping="Wrap"/>
+                    </Border>
+                    <Grid Grid.Column="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border BorderBrush="Black" BorderThickness="1">
+                            <TextBlock Text="OK" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        </Border>
+                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1">
+                            <TextBlock Text="Dict Match" FontWeight="Bold" HorizontalAlignment="Center" TextWrapping="Wrap"/>
+                        </Border>
+                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="2">
+                            <TextBlock Text="Local Match" FontWeight="Bold" HorizontalAlignment="Center" TextWrapping="Wrap"/>
+                        </Border>
+                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="3">
+                            <StackPanel>
+                            <TextBlock Text="Fix" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Add to List" TextWrapping="Wrap" ToolTip="Add match to local patient lists"/>
+                                    <TextBlock Text="Add to Dict" Grid.Column="1" TextWrapping="Wrap" ToolTip="Add match to structure dictionary"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Grid>
+                <ScrollViewer Grid.Row="2" Height="350">
+                    <ItemsControl ItemsSource="{Binding TemplateStructures}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Visibility="{Binding bMakeVisibleInPatientSearch, Converter={StaticResource localBoolVisibilityConverter}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border BorderBrush="Black" BorderThickness="1 0 0 1">
+                                        <TextBlock Text="{Binding TemplateStructureId}"/>
+                                    </Border>
+                                    <Border BorderBrush="Black" BorderThickness="0 0 0 1" Grid.Column="1">
+                                        <ComboBox ItemsSource="{Binding PlanStructureMatches}" SelectedItem="{Binding MatchedStructure, Mode=TwoWay}" DisplayMemberPath="StructureId"/>
+                                    </Border>
+                                    <Grid Grid.Column="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border BorderBrush="Black" BorderThickness="0 0 0 1">
+                                            <icons:PackIconFontAwesome Kind="CheckSolid" Visibility="{Binding Converter={StaticResource localBoolVisibilityConverter}, Mode=TwoWay, Path=bValidStructure}"/>
+                                        </Border>
+                                        <Border BorderBrush="Black" BorderThickness="0 0 0 1" Grid.Column="1">
+                                            <icons:PackIconFontAwesome Kind="CheckSolid" Visibility="{Binding bDictionaryMatch, Converter={StaticResource localBoolVisibilityConverter}}"/>
+                                        </Border>
+                                        <Border BorderBrush="Black" BorderThickness="0 0 0 1" Grid.Column="2">
+                                            <icons:PackIconFontAwesome Kind="CheckSolid" Visibility="{Binding bLocalMatch,Converter={StaticResource localBoolVisibilityConverter}, Mode=TwoWay}"/>
+                                        </Border>
+                                        <Border BorderBrush="Black" BorderThickness="0 0 1 1" Grid.Column="3">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                            <Button Margin="5" Command="{Binding AddMatchListCommand}" ToolTip="Add structure match to local patient structures.">
+                                                <icons:FontAwesome Kind="ListSolid"/>
+                                            </Button>
+                                            <Button Margin="5" Command="{Binding AddDictionaryCommand}" Grid.Column="1" ToolTip="Add structure match to dictionary">
+                                                <icons:FontAwesome Kind="BookmarkSolid"/>
+                                            </Button>
+                                            <!--<Button Margin="5" Command="{Binding LaunchStructureMatchCommand}">
+                                                <icons:FontAwesome Kind="ScrewdriverSolid"/>
+                                            </Button>-->
+                                            </Grid>
 
-        </DockPanel>
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

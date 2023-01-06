@@ -407,7 +407,7 @@ namespace PlanScoreCard.ViewModels
                 {
                     try
                     {
-                        _scoreTemplates = EPeerReviewScoreModel.GetScoreTemplateFromCSV(ofd.FileName);
+                        _scoreTemplates = EPeerReviewScoreModel.GetScoreTemplateFromCSV(ofd.FileName, _eventAggregator);
                         importSuccess = true;
                     }
                     catch

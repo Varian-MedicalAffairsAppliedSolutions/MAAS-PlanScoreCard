@@ -1,0 +1,25 @@
+﻿<Window x:Class="PlanScoreCard.Views.HelperWindows.StructureMatchingView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PlanScoreCard.Views.HelperWindows"
+        mc:Ignorable="d"
+        Title="StructureMatchingView" Height="450" Width="800">
+    <Grid>
+        <StackPanel>
+            <TextBlock FontWeight="Bold" FontSize="16" HorizontalAlignment="Center">
+                <Run Text="Structure Matching for "/>
+                <Run Text="{Binding CurrentStructure.StructureId}"/>
+            </TextBlock>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock FontWeight="Bold" FontSize="16" Text="Match For:" Margin="5"/>
+                <ComboBox Width="150" ItemsSource="{Binding PlanStructures}" SelectedItem="{Binding SelectedPlanStructure}" Margin="5" DisplayMemberPath="StructureId"/>
+            </StackPanel>
+            <Button Margin="5" Content="Match for Local Structure" Command="{Binding MatchStructureCommand}"/>
+            <Button Margin="5" Content="Match for all Structures with this name" Command="{Binding MatchAllStructuresCommand}"/>
+            <Button Margin="5" Content="Add to structure dictionary" Command="{Binding AddStructureDictionaryCommand}"/>
+            <Button Margin="5" Content="Cancel" Command="{Binding CancelCommand}"/>
+        </StackPanel>
+    </Grid>
+</Window>
