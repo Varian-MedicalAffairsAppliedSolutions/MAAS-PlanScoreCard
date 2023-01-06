@@ -11,7 +11,7 @@ on:
       dateInput:
         description: 'Expiration Date'
         required: true
-        default: '8/24/2022'
+        default: '3/6/2023'
 
 jobs:
   build:
