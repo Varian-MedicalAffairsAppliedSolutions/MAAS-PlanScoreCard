@@ -11,7 +11,7 @@ on:
       dateInput:
         description: 'Expiration Date'
         required: true
-        default: '3/6/2023'
+        default: '4/1/2023'
 
 jobs:
   build:
@@ -69,7 +69,7 @@ jobs:
            -StorePasswordInClearText
      
     - name: Download internal ESAPI nuget package
-      run: nuget install ESAPI -Version 18.0.0 -OutputDirectory packages    
+      run: nuget install ESAPI -Version 18.0.0 -OutputDirectory packages
 
     - name: Update hint paths in the csproj file
       run: |
@@ -83,7 +83,7 @@ jobs:
     - name: Zip
       id: zip_release
       run: |
-        $normalizedFilePath = "${{ github.workspace }}/V18.0-${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}.zip" -replace '\\', '/'
+        $normalizedFilePath = "${{ github.workspace }}\V18.0-${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}.zip" -replace '\\', '/'
         
         Get-ChildItem -Path "${{ github.workspace }}\bin\x64\Release\*" -Recurse |
           Compress-Archive -DestinationPath $normalizedFilePath
