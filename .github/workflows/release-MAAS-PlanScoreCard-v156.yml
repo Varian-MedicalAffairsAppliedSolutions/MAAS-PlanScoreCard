@@ -31,7 +31,7 @@ jobs:
         fetch-depth: 0
 
     - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v1
       
     - name: Navigate to Workspace
       run: cd $GITHUB_WORKSPACE
@@ -46,7 +46,7 @@ jobs:
           -ProjectName ${{ env.PROJECT_NAME }}
 
     - name: Setup NuGet.exe for use with actions
-      uses: NuGet/setup-nuget@v1.0.6
+      uses: NuGet/setup-nuget@v1
       with:
         nuget-version: latest
         
@@ -59,7 +59,7 @@ jobs:
            -Source "https://nuget.pkg.github.com/Varian-Innovation-Center/index.json" `
            -UserName pszentiv `
            -Password ${{ secrets.ESAPI_READ_TOKEN }} `
-           -StorePasswordInClearText         
+           -StorePasswordInClearText
      
     - name: Download internal ESAPI nuget package
       run: nuget install ESAPI -Version 15.6.0 -OutputDirectory packages    
@@ -72,13 +72,16 @@ jobs:
         
     - name: Build Solution
       run: msbuild.exe ${{ env.SOLUTION_NAME }} /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="x64" /p:configuration="Release"
-      
+
     - name: Zip
-      shell: powershell
+      id: zip_release
       run: |
-        Compress-Archive `
-          -Path "${{ env.PROJECT_ROOT }}/bin/x64/Release/*" `
-          -DestinationPath "${{ github.workspace }}/V15.6-${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}.zip"
+        $normalizedFilePath = "${{ github.workspace }}/V15.6-${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}.zip" -replace '\\', '/'
+        
+        Get-ChildItem -Path "${{ github.workspace }}\bin\x64\Release\*" -Recurse |
+          Compress-Archive -DestinationPath $normalizedFilePath
+        
+        "NORMALIZED_FILE_PATH=$($normalizedFilePath)" >> $env:GITHUB_OUTPUT
 
     - name: Create Release
       uses: softprops/action-gh-release@v0.1.13
@@ -92,4 +95,4 @@ jobs:
           This is an official release of the **`${{ env.PROJECT_NAME }}`** project.
           Supported Eclipse version: `v15.6`.
           The generated dll is valid until `${{ github.event.inputs.dateInput }}`, and generated on `${{ steps.update_assembly_info.outputs.CURRENT_DATE }}`.
-        files: ${{ github.workspace }}/V15.6-${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}.zip
+        files: ${{ steps.zip_release.outputs.NORMALIZED_FILE_PATH }}

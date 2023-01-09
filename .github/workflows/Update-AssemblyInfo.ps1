@@ -83,7 +83,6 @@ $versionString = "$newMajorVersion.$newMinorVersion.$newPatchVersion.$newBuildNu
 $releaseName = "$ProjectName-V$versionString-$(Get-Date -Format 'MM/dd/yyyy')($ExpirationDate)"
 $normalizedReleaseName = "$ProjectName-V$versionString-$(Get-Date -Format 'MM-dd-yyyy').$($ExpirationDate -replace '/','-')"
 
-Write-Output "::set-output name=RELEASE_VERSION::$($versionString)"
-Write-Output "::set-output name=RELEASE_NAME::$($releaseName)"
-Write-Output "::set-output name=CURRENT_DATE::$(Get-Date -Format 'MM/dd/yyyy')"
-Write-Output "::set-output name=RELEASE_FILE_NAME::$($normalizedReleaseName)"
+"RELEASE_VERSION=$($versionString)" >> $env:GITHUB_OUTPUT
+"RELEASE_NAME=$($releaseName)" >> $env:GITHUB_OUTPUT
+"RELEASE_FILE_NAME=$($normalizedReleaseName)" >> $env:GITHUB_OUTPUT
