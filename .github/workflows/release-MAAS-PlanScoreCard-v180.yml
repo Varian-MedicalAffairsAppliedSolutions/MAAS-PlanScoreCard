@@ -87,7 +87,7 @@ jobs:
           -Path "${{ env.PROJECT_ROOT }}/bin/x64/Release/*" `
           -DestinationPath "${{ github.workspace }}/V18.0-${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}.zip"
     - name: Create Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v0.1.13
       with:
         name: V18.0-${{ steps.update_assembly_info.outputs.RELEASE_NAME }}
         tag_name: V18.0-${{ steps.update_assembly_info.outputs.RELEASE_NAME }}
