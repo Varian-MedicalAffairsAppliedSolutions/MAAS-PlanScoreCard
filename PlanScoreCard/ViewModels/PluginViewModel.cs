@@ -5,6 +5,7 @@ using PlanScoreCard.Events;
 using PlanScoreCard.Events.Plugin;
 using PlanScoreCard.Events.Plugins;
 using PlanScoreCard.Services;
+using PluginInterface;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -146,7 +147,9 @@ namespace PlanScoreCard.ViewModels
 
             ViewEventAggregator = new EventAggregator();
 
-             PluginViewService = pluginViewService; 
+             PluginViewService = pluginViewService;
+            YAxisLabel = "Score";
+            XAxisLabel = "Interation";
         }
 
         private void ShowPluginView()
@@ -175,9 +178,9 @@ namespace PlanScoreCard.ViewModels
         }
 
         List<PlotSeriesData> PlotSeries;
-        private void OnUpdatePlot(string obj)
+        private void OnUpdatePlot(List<ScoreCardMetric> obj)
         {
-            if (obj.StartsWith("Series"))
+            /*if (obj.StartsWith("Series"))
             {
                 if (obj.Split('_').ElementAt(1) == "X")
                 {
@@ -236,6 +239,7 @@ namespace PlanScoreCard.ViewModels
             {
                 //_eventAggregator.GetEvent<UpdateMetricDuringOptimizationEvent>().Publish(obj);
             }
+            */
         }
 
         private void GeneratePlotSeries(string obj)

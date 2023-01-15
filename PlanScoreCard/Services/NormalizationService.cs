@@ -164,8 +164,8 @@ namespace PlanScoreCard.Services
             var course = _patient.Courses.FirstOrDefault(x => x.Id == _planModel.CourseId);
             var plan = course.PlanSetups.FirstOrDefault(x => x.Id == _planModel.PlanId);
 
-            _eventAggregator.GetEvent<PlotUpdateEvent>().Publish("Series_X_Plan Normalization [%]");
-            _eventAggregator.GetEvent<PlotUpdateEvent>().Publish("Series_Y_Score");
+            //_eventAggregator.GetEvent<PlotUpdateEvent>().Publish("Series_X_Plan Normalization [%]");
+            //_eventAggregator.GetEvent<PlotUpdateEvent>().Publish("Series_Y_Score");
 
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"Accessing Plan {plan.Id}");
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\tInitial Normalization = {plan.PlanNormalizationValue}");
@@ -257,12 +257,12 @@ namespace PlanScoreCard.Services
             {
                 if (metricScore.ScoreValues.Count() != 0)
                 {
-                    _eventAggregator.GetEvent<PlotUpdateEvent>().Publish($"Metric:<{metricScore.ScoreValues.FirstOrDefault().PlanId};{metricScore.MetricId};{metricScore.ScoreValues.FirstOrDefault().Value};{metricScore.ScoreValues.FirstOrDefault().Score}>");
+                    //_eventAggregator.GetEvent<PlotUpdateEvent>().Publish($"Metric:<{metricScore.ScoreValues.FirstOrDefault().PlanId};{metricScore.MetricId};{metricScore.ScoreValues.FirstOrDefault().Value};{metricScore.ScoreValues.FirstOrDefault().Score}>");
                 }
             }
             planScores.Add(new Tuple<double, double>(planNorm, score));
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\tScore at {planNorm} = {Math.Round(score, 2)}");
-            _eventAggregator.GetEvent<PlotUpdateEvent>().Publish($"PlotPoint:<{newPlan.Id};{planNorm};{Math.Round(score, 2)}>");
+            //_eventAggregator.GetEvent<PlotUpdateEvent>().Publish($"PlotPoint:<{newPlan.Id};{planNorm};{Math.Round(score, 2)}>");
         }
     }
 }

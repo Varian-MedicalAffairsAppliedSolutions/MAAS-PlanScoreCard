@@ -102,8 +102,8 @@ namespace PlanScoreCard.ViewModels.MetricEditors
             ScoreMetric = scoreMetric;
 
             Volume = scoreMetric.InputValue;
-            VolumeUnit = scoreMetric.InputUnit;
-            DoseUnit = scoreMetric.OutputUnit;
+            VolumeUnit = VolumeUnits.Contains(scoreMetric.InputUnit)?scoreMetric.InputUnit:null;
+            DoseUnit = DoseUnits.Contains(scoreMetric.OutputUnit)?scoreMetric.OutputUnit:null;
         }
     }
 }

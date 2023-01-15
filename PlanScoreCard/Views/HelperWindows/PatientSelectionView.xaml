@@ -7,9 +7,9 @@
         xmlns:local="clr-namespace:PlanScoreCard.Views.HelperWindows"
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-                   xmlns:converters="clr-namespace:PlanScoreCard.Converters"
+         xmlns:converters="clr-namespace:PlanScoreCard.Converters"
         mc:Ignorable="d"
-        Title="PatientSelectionView" Height="650" Width="1200">
+        Title="PatientSelectionView" Height="650" Width="1400">
     <metro:MetroWindow.Resources>
         <ResourceDictionary>
             <converters:PrimaryToColorConverter x:Key="localPrimaryColorConverter"/>
@@ -38,9 +38,13 @@
                 <Button Margin="5" ToolTip="Import from JSON" Command="{Binding PatientImportCommand}">
                     <icons:FontAwesome Kind="UsersSolid"/>
                 </Button>
-                <StackPanel Orientation="Horizontal">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
                     <DockPanel>
-                        <TextBox DockPanel.Dock="Top" Width="150" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" Margin="5">
+                        <TextBox DockPanel.Dock="Top" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" Margin="5">
                         </TextBox>
                         <!--Patient Matches-->
                         <ScrollViewer DockPanel.Dock="Top" Margin="0,5,0,0" Height="50">
@@ -81,10 +85,10 @@
                             </Border>
                         </ScrollViewer>
                     </DockPanel>
-                    <Button Margin="5,0,0,0" Command="{Binding OpenPatientCommand}" Height="30" VerticalAlignment="Top" ToolTip="Add Selected Patient">
+                    <Button Grid.Column="1" Margin="5,0,0,0" Command="{Binding OpenPatientCommand}" Height="30" VerticalAlignment="Top" ToolTip="Add Selected Patient">
                         <icons:FontAwesome Kind="UserCheckSolid"/>
                     </Button>
-                </StackPanel>
+                </Grid>
                 <TextBlock Margin="5" Text="Selected Patients" FontWeight="Bold" HorizontalAlignment="Center"/>
                 <ScrollViewer Height="300">
                     <ListBox ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}">

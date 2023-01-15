@@ -69,8 +69,8 @@ namespace PlanScoreCard.ViewModels.MetricEditors
         public ObservableCollection<string> VolumeUnits
         {
             get { return volumeUnits; }
-            set 
-            { 
+            set
+            {
                 SetProperty(ref volumeUnits, value);
                 EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Publish();
             }
@@ -104,8 +104,8 @@ namespace PlanScoreCard.ViewModels.MetricEditors
             ScoreMetric = scoreMetric;
 
             Dose = scoreMetric.InputValue;
-            VolumeUnit = scoreMetric.OutputUnit;
-            DoseUnit = scoreMetric.InputUnit;
+            VolumeUnit = VolumeUnits.Contains(scoreMetric.OutputUnit) ? scoreMetric.OutputUnit : null;
+            DoseUnit = DoseUnits.Contains(scoreMetric.InputUnit) ? scoreMetric.InputUnit : null;
         }
     }
 }
