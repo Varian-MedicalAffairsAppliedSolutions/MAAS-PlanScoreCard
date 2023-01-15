@@ -498,6 +498,7 @@ namespace PlanScoreCard.Models
                     }
                     else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.ConformationNumber)
                     {
+                        //conformation number is (volume at given dose)^2/(total volume @ dose * total target volume)
                         var body = plan.StructureSet.Structures.SingleOrDefault(x => x.DicomType == "EXTERNAL");
                         if (body == null)
                         {
@@ -509,7 +510,14 @@ namespace PlanScoreCard.Models
                         var body_vol = 0.0;
                         var target_vol = 0.0;
                         PlanScoreCalculationServices.GetVolumesFromDVH(template, dvh_body, dvh, out body_vol, out target_vol);
-                        scoreValue.Value = Math.Pow(target_vol, 2) / (body_vol * dvh.CurveData.Max(x => x.Volume));
+                        if (body_vol == 0 || dvh.CurveData.Max(cd => cd.Volume) == 0|| target_vol == 0)
+                        {
+                            scoreValue.Value = -1000;
+                        }
+                        else
+                        {
+                            scoreValue.Value = Math.Pow(target_vol, 2) / (body_vol * dvh.CurveData.Max(x => x.Volume));
+                        }
 
                     }
                     else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.HomogeneityIndex)

@@ -146,9 +146,9 @@ namespace PlanScoreCard.ViewModels
             switch (metricType)
             {
                 case MetricTypeEnum.DoseAtVolume:
-                    return $"Dose at {_doseAtVolumeViewModel.Volume}{_doseAtVolumeViewModel.SelectedVolumeUnit}";
+                    return $"Dose at {TruncateLength(_doseAtVolumeViewModel.Volume)}{_doseAtVolumeViewModel.SelectedVolumeUnit}";
                 case MetricTypeEnum.VolumeAtDose:
-                    return $"Volume at {_volumeAtDoseViewModel.Dose}{_volumeAtDoseViewModel.SelectedDoseUnit}";
+                    return $"Volume at {TruncateLength(_volumeAtDoseViewModel.Dose)}{_volumeAtDoseViewModel.SelectedDoseUnit}";
                 case MetricTypeEnum.MinDose:
                     return $"Min Dose [{_doseValueViewModel.SelectedDoseUnit}]";
                 case MetricTypeEnum.MeanDose:
@@ -156,17 +156,32 @@ namespace PlanScoreCard.ViewModels
                 case MetricTypeEnum.MaxDose:
                     return $"Max Dose [{_doseValueViewModel.SelectedDoseUnit}]";
                 case MetricTypeEnum.VolumeOfRegret:
-                    return $"Vol of regret at {_volumeAtDoseViewModel.Dose}{_volumeAtDoseViewModel.SelectedDoseUnit}";
+                    return $"Vol of regret at {TruncateLength(_volumeAtDoseViewModel.Dose)}{_volumeAtDoseViewModel.SelectedDoseUnit}";
                 case MetricTypeEnum.ConformationNumber:
-                    return $"Conf No. at {_volumeAtDoseViewModel.Dose}{_volumeAtDoseViewModel.SelectedDoseUnit}";
+                    return $"Conf No. at {TruncateLength(_volumeAtDoseViewModel.Dose)}{_volumeAtDoseViewModel.SelectedDoseUnit}";
                 case MetricTypeEnum.HomogeneityIndex:
-                    return $"HI [D{_hiViewModel.HI_HiValue}-D{_hiViewModel.HI_LowValue}]/{_hiViewModel.TargetValue}";
+                    return $"HI [D{_hiViewModel.HI_HiValue}-D{_hiViewModel.HI_LowValue}]/{TruncateLength(_hiViewModel.TargetValue.ToString())}";
                 case MetricTypeEnum.ConformityIndex:
-                    return $"CI [{_ciViewModel.Dose} [{_ciViewModel.SelectedDoseUnit}]]";
+                    return $"CI [{TruncateLength(_ciViewModel.Dose)} [{_ciViewModel.SelectedDoseUnit}]]";
                 default:
                     return "Undefined Metric";
             }
         }
+        private string TruncateLength(string inputValue)
+        { 
+            double input = 0; 
+            if (Double.TryParse(inputValue, out input)) 
+            { 
+                if (input.ToString().Length > 8) 
+                { 
+                    return input.ToString("F2"); 
+                } 
+                
+                return input.ToString(); 
+            } 
+            return inputValue; 
+        }
+
         /// <summary>
         /// Convert the metric type and structure from the template to a ScoreMetricModel
         /// </summary>

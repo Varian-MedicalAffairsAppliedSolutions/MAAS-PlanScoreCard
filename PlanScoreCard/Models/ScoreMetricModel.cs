@@ -27,9 +27,9 @@ namespace PlanScoreCard.Models
         public MetricTypeEnum MetricType
         {
             get { return metricType; }
-            set 
-            { 
-                SetProperty(ref metricType , value);
+            set
+            {
+                SetProperty(ref metricType, value);
                 EventAggregator.GetEvent<UpdateMetricEditorEvent>().Publish();
                 UpdateMetricText();
                 ScoreMetricPlotModel.Title = PlanScorePlottingServices.GetPlotTitle(metricType, this);
@@ -43,8 +43,8 @@ namespace PlanScoreCard.Models
         public string MetricText
         {
             get { return metricText; }
-            set 
-            { 
+            set
+            {
                 SetProperty(ref metricText, value);
                 NotifyPropertyChanged();
             }
@@ -55,10 +55,10 @@ namespace PlanScoreCard.Models
             switch (MetricType)
             {
                 case MetricTypeEnum.DoseAtVolume:
-                    MetricText = $"Dose at {InputValue}{InputUnit}";
+                    MetricText = $"Dose at {TruncateLength(InputValue)}{InputUnit}";
                     return;
                 case MetricTypeEnum.VolumeAtDose:
-                    MetricText = $"Volume at {InputValue}{InputUnit}";
+                    MetricText = $"Volume at {TruncateLength(InputValue)}{InputUnit}";
                     return;
                 case MetricTypeEnum.MinDose:
                     MetricText = $"Min Dose [{OutputUnit}]";
@@ -70,16 +70,16 @@ namespace PlanScoreCard.Models
                     MetricText = $"Max Dose [{OutputUnit}]";
                     return;
                 case MetricTypeEnum.VolumeOfRegret:
-                    MetricText = $"Vol of regret at {InputValue}{InputUnit}";
+                    MetricText = $"Vol of regret at {TruncateLength(InputValue)}{InputUnit}";
                     return;
                 case MetricTypeEnum.ConformationNumber:
-                    MetricText = $"Conf No. at {InputValue}{InputUnit}";
+                    MetricText = $"Conf No. at {TruncateLength(InputValue)}{InputUnit}";
                     return;
                 case MetricTypeEnum.HomogeneityIndex:
-                    MetricText = $"HI [D{HI_Hi}-D{HI_Lo}]/{HI_Target}";
+                    MetricText = $"HI [D{HI_Hi}-D{HI_Lo}]/{TruncateLength(HI_Target)}";
                     return;
                 case MetricTypeEnum.ConformityIndex:
-                    MetricText = $"CI [{InputValue} [{InputUnit}]]";
+                    MetricText = $"CI [{TruncateLength(InputValue)} [{InputUnit}]]";
                     return;
                 case MetricTypeEnum.InhomogeneityIndex:
                     MetricText = $"Inhomogeneity Index";
@@ -88,14 +88,26 @@ namespace PlanScoreCard.Models
                     MetricText = $"Modified GI [{HI_Lo}/{HI_Hi}]";
                     return;
                 case MetricTypeEnum.DoseAtSubVolume:
-                    MetricText = $"D At (V - {InputValue}cc)";
+                    MetricText = $"D At (V - {TruncateLength(InputValue)}cc)";
                     return;
                 default:
                     MetricText = "Undefined Metric";
                     return;
             }
         }
-
+        private string TruncateLength(string inputValue)
+        {
+            double input = 0;
+            if (Double.TryParse(inputValue, out input))
+            {
+                if (input.ToString().Length > 8)
+                {
+                    return input.ToString("F2");
+                }
+                return input.ToString();
+            }
+            return inputValue;
+        }
         // Flag for the Rank Event of the ID - This is Gross.. Needs to Die
         public bool CanReorder;
 
@@ -132,12 +144,12 @@ namespace PlanScoreCard.Models
             {
                 if (value == null)
                     return;
-                
+
                 StructureModel structureModel = Structures.FirstOrDefault(s => s.StructureId == value.StructureId);
 
                 if (structureModel == null) // Try matching based off of Structure Code
                 {
-                    if(value.StructureCode != null)
+                    if (value.StructureCode != null)
                         structureModel = Structures.FirstOrDefault(s => s.StructureCode == value.StructureCode);
 
                     if (structureModel == null && !String.IsNullOrWhiteSpace(value.TemplateStructureId))
@@ -156,10 +168,10 @@ namespace PlanScoreCard.Models
                 value = structureModel;
                 EventAggregator.GetEvent<MetricStructureChangedEvent>().Publish();
                 SetProperty(ref structure, value);
-                
+
                 //if(IsLoaded)
                 //    Structure.TemplateStructureId = value.StructureId;
-                
+
                 NotifyPropertyChanged();
             }
         }
@@ -168,9 +180,9 @@ namespace PlanScoreCard.Models
         public string MetricComment
         {
             get { return _metricComment; }
-            set 
+            set
             {
-                SetProperty(ref _metricComment,value);
+                SetProperty(ref _metricComment, value);
             }
         }
 
@@ -183,7 +195,7 @@ namespace PlanScoreCard.Models
         public ObservableCollection<ScorePointModel> ScorePoints
         {
             get { return scorePoints; }
-            set { SetProperty(ref scorePoints , value); }
+            set { SetProperty(ref scorePoints, value); }
         }
 
         // ScorePoint Plot
@@ -193,9 +205,9 @@ namespace PlanScoreCard.Models
         public ViewResolvingPlotModel ScoreMetricPlotModel
         {
             get { return scoreMetricPlotModel; }
-            set 
-            { 
-                SetProperty(ref scoreMetricPlotModel , value);
+            set
+            {
+                SetProperty(ref scoreMetricPlotModel, value);
                 NotifyPropertyChanged();
             }
         }
@@ -206,9 +218,9 @@ namespace PlanScoreCard.Models
         public string InputValue
         {
             get { return inputValue; }
-            set 
-            { 
-                SetProperty( ref inputValue , value);
+            set
+            {
+                SetProperty(ref inputValue, value);
                 UpdateMetricText();
                 ScoreMetricPlotModel.Title = PlanScorePlottingServices.GetPlotTitle(metricType, this);
                 NotifyPropertyChanged();
@@ -220,9 +232,9 @@ namespace PlanScoreCard.Models
         public string InputUnit
         {
             get { return inputUnit; }
-            set 
-            { 
-                SetProperty( ref inputUnit , value);
+            set
+            {
+                SetProperty(ref inputUnit, value);
                 UpdateMetricText();
                 ScoreMetricPlotModel.Title = PlanScorePlottingServices.GetPlotTitle(metricType, this);
                 NotifyPropertyChanged();
@@ -234,9 +246,9 @@ namespace PlanScoreCard.Models
         public string OutputUnit
         {
             get { return outputUnit; }
-            set 
-            { 
-                SetProperty(ref outputUnit , value);
+            set
+            {
+                SetProperty(ref outputUnit, value);
                 UpdateMetricText();
                 ScoreMetricPlotModel.Title = PlanScorePlottingServices.GetPlotTitle(metricType, this);
                 NotifyPropertyChanged();
@@ -312,7 +324,7 @@ namespace PlanScoreCard.Models
                 //this one sets marker color.
                 foreach (ScorePointModel spoint in ScorePoints.OrderBy(x => x.PointX))
                 {
-                    var ScorePointSeries = new LineSeries { Color = GetColorFromMetric(spoint), MarkerType = MarkerType.Diamond, MarkerSize = 8};
+                    var ScorePointSeries = new LineSeries { Color = GetColorFromMetric(spoint), MarkerType = MarkerType.Diamond, MarkerSize = 8 };
                     //add to the plot
                     ScorePointSeries.Points.Add(new DataPoint(Convert.ToDouble(spoint.PointX), spoint.Score));
                     ScoreMetricPlotModel.Series.Add(ScorePointSeries);
@@ -517,7 +529,7 @@ namespace PlanScoreCard.Models
 
         private void OnVariationChanged(Tuple<int, int> ids)
         {
-            if (Id == ids.Item1+1 && ScorePoints.Count() != 0 && ScorePoints.Any(x => x.PointId == ids.Item2))
+            if (Id == ids.Item1 + 1 && ScorePoints.Count() != 0 && ScorePoints.Any(x => x.PointId == ids.Item2))
             {
                 if (ScorePoints.FirstOrDefault(x => x.PointId == ids.Item2).bMetricChecked)
                 {
@@ -526,12 +538,12 @@ namespace PlanScoreCard.Models
                     {
                         if (metric.PointId != ids.Item2)
                         {
-                            metric.bMetricChecked = metric.bMidMetric =  false;
+                            metric.bMetricChecked = metric.bMidMetric = false;
                         }
                     }
                     OnAddPlotScorePoint(Id);
                 }
-                if(ScorePoints.All(x=>!x.bMetricChecked))
+                if (ScorePoints.All(x => !x.bMetricChecked))
                 {
                     OnAddPlotScorePoint(Id);
                 }
@@ -541,7 +553,7 @@ namespace PlanScoreCard.Models
         private void OnColorUpdate(Tuple<int, int, string, string> obj)
         {
             //if (Id == obj.Item1 && ScorePoints.Count() != 0 && ScorePoints.Any(x => x.PointId == obj.Item2))
-            if(ScorePoints.Any(x=>x.MetricId == obj.Item1 && x.PointId == obj.Item2))
+            if (ScorePoints.Any(x => x.MetricId == obj.Item1 && x.PointId == obj.Item2))
             {
                 foreach (var metric in ScorePoints)
                 {
@@ -555,9 +567,9 @@ namespace PlanScoreCard.Models
 
                             metric.Colors = new Models.Internals.PlanScoreColorModel(new List<double> { byteA, byteB, byteC }, $"{obj.Item3}[{metric.Score}]");
 
-                            System.Windows.Media.SolidColorBrush PlanScoreBackgroundColor = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(byteA,byteB,byteC));
+                            System.Windows.Media.SolidColorBrush PlanScoreBackgroundColor = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(byteA, byteB, byteC));
                             //set all other colors to white so that they show up in the list.
-                            foreach(var point in ScorePoints.Where(x=>x.Colors == null))
+                            foreach (var point in ScorePoints.Where(x => x.Colors == null))
                             {
                                 point.Colors = new Internals.PlanScoreColorModel(new List<double> { 255, 255, 255 }, $"[{point.Score}]");
                             }

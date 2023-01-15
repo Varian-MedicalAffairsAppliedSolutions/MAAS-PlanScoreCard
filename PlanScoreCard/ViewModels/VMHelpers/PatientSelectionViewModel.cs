@@ -224,16 +224,31 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         {
             if (SelectedPatient != null)
             {
-                foreach (var plan in _plans.Where(p => p.PatientId.Equals(SelectedPatient.PatientId)))
+                string patientId = SelectedPatient.PatientId;
+                if (SelectedPatient.SelectedPlan != null)
                 {
-                    _plans.Remove(plan);
+                    SelectedPatient.SelectedPlan.Structures.Clear();
+                    SelectedPatient.SelectedPlan = null;
                 }
-                //Patients.Remove(SelectedPatient);
+                _plans = _plans.Where(pl => pl.PatientId != SelectedPatient.PatientId).ToList();
+                SelectedPatient.Plans.Clear();
                 SelectedPatient = null;
+
+                Patients.Remove(Patients.FirstOrDefault(p => p.PatientId.Equals(patientId)));
                 SetPatientsInitial();
-                //Patients.Clear();
-                //SearchText = String.Empty;
             }
+            //if (SelectedPatient != null)
+            //{
+            //    foreach (var plan in _plans.Where(p => p.PatientId.Equals(SelectedPatient.PatientId)))
+            //    {
+            //        _plans.Remove(plan);
+            //    }
+            //    //Patients.Remove(SelectedPatient);
+            //    SelectedPatient = null;
+            //    SetPatientsInitial();
+            //    //Patients.Clear();
+            //    //SearchText = String.Empty;
+            //}
         }
 
         private void OnSavePatientList()

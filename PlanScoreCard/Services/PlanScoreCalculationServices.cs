@@ -12,7 +12,7 @@ namespace PlanScoreCard.Services
 {
     public static class PlanScoreCalculationServices
     {
-        internal static double CalculatePKPosition(List<PlanScoreColorModel> Colors, bool increasing, double score,double width)
+        internal static double CalculatePKPosition(List<PlanScoreColorModel> Colors, bool increasing, double score, double width)
         {
             double halfWidth = 7;
             if (increasing)
@@ -22,7 +22,7 @@ namespace PlanScoreCard.Services
                     int index = Colors.IndexOf(Colors.LastOrDefault(x => score >= x.ColorValue));
                     if (index == Colors.Count() - 1)
                     {
-                        return width * (double)Colors.Count()- halfWidth;
+                        return width * (double)Colors.Count() - halfWidth;
                     }
                     else
                     {
@@ -49,7 +49,7 @@ namespace PlanScoreCard.Services
                         double pkPrevValue = Colors.ElementAt(index - 1).ColorValue;
                         double pkValue = Colors.ElementAt(index).ColorValue;
                         var position = (double)index * width + (pkPrevValue - score) * (width / (pkPrevValue - pkValue));
-                        return position- halfWidth;
+                        return position - halfWidth;
                     }
                 }
                 else
@@ -72,20 +72,33 @@ namespace PlanScoreCard.Services
             {
                 if (template.InputUnit == "Gy")
                 {
-                    body_vol = dvh_body.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue * 100).Volume;
-                    target_vol = dvh.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue * 100.0).Volume;
+                    body_vol = dvh_body.CurveData.Any(cd => cd.DoseValue.Dose <= template.InputValue * 100) ?
+                    dvh_body.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue * 100).Volume :
+                    0.0;
+                    target_vol = dvh.CurveData.Any(cd => cd.DoseValue.Dose <= template.InputValue * 100) ?
+                        dvh.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue * 100.0).Volume :
+                        0.0;
                 }
                 else
                 {
-                    body_vol = dvh_body.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue / 100.0).Volume;
-                    target_vol = dvh.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue / 100.0).Volume;
+                    
+                    body_vol = dvh_body.CurveData.Any(cd => cd.DoseValue.Dose <= template.InputValue / 100) ? 
+                        dvh_body.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue / 100.0).Volume:
+                    0.0;
+                    target_vol = dvh.CurveData.Any(cd => cd.DoseValue.Dose <= template.InputValue / 100) ? 
+                        dvh.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue / 100.0).Volume:
+                        0.0;
                 }
 
             }
             else
             {
-                body_vol = dvh_body.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue).Volume;
-                target_vol = dvh.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue).Volume;
+                body_vol = dvh_body.CurveData.Any(cd => cd.DoseValue.Dose <= template.InputValue) ? 
+                    dvh_body.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue).Volume:
+                    0.0;
+                target_vol = dvh.CurveData.Any(cd => cd.DoseValue.Dose <= template.InputValue / 100) ? 
+                    dvh.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue).Volume:
+                    0.0;
             }
         }
         /// <summary>
@@ -96,40 +109,52 @@ namespace PlanScoreCard.Services
         {
             if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.DoseAtVolume)
             {
-                return $"Dose at {(template.InputValue.ToString().Length > 8 ? template.InputValue.ToString("F2"):template.InputValue.ToString())}{template.InputUnit} [{template.OutputUnit}]";
+                return $"Dose at {TruncateLength(template.InputValue)}{template.InputUnit} [{template.OutputUnit}]";
             }
             else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.VolumeAtDose)
             {
-                return $"Volume at {(template.InputValue.ToString().Length > 8 ? template.InputValue.ToString("F2") : template.InputValue.ToString())}{template.InputUnit} [{template.OutputUnit}]";
+                return $"Volume at {TruncateLength(template.InputValue)}{template.InputUnit} [{template.OutputUnit}]";
             }
             else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.VolumeOfRegret)
             {
-                return $"Volume of Regret [{(template.InputValue.ToString().Length > 8 ? template.InputValue.ToString("F2") : template.InputValue.ToString())}{template.InputUnit}] [{template.OutputUnit}]";
+                return $"Volume of Regret [{TruncateLength(template.InputValue)}{template.InputUnit}] [{template.OutputUnit}]";
             }
             else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.ConformationNumber)
             {
-                return $"Conformation No. at [{(template.InputValue.ToString().Length > 8 ? template.InputValue.ToString("F2") : template.InputValue.ToString())}{template.InputUnit}]";
+                return $"Conformation No. at [{TruncateLength(template.InputValue)}{template.InputUnit}]";
             }
             else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.HomogeneityIndex)
             {
-                return $"HI [{template.HI_HiValue} - {template.HI_LowValue}]/{template.HI_Target}]";
+                return $"HI [{template.HI_HiValue} - {template.HI_LowValue}]/{TruncateLength(template.HI_Target)}]";
             }
             else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.InhomogeneityIndex)
             {
                 return "IHI[(Max-Min)/Mean]";
             }
-            else if((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum),template.MetricType) == MetricTypeEnum.ModifiedGradientIndex)
+            else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.ModifiedGradientIndex)
             {
                 return $"Mod GI[V{template.HI_LowValue}/V{template.HI_HiValue}]{template.InputUnit}";
             }
-            else if((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum),template.MetricType) == MetricTypeEnum.DoseAtSubVolume)
+            else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.DoseAtSubVolume)
             {
-                return $"D At (V - {(template.InputValue.ToString().Length > 8 ? template.InputValue.ToString("F2") : template.InputValue.ToString())}CC)";
+                return $"D At (V - {TruncateLength(template.InputValue)}CC)";
+            }
+            else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.ConformityIndex)
+            {
+                return $"CI [{TruncateLength(template.InputValue)}{template.InputUnit}]";
             }
             else
             {
                 return $"{template.MetricType} [{template.OutputUnit}]";
             }
+        }
+        internal static string TruncateLength(double inputValue)
+        {
+            if (inputValue.ToString().Length > 8)
+            {
+                return inputValue.ToString("F2");
+            }
+            return inputValue.ToString();
         }
         /// <summary>
         /// Determine Volume Type from Templaste

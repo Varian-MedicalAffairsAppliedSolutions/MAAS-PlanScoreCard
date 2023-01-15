@@ -47,64 +47,95 @@ namespace PlanScoreCard.Services
         {
             List<ScoreTemplateModel> localTemplates = new List<ScoreTemplateModel>();
             int scoreTemplateNum = 0;
+            bool bNormIndex = ConfigurationManager.AppSettings["NormIndexes"] == "true";
             foreach (var template in templates)
             {
-                ScoreTemplateModel scoreTemplate = null;
-                if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.HomogeneityIndex)
+                if (!bNormIndex)
                 {
-                    scoreTemplate = new ScoreTemplateModel(scoreTemplateNum,
-                        template.Structure,
-                        MetricTypeEnum.HomogeneityIndex,
-                        template.MetricComment,
-                        template.HI_HiValue,
-                        template.HI_LowValue,
-                        template.InputUnit,
-                        template.HI_Target,
-                        template.HI_TargetUnit,
-                        new List<ScorePointInternalModel>());
-                    //scoreTemplate = new ScoreTemplateModel(
-                    //    template.Structure,
-                    //    MetricTypeEnum.HomogeneityIndex,
-                    //    template.MetricComment,
-                    //    template.InputValue,
-                    //    template.InputUnit,
-                    //    template.OutputUnit,
-                    //    new List<ScorePointInternalModel>());
+                    if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.HomogeneityIndex
+                    || (MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.ConformityIndex
+                    || (MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.InhomogeneityIndex
+                    || (MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.ModifiedGradientIndex
+                    || (MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.ConformationNumber)
+                    {
+                        //do nothing
+                    }
+                    else
+                    {
+                        //add template if its not an index.
+                        scoreTemplateNum = AddTemplate(localTemplates, scoreTemplateNum, template);
+                    }
                 }
                 else
                 {
-                    MetricTypeEnum metricType;
-                    Enum.TryParse(template.MetricType, out metricType);
-                    scoreTemplate = new ScoreTemplateModel(
-                        scoreTemplateNum,
-                        template.Structure,
-                        metricType,
-                        template.MetricComment,
-                        template.InputValue,
-                        template.InputUnit,
-                        template.OutputUnit,
-                        new List<ScorePointInternalModel>());
+                    //add template either way if its supposed to be 
+                    scoreTemplateNum = AddTemplate(localTemplates, scoreTemplateNum, template);
                 }
-                List<ScorePointInternalModel> scorePoints = new List<ScorePointInternalModel>();
-                bool bIncreasing = CheckIncreasing(template);
-                foreach (var score in template.ScorePoints)
-                {
-
-                    ScorePointInternalModel scorePoint = new ScorePointInternalModel(score.PointX,
-                        score.Score == 0 ? _normTailValue : score.Score,
-                        score.Variation,
-                        null);
-                    scorePoints.Add(scorePoint);
-                    if (scorePoint.Score == _normTailValue)
-                    {
-                        scorePoints.Add(new ScorePointInternalModel(bIncreasing?scorePoint.PointX+_normTailPoint:scorePoint.PointX-_normTailPoint, 0, false, null));
-                    }
-                }
-                scoreTemplate.ScorePoints = scorePoints.OrderBy(sp => sp.PointX).ToList();
-                scoreTemplateNum++;
-                localTemplates.Add(scoreTemplate);
             }
             _templates = localTemplates;
+        }
+
+        private int AddTemplate(List<ScoreTemplateModel> localTemplates, int scoreTemplateNum, ScoreTemplateModel template)
+        {
+            //do nothing
+
+
+            ScoreTemplateModel scoreTemplate = null;
+            if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.HomogeneityIndex)
+            {
+                scoreTemplate = new ScoreTemplateModel(scoreTemplateNum,
+                    template.Structure,
+                    MetricTypeEnum.HomogeneityIndex,
+                    template.MetricComment,
+                    template.HI_HiValue,
+                    template.HI_LowValue,
+                    template.InputUnit,
+                    template.HI_Target,
+                    template.HI_TargetUnit,
+                    new List<ScorePointInternalModel>());
+                //scoreTemplate = new ScoreTemplateModel(
+                //    template.Structure,
+                //    MetricTypeEnum.HomogeneityIndex,
+                //    template.MetricComment,
+                //    template.InputValue,
+                //    template.InputUnit,
+                //    template.OutputUnit,
+                //    new List<ScorePointInternalModel>());
+            }
+            else
+            {
+                MetricTypeEnum metricType;
+                Enum.TryParse(template.MetricType, out metricType);
+                scoreTemplate = new ScoreTemplateModel(
+                    scoreTemplateNum,
+                    template.Structure,
+                    metricType,
+                    template.MetricComment,
+                    template.InputValue,
+                    template.InputUnit,
+                    template.OutputUnit,
+                    new List<ScorePointInternalModel>());
+            }
+            List<ScorePointInternalModel> scorePoints = new List<ScorePointInternalModel>();
+            bool bIncreasing = CheckIncreasing(template);
+            foreach (var score in template.ScorePoints)
+            {
+
+                ScorePointInternalModel scorePoint = new ScorePointInternalModel(score.PointX,
+                    score.Score == 0 ? _normTailValue : score.Score,
+                    score.Variation,
+                    null);
+                scorePoints.Add(scorePoint);
+                if (scorePoint.Score == _normTailValue)
+                {
+                    scorePoints.Add(new ScorePointInternalModel(bIncreasing ? scorePoint.PointX + _normTailPoint : scorePoint.PointX - _normTailPoint, 0, false, null));
+                }
+            }
+
+            scoreTemplate.ScorePoints = scorePoints.OrderBy(sp => sp.PointX).ToList();
+            scoreTemplateNum++;
+            localTemplates.Add(scoreTemplate);
+            return scoreTemplateNum;
         }
 
         private bool CheckIncreasing(ScoreTemplateModel template)
@@ -177,7 +208,8 @@ namespace PlanScoreCard.Services
         {
             List<Tuple<double, double>> planScores = new List<Tuple<double, double>>();
             double initial_norm = newPlan.PlanNormalizationValue;
-            for (double i = -20; i < 20; i += 2)
+            double normDistance = Convert.ToDouble(ConfigurationManager.AppSettings["InitialNormSearchDistance"]);
+            for (double i = -normDistance; i < normDistance; i += normDistance / 10.0)
             {
                 ScorePlanAtNormValue(newPlan, planScores, initial_norm, i);
             }
@@ -186,14 +218,14 @@ namespace PlanScoreCard.Services
             //this is in the event multiple normalization values yield the max score. 
             var maxNorm = planScores.OrderBy(n => Math.Abs(initial_norm - n.Item1)).FirstOrDefault(x => x.Item2 == maxScore).Item1;
             planScores.Clear();
-            for (double i = -2; i < 2; i += 0.2)
+            for (double i = -normDistance / 10.0; i < normDistance / 10.0; i += normDistance / 100.0)
             {
                 ScorePlanAtNormValue(newPlan, planScores, maxNorm, i);
             }
             maxScore = planScores.Max(x => x.Item2);
             maxNorm = planScores.OrderBy(n => Math.Abs(initial_norm - n.Item1)).FirstOrDefault(x => x.Item2 == maxScore).Item1;
             planScores.Clear();
-            for (double i = -0.2; i < 0.2; i += 0.01)
+            for (double i = -normDistance / 100.0; i < normDistance / 100.0; i += normDistance / 1000.0)
             {
                 ScorePlanAtNormValue(newPlan, planScores, maxNorm, i);
             }

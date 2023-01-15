@@ -114,7 +114,7 @@ namespace PlanScoreCard.ViewModels
             if (DosePerFraction == 0.0 || NumberOfFractions == 0)
             {
                 RxMessage = "Scorecard Rx not set";
-                //bRxScalingVisibility = false;
+                bRxScalingVisibility = false;
             }
             else
             {
@@ -449,7 +449,7 @@ namespace PlanScoreCard.ViewModels
 
         private void OnLoadPatientPlans()
         {
-            if (Plans.Select(pl=>pl.PatientId).Count() == 1 && Plans.Any(p => !String.IsNullOrEmpty(p.PatientId)))
+            if (Plans.Select(pl=>pl.PatientId).Distinct().Count() == 1 && Plans.Any(p => !String.IsNullOrEmpty(p.PatientId)))
             {
                 string patientId = Plans.FirstOrDefault(pl => !String.IsNullOrEmpty(pl.PatientId)).PatientId;
                 Application.ClosePatient();
