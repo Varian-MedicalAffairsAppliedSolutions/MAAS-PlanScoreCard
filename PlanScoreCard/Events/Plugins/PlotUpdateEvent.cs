@@ -1,10 +1,11 @@
-﻿using PluginInterface;
+﻿using PlanScoreCard.Models;
+using PluginInterface;
 using Prism.Events;
 using System.Collections.Generic;
 
 namespace PlanScoreCard.Events.Plugins
 {
-    public class PlotUpdateEvent:PubSubEvent<List<ScoreCardMetric>>
+    public class PlotUpdateEvent:PubSubEvent<List<PlanScoreModel>>
     {
     }
 }

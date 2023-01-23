@@ -4,6 +4,7 @@ using OxyPlot.Series;
 using PlanScoreCard.Events;
 using PlanScoreCard.Events.Plugin;
 using PlanScoreCard.Events.Plugins;
+using PlanScoreCard.Models;
 using PlanScoreCard.Services;
 using PluginInterface;
 using Prism.Commands;
@@ -178,8 +179,23 @@ namespace PlanScoreCard.ViewModels
         }
 
         List<PlotSeriesData> PlotSeries;
-        private void OnUpdatePlot(List<ScoreCardMetric> obj)
+        private void OnUpdatePlot(List<PlanScoreModel> obj)
         {
+            string title = "Total Score";
+            if (!PlotSeries.Any(x => x.Title == title))
+            {
+                GeneratePlotSeries(title);
+                PlotSeries.Add(new PlotSeriesData
+                {
+                    Title = title
+                });
+            }
+            double iteration = PlotSeries.FirstOrDefault(x => x.Title == title).DataPoints.Count();
+            double value = obj.Sum(psm => psm.ScoreValues.First().Score);
+            PlotSeries.FirstOrDefault(x => x.Title == title).DataPoints.Add(
+                             new Tuple<double, double>(iteration, 
+                             value));
+            ResetPlotSeries(title, iteration, value);
             /*if (obj.StartsWith("Series"))
             {
                 if (obj.Split('_').ElementAt(1) == "X")
