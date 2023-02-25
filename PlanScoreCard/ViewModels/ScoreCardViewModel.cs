@@ -1,4 +1,6 @@
-﻿using Microsoft.Win32;
+﻿using DVHViewer2.ViewModels;
+using DVHViewer2.Views;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using OxyPlot.Wpf;
 using PlanScoreCard.Events;
@@ -34,7 +36,7 @@ namespace PlanScoreCard.ViewModels
         // Class Variables 
 
         private Application Application;
-        private string _patientId;                      
+        private string _patientId;
         private Patient _patient;
         private bool _isWindowActive;
         //private Course Course;            
@@ -58,6 +60,7 @@ namespace PlanScoreCard.ViewModels
                 ExportScoreCardCommand.RaiseCanExecuteChanged();
                 PrintReportCommand.RaiseCanExecuteChanged();
                 NormalizePlanCommand.RaiseCanExecuteChanged();
+                OpenDVHViewCommand.RaiseCanExecuteChanged();
             }
         }
         //private bool _validated;
@@ -215,7 +218,7 @@ namespace PlanScoreCard.ViewModels
                         foreach (var scorePoint in template.ScorePoints)
                         {
                             //conversions not needed because planTotalDose and scoreCardTotalDose are in the same unit (Gy)
-                            scorePoint.PointX =  scorePoint.PointX * planTotalDose / scoreCardTotalDose;
+                            scorePoint.PointX = scorePoint.PointX * planTotalDose / scoreCardTotalDose;
                         }
                     }
                 }
@@ -299,6 +302,7 @@ namespace PlanScoreCard.ViewModels
                 ExportScoreCardCommand.RaiseCanExecuteChanged();
                 PrintReportCommand.RaiseCanExecuteChanged();
                 NormalizePlanCommand.RaiseCanExecuteChanged();
+                OpenDVHViewCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -329,6 +333,7 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand OpenFlagCommand { get; private set; }
         public DelegateCommand OpenPatientSelectionCommand { get; private set; }
         public DelegateCommand LoadPatientPlansCommand { get; private set; }
+        public DelegateCommand OpenDVHViewCommand { get; private set; }
 
         // Plugin Visibility
 
@@ -428,6 +433,7 @@ namespace PlanScoreCard.ViewModels
             OpenFlagCommand = new DelegateCommand(OnOpenFlag);
             OpenPatientSelectionCommand = new DelegateCommand(OnOpenPatientSelector);
             LoadPatientPlansCommand = new DelegateCommand(OnLoadPatientPlans, CanLoadPatientPlans);
+            OpenDVHViewCommand = new DelegateCommand(OnLoadDVHView, CanLoadDVHView);
             bRxScalingVisibility = true;
             // Sets If no Plan is Passed In
 
@@ -442,6 +448,32 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<PlanChangedEvent>().Subscribe(OnPlanChanged);
         }
 
+        private void OnLoadDVHView()
+        {
+            var Window = new MainWindow();
+
+            // Create tab view and supply data context
+            var TabVM = new TabViewModel();
+            var TabView = new DVHViewer2.Views.TabView
+            {
+                DataContext = TabVM
+            };
+
+            Window.Content = TabView;
+            Window.Show();
+            foreach (var patient in Plans.OrderByDescending(pl => pl.bPrimary).GroupBy(p => p.PatientId).Where(pa => pa.Any(pl => pl.bSelected)))
+            {
+                List<PlanningItem> selectedPlans = GetPlansPlanModel(patient.Key);
+                TabVM.AddMultipleDVH(ScoreCard, selectedPlans, StructureDictionaryService);
+            }
+
+        }
+
+        private bool CanLoadDVHView()
+        {
+            return ScoreCard != null && Plans.Any(pl => pl.bSelected);
+        }
+
         private bool CanLoadPatientPlans()
         {
             return Plans.Select(pl => pl.PatientId).Count() == 1;
@@ -449,16 +481,16 @@ namespace PlanScoreCard.ViewModels
 
         private void OnLoadPatientPlans()
         {
-            if (Plans.Select(pl=>pl.PatientId).Distinct().Count() == 1 && Plans.Any(p => !String.IsNullOrEmpty(p.PatientId)))
+            if (Plans.Select(pl => pl.PatientId).Distinct().Count() == 1 && Plans.Any(p => !String.IsNullOrEmpty(p.PatientId)))
             {
                 string patientId = Plans.FirstOrDefault(pl => !String.IsNullOrEmpty(pl.PatientId)).PatientId;
                 Application.ClosePatient();
                 Patient patient = Application.OpenPatientById(patientId);
-                foreach(var course in patient.Courses)
+                foreach (var course in patient.Courses)
                 {
-                    foreach(var plan in course.PlanSetups.Where(ps => ps.StructureSet != null))
+                    foreach (var plan in course.PlanSetups.Where(ps => ps.StructureSet != null))
                     {
-                        if(!Plans.Any(p=>p.CourseId.Equals(course.Id,StringComparison.OrdinalIgnoreCase) && p.PlanId.Equals(plan.Id, StringComparison.OrdinalIgnoreCase)))
+                        if (!Plans.Any(p => p.CourseId.Equals(course.Id, StringComparison.OrdinalIgnoreCase) && p.PlanId.Equals(plan.Id, StringComparison.OrdinalIgnoreCase)))
                         {
                             Plans.Add(new PlanModel(plan, EventAggregator));
                         }
@@ -485,9 +517,9 @@ namespace PlanScoreCard.ViewModels
                         if (ScoreCard != null)
                         {
                             int metricTrack = 0;
-                            foreach(var metric in ScoreCard.ScoreMetrics)
+                            foreach (var metric in ScoreCard.ScoreMetrics)
                             {
-                                if(plan.TemplateStructures.Any(ts=>ts.TemplateStructureInt == metricTrack && ts.MatchedStructure != null && ts.bLocalMatch))
+                                if (plan.TemplateStructures.Any(ts => ts.TemplateStructureInt == metricTrack && ts.MatchedStructure != null && ts.bLocalMatch))
                                 {
                                     metric.PlanModelOverrides.Add(new PlanModelOverride
                                     {
@@ -496,7 +528,7 @@ namespace PlanScoreCard.ViewModels
                                         PlanId = plan.PlanId,
                                         TemplateMetricId = metricTrack,
                                         //TemplateStructureId = metricTrack
-                                        MatchedStructureId = plan.TemplateStructures.FirstOrDefault(ts=>ts.TemplateStructureInt == metricTrack).MatchedStructure.StructureId
+                                        MatchedStructureId = plan.TemplateStructures.FirstOrDefault(ts => ts.TemplateStructureInt == metricTrack).MatchedStructure.StructureId
                                     });
                                 }
                                 metricTrack++;
@@ -529,7 +561,7 @@ namespace PlanScoreCard.ViewModels
             _isWindowActive = false;
             patientSelectionView = new PatientSelectionView();
             patientSelectionView.DataContext = new PatientSelectionViewModel(EventAggregator, Application, Plans.ToList(), ScoreCard);
-            
+
             patientSelectionView.ShowDialog();
         }
 
@@ -814,10 +846,10 @@ namespace PlanScoreCard.ViewModels
             bFlag = false;
             Warnings = String.Empty;
             Flags = String.Empty;
-            if(scoreCard.ScoreMetrics.All(sm=>sm.TemplateNumber == 0))
+            if (scoreCard.ScoreMetrics.All(sm => sm.TemplateNumber == 0))
             {
                 int metricNum = 0;
-                foreach(var template in scoreCard.ScoreMetrics)
+                foreach (var template in scoreCard.ScoreMetrics)
                 {
                     template.TemplateNumber = metricNum;
                     metricNum++;
@@ -961,7 +993,7 @@ namespace PlanScoreCard.ViewModels
                 _patient = Application.OpenPatientById(patientId);
                 _patientId = patientId;
             }
-            foreach (var planModel in Plans.Where(pl => pl.PatientId.Equals(_patientId)).Where(pl => pl.bSelected).OrderByDescending(pl=>pl.bPrimary))
+            foreach (var planModel in Plans.Where(pl => pl.PatientId.Equals(_patientId)).Where(pl => pl.bSelected).OrderByDescending(pl => pl.bPrimary))
             {
                 //planModel.bPlanScoreValid = true;//make plan score visible.
                 planItems.Add(_patient.Courses.FirstOrDefault(c => c.Id.Equals(planModel.CourseId)).PlanSetups.FirstOrDefault(ps => ps.Id.Equals(planModel.PlanId)));
@@ -1101,7 +1133,7 @@ namespace PlanScoreCard.ViewModels
 
         private void InvalidateScores()
         {
-            foreach(var planModel in Plans)
+            foreach (var planModel in Plans)
             {
                 if (!planModel.bSelected)
                 {
@@ -1120,16 +1152,16 @@ namespace PlanScoreCard.ViewModels
                 foreach (var plan in obj.OrderByDescending(x => x.bPrimary))
                 {
                     //Plan = plan;// Patient.Courses.FirstOrDefault(x => x.Id == plan.CourseId).PlanSetups.FirstOrDefault(x => x.Id == plan.PlanId && x.Course.Id == plan.CourseId);
-                                //if (Plan == null)
-                                //{
-                                //    Plan = Patient.Courses.FirstOrDefault(x => x.Id == plan.CourseId).PlanSums.FirstOrDefault(x => x.Id == plan.PlanId && x.Course.Id == plan.CourseId);
-                                //}
-                                //if (Plan != null)
-                                //{
+                    //if (Plan == null)
+                    //{
+                    //    Plan = Patient.Courses.FirstOrDefault(x => x.Id == plan.CourseId).PlanSums.FirstOrDefault(x => x.Id == plan.PlanId && x.Course.Id == plan.CourseId);
+                    //}
+                    //if (Plan != null)
+                    //{
                     Plans.Add(plan);
                     //}
                 }
-                if(Plans.Any(pl => pl.bPrimary))
+                if (Plans.Any(pl => pl.bPrimary))
                 {
                     OnPrimaryChanged(Plans.First(pl => pl.bPrimary));
                 }
@@ -1169,7 +1201,7 @@ namespace PlanScoreCard.ViewModels
             //Course = course;
             //Plan = plan;
             //Plans.Clear();
-            foreach(var plan in plans)
+            foreach (var plan in plans)
             {
                 if (Plans.Any(pl => pl.PlanId.Equals(plan.PlanId) && pl.CourseId.Equals(plan.CourseId) && pl.PatientId.Equals(plan.PatientId)))
                 {
@@ -1183,7 +1215,7 @@ namespace PlanScoreCard.ViewModels
                 {
                     Plans.Add(plan);
                 }
-                }
+            }
             InitializeClass();
             //OnPlanChanged(new List<PlanModel> { new PlanModel(Plan as PlanningItem, EventAggregator) { PlanId = Plan.Id, CourseId = Course.Id, bSelected = true } });
         }

@@ -1,0 +1,107 @@
+﻿<UserControl x:Class="DVHViewer2.Views.DVHView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DVHViewer2.Views"
+             mc:Ignorable="d" 
+             xmlns:oxy="http://oxyplot.org/wpf"
+             xmlns:oxy1="clr-namespace:OxyPlot.Series;assembly=OxyPlot" 
+             xmlns:oxy11="clr-namespace:OxyPlot;assembly=OxyPlot"
+             xmlns:t="clr-namespace:DVHViewer2.Models"
+            xmlns:helpers="clr-namespace:PlanScoreCard.Views.HelperClasses"
+             d:DesignHeight="450" d:DesignWidth="800">
+    
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <oxy:PlotView Grid.Row="0" Grid.Column="0" Grid.RowSpan="8" Grid.ColumnSpan="6" Model="{Binding Plot}"></oxy:PlotView>
+        
+        <!--ListView Grid.Column="6" Grid.ColumnSpan="2" Grid.RowSpan="8" ItemsSource="{Binding PlotItems}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <WrapPanel>
+                        <TextBlock Text="{Binding id}" FontWeight="Bold" />
+                        <TextBlock Text=" | " />
+                        <TextBlock Text="{Binding str}" FontWeight="Bold" />
+                    </WrapPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView-->
+
+
+
+        <!--TreeView Grid.Column="6" Grid.ColumnSpan="2" Grid.RowSpan="8"
+          x:Name="tree"
+          ItemContainerStyle="{StaticResource TreeViewItemStyle}"
+          ItemsSource="{Binding PlotItems}"
+          ItemTemplate="{StaticResource CheckBoxItemTemplate}"
+          /-->
+        
+        <!-- https://stackoverflow.com/questions/28993566/simple-nested-treeview-xaml-structure -->
+        <TreeView ItemsSource="{Binding StructurePlotItems}" Grid.Column="6" Grid.ColumnSpan="2" Grid.RowSpan="8">
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type t:StructurePlotItem}"
+                                    ItemsSource="{Binding MetricPlotItems}">
+                    <StackPanel Orientation="Horizontal">
+                        <!-- These elements are bound to a FooViewModel object. -->
+                        <CheckBox
+                          Focusable="False" 
+                          IsChecked="{Binding IsChecked}" 
+                          VerticalAlignment="Center"
+                          Command="{Binding CheckedCommand}"
+                         
+                          />
+                        <helpers:OutlinedTextBlock Text="{Binding id}" Fill="{Binding Color}" FontWeight="Bold" Stroke="Black" StrokeThickness="1">
+                            
+                        </helpers:OutlinedTextBlock>
+                        <!--ContentPresenter 
+                          Content="{Binding id, Mode=OneTime}" 
+                          Margin="2,0"
+                          /-->
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+                <DataTemplate  DataType="{x:Type t:MetricPlotItem}">
+                    <StackPanel Orientation="Horizontal">
+                        <!-- These elements are bound to a FooViewModel object. -->
+                        <CheckBox
+                          Focusable="False" 
+                          IsChecked="{Binding IsChecked}" 
+                          VerticalAlignment="Center"
+                          Command="{Binding CheckedCommand}"
+                          />
+                        <ContentPresenter 
+                          Content="{Binding id, Mode=OneTime}" 
+                          Margin="2,0"
+                          />            
+                    </StackPanel>
+                </DataTemplate>
+            </TreeView.Resources>
+        </TreeView>
+
+
+    </Grid>
+
+
+</UserControl>

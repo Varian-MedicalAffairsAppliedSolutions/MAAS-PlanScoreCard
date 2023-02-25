@@ -220,6 +220,10 @@
     <Compile Include="Events\VariationCheckedEvent.cs" />
     <Compile Include="Models\BuildStructureGroupModel.cs" />
     <Compile Include="Models\BuildStructureGroupStepModel.cs" />
+    <Compile Include="Models\DVHPlot\DVHPlotModel.cs" />
+    <Compile Include="Models\DVHPlot\MetricPlotItem.cs" />
+    <Compile Include="Models\DVHPlot\ScoreBarModel.cs" />
+    <Compile Include="Models\DVHPlot\StructurePlotItem.cs" />
     <Compile Include="Models\Internals\EPeerReviewScoreModel.cs" />
     <Compile Include="Models\Internals\InternalTemplateModel.cs" />
     <Compile Include="Models\Internals\PlanScoreColorModel.cs" />
@@ -269,6 +273,8 @@
     <Compile Include="ViewModels\ColorPickerViewModel.cs" />
     <Compile Include="ViewModels\DoseAtVolumeViewModel.cs" />
     <Compile Include="ViewModels\DoseValueViewModel.cs" />
+    <Compile Include="ViewModels\DVHPlot\DVHViewModel.cs" />
+    <Compile Include="ViewModels\DVHPlot\TabViewModel.cs" />
     <Compile Include="ViewModels\EditScoreCardViewModel.cs" />
     <Compile Include="ViewModels\GenerateScorecardViewModel.cs" />
     <Compile Include="ViewModels\HIViewModel.cs" />
@@ -304,10 +310,20 @@
     <Compile Include="Views\ColorPickerView.xaml.cs">
       <DependentUpon>ColorPickerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\DVHPlot\DVHView.xaml.cs">
+      <DependentUpon>DVHView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DVHPlot\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DVHPlot\TabView.xaml.cs">
+      <DependentUpon>TabView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\EditScoreCardView.xaml.cs">
       <DependentUpon>EditScoreCardView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\HelperClasses\HyperlinkCommander.cs" />
+    <Compile Include="Views\HelperClasses\OutlinedTextBlock.cs" />
     <Compile Include="Views\HelperWindows\AskAddDictionaryStructureView.xaml.cs">
       <DependentUpon>AskAddDictionaryStructureView.xaml</DependentUpon>
     </Compile>
@@ -448,6 +464,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\DVHPlot\DVHView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\DVHPlot\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\DVHPlot\TabView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\EditScoreCardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -572,6 +600,7 @@
       <Name>PluginInterface</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <AssemblySearchPaths>$(AssemblySearchPaths);{GAC}</AssemblySearchPaths>
