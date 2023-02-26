@@ -46,12 +46,12 @@ namespace DVHViewer2.Models
         private OxyPlot.Series.LineSeries dvhSeries;
 
         public ObservableCollection<MetricPlotItem> MetricPlotItems { get; set; }
-        public StructurePlotItem(StructureModel sm, DVHPlotModel plotmodel, OxyColor color)
+        public StructurePlotItem(String sm, DVHPlotModel plotmodel, OxyColor color)
         {
             this.plotmodel = plotmodel;
             this.Color = new SolidColorBrush(color.ToColor());
-            this.sm = sm;
-            this.id = sm.StructureId;
+            //this.sm = sm;
+            this.id = sm;//.StructureId;
           
             //this.IDBlock.Text = "hi";
             //this.IDBlock.C

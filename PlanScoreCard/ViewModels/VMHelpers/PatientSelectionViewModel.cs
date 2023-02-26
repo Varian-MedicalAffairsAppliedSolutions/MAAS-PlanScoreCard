@@ -315,6 +315,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             {
                 try
                 {
+                    //import logic for CSV
                     List<PatientPlanModel> patients = new List<PatientPlanModel>();
                     if (ofd.FileName.EndsWith("csv"))
                     {
@@ -341,7 +342,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                                 }
                             }
                         }
-                    }
+                    }//import logic for json
                     else
                     {
                         patients = JsonConvert.DeserializeObject<List<PatientPlanModel>>(File.ReadAllText(ofd.FileName));
@@ -363,6 +364,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                             }
                         }
                     }
+                    //all patient and plans are here. 
                     foreach (var patient in patients)
                     {
                         if (!Patients.Any(x => x.PatientId == patient.PatientId))
@@ -370,11 +372,11 @@ namespace PlanScoreCard.ViewModels.VMHelpers
                             SearchText = patient.PatientId;
                             OnOpenPatient();
                         }
-                        if (Patients.Any(p => p.PatientId == patient.PatientId))
+                        if (_plans.Any(p => p.PatientId == patient.PatientId))
                         {
-                            if (Patients.First(p => p.PatientId == patient.PatientId).Plans.Any(pl => pl.CourseId == patient.CourseId && pl.PlanId == patient.PlanId))
+                            if (_plans.Any(pl => pl.PatientId == patient.PatientId && pl.CourseId == patient.CourseId && pl.PlanId == patient.PlanId))
                             {
-                                Patients.FirstOrDefault(p => p.PatientId == patient.PatientId).Plans.FirstOrDefault(p => p.CourseId == patient.CourseId && p.PlanId == patient.PlanId).bSelected = true;
+                                _plans.FirstOrDefault(p => p.PatientId == patient.PatientId && p.CourseId == patient.CourseId && p.PlanId == patient.PlanId).bSelected = true;
                             }
                         }
                     }

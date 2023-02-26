@@ -333,7 +333,7 @@
                                             <icons:FontAwesome Kind="TimesCircleSolid" />
                                         </Button>
                                     </StackPanel>
-                                    <Button Grid.Column="1" Width="40" Height="30" Margin="5" ToolTip="Open DVH Viewer" Command="{Binding OpenDVHViewCommand}">
+                                    <Button Grid.Column="1" Width="40" Height="30" Margin="5" ToolTip="Open DVH Viewer" Command="{Binding OpenDVHViewCommand}" VerticalAlignment="Top">
                                         <icons:FontAwesome Kind="ChartLineSolid"/>
                                     </Button>
                                 </Grid>

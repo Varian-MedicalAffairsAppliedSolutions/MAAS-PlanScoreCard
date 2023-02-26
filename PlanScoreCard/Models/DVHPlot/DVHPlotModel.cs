@@ -56,18 +56,18 @@ namespace DVHViewer2.Models
                         && pmo.PlanId.Equals(plan.Id)
                         && pmo.PatientId.Equals((plan as PlanSetup).Course.Patient.Id)
                         && pmo.TemplateMetricId.Equals(item.TemplateNumber)
-                        && !String.IsNullOrEmpty(pmo.MatchedStructureId)).MatchedStructureId;
+                        && !String.IsNullOrEmpty(pmo.MatchedStructureId))?.MatchedStructureId;
                 // Get eclipse structure for volume and color
                 var structure = GetStructureFromTemplate(matchId, structName, item.Structure?.TemplateStructureId, item.Structure?.StructureCode, false, String.Empty, plan, false);//structures.Where(x => x.Id.Equals(structName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 if (structure != null)
                 {
-                    if (retval.Where(x => x.id == structName).Count() == 0)
+                    if (retval.Where(x => x.id.Equals(structure.Id)).Count() == 0)
                     {
                         // If structure name not added add it now
-                        retval.Add(new StructurePlotItem(item.Structure, this, OxyColor.FromRgb(structure.Color.R, structure.Color.G, structure.Color.B)));
+                        retval.Add(new StructurePlotItem(structure.Id, this, OxyColor.FromRgb(structure.Color.R, structure.Color.G, structure.Color.B)));
                     } // Else we already have the structure added so add the metric Plot item to it's children
 
-                    var structPlotItem = retval.Where(x => x.id == structName).FirstOrDefault();
+                    var structPlotItem = retval.Where(x => x.id.Equals(structure.Id)).FirstOrDefault();
 
 
                     var metricPlotItem = new MetricPlotItem(item, plotmodel, structure, rx_dose, structPlotItem, plan.TotalDose.UnitAsString);
@@ -101,6 +101,7 @@ namespace DVHViewer2.Models
                 MinorGridlineColor = OxyColor.FromRgb(15, 15, 15),
                 Minimum = -0.001
             });
+            this.IsLegendVisible = false;
         }
 
         public LineSeries GetDVHForStruct(Structure str)
@@ -108,7 +109,8 @@ namespace DVHViewer2.Models
             var ser = new LineSeries();
             ser.Title = $"{str.Id} DVH: " + ser.Title;
             ser.Color = OxyColor.FromRgb(str.Color.R, str.Color.G, str.Color.B);
-
+            //ser.Background = OxyColors.Black;
+            
             var raw_dvh = plan.GetDVHCumulativeData(str, D.Absolute, V.Relative, 0.1);
             if (raw_dvh == null) { throw new Exception(); }
 

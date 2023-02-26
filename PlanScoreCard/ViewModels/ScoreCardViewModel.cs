@@ -503,9 +503,13 @@ namespace PlanScoreCard.ViewModels
         {
             throw new NotImplementedException();
         }
-
+        /// <summary>
+        /// update patient and plan selections
+        /// </summary>
+        /// <param name="obj">List of patient and plans, currently only coming from the PatientSelectionViewModel</param>
         private void OnUpdatePatientPlans(List<PatientPlanSearchModel> obj)
         {
+            _patientId = String.Empty;
             Plans.Clear();
             foreach (var planSearchModel in obj)
             {
