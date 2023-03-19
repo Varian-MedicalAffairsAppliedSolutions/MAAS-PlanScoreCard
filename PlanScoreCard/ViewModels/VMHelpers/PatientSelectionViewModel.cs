@@ -165,9 +165,15 @@ namespace PlanScoreCard.ViewModels.VMHelpers
 
         private void OnEvaluateStructureMatches()
         {
+            string localPatientId = SelectedPatient.PatientId;
+            string localCourseId = SelectedPatient.SelectedPlan.CourseId;
+            string localPlanId = SelectedPatient.SelectedPlan.PlanId;
             SelectedPatient = null;
             Patients.Clear();
             SetPatientsInitial();
+            SelectedPatient = Patients.FirstOrDefault(p => p.PatientId.Equals(localPatientId));
+            SelectedPatient.SelectedPlan = SelectedPatient.Plans.FirstOrDefault(pl => pl.CourseId.Equals(localCourseId) && pl.PlanId.Equals(localPlanId));
+
         }
 
         //when matching a template structure you can copy to all patients. 

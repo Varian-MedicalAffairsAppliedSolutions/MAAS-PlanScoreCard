@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Documents;
 using VMS.TPS.Common.Model.API;
 
@@ -413,12 +414,14 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<CloseMessageViewEvent>().Subscribe(OnCloseMessage);
             EventAggregator.GetEvent<UpdatePatientPlansEvent>().Subscribe(OnUpdatePatientPlans);
             EventAggregator.GetEvent<ClosePatientSelectionEvent>().Subscribe(OnClosePatientSelection);
+            EventAggregator.GetEvent<PlotUpdateEvent>().Subscribe(OnUpdatePlotFromPlugin);
             //EventAggregator.GetEvent<RemovePlanFromScoreEvent>().Subscribe(OnRemovePlanFromScore);
 
             MaxScore = 0;
 
             // Initiate Collections
             PlanScores = new ObservableCollection<PlanScoreModel>();
+            BindingOperations.EnableCollectionSynchronization(PlanScores, this);
             Plans = new ObservableCollection<PlanModel>();
             foreach (var planModel in plans)
             {
@@ -449,6 +452,33 @@ namespace PlanScoreCard.ViewModels
             InitializeClass();
             //I moved this down here so that the scoreplan doesn't run until after the plans have already been setup (the event aggregator was running on every plan).
             EventAggregator.GetEvent<PlanChangedEvent>().Subscribe(OnPlanChanged);
+        }
+
+        private void OnUpdatePlotFromPlugin(List<PlanScoreModel> obj)
+        {
+            //PlanScores.Clear();
+            //get planning item from object.
+
+            foreach(var planScore in obj) 
+            {
+                var currentPlanScore = PlanScores.FirstOrDefault(ps => ps.MetricId == planScore.MetricId);
+                foreach(var scoreValue in planScore.ScoreValues)//there should only ever be one scoreValue in this list because normalization plugin only works on one plan at at time.
+                {
+                    //remove the old scoreValue
+                    if(currentPlanScore.ScoreValues.Any(sv=>sv.PlanId == scoreValue.PlanId && sv.CourseId == scoreValue.CourseId))
+                    {
+                        currentPlanScore.ScoreValues.Remove(
+                            currentPlanScore.ScoreValues.FirstOrDefault(sv=>sv.PlanId == scoreValue.PlanId && sv.CourseId == scoreValue.CourseId));
+                    }
+                    //get current planscore.
+                    //add the new scorevalue
+                    currentPlanScore.ScoreValues.Add(scoreValue);
+                    //plot the new scorevalue positions
+                    currentPlanScore.AddPointToPlotModel(currentPlanScore.MetricId, scoreValue);
+                    //planScore.UpdateScorePlotModel();
+                }
+                //PlanScores.Add(planScore);
+            }
         }
 
         private void OnLoadDVHView()

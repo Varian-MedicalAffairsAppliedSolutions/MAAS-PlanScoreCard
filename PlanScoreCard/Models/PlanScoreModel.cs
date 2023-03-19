@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using VMS.TPS.Common.Model.API;
 using VMS.TPS.Common.Model.Types;
 
@@ -294,11 +295,13 @@ namespace PlanScoreCard.Models
         }
 
         public ObservableCollection<PlanScoreColorModel> Colors { get; private set; }
+        public ScoreTemplateModel InternalTemplate { get; set; }
         public PlanScoreModel(VMS.TPS.Common.Model.API.Application app, StructureDictionaryService structureDictionaryService)
         {
             _app = app;
             _dvhResolution = Convert.ToDouble(ConfigurationManager.AppSettings["DVHResolution"]);
             ScoreValues = new ObservableCollection<ScoreValueModel>();
+            BindingOperations.EnableCollectionSynchronization(ScoreValues, this);
             Colors = new ObservableCollection<PlanScoreColorModel>();
             ScorePlotModel = new ViewResolvingPlotModel();
 
@@ -314,6 +317,7 @@ namespace PlanScoreCard.Models
         }
         public void InputTemplate(ScoreTemplateModel template)
         {
+            InternalTemplate = template;
             MetricText = PlanScoreCalculationServices.GetMetricTextFromTemplate(template);
             SetInitialPlotParameters(template);
         }
@@ -388,7 +392,7 @@ namespace PlanScoreCard.Models
                     && sv.PlanId.Equals((plan as PlanSetup).Id)
                     && sv.StructureId.Equals(String.IsNullOrEmpty(matchId) ? StructureId : matchId)
                     && sv.TemplateNumber == template.TemplateNumber);
-                    SetScoreValue(template, primaryCourseId, primaryPlanId, plan, scoreValue);
+                    SetScoreValue(template, primaryCourseId, primaryPlanId, (plan as PlanSetup).Course.Id, plan.Id, scoreValue);
                     ScoreValues.Add(scoreValue);
                 }
                 else
@@ -712,7 +716,7 @@ namespace PlanScoreCard.Models
                         scoreValue.Value = -1000;
                     }
 
-                    SetScorePlotModel(template, primaryCourseId, primaryPlanId, increasing, plan, scoreValue);
+                    SetScorePlotModel(template, primaryCourseId, primaryPlanId, increasing, (plan as PlanSetup).Course.Id, plan.Id, scoreValue);
                     scoreValue.TemplateNumber = template.TemplateNumber;
                     ScoreValues.Add(scoreValue);
                     localScoreValueCache.Add(scoreValue);
@@ -728,11 +732,11 @@ namespace PlanScoreCard.Models
             }
             UpdateScorePlotModel();
         }
-        private void SetScoreValue(ScoreTemplateModel template, string primaryCourseId, string primaryPlanId, PlanningItem plan, ScoreValueModel scoreValue)
+        internal void SetScoreValue(ScoreTemplateModel template, string primaryCourseId, string primaryPlanId, string currentCourseId, string currentPlanId, ScoreValueModel scoreValue)
         {
             bool increasing = false;
             increasing = DetermineScorePointDirection(template, increasing);
-            SetScorePlotModel(template, primaryCourseId, primaryPlanId, increasing, plan, scoreValue);
+            SetScorePlotModel(template, primaryCourseId, primaryPlanId, increasing, currentCourseId, currentPlanId, scoreValue);
             //the following are commented out as they're performed after the structure has been matched.
             //GetTemplateStructureVisibility();
             //if (ScoreValues.Count() > 1)
@@ -756,7 +760,7 @@ namespace PlanScoreCard.Models
             return increasing;
         }
 
-        private void SetScorePlotModel(ScoreTemplateModel template, string primaryCourseId, string primaryPlanId, bool increasing, PlanningItem plan, ScoreValueModel scoreValue)
+        private void SetScorePlotModel(ScoreTemplateModel template, string primaryCourseId, string primaryPlanId, bool increasing, string currentCourseId, string currentPlanId, ScoreValueModel scoreValue)
         {
             if (scoreValue.Value != -1000 && template.ScorePoints.Count() > 0)
             {
@@ -766,25 +770,26 @@ namespace PlanScoreCard.Models
                 bool checkCourse = false;
                 if (!String.IsNullOrEmpty(primaryPlanId) && !String.IsNullOrEmpty(primaryCourseId))
                 {
-                    if (plan is PlanSum)
-                    {
-                        checkCourse = (plan as PlanSum).PlanSetups.Any(x => x.Course.Id == primaryCourseId);
-                    }
-                    else
-                    {
-                        checkCourse = (plan as PlanSetup).Course.Id == primaryCourseId;
-                    }
+                    checkCourse = primaryCourseId == currentCourseId;
+                    //if (plan is PlanSum)
+                    //{
+                    //    checkCourse = (plan as PlanSum).PlanSetups.Any(x => x.Course.Id == primaryCourseId);
+                    //}
+                    //else
+                    //{
+                    //    checkCourse = (plan as PlanSetup).Course.Id == primaryCourseId;
+                    //}
                 }
                 var ScorePointSeries = new LineSeries
                 {
                     //Color = ScorePlotModel.Series.Any(x => !String.IsNullOrWhiteSpace(x.Title) && x.Title.Contains("Marker")) ? OxyColors.Black : PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template),
                     //Color = plan.Id == primaryPlanId && checkCourse ? PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template) : OxyColors.Black,
-                    Color = plan.Id == primaryPlanId && checkCourse ? PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template) : OxyColors.Black,
+                    Color = currentPlanId == primaryPlanId && checkCourse ? PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template) : OxyColors.Black,
                     MarkerType = MarkerType.Plus,
-                    MarkerStroke = plan.Id == primaryPlanId && checkCourse ? PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template) : OxyColors.Black,
+                    MarkerStroke = currentPlanId == primaryPlanId && checkCourse ? PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template) : OxyColors.Black,
                     //MarkerStroke = ScorePlotModel.Series.Any(x => !String.IsNullOrWhiteSpace(x.Title) && x.Title.Contains("Marker")) ? OxyColors.Black : PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template),
                     //MarkerSize = ScorePlotModel.Series.Any(x => !String.IsNullOrWhiteSpace(x.Title) && x.Title.Contains("Marker")) ? 6 : 12,
-                    MarkerSize = plan.Id == primaryPlanId && checkCourse ? 12 : 6,
+                    MarkerSize = currentPlanId == primaryPlanId && checkCourse ? 12 : 6,
                     Title = "Marker"
                 };
                 //add to the plot
@@ -818,7 +823,7 @@ namespace PlanScoreCard.Models
                         FontSize = 4;
                         break;
                 }
-                if (template.ScorePoints.Count() > 0 && Colors.Count() == 0 && plan.Id == primaryPlanId)
+                if (template.ScorePoints.Count() > 0 && Colors.Count() == 0 && currentPlanId == primaryPlanId)
                 {
                     foreach (var score in template.ScorePoints)
                     {
@@ -861,9 +866,29 @@ namespace PlanScoreCard.Models
 
             }
         }
+        internal void AddPointToPlotModel(int metricId, ScoreValueModel scoreValue)
+        {
+            if (!String.IsNullOrEmpty(scoreValue.StructureId))
+            {
+                if(ScorePlotModel.Series.Any(s=>s.Title == "TempMarker"))
+                {
+                    ScorePlotModel.Series.Remove(ScorePlotModel.Series.FirstOrDefault(s => s.Title == "TempMarker"));
+                }
+                var scorePointSeries = new LineSeries
+                {
+                    Color = OxyColors.Black,
+                    MarkerType = MarkerType.Plus,
+                    MarkerStroke = OxyColors.Black,
+                    MarkerSize = 6,
+                    Title = "TempMarker"
+                };
+                scorePointSeries.Points.Add(new DataPoint(scoreValue.Value, scoreValue.Score));
+                ScorePlotModel.Series.Add(scorePointSeries);
+                UpdateScorePlotModel();
+            }
+        }
 
-
-        private void UpdateScorePlotModel()
+        internal void UpdateScorePlotModel()
         {
             ScorePlotModel.InvalidatePlot(true);
         }

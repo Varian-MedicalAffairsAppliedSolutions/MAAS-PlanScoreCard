@@ -92,7 +92,12 @@ namespace PlanScoreCard
                 //configFile.AppSettings.Settings.Remove("EULAAgree");
                 //configFile.AppSettings.Settings["EULAAgree"].Value = "true";
                 var configFile = GetUpdatedConfigFile();
-                if (configFile != null && configFile.AppSettings.Settings["EulaAgree"].Value != "true")
+                bool skipAgree = false;
+                if (File.Exists(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "NoAgree.txt")))
+                {
+                    skipAgree = true;
+                }
+                if (configFile != null && configFile.AppSettings.Settings["EulaAgree"].Value != "true" && !skipAgree)
                 {
                     eventAggregator.GetEvent<CloseEulaEvent>().Subscribe(OnCloseEula);
                     eulaView = new EULAView();
@@ -102,7 +107,7 @@ namespace PlanScoreCard
                 var provider = new CultureInfo("en-US");
                 DateTime endDate = DateTime.Now;
                 var configUpdate = GetUpdatedConfigFile();
-                var eulaValue = configUpdate.AppSettings.Settings["EulaAgree"].Value;
+                var eulaValue = skipAgree?"true":configUpdate.AppSettings.Settings["EulaAgree"].Value;
                 var asmCa = typeof(StartupCore).Assembly.CustomAttributes.FirstOrDefault(ca => ca.AttributeType == typeof(AssemblyExpirationDate));
                 if (configUpdate != null && DateTime.TryParse(asmCa.ConstructorArguments.FirstOrDefault().Value as string, provider, DateTimeStyles.None, out endDate) && eulaValue == "true")
                 {
@@ -113,7 +118,12 @@ namespace PlanScoreCard
                             $"By Clicking 'Yes' you agree that this application will be evaluated and not utilized in providing planning decision support\n\n"+
                             "Newer builds with future expiration dates can be found here: https://github.com/Varian-Innovation-Center/MAAS-PlanScoreCard\n\n"+
                             "See the FAQ for more information on how to remove this pop-up and expiration";
-                        if (MessageBox.Show(msg, "Agreement  ", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                        bool userAgree = false;
+                        if (!skipAgree)
+                        {
+                            userAgree = MessageBox.Show(msg, "Agreement  ", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+                        }
+                        if (skipAgree || userAgree)
                         {
                             using (_app = VMS.TPS.Common.Model.API.Application.CreateApplication())
                             {
@@ -208,6 +218,11 @@ namespace PlanScoreCard
                     {
                         MessageBox.Show("Application expiration date has been surpassed.");
                     }
+                }
+                else
+                {
+                    MessageBox.Show("Unable to launch application");
+                    App.Current.Shutdown();
                 }
             }
             catch (Exception ex)
