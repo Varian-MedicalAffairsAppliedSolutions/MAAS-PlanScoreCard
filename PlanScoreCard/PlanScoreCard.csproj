@@ -137,6 +137,7 @@
     </Compile>
     <Compile Include="Converters\BoolToColorConverter.cs" />
     <Compile Include="Converters\BoolToColorFlagConverter.cs" />
+    <Compile Include="Converters\BoolVisibilityReverseConverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
     <Compile Include="Converters\DoubleDecimalConverter.cs" />
     <Compile Include="Converters\DoubleF2Converter.cs" />

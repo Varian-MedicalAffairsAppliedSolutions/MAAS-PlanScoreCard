@@ -11,7 +11,7 @@ namespace PlanScoreCard.Models
         public string OutputUnit { get; set; }
         public string PatientId { get; set; }
         public string StructureId { get; set; }
-
-
+        public int TemplateNumber { get; set; }
+        public bool SharedStructureId { get; set; }
     }
 }

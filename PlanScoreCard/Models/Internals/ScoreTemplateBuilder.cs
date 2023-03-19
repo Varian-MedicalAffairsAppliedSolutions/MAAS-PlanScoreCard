@@ -265,7 +265,7 @@ namespace PlanScoreCard.Models.Internals
             foreach (var template in scoreTemplates)
             {
                 ScoreMetricModel scoreMetric = new ScoreMetricModel(_eventAggregator);
-                scoreMetric.EventAggregator = _eventAggregator;
+                //scoreMetric.EventAggregator = _eventAggregator;
                 scoreMetric.CanReorder = false;
 
                 // Structures

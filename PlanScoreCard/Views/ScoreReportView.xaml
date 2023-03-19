@@ -11,6 +11,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:BoolVisibilityConverter x:Key="localVisibilityConverter"/>
+            <converters:BoolVisibilityReverseConverter x:Key="localVisibilityReverseConverter"/>
             <converters:MetricIdConverter x:Key="localMetricIdConverter"/>
             <converters:DoubleF2Converter x:Key="localDoubleConverter"/>
             <converters:ScoreToTextConverter x:Key="localScoreTextConverter"/>
@@ -78,7 +79,7 @@
                                     </Grid.ColumnDefinitions>
                                     <StackPanel>
                                         <Label Content="{Binding PlanId}" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                                        <TextBlock Text="{Binding StructureId}" FontSize="9" FontStyle="Italic" HorizontalAlignment="Center" Visibility="{Binding StructureId, Converter={StaticResource localNullStringVisibilityConverter}}"/>
+                                        <TextBlock Text="{Binding StructureId}" FontSize="9" FontStyle="Italic" HorizontalAlignment="Center" Visibility="{Binding SharedStructureId, Converter={StaticResource localVisibilityReverseConverter}}"/>
                                     </StackPanel>
 
                                     <Label Foreground="Black" HorizontalAlignment="Stretch" Grid.Column="1" HorizontalContentAlignment="Center">

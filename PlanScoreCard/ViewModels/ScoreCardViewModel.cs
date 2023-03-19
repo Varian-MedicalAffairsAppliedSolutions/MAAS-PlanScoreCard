@@ -203,6 +203,7 @@ namespace PlanScoreCard.ViewModels
                 return;
             }
             InvalidateScores();
+            _scoreValueCache.Clear();
             //Reminder plan.DosePerFraction is always in Gy
             //var planTotalDoseGy = planDoseUnit.StartsWith("c") ? planTotalDose  : planTotalDose;
 
@@ -321,6 +322,7 @@ namespace PlanScoreCard.ViewModels
             get { return plans; }
             set { SetProperty(ref plans, value); }
         }
+        private List<ScoreValueModel> _scoreValueCache { get; set; }
 
         // Delegate Commands
         public DelegateCommand ScorePlanCommand { get; set; }
@@ -432,9 +434,10 @@ namespace PlanScoreCard.ViewModels
             OpenWarningCommand = new DelegateCommand(OnOpenWarning);
             OpenFlagCommand = new DelegateCommand(OnOpenFlag);
             OpenPatientSelectionCommand = new DelegateCommand(OnOpenPatientSelector);
-            LoadPatientPlansCommand = new DelegateCommand(OnLoadPatientPlans, CanLoadPatientPlans);
+            LoadPatientPlansCommand = new DelegateCommand(OnLoadPatientPlans);
             OpenDVHViewCommand = new DelegateCommand(OnLoadDVHView, CanLoadDVHView);
             bRxScalingVisibility = true;
+            _scoreValueCache = new List<ScoreValueModel>();//remember to clear when score editor is run, scorecard is scaled, or patient selection is run. 
             // Sets If no Plan is Passed In
 
             //if (Plan != null)
@@ -511,6 +514,7 @@ namespace PlanScoreCard.ViewModels
         {
             _patientId = String.Empty;
             Plans.Clear();
+            _scoreValueCache.Clear();
             foreach (var planSearchModel in obj)
             {
                 if (planSearchModel.Plans.Any(psm => psm.bSelected))
@@ -625,6 +629,7 @@ namespace PlanScoreCard.ViewModels
                 //DosePerFraction = obj.DosePerFraction;
                 //NumberOfFractions = obj.NumberOfFractions;
             }
+            _scoreValueCache.Clear();
             ScorePlan();
         }
 
@@ -818,8 +823,13 @@ namespace PlanScoreCard.ViewModels
             if (EditScoreCardView != null)
             {
                 InvalidateScores();
+                
                 if (EditScoreCardView.IsVisible)
-                { EditScoreCardView.Hide(); }
+                { 
+                    EditScoreCardView.Hide();
+                    _scoreValueCache.Clear();
+                }
+
             }
 
             ScoreCard = scoreCard;
@@ -880,7 +890,7 @@ namespace PlanScoreCard.ViewModels
                 {
                     psm = new PlanScoreModel(Application, StructureDictionaryService);
                 }
-                else
+                else//now that multiple patients are supported, it is possible that the metric already exists, but 
                 {
                     psm = PlanScores.FirstOrDefault(p => p.MetricId == metric_id);
                 }
@@ -892,7 +902,10 @@ namespace PlanScoreCard.ViewModels
 
                     //if (!Plans.Any(pl => pl.bPrimary))
                     //{
-                    psm.BuildPlanScoreFromTemplate(selectedPlans, template, metric_id, Plans.FirstOrDefault(x => x.bPrimary).CourseId, Plans.FirstOrDefault(x => x.bPrimary).PlanId, true);
+                    //check to see if the score has already been cached. If so, get the current score
+
+                    //if not then recalculate the score.
+                    psm.BuildPlanScoreFromTemplate(selectedPlans, template, metric_id, Plans.FirstOrDefault(x => x.bPrimary).CourseId, Plans.FirstOrDefault(x => x.bPrimary).PlanId, true, _scoreValueCache);
                     //}
                     //else if (Plans.Any(pl => pl.bSelected))
                     //{
@@ -909,6 +922,7 @@ namespace PlanScoreCard.ViewModels
                     {
                         PlanScores.Add(psm);
                     }
+                    //save scorevalue in repository. 
                 }
                 psm.CheckOutsideBounds();
                 //moved the following 15 lines from the PlanScoreModel as it needs to work across multiple patients. 
@@ -923,7 +937,9 @@ namespace PlanScoreCard.ViewModels
                     psm.StructureId = psm.ScoreValues.First().StructureId;
                     foreach (var sv in psm.ScoreValues)
                     {
-                        sv.StructureId = String.Empty;//disappears the local structure match because they will all be the same structure match.
+                        //sv.StructureId = String.Empty;//disappears the local structure match because they will all be the same structure match.
+                        //disappearing structure Ids is having the consequence of not being able to match them later.
+                        sv.SharedStructureId = true;
                     }
                 }
                 if (template.ScorePoints.Any(x => x.Variation) && psm.ScoreValues.Any(x => x.Score < template.ScorePoints.FirstOrDefault(y => y.Variation).Score))
@@ -1137,6 +1153,7 @@ namespace PlanScoreCard.ViewModels
 
         private void InvalidateScores()
         {
+            //_scoreValueCache.Clear();
             foreach (var planModel in Plans)
             {
                 if (!planModel.bSelected)

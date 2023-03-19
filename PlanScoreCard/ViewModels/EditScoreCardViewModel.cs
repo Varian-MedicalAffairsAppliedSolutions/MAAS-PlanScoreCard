@@ -888,7 +888,7 @@ namespace PlanScoreCard.ViewModels
             if (SelectedScoreMetric != null)
             {
                 int selectedIndex = MetricPointModels.IndexOf(SelectedMetricPointModel);
-                ScorePointModel metricModel = new ScorePointModel(selectedIndex + 1, selectedIndex + 1, EventAggregator);
+                ScorePointModel metricModel = new ScorePointModel(SelectedScoreMetric.Id - 1, selectedIndex + 1, EventAggregator);
                 //if new metrics start with a "white" color it can be changed. 
                 //but should only be if colors are being used for this metric at all. 
                 if (SelectedScoreMetric.ScorePoints.Any(sp => sp.Colors != null))
