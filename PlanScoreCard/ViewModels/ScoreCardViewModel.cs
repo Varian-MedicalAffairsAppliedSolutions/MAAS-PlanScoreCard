@@ -493,12 +493,17 @@ namespace PlanScoreCard.ViewModels
             };
 
             Window.Content = TabView;
-            Window.Show();
             foreach (var patient in Plans.OrderByDescending(pl => pl.bPrimary).GroupBy(p => p.PatientId).Where(pa => pa.Any(pl => pl.bSelected)))
             {
                 List<PlanningItem> selectedPlans = GetPlansPlanModel(patient.Key);
                 TabVM.AddMultipleDVH(ScoreCard, selectedPlans, StructureDictionaryService);
             }
+            if (TabVM.Tabs.Any())
+            {
+                TabVM.CurrentTab = TabVM.Tabs.First();
+            }
+            Window.Show();
+           
 
         }
 

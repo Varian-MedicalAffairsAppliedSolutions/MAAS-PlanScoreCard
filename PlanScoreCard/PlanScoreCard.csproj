@@ -55,6 +55,9 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>IcoFile.ico</ApplicationIcon>
+  </PropertyGroup>
   <!--   <PropertyGroup>
     <ReferencePath>C:\Program Files (x86)\Varian\RTM\16.1\esapi\API</ReferencePath>
     <ReferencePath>C:\Program Files (x86)\Varian\RTM\15.6\esapi\API</ReferencePath>
@@ -440,6 +443,7 @@
       <Link>license.txt</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="IcoFile.ico" />
     <Content Include="Resources\AndBoolean.PNG">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
