@@ -19,6 +19,7 @@
 * Normalize dose to max score
   * removes noise during plan comparison from suboptimal normalization impacting relative scores
   * re-normalized to max score plans saved into a new course
+* DVH view to better visualize Dose@Volume & Volume@Dose and other selectable metrics
 * Dose per fraction and number of fractions stored in scorecard
   * Linear scaling of all doses on scorecard possible if # fx and dose/fx not matching Eclipse
 * Checkbox to annotate note explaining specific metric performance (for report printing)
@@ -26,7 +27,7 @@
 * Example ScoreCards can be found here: https://medicalaffairs.varian.com/dose-scorecards
 
 ### Main Screen
-![image](https://user-images.githubusercontent.com/78000769/210690044-26142a34-6109-4b75-9abf-467ac44f4089.png)
+![image](https://user-images.githubusercontent.com/78000769/229181378-7cbc1207-08f6-4163-b270-1d1c0f9f0ebc.png)
 1.	Checks ScoreCard Rx matches Rx in Eclipse: On Rx mismatch, option to scale all doses by the % difference
 2.	Open previously saved ScoreCard and score currently selected plan(s)
 3.	Create new ScoreCard or edit currently loaded ScoreCard
@@ -38,6 +39,7 @@
 9.	Solid selected box indicates primary plan selected
 10.	Warnings and flags when a metric is below variation or scores 0 points
 11.	Indication that a plan structure has been matched to a scorecard structure
+12. Simplified DVH view of selectable scorecard metrics
 
 ### ScoreCard Editor
 ![image](https://user-images.githubusercontent.com/78000769/210690412-a6f01bfd-5975-4008-ac33-5bf57c9dcecb.png)
