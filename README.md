@@ -82,43 +82,44 @@
 
 ### Still have questions? See: [FrequentlyAskedQuestions](../master/FAQ.md)
 
-## Current version: 3.1.4.X (1/10/2022)
+## Current version: 3.X.X.X (3/31/2023)
 
 ### Improvements
 
-* Lauuch speed up: only loads current plan in context automatically (instead of all plans and courses for patient)
-* New seperate "open" button to load all plans and courses for patient
-* Label now "Scorecard Structure ID" not "Template Structure ID" in editor
-* ScoreCard stuctructure ID now used in multi-patient batch selection matching
-* Multi-patient batch selection matching now 1:1 on stuctures not metrics (less redundant matching)
-* Dictionary matching improved in multi-patient batch selection matching
-* Multi-patient batch selection matching hover over tool tips added
+* DVH rendering popout UI with horizontal(D@V)+vertical(V@D) scoring brackets per selected structure
+* User can now select multiple metrics using CTRL/Shift in the editor 
+* Normalization to max score range is now configurable and “index” type can be turned off during normalization 
+* Negative scores are no longer plotted by default for normalization but can be if PlotNegative is set to “true” in the Config file
 
 ### Bugfixes: 
 
-* No longer crashes on launch for patients with portal dosimetry plans
-* Scorecard editor now references correct attached structure set for primary loaded plan 
-* Correceted "normailize to max score" bug displaying only negitive numbers and not relliably finding max score (introduced with tails on fail/0)
-* Plan selection "Patient "Course" "Plan" values now correctly not editable (would cause a crash when attemtping edits directly)
+* Fixed error where a crash occurs if the Rx dose is scaled too low and a conformation number metric is used
+* Normalizing with a scorecard that has a HI metric will no longer cause the application to crash 
+* Score values on Y-axis after plan normalization are now correctly displayed
+* Dose precision is rounded to the nearest hundredth value when rescaling 
+* Adding a point before selecting a metric will no longer cause the application to crash 
+* Truncated printed metric text numerical values 
+* If a null RX is input into the scorecard, the scaling button is no longer available 
+* Input value now updates when changing the metric type of an existing metric  
+* Patient selection view size was increased 
+* Removing selected patient during batch scoring now longer causes the application to crash 
+* Batch scoring now loads saved plan selections 
+* Validation table no longer closes after making a structure match in batch scoring 
+* The variation range dynamically changes in the editor 
+* Fixed a bug where opening all plans and courses could not be selected after normalizing to max score 
 
 ### Known issues: 
 
-* Dose precision is again no longer rounded to the nearest hundredth value when rescaling
-* "remove selected patient" button in multi-patien batch selection crashes app
-* Prevent single point metrics from being saved as a template or recalculated
-* A crash occurs if the Rx dose is scaled too low and the conformation number metric is used
-* When changing the metric type of an exisiting metric the input units don't always update to compatible selections
-* Multi-patien batch selection window default size too small
-* Multi-patien batch selection plan validation table closes whenever a new local match or addition to the structure dictionary is made
-* Normalizing with a scorecard that has a HI metric will cause the application to crash 
-* Adding a point before selecting a metric will cause the application to crash
+* The plot for normalizing to max score is not displayed in real time and only the final plot is shown
+* Normalizing with a modified gradient metric causes score discrepancies between the pluginview and final plan 
+* Prevent single point metrics from being saved as a template or recalculated 
+* For a new structure dictionary entry, the user must click outside of the “Key” text box for the “OK” button to be enable 
 
 ### For changes in previous versions see: [ChangeLog](../master/ChangeLog.md)
 
 ### 3.X Feature roadmap: 
 * BatchMode re-optimize multiple plans with RapidPlan model
 *	BatchMode normalize multiple plans to max score
-* DVH view button for popout UI with horizontal(D@V)+vertical(V@D) scoring brackets per selected structure
 *	Guided structure builder (aka: simple mode, to be in front of current advanced structure builder)
 *	Include support for asymmetric expansions in the advanced structure builder
 *	Command line interface to output plan scores to the CLI or automate generation of CSV/PDF
