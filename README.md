@@ -74,6 +74,9 @@
 9.	Free text field for the generated structure name
 10.	Creates the plan structure in the metric editor. Note: The structure is not generated until it is assigned to a score metric in the Scorecard editor and a plan is scored with that scorecard.
 
+### DVH View
+![image](https://user-images.githubusercontent.com/78000769/229196101-10f7f45f-c3b9-48ee-bc8a-a40248266d43.png)
+
 ### Installation Guide: [Quick-Start](../master/BasicInstallQuickStart.md)
 
 ### Installation Guide Part2: [Move PlanScoreCard to system scripts directory, copy and edit launcher (optional)](../master/InstallGuidePart2IntoSystemScriptsDirectory.md)
