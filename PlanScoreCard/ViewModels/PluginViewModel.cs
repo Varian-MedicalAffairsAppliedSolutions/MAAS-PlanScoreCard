@@ -132,7 +132,7 @@ namespace PlanScoreCard.ViewModels
         }
 
 
-        public PluginViewModel(IEventAggregator eventAggregator , PluginViewService pluginViewService)
+        public PluginViewModel(IEventAggregator eventAggregator, PluginViewService pluginViewService)
         {
             _eventAggregator = eventAggregator;
             //Feedbacks = new List<string>();
@@ -148,7 +148,7 @@ namespace PlanScoreCard.ViewModels
 
             ViewEventAggregator = new EventAggregator();
 
-             PluginViewService = pluginViewService;
+            PluginViewService = pluginViewService;
             YAxisLabel = "Score";
             XAxisLabel = "Interation";
         }
@@ -181,21 +181,31 @@ namespace PlanScoreCard.ViewModels
         List<PlotSeriesData> PlotSeries;
         private void OnUpdatePlot(List<PlanScoreModel> obj)
         {
-            string title = "Total Score";
-            if (!PlotSeries.Any(x => x.Title == title))
+            foreach (var score in obj)
             {
-                GeneratePlotSeries(title);
-                PlotSeries.Add(new PlotSeriesData
+                string title = "Total Score";
+                if (!PlotSeries.Any(x => x.Title == title))
                 {
-                    Title = title
-                });
+                    GeneratePlotSeries(title);
+                    PlotSeries.Add(new PlotSeriesData
+                    {
+                        Title = title
+                    });
+                }
+                double iteration = PlotSeries.FirstOrDefault(x => x.Title == title).DataPoints.Count();
+                double value = -1;
+                //check to see the value of "plotNegative" in the config, but also check that the sum of all scorevalues is >0. 
+                if (ConfigurationManager.AppSettings["PlotNegative"] == "true" || obj.Sum(psm => psm.ScoreValues.First().Score) >= 0)
+                {
+                    value = obj.Sum(psm => psm.ScoreValues.First().Score);
+                }
+                PlotSeries.FirstOrDefault(x => x.Title == title).DataPoints.Add(
+                           new Tuple<double, double>(iteration,
+                           value));
+                ResetPlotSeries(title, iteration, value);
             }
-            double iteration = PlotSeries.FirstOrDefault(x => x.Title == title).DataPoints.Count();
-            double value = obj.Sum(psm => psm.ScoreValues.First().Score);
-            PlotSeries.FirstOrDefault(x => x.Title == title).DataPoints.Add(
-                             new Tuple<double, double>(iteration, 
-                             value));
-            ResetPlotSeries(title, iteration, value);
+
+
             /*if (obj.StartsWith("Series"))
             {
                 if (obj.Split('_').ElementAt(1) == "X")
@@ -276,7 +286,7 @@ namespace PlanScoreCard.ViewModels
             LineSeries series = PlotData.Series.First(x => x.Title == title) as LineSeries;
             series.Points.Add(new DataPoint(xval, yval));
             PluginViewService.AddPlotPoint(xval, yval);
-            
+
             //series.Points.Clear();
             //foreach (var point in PlotSeries.FirstOrDefault(x => x.Title == title).DataPoints.OrderBy(x => x.Item1))
             //{

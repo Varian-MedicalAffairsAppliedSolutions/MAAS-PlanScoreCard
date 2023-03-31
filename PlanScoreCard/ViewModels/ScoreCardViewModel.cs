@@ -456,10 +456,11 @@ namespace PlanScoreCard.ViewModels
 
         private void OnUpdatePlotFromPlugin(List<PlanScoreModel> obj)
         {
+            //this method is only for plotting the data inside the current score metric items (like the plots on the right side).
             //PlanScores.Clear();
             //get planning item from object.
 
-            foreach(var planScore in obj) 
+            foreach (var planScore in obj) 
             {
                 var currentPlanScore = PlanScores.FirstOrDefault(ps => ps.MetricId == planScore.MetricId);
                 foreach(var scoreValue in planScore.ScoreValues)//there should only ever be one scoreValue in this list because normalization plugin only works on one plan at at time.

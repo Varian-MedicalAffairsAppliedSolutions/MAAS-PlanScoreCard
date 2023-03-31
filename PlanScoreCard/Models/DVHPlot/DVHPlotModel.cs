@@ -59,7 +59,7 @@ namespace DVHViewer2.Models
                         && !String.IsNullOrEmpty(pmo.MatchedStructureId))?.MatchedStructureId;
                 // Get eclipse structure for volume and color
                 var structure = GetStructureFromTemplate(matchId, structName, item.Structure?.TemplateStructureId, item.Structure?.StructureCode, false, String.Empty, plan, false);//structures.Where(x => x.Id.Equals(structName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                if (structure != null)
+                if (structure != null && !structure.IsEmpty)
                 {
                     if (retval.Where(x => x.id.Equals(structure.Id)).Count() == 0)
                     {
