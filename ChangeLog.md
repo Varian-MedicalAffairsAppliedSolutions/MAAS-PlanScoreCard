@@ -1,4 +1,36 @@
 ## Changelog
+## 3.1.4.X (1/10/2022)
+
+### Improvements
+
+* Lauuch speed up: only loads current plan in context automatically (instead of all plans and courses for patient)
+* New seperate "open" button to load all plans and courses for patient
+* Label now "Scorecard Structure ID" not "Template Structure ID" in editor
+* ScoreCard stuctructure ID now used in multi-patient batch selection matching
+* Multi-patient batch selection matching now 1:1 on stuctures not metrics (less redundant matching)
+* Dictionary matching improved in multi-patient batch selection matching
+* Multi-patient batch selection matching hover over tool tips added
+
+### Bugfixes: 
+
+* No longer crashes on launch for patients with portal dosimetry plans
+* Scorecard editor now references correct attached structure set for primary loaded plan 
+* Correceted "normailize to max score" bug displaying only negitive numbers and not relliably finding max score (introduced with tails on fail/0)
+* Plan selection "Patient "Course" "Plan" values now correctly not editable (would cause a crash when attemtping edits directly)
+
+### Known issues: 
+
+* Dose precision is again no longer rounded to the nearest hundredth value when rescaling
+* "remove selected patient" button in multi-patien batch selection crashes app
+* Prevent single point metrics from being saved as a template or recalculated
+* A crash occurs if the Rx dose is scaled too low and the conformation number metric is used
+* When changing the metric type of an exisiting metric the input units don't always update to compatible selections
+* Multi-patien batch selection window default size too small
+* Multi-patien batch selection plan validation table closes whenever a new local match or addition to the structure dictionary is made
+* Normalizing with a scorecard that has a HI metric will cause the application to crash 
+* Adding a point before selecting a metric will cause the application to crash
+
+
 ## 3.0.3.X (11/08/2022)
 ### Improvements
 * Batch mode: CSV input with multiple patients/plans and report output 
