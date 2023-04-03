@@ -85,7 +85,7 @@
 
 ### Still have questions? See: [FrequentlyAskedQuestions](../master/FAQ.md)
 
-## Current version: 3.X.X.X (3/31/2023)
+## Current version: 3.1.7.X (4/3/2023)
 
 ### Improvements
 
