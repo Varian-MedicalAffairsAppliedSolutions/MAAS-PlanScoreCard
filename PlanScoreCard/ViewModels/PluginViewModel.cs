@@ -6,7 +6,6 @@ using PlanScoreCard.Events.Plugin;
 using PlanScoreCard.Events.Plugins;
 using PlanScoreCard.Models;
 using PlanScoreCard.Services;
-using PluginInterface;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
