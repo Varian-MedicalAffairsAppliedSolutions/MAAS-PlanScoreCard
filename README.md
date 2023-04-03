@@ -75,7 +75,7 @@
 10.	Creates the plan structure in the metric editor. Note: The structure is not generated until it is assigned to a score metric in the Scorecard editor and a plan is scored with that scorecard.
 
 ### DVH View
-![image](https://user-images.githubusercontent.com/78000769/229590588-57f2feb3-7de4-4dd7-aefe-fb2502d67cb8.png)
+![image](https://user-images.githubusercontent.com/78000769/229590966-85f77072-5f55-4d25-89d6-4934557ea475.png)
 
 ### Installation Guide: [Quick-Start](../master/BasicInstallQuickStart.md)
 
