@@ -91,8 +91,8 @@
 
 * DVH rendering popout UI with horizontal(D@V)+vertical(V@D) scoring brackets per selected structure
 * User can now select multiple metrics using CTRL/Shift in the editor 
-* Normalization to max score range is now configurable and “index” type can be turned off during normalization 
-* Negative scores are no longer plotted by default for normalization but can be if PlotNegative is set to “true” in the Config file
+* Normalization to max score range is now configurable and “index” type metrics can be turned off during normalization 
+* Negative scores are no longer plotted by default for normalization unless PlotNegative is “true” in config file
 
 ### Bugfixes: 
 
@@ -105,7 +105,7 @@
 * If a null RX is input into the scorecard, the scaling button is no longer available 
 * Input value now updates when changing the metric type of an existing metric  
 * Patient selection view size was increased 
-* Removing selected patient during batch scoring now longer causes the application to crash 
+* Removing selected patient during batch scoring no longer causes the application to crash 
 * Batch scoring now loads saved plan selections 
 * Validation table no longer closes after making a structure match in batch scoring 
 * The variation range dynamically changes in the editor 
@@ -113,7 +113,7 @@
 
 ### Known issues: 
 
-* The plot for normalizing to max score is not displayed in real time and only the final plot is shown
+* sometimes plot for normalizing to max score is not displayed in real time and only the final plot is shown
 * Normalizing with a modified gradient metric causes score discrepancies between the pluginview and final plan 
 * Prevent single point metrics from being saved as a template or recalculated 
 * For a new structure dictionary entry, the user must click outside of the “Key” text box for the “OK” button to be enable 
@@ -126,6 +126,7 @@
 *	Guided structure builder (aka: simple mode, to be in front of current advanced structure builder)
 *	Include support for asymmetric expansions in the advanced structure builder
 *	Command line interface to output plan scores to the CLI or automate generation of CSV/PDF
+* Add stylized html report output option (in addtion to clean CSV and viewdump PDF)
 * DICOM Filemode support to be enabled by importing opensource C# DICOM library
 *	Import/Export buttons on ScoreCard Builder to support opening and saving various file types
 *	Reload current patient from Eclipse button
