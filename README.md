@@ -19,7 +19,7 @@
 * Normalize dose to max score
   * removes noise during plan comparison from suboptimal normalization impacting relative scores
   * re-normalized to max score plans saved into a new course
-* DVH view to better visualize Dose@Volume & Volume@Dose and other selectable metrics
+* DVH view to better visualize Dose@Volume & Volume@Dose and other selectable metrics (NEW in v3.X)
 * Dose per fraction and number of fractions stored in scorecard
   * Linear scaling of all doses on scorecard possible if # fx and dose/fx not matching Eclipse
 * Checkbox to annotate note explaining specific metric performance (for report printing)
