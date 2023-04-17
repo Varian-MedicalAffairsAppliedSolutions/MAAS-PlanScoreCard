@@ -109,6 +109,23 @@ namespace PlanScoreCard
                 var configUpdate = GetUpdatedConfigFile();
                 var eulaValue = skipAgree?"true":configUpdate.AppSettings.Settings["EulaAgree"].Value;
                 var asmCa = typeof(StartupCore).Assembly.CustomAttributes.FirstOrDefault(ca => ca.AttributeType == typeof(AssemblyExpirationDate));
+                         
+                /*
+                Caleb's fix for datetime culture: should work regardless of local datetime culture settings
+                
+                // You can probably use your asmCa variable above in place of this. This was what I used for the DoseDynamicArcs project which doesn't use the StartupCore
+                var asmCa = Assembly.GetExecutingAssembly().CustomAttributes.FirstOrDefault(ca => ca.AttributeType == typeof(AssemblyExpirationDate));
+                
+                // Get the datestring from the assembly, this shoulc always be in the M/d/yyyy format
+                var datestring_asm = asmCa.ConstructorArguments.FirstOrDefault().Value as string;
+                
+                // Convert the datestring from the assembly to the format M/d/yyyy
+                DateTime endDate = DateTime.ParseExact(datestring_asm, "M/d/yyyy", CultureInfo.InvariantCulture);
+                
+                // Now when you do the comparison (DateTime.Now <= endDate) endDate will always be in the M/d/yyyy format
+                // Uncomment this section to accept the change, you won't need the DateTime.TryParse below (line 129)
+                */
+                
                 if (configUpdate != null && DateTime.TryParse(asmCa.ConstructorArguments.FirstOrDefault().Value as string, provider, DateTimeStyles.None, out endDate) && eulaValue == "true")
                 {
                     if (DateTime.Now <= endDate)
