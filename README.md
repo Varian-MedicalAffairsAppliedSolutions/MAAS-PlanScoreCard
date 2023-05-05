@@ -61,8 +61,8 @@
 16.	Recalculates the plan score and returns to the main screen
 17.	Save changes to json file
 
-![image](https://user-images.githubusercontent.com/78000769/236375596-6cb1ed8c-ca26-4289-9a30-c9dda79ebd86.png)
 ### Multi-Plan/Multi-Patient Selection Workspace
+![image](https://user-images.githubusercontent.com/78000769/236375596-6cb1ed8c-ca26-4289-9a30-c9dda79ebd86.png)
 1. Import saved patient selection JSON file
 2.	Search for patient name in database
 3.	Add selected patient from database
