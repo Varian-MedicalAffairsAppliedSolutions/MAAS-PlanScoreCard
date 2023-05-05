@@ -61,6 +61,26 @@
 16.	Recalculates the plan score and returns to the main screen
 17.	Save changes to json file
 
+![image](https://user-images.githubusercontent.com/78000769/236375596-6cb1ed8c-ca26-4289-9a30-c9dda79ebd86.png)
+### Multi-Plan/Multi-Patient Selection Workspace
+1. Import saved patient selection JSON file
+2.	Search for patient name in database
+3.	Add selected patient from database
+4.	List of patients added
+5.	List of plans within highlighted patient in selected patients list
+6.	Alerts for structure matching with scorecard metrics
+7.	Validate structure matches with scorecard for each plan
+8.	List of structure names used for scorecard metrics
+9.	List of structures within plan structure set
+10.	Checkmarks indicate how structures are matched (direct, locally, or via dictionary)
+11.	Drop down menu for choosing structure within plan
+12.	Assign local structure match (plan specific)
+13.	Add match to structure dictionary (global)
+14.	Score selected patients and plans
+15.	Save patient selection as JSON file
+16.	Remove selected patient from list
+17.	Close patient selection workspace
+
 ### Structure Builder
 ![image](https://user-images.githubusercontent.com/78000769/210690982-01ea862b-328b-4a80-a538-42d39de1d89e.png)
 1.	Add a new structure grouping
