@@ -195,7 +195,10 @@ namespace PlanScoreCard.Models
         public ObservableCollection<ScorePointModel> ScorePoints
         {
             get { return scorePoints; }
-            set { SetProperty(ref scorePoints, value); }
+            set { 
+                SetProperty(ref scorePoints, value);
+                DetermineIssue();
+            }
         }
 
         // ScorePoint Plot
@@ -254,6 +257,13 @@ namespace PlanScoreCard.Models
                 NotifyPropertyChanged();
             }
         }
+        private bool _bIssue;
+
+        public bool bIssue
+        {
+            get { return _bIssue; }
+            set { SetProperty(ref _bIssue,value); }
+        }
 
         public string HI_Hi { get; internal set; }
         public string HI_Lo { get; internal set; }
@@ -277,9 +287,29 @@ namespace PlanScoreCard.Models
 
         }
 
+        private void DetermineIssue()
+        {
+            if(ScorePoints.Count() == 1)
+            {
+                if (!bIssue)
+                {
+                    bIssue = true;
+                    EventAggregator.GetEvent<UpdateScroreMetricsEvent>().Publish();
+                }
+            }
+            else
+            {
+                if (bIssue)
+                {
+                    bIssue = false;
+                    EventAggregator.GetEvent<UpdateScroreMetricsEvent>().Publish();
+                }
+            }
+        }
+
         public void InititatePlot()
         {
-            SetEvents();
+            //SetEvents();//removed, events shouldn't be subscribed multiple times. 
             ScoreMetricPlotModel = new ViewResolvingPlotModel();
             SetPlotProperties(MetricType);
         }
@@ -371,6 +401,8 @@ namespace PlanScoreCard.Models
                 }
                 ScoreMetricPlotModel.InvalidatePlot(true);
                 //EventAggregator.GetEvent<ScoreMetricPlotModelUpdatedEvent>().Publish();
+                DetermineIssue();
+
             }
         }
 

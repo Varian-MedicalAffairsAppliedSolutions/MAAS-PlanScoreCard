@@ -261,7 +261,7 @@ namespace PlanScoreCard.Services
                 }
             }
             planScores.Add(new Tuple<double, double>(planNorm, score));
-            _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\tScore at {planNorm} = {Math.Round(score, 2)}");
+            _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\tScore at {planNorm:F3} = {Math.Round(score, 2)}");
             _eventAggregator.GetEvent<PlotUpdateEvent>().Publish(PlanScores.ToList());
             //_eventAggregator.GetEvent<PlotUpdateEvent>().Publish($"PlotPoint:<{newPlan.Id};{planNorm};{Math.Round(score, 2)}>");
         }

@@ -34,7 +34,7 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel>
                     <TextBlock Text="Key:"/>
-                    <TextBox Text="{Binding EntryKey}" IsEnabled="{Binding bAddNewEntry}"/>
+                    <TextBox Text="{Binding EntryKey, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding bAddNewEntry}"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1">
                     <TextBlock Text="Value:"/>

@@ -516,6 +516,7 @@ namespace PlanScoreCard.Models
                                 System.Windows.MessageBox.Show("No Single Body Structure Found");
                                 scoreValue.Value = ScoreMax = scoreValue.Score = -1000; return;
                             }
+                            template.OutputUnit = "cc";
                             var dvh_body = PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, body, _dvhResolution);
                             var dvh = PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, structure, _dvhResolution);
                             var body_vol = 0.0;
@@ -529,6 +530,7 @@ namespace PlanScoreCard.Models
                             {
                                 scoreValue.Value = Math.Pow(target_vol, 2) / (body_vol * dvh.CurveData.Max(x => x.Volume));
                             }
+                            template.OutputUnit = String.Empty;
 
                         }
                         else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.HomogeneityIndex)

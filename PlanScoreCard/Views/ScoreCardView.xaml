@@ -282,7 +282,7 @@
                             <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" Grid.Row="0" Grid.ColumnSpan="8" BorderThickness="0,0,0,2"/>
                             <Label Grid.Column="0" Content="Id" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                             <Label Grid.Column="1" Content="Structure" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                            <Label Grid.Column="2" Content="Score Metric" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                            <Label Grid.Column="2" Content="Patient Id" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                             <Label Grid.Column="3" Content="Plan Id" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
                             <Label Grid.Column="4" Content="Value" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                             <Label Grid.Column="5" Content="Score" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
@@ -301,8 +301,18 @@
                                                     <ColumnDefinition Width="17.8*"/>
                                                     <ColumnDefinition Width="5*"/>
                                                 </Grid.ColumnDefinitions>
-                                                <local:ScoreReportView DataContext="{Binding}"/>
-                                                <Grid Grid.Column="1">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock TextDecorations="Underline">
+                                                    <Run FontWeight="Bold" Text="Id: "/>
+                                                     <Run Text="{Binding MetricId}"/>
+                                                    <Run Text="Score Metric:" FontWeight="Bold"/>
+                                                    <Run Text="{Binding MetricText}"/>
+                                                </TextBlock>
+                                                <local:ScoreReportView DataContext="{Binding}" Grid.Row="1"/>
+                                                <Grid Grid.Column="1" Grid.RowSpan="2">
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="3*"/>
                                                         <RowDefinition Height="*"/>

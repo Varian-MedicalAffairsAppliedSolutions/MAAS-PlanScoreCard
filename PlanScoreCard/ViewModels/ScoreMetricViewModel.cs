@@ -202,7 +202,7 @@ namespace PlanScoreCard.ViewModels
                     OutputUnit = _doseAtVolumeViewModel.SelectedDoseUnit
                 };
             }
-            else if (metricType == MetricTypeEnum.VolumeAtDose || metricType == MetricTypeEnum.VolumeOfRegret || metricType == MetricTypeEnum.ConformationNumber)
+            else if (metricType == MetricTypeEnum.VolumeAtDose || metricType == MetricTypeEnum.VolumeOfRegret)
             {
                 return new ScoreMetricModel(_eventAggregator)
                 {
@@ -237,7 +237,7 @@ namespace PlanScoreCard.ViewModels
                     InputUnit = _hiViewModel.SelectedDoseUnit
                 };
             }
-            else if (metricType == MetricTypeEnum.ConformityIndex)
+            else if (metricType == MetricTypeEnum.ConformityIndex || metricType == MetricTypeEnum.ConformationNumber)
             {
                 return new ScoreMetricModel(_eventAggregator)
                 {

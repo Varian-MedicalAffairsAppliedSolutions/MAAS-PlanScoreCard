@@ -150,6 +150,23 @@
                         </ScrollViewer>-->
 
                         <DataGrid Foreground="Black" SelectedItem="{Binding SelectedScoreMetric, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ScoreMetrics, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource MahApps.Brushes.DataGrid.Selection.Background}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource MahApps.Brushes.DataGrid.Selection.Background.MouseOver}"/>
+                                        </Trigger>
+                                        <DataTrigger Binding="{Binding bIssue, UpdateSourceTrigger=LostFocus}" Value="true">
+                                            <Setter Property="BorderBrush" Value="Red"/>
+                                            <Setter Property="BorderThickness" Value="1"/>
+                                            <Setter Property="ToolTip" Value="Metric cannot have only one score point."/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.RowStyle>
                             <DataGrid.Columns>
                                 <metro:DataGridNumericUpDownColumn Header="Rank" Binding="{Binding Id, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12"/>
                                 <DataGridTextColumn Header="Structure" Binding="{Binding Structure, Converter={StaticResource structureNameConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}"  FontSize="12" IsReadOnly="True">

@@ -33,7 +33,7 @@ namespace PlanScoreCard.Converters
 
             ScoreMetricModel scoreMetric = value as ScoreMetricModel;
 
-            if (scoreMetric.MetricType == MetricTypeEnum.ConformityIndex)
+            if (scoreMetric.MetricType == MetricTypeEnum.ConformityIndex || scoreMetric.MetricType == MetricTypeEnum.ConformationNumber)
             {
                 EditCIView volumeAtDoseView = ViewLauncherService.GetEditMetricView_CI();
                 EventAggregator.GetEvent<ShowCIMetricEvent>().Publish(scoreMetric);
@@ -57,7 +57,7 @@ namespace PlanScoreCard.Converters
                 EventAggregator.GetEvent<ShowDoseValueMetricEvent>().Publish(scoreMetric);
                 return volumeAtDoseView;
             }
-            else if (scoreMetric.MetricType == MetricTypeEnum.VolumeAtDose || scoreMetric.MetricType == MetricTypeEnum.VolumeOfRegret || scoreMetric.MetricType == MetricTypeEnum.ConformationNumber)
+            else if (scoreMetric.MetricType == MetricTypeEnum.VolumeAtDose || scoreMetric.MetricType == MetricTypeEnum.VolumeOfRegret)
             {
                 EditVolumeAtDoseView volumeAtDoseView = ViewLauncherService.GetEditMetricView_VolumeAtDose();
                 EventAggregator.GetEvent<ShowVolumeAtDoseMetricEvent>().Publish(scoreMetric);

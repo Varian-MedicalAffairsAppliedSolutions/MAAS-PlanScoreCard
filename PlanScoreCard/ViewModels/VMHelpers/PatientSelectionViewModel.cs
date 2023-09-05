@@ -316,7 +316,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         private void OnImportPatients()
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "CSV File (*.csv)|*.csv|JSON File (*.json)|*.json";
+            ofd.Filter = "JSON File (*.json)|*.json|CSV File (*.csv)|*.csv";
             if (ofd.ShowDialog() == true)
             {
                 try

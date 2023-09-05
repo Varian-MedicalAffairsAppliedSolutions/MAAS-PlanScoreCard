@@ -285,9 +285,9 @@ namespace PlanScoreCard.ViewModels
                 if (SelectedStructure != null && SelectedScoreMetric != null)
                 {
                     string temp_templateStructureId = SelectedScoreMetric.Structure?.TemplateStructureId;
-
-                    if (!String.IsNullOrWhiteSpace(SelectedStructure.StructureId))
-                    {
+                    //removed 9/5/2023 to allow user to select blank structure in the editor. 
+                    //if (!String.IsNullOrWhiteSpace(SelectedStructure.StructureId))
+                    //{
                         // if (SelectedScoreMetric.Structure == null)
                         //{
                         SelectedScoreMetric.Structure = new StructureModel(EventAggregator)
@@ -311,7 +311,7 @@ namespace PlanScoreCard.ViewModels
                         //}
 
 
-                    }
+                    //}
                     //SelectedScoreMetric.Structure = SelectedStructure;
                 }
                 //do not change the selected score metric. This should be unique to the scorecard. 
@@ -696,9 +696,19 @@ namespace PlanScoreCard.ViewModels
         {
             if (SelectedScoreMetric == null)
                 return;
-
-            ScoreMetrics = ScoreMetrics;
-
+            var selectedMetricId = SelectedScoreMetric.Id;
+            List<ScoreMetricModel> localMetrics = new List<ScoreMetricModel>();
+            foreach(var scoreMetric in ScoreMetrics)
+            {
+                localMetrics.Add(scoreMetric);
+            }
+            ScoreMetrics.Clear();
+            foreach(var scoreMetric in localMetrics)
+            {
+                ScoreMetrics.Add(scoreMetric);
+            }
+            //ScoreMetrics = ScoreMetrics;
+            SelectedScoreMetric = ScoreMetrics.FirstOrDefault(sm => sm.Id == selectedMetricId);
             //ScoreMetrics.Remove(ScoreMetrics.FirstOrDefault(s => s.Id == SelectedScoreMetric.Id));
             //ScoreMetrics.Add(SelectedScoreMetric);
             //ScoreMetrics.OrderBy(sm => sm.Id);
@@ -780,6 +790,11 @@ namespace PlanScoreCard.ViewModels
             if (ScoreMetrics.Any(x => x.Structure == null))
             {
                 MessageBox.Show("Not all metrics have a structure selected.");
+                return false;
+            }
+            if(ScoreMetrics.Any(x=>x.bIssue == true))
+            {
+                MessageBox.Show($"Some metrics have only 1 score point\n\tMetric #{String.Join("\n\tMetric #",ScoreMetrics.Where(b=>b.bIssue).Select(b=>b.Id))}");
                 return false;
             }
             //check that the dose metrics have an output unit selected.
@@ -1060,6 +1075,7 @@ namespace PlanScoreCard.ViewModels
 
             PlanModel = planModel;
             Structures.Clear();
+            Structures.Add(new StructureModel(EventAggregator) { StructureId = String.Empty });
             readyEdit = false;
             foreach (var structure in PlanModel.Structures.OrderBy(s => s.StructureId))
             {
@@ -1182,7 +1198,7 @@ namespace PlanScoreCard.ViewModels
 
         private void UpdateMetricEditor(ScoreMetricModel scoreMetric)
         {
-            if (scoreMetric.MetricType == MetricTypeEnum.ConformityIndex)
+            if (scoreMetric.MetricType == MetricTypeEnum.ConformityIndex || scoreMetric.MetricType == MetricTypeEnum.ConformationNumber)
             {
                 //EditCIView volumeAtDoseView = ViewLauncherService.GetEditMetricView_CI();
                 EventAggregator.GetEvent<ShowCIMetricEvent>().Publish(scoreMetric);
@@ -1214,7 +1230,7 @@ namespace PlanScoreCard.ViewModels
                 bCIView = bDAtVView = bVAtDView = bHIView = bMGIView = bIHIView = bDSVView = false;
                 bDValueView = true;
             }
-            else if (scoreMetric.MetricType == MetricTypeEnum.VolumeAtDose || scoreMetric.MetricType == MetricTypeEnum.VolumeOfRegret || scoreMetric.MetricType == MetricTypeEnum.ConformationNumber)
+            else if (scoreMetric.MetricType == MetricTypeEnum.VolumeAtDose || scoreMetric.MetricType == MetricTypeEnum.VolumeOfRegret)
             {
                 //EditVolumeAtDoseView volumeAtDoseView = ViewLauncherService.GetEditMetricView_VolumeAtDose();
                 EventAggregator.GetEvent<ShowVolumeAtDoseMetricEvent>().Publish(scoreMetric);

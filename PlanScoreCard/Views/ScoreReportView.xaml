@@ -38,57 +38,59 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 0" Grid.ColumnSpan="3">
+                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 0" Grid.ColumnSpan="2">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="3*"/>
-                            <ColumnDefinition Width="4*"/>
+                            <!--<ColumnDefinition Width="4*"/>-->
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="30"/>
                             <RowDefinition Height="15"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <Label Content="{Binding MetricId, Converter={StaticResource localMetricIdConverter}}" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                        <!--<Label Content="{Binding MetricId, Converter={StaticResource localMetricIdConverter}}" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>-->
                         <Label Foreground="Black" Content="{Binding StructureId}" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                         <TextBlock Foreground="Black" Text="{Binding TemplateStructureId}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Visibility="{Binding TemplateStructureVisibility}"/>
-                        <StackPanel Grid.Column="2">
+                        <!--<StackPanel Grid.Column="2">
                             <Label Content="{Binding MetricText}" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                            <!--<TextBlock Text="{Binding MetricComment}" FontSize="12" Foreground="Black" HorizontalAlignment="Center"/>-->
-                        </StackPanel>
+                            --><!--<TextBlock Text="{Binding MetricComment}" FontSize="12" Foreground="Black" HorizontalAlignment="Center"/>--><!--
+                        </StackPanel>-->
 
 
                     </Grid>
                 </Border>
-                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 0" Grid.ColumnSpan="4">
+                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 0" Grid.ColumnSpan="2">
                     <StackPanel Orientation="Horizontal">
                         <CheckBox Visibility="{Binding bShowPrintComment, Converter={StaticResource localVisibilityConverter}}" IsChecked="{Binding bPrintComment}"/>
                         <TextBox Height="15" Text="{Binding PrintComment}" Visibility="{Binding bPrintComment, Converter={StaticResource localVisibilityConverter}}" Width="200"/>
                     </StackPanel>
                 </Border>
-                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 0" Grid.Column="3" Grid.ColumnSpan="3">
+                <Border BorderBrush="{DynamicResource ResourceKey=MahApps.Brushes.Accent}" BorderThickness="0 0 0 0" Grid.Column="2" Grid.ColumnSpan="4">
                     <ItemsControl ItemsSource="{Binding ScoreValues}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="4*"/>
                                         <ColumnDefinition Width="3*"/>
                                         <ColumnDefinition Width="2*"/>
                                         <ColumnDefinition Width="1.5*"/>
                                     </Grid.ColumnDefinitions>
-                                    <StackPanel>
+                                    <Label Content="{Binding PatientId}" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                                    <StackPanel Grid.Column="1">
                                         <Label Content="{Binding PlanId}" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                                         <TextBlock Text="{Binding StructureId}" FontSize="9" FontStyle="Italic" HorizontalAlignment="Center" Visibility="{Binding SharedStructureId, Converter={StaticResource localVisibilityReverseConverter}}"/>
                                     </StackPanel>
 
-                                    <Label Foreground="Black" HorizontalAlignment="Stretch" Grid.Column="1" HorizontalContentAlignment="Center">
+                                    <Label Foreground="Black" HorizontalAlignment="Stretch" Grid.Column="2" HorizontalContentAlignment="Center">
                                         <TextBlock>
                                             <Run Text="{Binding Value, Converter={StaticResource localDoubleConverter}}"/>
                                             <Run Text="{Binding OutputUnit}"/>
                                         </TextBlock>
                                     </Label>
-                                    <Label Content="{Binding Score, Converter={StaticResource localDoubleConverter}}" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Grid.Column="2"/>
+                                    <Label Content="{Binding Score, Converter={StaticResource localDoubleConverter}}" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Grid.Column="3"/>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

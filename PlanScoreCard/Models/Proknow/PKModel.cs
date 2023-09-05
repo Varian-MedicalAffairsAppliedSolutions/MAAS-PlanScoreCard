@@ -136,7 +136,7 @@ namespace PlanScoreCard.Models.Proknow
                     break;
                 case pk_typeEnum.CONFORMATION_NUMBER:
                     inputUnit = "Gy";
-                    outputUnit = "CC";
+                    outputUnit = "NA";
                     metricType = MetricTypeEnum.ConformationNumber;
                     break;
                 case pk_typeEnum.HOMOGENEITY_INDEX:
@@ -146,7 +146,7 @@ namespace PlanScoreCard.Models.Proknow
                     break;
                 case pk_typeEnum.CONFORMALITY_INDEX:
                     inputUnit = "Gy";
-                    outputUnit = "CC";
+                    outputUnit = "NA";
                     metricType = MetricTypeEnum.ConformityIndex;
                     break;
                 default:
