@@ -18,7 +18,7 @@ namespace PlanScoreCard.ViewModels.VMHelpers
     {
         private readonly IEventAggregator EventAggregator;
 
-        private StructureDictionaryService StructureDictionaryService;
+        //private StructureDictionaryService StructureDictionaryService;
 
         //private string NewStructureId;
 
@@ -176,13 +176,13 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         public DelegateCommand UpdateDictionaryCommand { get; private set; }
         public Action CloseAction { get; set; }
         public DelegateCommand OpenDictionaryFileCommand { get; private set; }
-        public StructureDictionarySelectorViewModel(StructureDictionaryService structureDictionaryService, string newStructureId, string templateStructureId, IEventAggregator eventAggregator)
+        public StructureDictionarySelectorViewModel(string newStructureId, string templateStructureId, IEventAggregator eventAggregator)
         {
             EventAggregator = eventAggregator;
             //NewStructureId = newStructureId;
             StructureToAdd = newStructureId;
             _templateStructureId = templateStructureId;
-            StructureDictionaryService = structureDictionaryService;
+            //StructureDictionaryService = structureDictionaryService;
             DictionaryKeys = new ObservableCollection<string>();
             DictionaryValues = new ObservableCollection<DictionaryValue>();
             //DictionaryStructures = new List<string>();

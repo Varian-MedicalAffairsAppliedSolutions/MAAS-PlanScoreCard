@@ -27,10 +27,10 @@ namespace PlanScoreCard.Views.HelperWindows
     /// </summary>
     public partial class StructureDictionarySelectorView : MetroWindow
     {
-        public StructureDictionarySelectorView(StructureDictionaryService structureDictionaryService, string newStructureId, string templateStructureId, IEventAggregator eventAggregator)
+        public StructureDictionarySelectorView(string newStructureId, string templateStructureId, IEventAggregator eventAggregator)
         {
             InitializeComponent();
-            StructureDictionarySelectorViewModel SSVM = new StructureDictionarySelectorViewModel(structureDictionaryService, newStructureId, templateStructureId, eventAggregator);
+            StructureDictionarySelectorViewModel SSVM = new StructureDictionarySelectorViewModel(newStructureId, templateStructureId, eventAggregator);
             this.DataContext = SSVM;
             if(SSVM.CloseAction == null)
             {

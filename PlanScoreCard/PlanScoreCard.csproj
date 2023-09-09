@@ -171,6 +171,7 @@
     <Compile Include="Events\HelperWindows\CloseEulaEvent.cs" />
     <Compile Include="Events\HelperWindows\CloseMessageViewEvent.cs" />
     <Compile Include="Events\HelperWindows\ClosePatientSelectionEvent.cs" />
+    <Compile Include="Events\HelperWindows\ConfigurationCloseEvent.cs" />
     <Compile Include="Events\HelperWindows\EvaluateStructureMatchesEvent.cs" />
     <Compile Include="Events\HelperWindows\NoEvent.cs" />
     <Compile Include="Events\HelperWindows\StructureDictionaryAddedEvent.cs" />
@@ -259,6 +260,7 @@
     <Compile Include="Models\StructureOperationEnum.cs" />
     <Compile Include="Models\StructureOperationModel.cs" />
     <Compile Include="Properties\AssemblyExpirationDate.cs" />
+    <Compile Include="Services\ConfigurationManagerService.cs" />
     <Compile Include="Services\NormalizationService.cs" />
     <Compile Include="Services\PatientSelectService.cs" />
     <Compile Include="Services\PlanScoreCalculationServices.cs" />
@@ -301,6 +303,7 @@
     <Compile Include="ViewModels\StructureBuilderViewModel.cs" />
     <Compile Include="ViewModels\StructureGenerationViewModel.cs" />
     <Compile Include="ViewModels\VMHelpers\AskAddDictionaryStructureViewModel.cs" />
+    <Compile Include="ViewModels\VMHelpers\ConfigurationViewModel.cs" />
     <Compile Include="ViewModels\VMHelpers\EULAViewModel.cs" />
     <Compile Include="ViewModels\VMHelpers\MessageViewModel.cs" />
     <Compile Include="ViewModels\VMHelpers\ObservableCollectionEx.cs" />
@@ -330,6 +333,9 @@
     <Compile Include="Views\HelperClasses\OutlinedTextBlock.cs" />
     <Compile Include="Views\HelperWindows\AskAddDictionaryStructureView.xaml.cs">
       <DependentUpon>AskAddDictionaryStructureView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HelperWindows\ConfigurationView.xaml.cs">
+      <DependentUpon>ConfigurationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\HelperWindows\EULAView.xaml.cs">
       <DependentUpon>EULAView.xaml</DependentUpon>
@@ -486,6 +492,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\HelperWindows\AskAddDictionaryStructureView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\HelperWindows\ConfigurationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

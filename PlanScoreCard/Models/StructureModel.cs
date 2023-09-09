@@ -146,13 +146,13 @@ namespace PlanScoreCard.Models
 
         private void OnAddDictionary()
         {
-            StructureDictionaryService localStructureDictionary = new StructureDictionaryService();
-            var localStructureModel = localStructureDictionary.StructureDictionary.FirstOrDefault(sd => sd.StructureID.Equals(TemplateStructureId, StringComparison.OrdinalIgnoreCase));
-            if (localStructureModel == null)
+            //StructureDictionaryService localStructureDictionary = new StructureDictionaryService();
+            //var localStructureModel = localStructureDictionary.StructureDictionary.FirstOrDefault(sd => sd.StructureID.Equals(TemplateStructureId, StringComparison.OrdinalIgnoreCase));
+            if (StructureDictionaryService.StructureDictionary.Any(sd => sd.StructureID.Equals(TemplateStructureId, StringComparison.OrdinalIgnoreCase)))
             {
-                localStructureDictionary.AddStructure(TemplateStructureId);
+                StructureDictionaryService.AddStructure(TemplateStructureId);
             }
-            localStructureDictionary.AddSynonym(TemplateStructureId, MatchedStructure.StructureId);
+            StructureDictionaryService.AddSynonym(TemplateStructureId, MatchedStructure.StructureId);
             _eventAggregator.GetEvent<EvaluateStructureMatchesEvent>().Publish();
         }
 
@@ -216,13 +216,14 @@ namespace PlanScoreCard.Models
                 }
             }
             //check dictionary if structure exists.
-            StructureDictionaryService localStructureDictionary = new StructureDictionaryService();
+            //StructureDictionaryService localStructureDictionary = new StructureDictionaryService();
             //foreach (var structure in planStructures)
             //{
-            var structureEntry = localStructureDictionary.StructureDictionary.FirstOrDefault(sd => sd.StructureID.Equals(this.TemplateStructureId, StringComparison.OrdinalIgnoreCase));
-            if (structureEntry != null && structureEntry.StructureSynonyms.Any())
+            //var structureEntry = localStructureDictionary.StructureDictionary.FirstOrDefault(sd => sd.StructureID.Equals(this.TemplateStructureId, StringComparison.OrdinalIgnoreCase));
+            if (StructureDictionaryService.StructureDictionary.Any(sd=>sd.StructureID.Equals(TemplateStructureId,StringComparison.OrdinalIgnoreCase)))
             {
                 //var localStructureMatch = localStructureDictionary.FindMatch(this.TemplateStructureId);
+                var structureEntry = StructureDictionaryService.StructureDictionary.First(sd => sd.StructureID.Equals(TemplateStructureId, StringComparison.OrdinalIgnoreCase));
                 foreach (var structure in planStructures)
                 {
                     

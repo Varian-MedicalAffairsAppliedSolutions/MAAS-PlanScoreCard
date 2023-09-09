@@ -17,7 +17,7 @@ namespace PlanScoreCard.Services
     public class NormalizationService
     {
         public ObservableCollection<PlanScoreModel> PlanScores { get; private set; }
-        private StructureDictionaryService StructureDictionaryService;
+        //private StructureDictionaryService StructureDictionaryService;
         private double _normTailPoint;
         private double _normTailValue;
         private PlanModel _planModel;
@@ -28,9 +28,9 @@ namespace PlanScoreCard.Services
         private Patient _patient;
 
         public NormalizationService(Application app, PlanModel plan,
-            List<ScoreTemplateModel> templates, IEventAggregator eventAggregator, StructureDictionaryService structureDictionaryService)
+            List<ScoreTemplateModel> templates, IEventAggregator eventAggregator)
         {
-            StructureDictionaryService = structureDictionaryService;
+            //StructureDictionaryService = structureDictionaryService;
             _normTailPoint = Convert.ToDouble(ConfigurationManager.AppSettings["NormTailToleranceLimit"]);
             _normTailValue = Convert.ToDouble(ConfigurationManager.AppSettings["NormTailPenalty"]);
             //_patient = patient;
@@ -176,14 +176,21 @@ namespace PlanScoreCard.Services
             _patient.BeginModifications();
 
             Course _newCourse = null;
-            if (_patient.Courses.Any(x => x.Id == "N-Opt"))
+            if (ConfigurationManager.AppSettings["NormCourse"] == "true")
             {
-                _newCourse = _patient.Courses.FirstOrDefault(x => x.Id == "N-Opt");
+                if (_patient.Courses.Any(x => x.Id == "N-Opt"))
+                {
+                    _newCourse = _patient.Courses.FirstOrDefault(x => x.Id == "N-Opt");
+                }
+                else
+                {
+                    _newCourse = _patient.AddCourse();
+                    _newCourse.Id = "N-Opt";
+                }
             }
             else
             {
-                _newCourse = _patient.AddCourse();
-                _newCourse.Id = "N-Opt";
+                _newCourse = course;
             }
 
             var _newPlan = _newCourse.CopyPlanSetup(plan);
@@ -198,7 +205,7 @@ namespace PlanScoreCard.Services
             };
 
             _app.SaveModifications();
-
+            PlanScores.Clear();
             //_app.ClosePatient();
             //_app.Dispose();
             return newPlanModel;
@@ -246,20 +253,20 @@ namespace PlanScoreCard.Services
             PlanScores.Clear();
             foreach (var template in _templates)
             {
-                var psm = new PlanScoreModel(_app, StructureDictionaryService);
+                var psm = new PlanScoreModel(_app);
                 psm.BuildPlanScoreFromTemplate(new List<PlanningItem> { newPlan }, template, metricId, String.Empty, string.Empty, false, new List<ScoreValueModel>());
                 //false added at end because normalization service cannot build structures, they should have already been built by the scorecard being loaded.
                 metricId++;
                 PlanScores.Add(psm);
             }
             var score = PlanScores.Sum(x => x.ScoreValues.First().Score);//.ScoreValues.Sum(x => x.Score);
-            foreach (var metricScore in PlanScores)
-            {
-                if (metricScore.ScoreValues.Count() != 0)
-                {
-                    //_eventAggregator.GetEvent<PlotUpdateEvent>().Publish($"Metric:<{metricScore.ScoreValues.FirstOrDefault().PlanId};{metricScore.MetricId};{metricScore.ScoreValues.FirstOrDefault().Value};{metricScore.ScoreValues.FirstOrDefault().Score}>");
-                }
-            }
+            //foreach (var metricScore in PlanScores)
+            //{
+            //    if (metricScore.ScoreValues.Count() != 0)
+            //    {
+            //        //_eventAggregator.GetEvent<PlotUpdateEvent>().Publish($"Metric:<{metricScore.ScoreValues.FirstOrDefault().PlanId};{metricScore.MetricId};{metricScore.ScoreValues.FirstOrDefault().Value};{metricScore.ScoreValues.FirstOrDefault().Score}>");
+            //    }
+            //}
             planScores.Add(new Tuple<double, double>(planNorm, score));
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\tScore at {planNorm:F3} = {Math.Round(score, 2)}");
             _eventAggregator.GetEvent<PlotUpdateEvent>().Publish(PlanScores.ToList());

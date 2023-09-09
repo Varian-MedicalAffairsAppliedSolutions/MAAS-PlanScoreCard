@@ -2,6 +2,7 @@
 using PlanScoreCard.Events;
 using PlanScoreCard.Events.HelperWindows;
 using PlanScoreCard.Models;
+using PlanScoreCard.Services;
 using PlanScoreCard.Startup;
 using PlanScoreCard.ViewModels;
 using PlanScoreCard.ViewModels.VMHelpers;
@@ -219,6 +220,7 @@ namespace PlanScoreCard
                                 //}
                                 var bootstrap = new Bootstrapper();
                                 var container = bootstrap.Bootstrap(plans, _app.CurrentUser, _app, eventAggregator);
+                                StructureDictionaryService.ReadStructureDictionary();
                                 view = container.Resolve<ScoreCardView>();
                                 eventAggregator.GetEvent<UILaunchedEvent>().Publish();
                                 view.ShowDialog();

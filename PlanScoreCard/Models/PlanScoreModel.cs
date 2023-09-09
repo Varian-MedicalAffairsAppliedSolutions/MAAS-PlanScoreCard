@@ -23,7 +23,7 @@ namespace PlanScoreCard.Models
     {
         private VMS.TPS.Common.Model.API.Application _app;
         private double _dvhResolution;
-        private StructureDictionaryService StructureDictionaryService;
+        //private StructureDictionaryService StructureDictionaryService;
 
 
         public Dictionary<string, string> structureMatch;
@@ -296,7 +296,7 @@ namespace PlanScoreCard.Models
 
         public ObservableCollection<PlanScoreColorModel> Colors { get; private set; }
         public ScoreTemplateModel InternalTemplate { get; set; }
-        public PlanScoreModel(VMS.TPS.Common.Model.API.Application app, StructureDictionaryService structureDictionaryService)
+        public PlanScoreModel(VMS.TPS.Common.Model.API.Application app)//, StructureDictionaryService structureDictionaryService)
         {
             _app = app;
             _dvhResolution = Convert.ToDouble(ConfigurationManager.AppSettings["DVHResolution"]);
@@ -305,7 +305,7 @@ namespace PlanScoreCard.Models
             Colors = new ObservableCollection<PlanScoreColorModel>();
             ScorePlotModel = new ViewResolvingPlotModel();
 
-            StructureDictionaryService = structureDictionaryService;
+            //StructureDictionaryService = structureDictionaryService;
 
             OutsideMax = Visibility.Hidden;
             OutsideMin = Visibility.Hidden;
@@ -1046,7 +1046,7 @@ namespace PlanScoreCard.Models
                 }
                 else if (structure.IsEmpty && autoGenerate && writeable && canBuildStructure)
                 {
-                    var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan, StructureDictionaryService);
+                    var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan);//, StructureDictionaryService);
                     return new_structure;
                 }
                 else
@@ -1066,7 +1066,7 @@ namespace PlanScoreCard.Models
                 }
                 else if (structure.IsEmpty && autoGenerate && writeable && canBuildStructure)//generate structure if empty.
                 {
-                    var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan, StructureDictionaryService);
+                    var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan);//, StructureDictionaryService);
                     return new_structure;
                 }
                 else//return empty structure. 
@@ -1089,7 +1089,7 @@ namespace PlanScoreCard.Models
                 }
                 else if (structure.IsEmpty && autoGenerate && writeable && canBuildStructure)//generate structure if empty.
                 {
-                    var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan, StructureDictionaryService);
+                    var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan);//, StructureDictionaryService);
                     return new_structure;
                 }
                 else//return empty structure. 
@@ -1142,7 +1142,7 @@ namespace PlanScoreCard.Models
                 }
                 else if (structure != null && structure.IsEmpty && autoGenerate && writeable && canBuildStructure)//generate structure if empty.
                 {
-                    var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan, StructureDictionaryService);
+                    var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan);//, StructureDictionaryService);
                     return new_structure;
                 }
             }
@@ -1159,7 +1159,7 @@ namespace PlanScoreCard.Models
             // If no match, create it. 
             if (autoGenerate && writeable && !String.IsNullOrEmpty(comment) && canBuildStructure)
             {
-                var structure = StructureGenerationService.BuildStructureWithESAPI(_app, id, comment, false, plan, StructureDictionaryService);
+                var structure = StructureGenerationService.BuildStructureWithESAPI(_app, id, comment, false, plan);//, StructureDictionaryService);
                 return structure;
             }
 

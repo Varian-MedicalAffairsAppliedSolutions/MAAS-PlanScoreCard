@@ -12,11 +12,11 @@ namespace PlanScoreCard.Services
 {
     public static class StructureGenerationService
     {
-        public static StructureDictionaryService StructureDictionaryService { get; private set; }
+        //public static StructureDictionaryService StructureDictionaryService { get; private set; }
 
-        internal static Structure BuildStructureWithESAPI(Application app, string id, string comment, bool bStructureExists, PlanningItem plan, StructureDictionaryService structureDictionaryService)
+        internal static Structure BuildStructureWithESAPI(Application app, string id, string comment, bool bStructureExists, PlanningItem plan)//, StructureDictionaryService structureDictionaryService)
         {
-            StructureDictionaryService = structureDictionaryService;
+            //StructureDictionaryService = structureDictionaryService;
             try
             {
                 Course course = null;

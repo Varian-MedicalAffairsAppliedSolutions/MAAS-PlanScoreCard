@@ -24,9 +24,9 @@ namespace DVHViewer2.Models
         private ScoreCardModel template;
         private IEnumerable<Structure> structures;
         private double rx_dose;
-        private StructureDictionaryService _structureDictionaryService;
+        //private StructureDictionaryService _structureDictionaryService;
 
-        public DVHPlotModel(ExternalPlanSetup plan, ScoreCardModel template, IEnumerable<Structure> structures, StructureDictionaryService structureDictionaryService)
+        public DVHPlotModel(ExternalPlanSetup plan, ScoreCardModel template, IEnumerable<Structure> structures)
         {
             this.plan = plan;
             this.template = template;
@@ -36,7 +36,7 @@ namespace DVHViewer2.Models
                 plan.TotalDose.Unit == VMS.TPS.Common.Model.Types.DoseValue.DoseUnit.Gy ?
                     plan.TotalDose.Dose :
                     plan.TotalDose.Dose / 100.0;
-            _structureDictionaryService = structureDictionaryService;
+            //_structureDictionaryService = structureDictionaryService;
             SetupAxes();
         }
 
@@ -221,7 +221,7 @@ namespace DVHViewer2.Models
             }
             // SECOND: If exact match is not there, check to see if it is part of the Structure Dictionary
             //check templateId against structure id. 
-            StructureDictionaryModel structureDictionary = _structureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower().Equals(templateId.ToLower()));
+            StructureDictionaryModel structureDictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower().Equals(templateId.ToLower()));
 
             // This means that the template structure Id
             if (structureDictionary != null)

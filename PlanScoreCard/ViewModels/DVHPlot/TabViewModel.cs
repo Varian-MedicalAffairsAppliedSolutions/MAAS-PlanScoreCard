@@ -99,30 +99,30 @@ namespace DVHViewer2.ViewModels
             }
         }
 
-        public void AddMultipleDVH(ScoreCardModel scoreCard, List<PlanningItem> planModels, StructureDictionaryService structureDictionaryService)
+        public void AddMultipleDVH(ScoreCardModel scoreCard, List<PlanningItem> planModels)//, StructureDictionaryService structureDictionaryService)
         {
             // Add multiple DVHs with progress bar
             // Show progress bar
             //LoadingBar = true;
-            _scoreCard = scoreCard;
+            //_scoreCard = scoreCard;
             //Dispatcher.BeginInvoke(new Action(delegate () { LoadingBar = true; }));
             //here progress bar is a UIElement
             // Add the dvh plots
             foreach (var plan in planModels)
             {
-                AddDVH(plan, structureDictionaryService);
+                AddDVH(plan);
             }
 
         }
 
         // Method for adding a DVH tab, not from button click
-        public void AddDVH(PlanningItem plan, StructureDictionaryService structureDictionaryService)
+        public void AddDVH(PlanningItem plan)//, StructureDictionaryService structureDictionaryService)
         {
             var t = new TabItem();
             t.Header = plan.Id;
             t.Content = new DVHView()
             {
-                DataContext = new DVHViewModel((plan as ExternalPlanSetup), _scoreCard, structureDictionaryService)
+                DataContext = new DVHViewModel((plan as ExternalPlanSetup), _scoreCard)//, structureDictionaryService)
             };
             Tabs.Add(t);
             CurrentTab= t;

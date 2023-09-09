@@ -39,7 +39,7 @@ namespace PlanScoreCard.ViewModels
 
         private ViewLauncherService ViewLauncherService;
         private ProgressViewService ProgressViewService;
-        private StructureDictionaryService StructureDictionaryService;
+        //private StructureDictionaryService StructureDictionaryService;
 
         private object metricEdtiorControl;
 
@@ -216,7 +216,7 @@ namespace PlanScoreCard.ViewModels
                 AskAddDictionaryStructureView.ShowDialog();
                 if (_askEditDictionary)
                 {
-                    StructureSelectorView = new StructureDictionarySelectorView(StructureDictionaryService, structureId, structureModel.TemplateStructureId, EventAggregator);
+                    StructureSelectorView = new StructureDictionarySelectorView(structureId, structureModel.TemplateStructureId, EventAggregator);
 
 
                     StructureSelectorView.ShowDialog();
@@ -530,7 +530,7 @@ namespace PlanScoreCard.ViewModels
         public EditScoreCardViewModel(IEventAggregator eventAggregator,
             ViewLauncherService viewLauncherService,
             ProgressViewService progressViewService,
-            StructureDictionaryService structureDictionaryService,
+            //StructureDictionaryService structureDictionaryService,
             EditCIViewModel editCIViewModel,
             EditDoseAtVolumeViewModel editDoseAtVolumeViewModel,
             EditDoseValueViewModel editDoseValueViewModel,
@@ -550,7 +550,7 @@ namespace PlanScoreCard.ViewModels
 
             ViewLauncherService = viewLauncherService;
             ProgressViewService = progressViewService;
-            StructureDictionaryService = structureDictionaryService;
+            //StructureDictionaryService = structureDictionaryService;
 
             // Events
             EventAggregator = eventAggregator;
@@ -650,7 +650,7 @@ namespace PlanScoreCard.ViewModels
 
         private void OnOpenDictionaryEditor()
         {
-            StructureSelectorView = new StructureDictionarySelectorView(StructureDictionaryService, SelectedStructure.StructureId, SelectedStructure.TemplateStructureId, EventAggregator);
+            StructureSelectorView = new StructureDictionarySelectorView(SelectedStructure.StructureId, SelectedStructure.TemplateStructureId, EventAggregator);
             StructureSelectorView.ShowDialog();
         }
 

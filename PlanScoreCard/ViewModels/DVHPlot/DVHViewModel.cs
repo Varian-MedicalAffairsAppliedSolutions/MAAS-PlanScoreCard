@@ -45,11 +45,11 @@ namespace DVHViewer2.ViewModels
 
 
         // Override of ctor for creating a DVH w scorecard provided right away
-        public DVHViewModel(ExternalPlanSetup Plan, ScoreCardModel scoreCard, StructureDictionaryService structureDictionaryService)
+        public DVHViewModel(ExternalPlanSetup Plan, ScoreCardModel scoreCard)//, StructureDictionaryService structureDictionaryService)
         {
-            _Plan = Plan;          
+            _Plan = Plan;
             //InternalTemplateModel template = JsonConvert.DeserializeObject<InternalTemplateModel>(File.ReadAllText(FileName));
-            _Plot = new DVHPlotModel(Plan, scoreCard, Plan.StructureSet.Structures, structureDictionaryService);
+            _Plot = new DVHPlotModel(Plan, scoreCard, Plan.StructureSet.Structures);//, structureDictionaryService);
 
 
             StructurePlotItems = _Plot.GetPlotItems(_Plot); // Get this once cuz it wont change

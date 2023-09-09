@@ -45,7 +45,7 @@ namespace PlanScoreCard.ViewModels
         private IEventAggregator EventAggregator;
         private ViewLauncherService ViewLauncherService;
         private ProgressViewService ProgressViewService;
-        private StructureDictionaryService StructureDictionaryService;
+        //private StructureDictionaryService StructureDictionaryService;
 
         private EditScoreCardView EditScoreCardView;
 
@@ -61,6 +61,7 @@ namespace PlanScoreCard.ViewModels
                 ExportScoreCardCommand.RaiseCanExecuteChanged();
                 PrintReportCommand.RaiseCanExecuteChanged();
                 NormalizePlanCommand.RaiseCanExecuteChanged();
+                BormalizePlanCommand.RaiseCanExecuteChanged();
                 OpenDVHViewCommand.RaiseCanExecuteChanged();
             }
         }
@@ -304,6 +305,7 @@ namespace PlanScoreCard.ViewModels
                 ExportScoreCardCommand.RaiseCanExecuteChanged();
                 PrintReportCommand.RaiseCanExecuteChanged();
                 NormalizePlanCommand.RaiseCanExecuteChanged();
+                BormalizePlanCommand.RaiseCanExecuteChanged();
                 OpenDVHViewCommand.RaiseCanExecuteChanged();
             }
         }
@@ -330,6 +332,7 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand ImportScoreCardCommand { get; set; }
         public DelegateCommand EditScoreCardCommand { get; set; }
         public DelegateCommand NormalizePlanCommand { get; set; }
+        public DelegateCommand BormalizePlanCommand { get; set; }
         public DelegateCommand ExportScoreCardCommand { get; set; }
         public DelegateCommand PrintReportCommand { get; private set; }
         public DelegateCommand OpenWarningCommand { get; private set; }
@@ -337,6 +340,7 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand OpenPatientSelectionCommand { get; private set; }
         public DelegateCommand LoadPatientPlansCommand { get; private set; }
         public DelegateCommand OpenDVHViewCommand { get; private set; }
+        public DelegateCommand LaunchConfigurationCommand { get; private set; }
 
         // Plugin Visibility
 
@@ -386,9 +390,9 @@ namespace PlanScoreCard.ViewModels
         }
 
         public MessageView MessageView { get; set; }
-
+        private PlanModel _localNormPlan { get; set; }
         // Constructor
-        public ScoreCardViewModel(Application app, List<PlanModel> plans, IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService, StructureDictionaryService structureDictionaryService)
+        public ScoreCardViewModel(Application app, List<PlanModel> plans, IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService)//, StructureDictionaryService structureDictionaryService)
         {
             // Set the Initial Variables Passed In
             ScoreCardTitle = ConfigurationManager.AppSettings["ValidForClinicalUse"] != "true" ?
@@ -402,7 +406,7 @@ namespace PlanScoreCard.ViewModels
             // Initiate Services
             ViewLauncherService = viewLauncherService;
             ProgressViewService = progressViewService;
-            StructureDictionaryService = structureDictionaryService;
+            //StructureDictionaryService = structureDictionaryService;
 
             // Need to change this event to take in a ScoreCardModel as the payload
             //EventAggregator.GetEvent<ScorePlanEvent>().Subscribe(OnScorePlan);
@@ -415,6 +419,7 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<UpdatePatientPlansEvent>().Subscribe(OnUpdatePatientPlans);
             EventAggregator.GetEvent<ClosePatientSelectionEvent>().Subscribe(OnClosePatientSelection);
             EventAggregator.GetEvent<PlotUpdateEvent>().Subscribe(OnUpdatePlotFromPlugin);
+            EventAggregator.GetEvent<ConfigurationCloseEvent>().Subscribe(OnCloseConfiguration);
             //EventAggregator.GetEvent<RemovePlanFromScoreEvent>().Subscribe(OnRemovePlanFromScore);
 
             MaxScore = 0;
@@ -432,6 +437,7 @@ namespace PlanScoreCard.ViewModels
             ImportScoreCardCommand = new DelegateCommand(ImportScoreCard);
             EditScoreCardCommand = new DelegateCommand(EditScoreCard);
             NormalizePlanCommand = new DelegateCommand(NormalizePlan, CanNormalizePlan);
+            BormalizePlanCommand = new DelegateCommand(BormalizePlan, CanNormalizePlan);
             ExportScoreCardCommand = new DelegateCommand(ExportScoreCard, CanExportScorecard);
             PrintReportCommand = new DelegateCommand(OnPrintReport, CanPrintReport);
             OpenWarningCommand = new DelegateCommand(OnOpenWarning);
@@ -439,6 +445,7 @@ namespace PlanScoreCard.ViewModels
             OpenPatientSelectionCommand = new DelegateCommand(OnOpenPatientSelector);
             LoadPatientPlansCommand = new DelegateCommand(OnLoadPatientPlans);
             OpenDVHViewCommand = new DelegateCommand(OnLoadDVHView, CanLoadDVHView);
+            LaunchConfigurationCommand = new DelegateCommand(OnLaunchConfiguration);
             bRxScalingVisibility = true;
             _scoreValueCache = new List<ScoreValueModel>();//remember to clear when score editor is run, scorecard is scaled, or patient selection is run. 
             // Sets If no Plan is Passed In
@@ -454,6 +461,24 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<PlanChangedEvent>().Subscribe(OnPlanChanged);
         }
 
+        private void OnCloseConfiguration(ConfigurationViewModel obj)
+        {
+            if (obj.bSave)
+            {
+                ConfigurationManagerService.AddOrUpdateAppSettings("DVHResolution", obj.DVHResolution.ToString());
+                ConfigurationManagerService.AddOrUpdateAppSettings("WriteEnabled", obj.bStructureCreation.ToString().ToLower());
+                ConfigurationManagerService.AddOrUpdateAppSettings("AddStructures", obj.bSaveStructures.ToString().ToLower());
+                ConfigurationManagerService.AddOrUpdateAppSettings("NormCourse", obj.bNormCourse.ToString().ToLower());
+            }
+            _configurationView.Close();
+        }
+
+        private void OnLaunchConfiguration()
+        {
+            _configurationView = new ConfigurationView();
+            _configurationView.DataContext = new ConfigurationViewModel(EventAggregator);
+            _configurationView.ShowDialog();
+        }
         private void OnUpdatePlotFromPlugin(List<PlanScoreModel> obj)
         {
             //this method is only for plotting the data inside the current score metric items (like the plots on the right side).
@@ -497,7 +522,7 @@ namespace PlanScoreCard.ViewModels
             foreach (var patient in Plans.OrderByDescending(pl => pl.bPrimary).GroupBy(p => p.PatientId).Where(pa => pa.Any(pl => pl.bSelected)))
             {
                 List<PlanningItem> selectedPlans = GetPlansPlanModel(patient.Key);
-                TabVM.AddMultipleDVH(ScoreCard, selectedPlans, StructureDictionaryService);
+                TabVM.AddMultipleDVH(ScoreCard, selectedPlans);//, StructureDictionaryService);
             }
             if (TabVM.Tabs.Any())
             {
@@ -794,17 +819,31 @@ namespace PlanScoreCard.ViewModels
         {
             return Plans.Any(x => x.bPrimary) && ScoreCard != null;
         }
+        private void BormalizePlan() 
+        {
+            var plansToNorm = Plans.Where(pl => pl.bSelected).ToList();
+            foreach(var plan in plansToNorm)
+            {
+                _localNormPlan = plan;
+                NormalizePlan();
+            }
+            _localNormPlan = null;
+        }
 
         private void NormalizePlan()
         {
-            if (Plans.Any(x => x.bPrimary) && ScoreCard.ScoreMetrics.Count() > 0)
+            if ((_localNormPlan!=null || Plans.Any(x => x.bPrimary)) && ScoreCard.ScoreMetrics.Count() > 0)
             {
                 PluginViewService pluginViewService = new PluginViewService(EventAggregator);
                 PluginViewModel pluginViewModel = new PluginViewModel(EventAggregator, pluginViewService);
 
                 EventAggregator.GetEvent<ShowPluginViewEvent>().Publish();
 
-                NormalizationService normService = new NormalizationService(Application, Plans.FirstOrDefault(x => x.bPrimary), ScoreCard.ScoreMetrics, EventAggregator, StructureDictionaryService);
+                NormalizationService normService = new NormalizationService(Application,
+                    _localNormPlan == null ? Plans.FirstOrDefault(x => x.bPrimary) : _localNormPlan,
+                    ScoreCard.ScoreMetrics,
+                    EventAggregator);//, 
+                    //StructureDictionaryService);
 
                 var newplan = normService.GetPlan();
                 Plans.Add(newplan);
@@ -924,7 +963,7 @@ namespace PlanScoreCard.ViewModels
                 PlanScoreModel psm = null;
                 if (!PlanScores.Any(ps => ps.MetricId == metric_id))
                 {
-                    psm = new PlanScoreModel(Application, StructureDictionaryService);
+                    psm = new PlanScoreModel(Application);
                 }
                 else//now that multiple patients are supported, it is possible that the metric already exists, but 
                 {
@@ -1250,6 +1289,8 @@ namespace PlanScoreCard.ViewModels
         }
         private string old_course;
         private string old_plan;
+        private ConfigurationView _configurationView;
+
         public void UpdatePlanModel(List<PlanModel> plans)
         {
             old_course = Plans.FirstOrDefault(x => x.bPrimary)?.CourseId;//Course.Id;

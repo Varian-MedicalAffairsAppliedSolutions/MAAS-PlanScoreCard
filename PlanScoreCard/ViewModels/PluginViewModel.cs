@@ -138,6 +138,7 @@ namespace PlanScoreCard.ViewModels
             PlotData = new PlotModel() { LegendPosition = LegendPosition.RightTop };
             PlotSeries = new List<PlotSeriesData>();
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Subscribe(OnConsoleUpdate);
+            //TODO Check if this is being used by Azure app because if only scorecard uses this it can be removed. 
             _eventAggregator.GetEvent<PlotUpdateEvent>().Subscribe(OnUpdatePlot);
             _eventAggregator.GetEvent<PluginVisibilityEvent>().Subscribe(OnPluginRun);
             _eventAggregator.GetEvent<ShowPluginViewEvent>().Subscribe(ShowPluginView);

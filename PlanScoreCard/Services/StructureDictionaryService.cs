@@ -11,23 +11,23 @@ using System.Threading.Tasks;
 
 namespace PlanScoreCard.Services
 {
-    public class StructureDictionaryService
+    public static class StructureDictionaryService
     {
 
         // Structure Dictionary Collection
-        public List<StructureDictionaryModel> StructureDictionary { get; private set; }
+        public static List<StructureDictionaryModel> StructureDictionary { get; private set; }
 
 
-        public StructureDictionaryService()
-        {
-            // Read in the StructureDictionaryPath (Set in the App.config)
-            ReadStructureDictionary();
+        //public StructureDictionaryService()
+        //{
+        //    // Read in the StructureDictionaryPath (Set in the App.config)
+        //    ReadStructureDictionary();
 
-            // Populates Structure Dictionary Models
-            //PopulateStructureModels(structureDictionaryPath);
-        }
+        //    // Populates Structure Dictionary Models
+        //    //PopulateStructureModels(structureDictionaryPath);
+        //}
 
-        public void ReadStructureDictionary()
+        public static void ReadStructureDictionary()
         {
             string structureDictionaryPath = ConfigurationManager.AppSettings["StructureDictionaryPath"].ToString();
             string sDictionaryFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), structureDictionaryPath);
@@ -35,7 +35,7 @@ namespace PlanScoreCard.Services
         }
 
         // Initialization
-        public void PopulateStructureModels(string structureDictionaryPath)
+        public static void PopulateStructureModels(string structureDictionaryPath)
         {
             /*
             StreamReader reader = File.OpenText(structureDictionaryPath);
@@ -59,7 +59,7 @@ namespace PlanScoreCard.Services
         }
 
         // Methods
-        public string FindMatch(string potentialSynonm)
+        public static string FindMatch(string potentialSynonm)
         {
             // Returns the first Structure Dictionary that contains a Structure Synonym with the 
             StructureDictionaryModel structureMatch = StructureDictionary.FirstOrDefault(s => s.StructureSynonyms.FirstOrDefault(ss => ss.ToLower() == potentialSynonm.ToLower()) != null);
@@ -71,7 +71,7 @@ namespace PlanScoreCard.Services
 
         }
 
-        public bool AddSynonym(string structureID, string newSynonym)
+        public static bool AddSynonym(string structureID, string newSynonym)
         {
             // Checks to see if the synonym already exists in the Dictionary
             StructureDictionaryModel structureMatch = StructureDictionary.FirstOrDefault(s => s.StructureSynonyms.FirstOrDefault(ss => ss.ToLower() == newSynonym.ToLower()) != null);
@@ -89,7 +89,7 @@ namespace PlanScoreCard.Services
             return true;
 
         }
-        public bool DeleteSynonym(string structureID, string synonym)
+        public static bool DeleteSynonym(string structureID, string synonym)
         {
             StructureDictionaryModel structureMatch = StructureDictionary.FirstOrDefault(s => s.StructureID == structureID);
             if(structureMatch == null)
@@ -101,7 +101,7 @@ namespace PlanScoreCard.Services
             return true;
         }
 
-        public bool AddStructure(string structureID)
+        public static bool AddStructure(string structureID)
         {
             // Checks to see if the StructureID exists in the Dictionary
             StructureDictionaryModel dictionaryModel = StructureDictionary.FirstOrDefault(s => s.StructureID == structureID);
@@ -114,7 +114,7 @@ namespace PlanScoreCard.Services
             return true;
         }
 
-        public bool DeleteStructure(string structureID)
+        public static bool DeleteStructure(string structureID)
         {
             // Checks to see if the StructureID exists in the Dictionary
             StructureDictionaryModel dictionaryModel = StructureDictionary.FirstOrDefault(s => s.StructureID == structureID);
@@ -134,7 +134,7 @@ namespace PlanScoreCard.Services
 
         // Update StructureDictionaryConfig
 
-        public void UpdateStructureDictionaryConfig()
+        public static void UpdateStructureDictionaryConfig()
         {
             string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ConfigurationManager.AppSettings["StructureDictionaryPath"]);
             //check if config can be modified
@@ -174,7 +174,7 @@ namespace PlanScoreCard.Services
 
         }
 
-        public void MergeDictionary(string dictionaryPath)
+        public static void MergeDictionary(string dictionaryPath)
         {
             //StreamReader reader = File.OpenText(dictionaryPath);
             //string line;
@@ -239,7 +239,7 @@ namespace PlanScoreCard.Services
             UpdateStructureDictionaryConfig();
         }
 
-        private void OverwriteDictionary(string dictionaryPath)
+        private static void OverwriteDictionary(string dictionaryPath)
         {
             StreamReader reader = File.OpenText(dictionaryPath);
             string line;

@@ -11,6 +11,13 @@
         xmlns:helpers="clr-namespace:PlanScoreCard.Views.HelperClasses"
         mc:Ignorable="d"
         Title="{Binding ScoreCardTitle}" Height="800" Width="1800" ResizeMode="NoResize">
+    <metro:MetroWindow.RightWindowCommands>
+        <metro:WindowCommands>
+            <Button Command="{Binding LaunchConfigurationCommand}" ToolTip="Launch Configuration Page">
+                <icons:FontAwesome Kind="CogSolid"/>
+            </Button>
+        </metro:WindowCommands>
+    </metro:MetroWindow.RightWindowCommands>
     <metro:MetroWindow.Resources>
         <ResourceDictionary>
             <converters:BoolVisibilityConverter x:Key="localVisibilityConverter"/>
@@ -200,8 +207,8 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-
-                            <Button Grid.Column="0" VerticalContentAlignment="Top" Margin="5,2,5,2" Command="{Binding NormalizePlanCommand}">
+                            <Button Content="(b)" Width="30" HorizontalAlignment="Left" Margin="5,2,5,2" Command="{Binding BormalizePlanCommand}"/>
+                            <Button Grid.Column="0" VerticalContentAlignment="Top" Margin="40,2,5,2" Command="{Binding NormalizePlanCommand}">
                                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
