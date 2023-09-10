@@ -89,11 +89,14 @@
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="2*"/>
-                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="1.2*"/>
                                         </Grid.ColumnDefinitions>
-                                        <Button Content="-" Command="{Binding DecreaseMarginCommand}"/>
-                                        <TextBox Margin="2" Text="{Binding StructureMargin}" Grid.Column="1"/>
-                                        <Button Content="+" Command="{Binding IncreaseMarginCommand}" Grid.Column="2"/>
+                                        <!--<Button Content="-" Command="{Binding DecreaseMarginCommand}"/>-->
+                                        <TextBox Margin="2" Text="{Binding StructureMargin}" Grid.ColumnSpan="2"/>
+                                        <Button Command="{Binding AsymmetricMarginCommand}" Grid.Column="2" ToolTip="Asymmetric Margin">
+                                            <icons:FontAwesome Kind="DraftingCompassSolid"/>
+                                        </Button>
+                                        <!--<Button Content="+" Command="{Binding IncreaseMarginCommand}" Grid.Column="2"/>-->
                                     </Grid>
                                     <ComboBox Margin="5,2,5,2" ItemsSource="{Binding Operations}" SelectedItem="{Binding SelectedOperation}" Grid.Column="0"
                                           Visibility="{Binding StepNumber,Converter={StaticResource intVisibilityConverter}}"/>
@@ -126,7 +129,7 @@
                                 <icons:FontAwesome Kind="EditRegular"/>
                             </Button>
                             <TextBlock FontWeight="Bold" Text="{Binding GroupId}"/>
-                            <TextBlock FontSize="10" Text="{Binding GroupComment}" Grid.ColumnSpan="2" Grid.Row="1"/>
+                            <TextBlock FontSize="10" Text="{Binding GroupComment, Mode=TwoWay}" Grid.ColumnSpan="2" Grid.Row="1"/>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

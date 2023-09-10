@@ -1,0 +1,47 @@
+﻿<metro:MetroWindow x:Class="PlanScoreCard.Views.HelperWindows.AsymmetricMarginView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PlanScoreCard.Views.HelperWindows"
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+                   xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        mc:Ignorable="d"
+        Title="Asymmetric Margin" Height="250" Width="800">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Border BorderBrush="Black" BorderThickness="0,0,0,1" Grid.ColumnSpan="6"/>
+        <TextBlock Text="Left" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="2"/>
+        <TextBlock Text="Right" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Grid.Column="1" Margin="2"/>
+        <TextBlock Text="Superior" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Grid.Column="2" Margin="2"/>
+        <TextBlock Text="Inferior" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Grid.Column="3" Margin="2"/>
+        <TextBlock Text="Posterior" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Grid.Column="4" Margin="2"/>
+        <TextBlock Text="Anterior" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Grid.Column="5" Margin="2"/>
+        <TextBox Grid.Row="1" Margin="2" Text="{Binding LeftMargin}"/>
+        <TextBox Grid.Row="1" Margin="2" Text="{Binding RightMargin}" Grid.Column="1"/>
+        <TextBox Grid.Row="1" Margin="2" Text="{Binding SupMargin}" Grid.Column="2"/>
+        <TextBox Grid.Row="1" Margin="2" Text="{Binding InfMargin}" Grid.Column="3"/>
+        <TextBox Grid.Row="1" Margin="2" Text="{Binding PostMargin}" Grid.Column="4"/>
+        <TextBox Grid.Row="1" Margin="2" Text="{Binding AntMargin}" Grid.Column="5"/>
+        <TextBlock Grid.ColumnSpan="4" Grid.Row="2" Text="*All margins considered 'Outer' margins. Inner margins should have a negative margin number" FontStyle="Italic" FontSize="10"/>
+        <Button Width="40" VerticalAlignment="Bottom" Grid.Row="3" Grid.Column="1" Margin="5" Command="{Binding SaveMarginCommand}">
+            <icons:FontAwesome Kind="SaveRegular"/>
+        </Button>
+        <Button Width="40" VerticalAlignment="Bottom" Grid.Row="3" Grid.Column="4" Margin="5" Command="{Binding CancelMarginCommand}">
+            <icons:FontAwesome Kind="TimesCircleRegular"/>
+        </Button>
+    </Grid>
+</metro:MetroWindow>

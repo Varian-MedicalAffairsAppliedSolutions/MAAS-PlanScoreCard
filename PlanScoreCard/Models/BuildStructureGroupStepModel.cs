@@ -1,4 +1,7 @@
-﻿using PlanScoreCard.Events.StructureBuilder;
+﻿using PlanScoreCard.Events.HelperWindows;
+using PlanScoreCard.Events.StructureBuilder;
+using PlanScoreCard.ViewModels.VMHelpers;
+using PlanScoreCard.Views.HelperWindows;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -24,14 +27,15 @@ namespace PlanScoreCard.Models
             {
                 SetProperty(ref _selectedStructure, value);
                 AddGroupStepCommand.RaiseCanExecuteChanged();
-                IncreaseMarginCommand.RaiseCanExecuteChanged();
-                DecreaseMarginCommand.RaiseCanExecuteChanged();
+                //IncreaseMarginCommand.RaiseCanExecuteChanged();
+                //DecreaseMarginCommand.RaiseCanExecuteChanged();
+                AsymmetricMarginCommand.RaiseCanExecuteChanged();
                 _eventAggregator.GetEvent<UpdateGroupCommentEvent>().Publish();
             }
         }
-        private int _structureMargin;
+        private string _structureMargin;
 
-        public int StructureMargin
+        public string StructureMargin
         {
             get { return _structureMargin; }
             set { 
@@ -53,11 +57,13 @@ namespace PlanScoreCard.Models
             }
         }
         public int StepNumber { get; set; }
+        private AsymmetricMarginView _asymmetricMarginView { get; set; }
         //commands
         public DelegateCommand DecreaseMarginCommand { get; private set; }
         public DelegateCommand IncreaseMarginCommand { get; private set; }
         public DelegateCommand AddGroupStepCommand { get; private set; }
         public DelegateCommand DeleteGroupStepCommand { get; private set; }
+        public DelegateCommand AsymmetricMarginCommand { get; private set; }
         public BuildStructureGroupStepModel(PlanModel plan, IEventAggregator eventAggregator, int stepNum)
         {
             _plan = plan;
@@ -67,10 +73,31 @@ namespace PlanScoreCard.Models
             Operations = new List<string> { "AND", "OR", "SUB" };
             AddStructures();
             //commands
-            DecreaseMarginCommand = new DelegateCommand(OnDecreaseMargin, CanMargin);
-            IncreaseMarginCommand = new DelegateCommand(OnIncreaseMargin, CanMargin);
+            //DecreaseMarginCommand = new DelegateCommand(OnDecreaseMargin, CanMargin);
+            //IncreaseMarginCommand = new DelegateCommand(OnIncreaseMargin, CanMargin);
+            AsymmetricMarginCommand = new DelegateCommand(OnAsymmetricMargin, CanMargin);
             AddGroupStepCommand = new DelegateCommand(OnAddGroupStep, CanAddGroupStep);
             DeleteGroupStepCommand = new DelegateCommand(OnDeleteGroupStep);
+            _eventAggregator.GetEvent<SaveAsymmetricMarginEvent>().Subscribe(OnUpdateMargin);
+        }
+
+        private void OnUpdateMargin(AsymmetricMarginViewModel obj)
+        {
+            if (obj.bSave)
+            {
+                StructureMargin = $"{obj.LeftMargin}>{obj.RightMargin}>{obj.SupMargin}>{obj.InfMargin}>{obj.PostMargin}>{obj.AntMargin}";
+            }
+            _asymmetricMarginView.Close();
+        }
+
+        private void OnAsymmetricMargin()
+        {
+            if(_asymmetricMarginView == null)
+            {
+                _asymmetricMarginView = new AsymmetricMarginView();
+            }
+            _asymmetricMarginView.DataContext = new AsymmetricMarginViewModel(StructureMargin, _eventAggregator);
+            _asymmetricMarginView.ShowDialog();
         }
 
         private bool CanMargin()
@@ -97,15 +124,15 @@ namespace PlanScoreCard.Models
             _eventAggregator.GetEvent<AddGroupStepEvent>().Publish();
         }
 
-        private void OnIncreaseMargin()
-        {
-            StructureMargin++;
-        }
+        //private void OnIncreaseMargin()
+        //{
+        //    StructureMargin++;
+        //}
 
-        private void OnDecreaseMargin()
-        {
-            StructureMargin--;
-        }
+        //private void OnDecreaseMargin()
+        //{
+        //    StructureMargin--;
+        //}
 
         private void AddStructures()
         {

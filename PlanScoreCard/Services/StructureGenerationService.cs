@@ -213,7 +213,7 @@ namespace PlanScoreCard.Services
                 }
                 if (checkStructureMargin)
                 {
-                    structureGroups.Last().steps.Last().structureMargin = Convert.ToInt16(structureGroups.Last().steps.Last().structureMargin.ToString() + s.ToString());
+                    structureGroups.Last().steps.Last().structureMargin = structureGroups.Last().steps.Last().structureMargin.ToString() + s.ToString();
                 }
                 if (checkGroupMargin)
                 {
@@ -282,7 +282,7 @@ namespace PlanScoreCard.Services
                         {
                             structure = MakeStructureHiRes(plan, structuresToDelete, structure);
                         }
-                        segmentStep = structureStep.structureMargin != 0
+                        segmentStep = !String.IsNullOrEmpty(structureStep.structureMargin?.Trim()) 
                             ? structure.SegmentVolume.LargeMargin(structureStep.structureMargin)
                             : structure.SegmentVolume;
                     }
@@ -297,17 +297,17 @@ namespace PlanScoreCard.Services
                         switch (operationKeep)
                         {
                             case "AND":
-                                segmentStep = structureStep.structureMargin != 0 ?
+                                segmentStep = !String.IsNullOrEmpty(structureStep.structureMargin?.Trim()) ?
                                     segmentStep.And(structure.SegmentVolume.LargeMargin(structureStep.structureMargin)) :
                                     segmentStep.And(structure.SegmentVolume);
                                 break;
                             case "OR":
-                                segmentStep = structureStep.structureMargin != 0 ?
+                                segmentStep = !String.IsNullOrEmpty(structureStep.structureMargin?.Trim()) ?
                                     segmentStep.Or(structure.SegmentVolume.LargeMargin(structureStep.structureMargin)) :
                                     segmentStep.Or(structure.SegmentVolume);
                                 break;
                             case "SUB":
-                                segmentStep = structureStep.structureMargin != 0 ?
+                                segmentStep = !String.IsNullOrEmpty(structureStep.structureMargin?.Trim()) ?
                                    segmentStep.Sub(structure.SegmentVolume.LargeMargin(structureStep.structureMargin)) :
                                    segmentStep.Sub(structure.SegmentVolume);
                                 break;
@@ -606,7 +606,7 @@ namespace PlanScoreCard.Services
         }
         public class StructureStep
         {
-            public int structureMargin { get; set; }
+            public string structureMargin { get; set; }
             public string structureId { get; set; }
             public string structureOperation { get; set; }
 
@@ -738,35 +738,125 @@ namespace PlanScoreCard.Services
 
 
     }
-
+    public class StructureMargin
+    {
+        public int LeftMargin { get; set; }
+        public int RightMargin { get; set; }
+        public int SupMargin { get; set; }
+        public int InfMargin { get; set; }
+        public int PostMargin { get; set; }
+        public int AntMargin { get; set; }
+        public StructureMargin(string marginString)
+        {
+            if (!String.IsNullOrEmpty(marginString) && marginString.Contains(">"))
+            {
+                LeftMargin = Convert.ToInt16(marginString.Split('>').First());
+                RightMargin = Convert.ToInt16(marginString.Split('>').ElementAt(1));
+                SupMargin = Convert.ToInt16(marginString.Split('>').ElementAt(2));
+                InfMargin = Convert.ToInt16(marginString.Split('>').ElementAt(3));
+                PostMargin = Convert.ToInt16(marginString.Split('>').ElementAt(4));
+                AntMargin = Convert.ToInt16(marginString.Split('>').ElementAt(5));
+            }
+        }
+        public void SubtractMaxMargin()
+        {
+            LeftMargin = LeftMargin >= 50 ? LeftMargin - 50 : 0;
+            RightMargin = RightMargin >= 50 ? RightMargin - 50 : 0;
+            AntMargin = AntMargin >= 50 ? AntMargin - 50 : 0;
+            SupMargin = SupMargin >= 50 ? SupMargin - 50 : 0;
+            InfMargin = InfMargin >= 50 ? InfMargin - 50 : 0;
+            PostMargin = PostMargin >= 50 ? PostMargin - 50 : 0;
+        }
+    }
     static class StructureExtension
     {
-        public static SegmentVolume LargeMargin(this SegmentVolume base_segment, int base_margin)
+        public static SegmentVolume LargeMargin(this SegmentVolume base_segment, string base_margin)
         {
-            if (base_margin != 0)
+            StructureMargin margin = null;
+            if (base_margin.Contains(">"))
             {
-                if (Math.Abs(base_margin) < 50)
+                margin = new StructureMargin(base_margin);
+            }
+            else
+            {
+                margin = new StructureMargin(null);
+                margin.LeftMargin = Convert.ToInt16(base_margin.Trim());
+            }
+            int maxMargin = FindLargestMargin(margin);
+            //symmetric margin
+            if (margin.RightMargin == 0)
+            {
+                if (margin.LeftMargin != 0)
                 {
-                    return base_segment.Margin(base_margin);
+                    if (Math.Abs(maxMargin) < 50)
+                    {
+                        return base_segment.Margin(margin.LeftMargin);
+                    }
+                    else
+                    {
+                        double mmLeft = margin.LeftMargin;
+                        SegmentVolume targetLeft = base_segment;
+                        while (mmLeft > 50)
+                        {
+                            mmLeft -= 50;
+                            targetLeft = targetLeft.Margin(50);
+                        }
+                        SegmentVolume result = targetLeft.Margin(mmLeft);
+                        return result;
+                    }
                 }
+
                 else
                 {
-                    double mmLeft = base_margin;
-                    SegmentVolume targetLeft = base_segment;
-                    while (mmLeft > 50)
-                    {
-                        mmLeft -= 50;
-                        targetLeft = targetLeft.Margin(50);
-                    }
-                    SegmentVolume result = targetLeft.Margin(mmLeft);
-                    return result;
+                    return base_segment;
                 }
             }
             else
             {
-                return base_segment;
+                if (maxMargin < 50)
+                {
+                    return base_segment.AsymmetricMargin(new VMS.TPS.Common.Model.Types.AxisAlignedMargins(VMS.TPS.Common.Model.Types.StructureMarginGeometry.Outer,
+                        margin.RightMargin, margin.AntMargin, margin.InfMargin, margin.LeftMargin, margin.PostMargin, margin.SupMargin));
+                }
+                else
+                {
+                    SegmentVolume targetLeft = base_segment;
+                    int largestMargin = maxMargin;
+                    while(largestMargin >= 50)
+                    {
+                        //largestMargin -= 50;
+                        targetLeft = targetLeft.AsymmetricMargin(new VMS.TPS.Common.Model.Types.AxisAlignedMargins(VMS.TPS.Common.Model.Types.StructureMarginGeometry.Outer,
+                            margin.RightMargin >= 50 ? 50 : margin.RightMargin,
+                            margin.AntMargin >= 50 ? 50 : margin.AntMargin,
+                            margin.InfMargin >= 50 ? 50 : margin.InfMargin,
+                            margin.LeftMargin >= 50 ? 50 : margin.LeftMargin,
+                            margin.PostMargin >= 50 ? 50 : margin.PostMargin,
+                            margin.SupMargin >= 50 ? 50 : margin.PostMargin));
+                        margin.SubtractMaxMargin();
+                        largestMargin = FindLargestMargin(margin);
+                    }
+                    SegmentVolume result = targetLeft.AsymmetricMargin(new VMS.TPS.Common.Model.Types.AxisAlignedMargins(VMS.TPS.Common.Model.Types.StructureMarginGeometry.Outer,
+                        margin.RightMargin,
+                        margin.AntMargin,
+                        margin.InfMargin,
+                        margin.LeftMargin,
+                        margin.PostMargin,
+                        margin.SupMargin));
+                    return result;
+                }
             }
         }
+
+        private static int FindLargestMargin(StructureMargin margin)
+        {
+            int maxMargin = Convert.ToInt16(Math.Max(margin.LeftMargin, margin.RightMargin));
+            maxMargin = Convert.ToInt16(Math.Max(maxMargin, margin.SupMargin));
+            maxMargin = Convert.ToInt16(Math.Max(maxMargin, margin.InfMargin));
+            maxMargin = Convert.ToInt16(Math.Max(margin.LeftMargin, margin.PostMargin));
+            maxMargin = Convert.ToInt16(Math.Max(margin.LeftMargin, margin.AntMargin));
+            return maxMargin;
+        }
+
         public static SegmentVolume LargeMargin(this SegmentVolume base_segment, double base_margin)
         {
             if (base_margin != 0)

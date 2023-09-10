@@ -178,7 +178,7 @@ namespace PlanScoreCard.Models
                 {
                     GroupComment += $"<{step.SelectedStructure.StructureId}>";
                 }
-                if (step.StructureMargin != 0)
+                if (!String.IsNullOrEmpty(step.StructureMargin))
                 {
                     GroupComment += $"|{step.StructureMargin}";
                 }

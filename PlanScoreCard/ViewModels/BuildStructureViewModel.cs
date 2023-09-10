@@ -85,7 +85,7 @@ namespace PlanScoreCard.ViewModels
         private bool CanAddNewGrouping()
         {
             //either this should be adding the first group.
-            if(BuildGroups.Count == 0)
+            if (BuildGroups.Count == 0)
             {
                 return true;
             }
@@ -100,7 +100,7 @@ namespace PlanScoreCard.ViewModels
         public void SetPlan(PlanModel plan)
         {
             _plan = plan;
-           // GroupSteps.Add(new BuildStructureGroupStepModel(_plan, _eventAggregator, GroupSteps.Count()));
+            // GroupSteps.Add(new BuildStructureGroupStepModel(_plan, _eventAggregator, GroupSteps.Count()));
         }
         private void OnGenerateStructure(Window window)
         {
@@ -114,12 +114,12 @@ namespace PlanScoreCard.ViewModels
                 MessageBox.Show("Structure Id must be truncated to less than 13 characters");
                 return;
             }
-            if(BuildGroups.Count() == 0)
+            if (BuildGroups.Count() == 0)
             {
                 MessageBox.Show("No BuildGroups available");
                 return;
             }
-            if(_plan.Structures.Any(x=>x.StructureId == StructureId))
+            if (_plan.Structures.Any(x => x.StructureId == StructureId))
             {
                 MessageBox.Show("Please use a unique structure Id");
                 return;
@@ -128,7 +128,8 @@ namespace PlanScoreCard.ViewModels
             var possibleOperations = new List<string> { "AND", "OR", "SUB" };
             //must be an operation between every '>' and '<' (between every structure).
             //must be an operation between ever '}' and '{' (between every group).
-            foreach(var sOperation in StructureComment.Split('>').Skip(1).Take(StructureComment.Split('>').Count()-2))
+            //TODO must find another separator than '>' that is already used for operations between structures.
+            foreach (var sOperation in StructureComment.Split('>').Skip(1).Take(StructureComment.Split('>').Count() - 2))
             {
                 string subSOperation = sOperation.Split('<').First();//take string from > to the next <
                 if (!String.IsNullOrWhiteSpace(subSOperation))
@@ -178,7 +179,7 @@ namespace PlanScoreCard.ViewModels
         {
             //must have a grouop to the right to replace.
             var group_number = Convert.ToInt16(obj.GroupId.Substring(5));
-            if (BuildGroups.Any(x => Convert.ToInt16(x.GroupId.Substring(5)) == group_number+1))
+            if (BuildGroups.Any(x => Convert.ToInt16(x.GroupId.Substring(5)) == group_number + 1))
             {
                 var moveGroup = BuildGroups.FirstOrDefault(x => Convert.ToInt16(x.GroupId.Substring(5)) == group_number + 1);
                 moveGroup.GroupId = $"Group{group_number}";
@@ -199,7 +200,7 @@ namespace PlanScoreCard.ViewModels
             {
                 var moveGroup = BuildGroups.FirstOrDefault(x => Convert.ToInt16(x.GroupId.Substring(5)) == group_number - 1);
                 moveGroup.GroupId = $"Group{group_number}";
-                obj.GroupId = $"Group{group_number -1}";
+                obj.GroupId = $"Group{group_number - 1}";
                 string moveGroupOperation = moveGroup.SelectedOperation;
                 moveGroup.SelectedOperation = obj.SelectedOperation;
                 obj.SelectedOperation = moveGroupOperation;
@@ -210,15 +211,15 @@ namespace PlanScoreCard.ViewModels
                 if (obj.GroupId.Length > 6)//this group is part of a sub-group.
                 {
                     int subgroup_number = Convert.ToInt16(obj.GroupId.Substring(5, obj.GroupId.Length - 6));
-                    if(obj.GroupId.Last() == '1' && BuildGroups.Where(x=>x.GroupId.Length == obj.GroupId.Length).Any(x=>Convert.ToInt16(x.GroupId.Substring(5,x.GroupId.Length-6)) == subgroup_number - 1))
+                    if (obj.GroupId.Last() == '1' && BuildGroups.Where(x => x.GroupId.Length == obj.GroupId.Length).Any(x => Convert.ToInt16(x.GroupId.Substring(5, x.GroupId.Length - 6)) == subgroup_number - 1))
                     {
-                        var moveGroup = BuildGroups.OrderBy(x=>x.GroupId).Where(x=>x.GroupId.Length == obj.GroupId.Length).LastOrDefault(x=> Convert.ToInt16(x.GroupId.Substring(5,x.GroupId.Length-6)) == subgroup_number-1);
+                        var moveGroup = BuildGroups.OrderBy(x => x.GroupId).Where(x => x.GroupId.Length == obj.GroupId.Length).LastOrDefault(x => Convert.ToInt16(x.GroupId.Substring(5, x.GroupId.Length - 6)) == subgroup_number - 1);
                         obj.GroupId = $"Group{Convert.ToInt16(moveGroup.GroupId.Substring(5)) + 1}";
                         ResetGroups();
                     }
                 }
             }
-            
+
         }
 
         private void OnDemoteGroup(BuildStructureGroupModel obj)
@@ -228,7 +229,7 @@ namespace PlanScoreCard.ViewModels
             string currentNum = obj.GroupId.Substring(5);
             string newGroupId = $"Group{currentNum}1";
             obj.GroupId = newGroupId;
-            PushGroupsRight(obj,$"{currentNum}1");
+            PushGroupsRight(obj, $"{currentNum}1");
             ResetGroups();
         }
 
@@ -299,7 +300,7 @@ namespace PlanScoreCard.ViewModels
                             step1.SelectedStructure = step1.Structures.FirstOrDefault(x => x.StructureId == step.Split('>').FirstOrDefault());
                             if (step.Contains('|'))
                             {
-                                step1.StructureMargin = Convert.ToInt32(step.Split('|').Last().Split(' ').First());
+                                step1.StructureMargin = step.Split('|').Last().Split(' ').First();
                             }
                         }
                         else
@@ -311,7 +312,7 @@ namespace PlanScoreCard.ViewModels
                             currentStep.SelectedStructure = currentStep.Structures.FirstOrDefault(x => x.StructureId == step.Split('>').FirstOrDefault());
                             if (step.Contains('|'))
                             {
-                                currentStep.StructureMargin = Convert.ToInt32(step.Split('|').Last().Split(' ').First());
+                                currentStep.StructureMargin = step.Split('|').Last().Split(' ').First();
                             }
                         }
                         if (step.Split(' ').Length > 1)
@@ -350,7 +351,7 @@ namespace PlanScoreCard.ViewModels
                     StructureComment += $"|{group.GroupMargin}";
                 }
                 depthKeep = depth;
-                if (BuildGroups.Count() > groupNum+1)
+                if (BuildGroups.Count() > groupNum + 1)
                 {
                     int nextDepth = depths.ElementAt(groupNum + 1);
                     int depthdiff2 = depth - nextDepth;
@@ -358,11 +359,11 @@ namespace PlanScoreCard.ViewModels
                     {
                         StructureComment += "}";
                     }
-                    if (BuildGroups.ElementAt(groupNum + 1).SelectedOperation!=null)
+                    if (BuildGroups.ElementAt(groupNum + 1).SelectedOperation != null)
                     {
                         StructureComment += $" {BuildGroups.ElementAt(groupNum + 1).SelectedOperation} ";
                     }
-                    
+
                 }
                 else
                 {
@@ -378,9 +379,9 @@ namespace PlanScoreCard.ViewModels
 
         private void OnGroupDelete(BuildStructureGroupModel obj)
         {
-            
+
             BuildGroups.Remove(obj);
-            if(SelectedGroup == obj)
+            if (SelectedGroup == obj)
             {
                 SelectedGroup = null;
             }
