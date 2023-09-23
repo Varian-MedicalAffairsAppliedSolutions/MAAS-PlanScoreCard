@@ -213,7 +213,7 @@ namespace PlanScoreCard.Services
                 }
                 if (checkStructureMargin)
                 {
-                    structureGroups.Last().steps.Last().structureMargin = structureGroups.Last().steps.Last().structureMargin.ToString() + s.ToString();
+                    structureGroups.Last().steps.Last().structureMargin += s.ToString();
                 }
                 if (checkGroupMargin)
                 {
@@ -748,14 +748,14 @@ namespace PlanScoreCard.Services
         public int AntMargin { get; set; }
         public StructureMargin(string marginString)
         {
-            if (!String.IsNullOrEmpty(marginString) && marginString.Contains(">"))
+            if (!String.IsNullOrEmpty(marginString) && marginString.Contains("^"))
             {
-                LeftMargin = Convert.ToInt16(marginString.Split('>').First());
-                RightMargin = Convert.ToInt16(marginString.Split('>').ElementAt(1));
-                SupMargin = Convert.ToInt16(marginString.Split('>').ElementAt(2));
-                InfMargin = Convert.ToInt16(marginString.Split('>').ElementAt(3));
-                PostMargin = Convert.ToInt16(marginString.Split('>').ElementAt(4));
-                AntMargin = Convert.ToInt16(marginString.Split('>').ElementAt(5));
+                LeftMargin = Convert.ToInt16(marginString.Split('^').First());
+                RightMargin = Convert.ToInt16(marginString.Split('^').ElementAt(1));
+                SupMargin = Convert.ToInt16(marginString.Split('^').ElementAt(2));
+                InfMargin = Convert.ToInt16(marginString.Split('^').ElementAt(3));
+                PostMargin = Convert.ToInt16(marginString.Split('^').ElementAt(4));
+                AntMargin = Convert.ToInt16(marginString.Split('^').ElementAt(5));
             }
         }
         public void SubtractMaxMargin()
@@ -773,7 +773,7 @@ namespace PlanScoreCard.Services
         public static SegmentVolume LargeMargin(this SegmentVolume base_segment, string base_margin)
         {
             StructureMargin margin = null;
-            if (base_margin.Contains(">"))
+            if (base_margin.Contains("^"))
             {
                 margin = new StructureMargin(base_margin);
             }

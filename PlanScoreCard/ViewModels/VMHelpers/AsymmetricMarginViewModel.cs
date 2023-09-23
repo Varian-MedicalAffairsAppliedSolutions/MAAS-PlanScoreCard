@@ -82,14 +82,14 @@ namespace PlanScoreCard.ViewModels.VMHelpers
         {
             if (!String.IsNullOrEmpty(currentMargin))
             {
-                if (currentMargin.Contains(">"))//parse margins for default
+                if (currentMargin.Contains("^"))//parse margins for default
                 {
-                    LeftMargin = Convert.ToInt16(currentMargin.Split('>').First());
-                    RightMargin = Convert.ToInt16(currentMargin.Split('>').ElementAt(1));
-                    SupMargin = Convert.ToInt16(currentMargin.Split('>').ElementAt(2));
-                    InfMargin = Convert.ToInt16(currentMargin.Split('>').ElementAt(3));
-                    PostMargin = Convert.ToInt16(currentMargin.Split('>').ElementAt(4));
-                    AntMargin = Convert.ToInt16(currentMargin.Split('>').Last());
+                    LeftMargin = Convert.ToInt16(currentMargin.Split('^').First());
+                    RightMargin = Convert.ToInt16(currentMargin.Split('^').ElementAt(1));
+                    SupMargin = Convert.ToInt16(currentMargin.Split('^').ElementAt(2));
+                    InfMargin = Convert.ToInt16(currentMargin.Split('^').ElementAt(3));
+                    PostMargin = Convert.ToInt16(currentMargin.Split('^').ElementAt(4));
+                    AntMargin = Convert.ToInt16(currentMargin.Split('^').Last());
                 }
                 else//put all defaults into same margin
                 {

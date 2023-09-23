@@ -85,7 +85,7 @@ namespace PlanScoreCard.Models
         {
             if (obj.bSave)
             {
-                StructureMargin = $"{obj.LeftMargin}>{obj.RightMargin}>{obj.SupMargin}>{obj.InfMargin}>{obj.PostMargin}>{obj.AntMargin}";
+                StructureMargin = $"{obj.LeftMargin}^{obj.RightMargin}^{obj.SupMargin}^{obj.InfMargin}^{obj.PostMargin}^{obj.AntMargin}";
             }
             _asymmetricMarginView.Close();
         }
