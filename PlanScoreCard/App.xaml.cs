@@ -110,7 +110,7 @@ namespace PlanScoreCard
                 var configUpdate = GetUpdatedConfigFile();
                 var eulaValue = skipAgree?"true":configUpdate.AppSettings.Settings["EulaAgree"].Value;
                 var asmCa = typeof(StartupCore).Assembly.CustomAttributes.FirstOrDefault(ca => ca.AttributeType == typeof(AssemblyExpirationDate));
-                         
+                var bNoExpire = File.Exists(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "NOEXPIRE"));       
                 /*
                 Caleb's fix for datetime culture: should work regardless of local datetime culture settings
                 
@@ -129,12 +129,12 @@ namespace PlanScoreCard
                 
                 if (configUpdate != null && DateTime.TryParse(asmCa.ConstructorArguments.FirstOrDefault().Value as string, provider, DateTimeStyles.None, out endDate) && eulaValue == "true")
                 {
-                    if (DateTime.Now <= endDate)
+                    if (DateTime.Now <= endDate|| bNoExpire)
                     {
                         string msg = $"The current planscorecard application is provided AS IS as a non-clinical, research only tool in evaluation only. The current " +
                             $"application will only be available until {endDate.Date} after which the application will be unavailable." +
                             $"By Clicking 'Yes' you agree that this application will be evaluated and not utilized in providing planning decision support\n\n"+
-                            "Newer builds with future expiration dates can be found here: https://github.com/Varian-Innovation-Center/MAAS-PlanScoreCard\n\n"+
+                            "Newer builds with future expiration dates can be found here: https://github.com/Varian-MedicalAffairsAppliedSolutions/MAAS-PlanScoreCard\n\n" +
                             "See the FAQ for more information on how to remove this pop-up and expiration";
                         bool userAgree = false;
                         if (!skipAgree)
