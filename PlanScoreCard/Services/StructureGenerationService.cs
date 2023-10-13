@@ -240,7 +240,7 @@ namespace PlanScoreCard.Services
                     structure_starter = true;
                     structureGroups.Last().steps.Add(new StructureStep());
                 }
-
+                        
                 if (outsideGroup && s == ' ')
                 {
                     checkGroupOperation = true;

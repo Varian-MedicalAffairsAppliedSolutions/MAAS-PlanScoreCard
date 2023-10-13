@@ -372,10 +372,11 @@ namespace PlanScoreCard.Models
                 }
                 // The id and the code are from the template Structure
                 Structure structure = String.IsNullOrEmpty(id) && String.IsNullOrEmpty(templateId) ? null : GetStructureFromTemplate(matchId, id, templateId, code, auto, comment, plan, canBuildStructure);
-                if (structure != null)
-                {
-                    template.Structure.StructureId = structure.Id;
-                }
+                //this was removed 10.13.23. Plan model overrides (matchedId) should not override the structureId because then it gets applied to all structures.
+                //if (structure != null)
+                //{
+                //    template.Structure.StructureId = structure.Id;
+                //}
 
                 StructureId = structure == null || bFromLocal ? " - " : structure.Id;
                 StructureComment = structure == null ? " - " : comment;

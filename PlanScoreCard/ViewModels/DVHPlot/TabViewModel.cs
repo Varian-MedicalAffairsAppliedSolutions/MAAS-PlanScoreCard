@@ -104,7 +104,7 @@ namespace DVHViewer2.ViewModels
             // Add multiple DVHs with progress bar
             // Show progress bar
             //LoadingBar = true;
-            //_scoreCard = scoreCard;
+            _scoreCard = scoreCard;
             //Dispatcher.BeginInvoke(new Action(delegate () { LoadingBar = true; }));
             //here progress bar is a UIElement
             // Add the dvh plots
