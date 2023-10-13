@@ -56,7 +56,7 @@ jobs:
     - name: Add VIC GitHub NuGet repository
       run: nuget source add `
            -Name github `
-           -Source "https://nuget.pkg.github.com/Varian-Innovation-Center/index.json" `
+           -Source "https://nuget.pkg.github.com/Varian-MedicalAffairsAppliedSolutions/index.json" `
            -UserName pszentiv `
            -Password ${{ secrets.ESAPI_READ_TOKEN }} `
            -StorePasswordInClearText
