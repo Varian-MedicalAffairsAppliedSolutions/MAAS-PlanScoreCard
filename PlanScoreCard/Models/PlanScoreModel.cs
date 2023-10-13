@@ -447,7 +447,14 @@ namespace PlanScoreCard.Models
                                 else if (Math.Abs(template.InputValue - 0.0) < 0.001) { scoreValue.Value = dvh.MaxDose.Dose; }
                                 else
                                 {
-                                    scoreValue.Value = dvh.CurveData.FirstOrDefault(x => x.Volume <= template.InputValue + 0.001).DoseValue.Dose;
+                                    if (dvh.CurveData.Any(x => x.Volume <= template.InputValue + 0.001))
+                                    {
+                                        scoreValue.Value = dvh.CurveData.FirstOrDefault(x => x.Volume <= template.InputValue + 0.001).DoseValue.Dose;
+                                    }
+                                    else
+                                    {
+                                        scoreValue.Value = dvh.MaxDose.Dose;
+                                    }
                                 }
                                 if (template.OutputUnit != dvh.MaxDose.UnitAsString)
                                 {
