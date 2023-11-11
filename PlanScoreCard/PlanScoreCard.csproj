@@ -255,6 +255,7 @@
     <Compile Include="Models\ScoreMetricModel.cs" />
     <Compile Include="Models\ScorePointModel.cs" />
     <Compile Include="Models\ScoreValueModel.cs" />
+    <Compile Include="Models\SimpleStepModel.cs" />
     <Compile Include="Models\StructureDictionaryModel.cs" />
     <Compile Include="Models\StructureModel.cs" />
     <Compile Include="Models\StructureModelNestingModel.cs" />
@@ -300,6 +301,7 @@
     <Compile Include="ViewModels\PluginViewModel.cs" />
     <Compile Include="ViewModels\ScoreCardViewModel.cs" />
     <Compile Include="ViewModels\ScoreMetricViewModel.cs" />
+    <Compile Include="ViewModels\SimpleStructureBuilderViewModel.cs" />
     <Compile Include="ViewModels\StructureBuilderGroupViewModel.cs" />
     <Compile Include="ViewModels\StructureBuilderViewModel.cs" />
     <Compile Include="ViewModels\StructureGenerationViewModel.cs" />
@@ -407,6 +409,9 @@
     </Compile>
     <Compile Include="Views\ScoreReportView.xaml.cs">
       <DependentUpon>ScoreReportView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SimpleStructureBuilderView.xaml.cs">
+      <DependentUpon>SimpleStructureBuilderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\StructureBuilderGroupView.xaml.cs">
       <DependentUpon>StructureBuilderGroupView.xaml</DependentUpon>
@@ -593,6 +598,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ScoreReportView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SimpleStructureBuilderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -65,9 +65,9 @@ namespace PlanScoreCard.Services
             return GetView<EditCIView>();
         }
 
-        public BuildStructureView GetStructureBuilderView()
+        public SimpleStructureBuilderView GetStructureBuilderView()
         {
-            return GetView<BuildStructureView>();
+            return GetView<SimpleStructureBuilderView>();
         }
 
         /// <summary>

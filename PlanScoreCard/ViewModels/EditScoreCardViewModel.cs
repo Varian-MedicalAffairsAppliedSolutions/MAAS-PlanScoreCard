@@ -728,10 +728,20 @@ namespace PlanScoreCard.ViewModels
         private void OnAddNewStructure()
         {
 
-            BuildStructureView builderView = ViewLauncherService.GetStructureBuilderView();
+            //BuildStructureView builderView = ViewLauncherService.GetStructureBuilderView();
             //EventAggregator.GetEvent<SetPlanModelEvent>().Publish(PlanModel);
             //builderView.DataContext = new BuildStructureViewModel(PlanModel, EventAggregator);
-            EventAggregator.GetEvent<SetStructureBuilderPlanEvent>().Publish(PlanModel);
+            //EventAggregator.GetEvent<SetStructureBuilderPlanEvent>().Publish(PlanModel);
+            //builderView.ShowDialog();
+            //New Structure Builder testing 11/11/2023
+            SimpleStructureBuilderView builderView = ViewLauncherService.GetStructureBuilderView();
+            //moving the viewmodel from here in order to be able to pass the structure comment into the viewmodel and fill the view
+            //Note: Currently not implemented. 
+            SimpleStructureBuilderViewModel builderViewModel = new SimpleStructureBuilderViewModel(
+                SelectedStructure.StructureComment,//TODO: Check is this is the value you want to pass.
+                PlanModel,
+                EventAggregator);
+            builderView.DataContext = builderViewModel;
             builderView.ShowDialog();
 
             // Need to do something to refresh the structures

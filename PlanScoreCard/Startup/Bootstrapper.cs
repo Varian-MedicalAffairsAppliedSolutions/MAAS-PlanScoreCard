@@ -59,6 +59,7 @@ namespace PlanScoreCard.Startup
             container.RegisterType<InhomogeneityIndexView>().AsSelf();
             container.RegisterType<EditModifiedGradientIndexView>().AsSelf();
             container.RegisterType<EditDoseSubVolumeView>().AsSelf();
+            container.RegisterType<SimpleStructureBuilderView>().AsSelf();
 
 
             //events
