@@ -45,7 +45,7 @@ namespace PlanScoreCard.ViewModels
                 DecreaseMarginCommand.RaiseCanExecuteChanged();
                 if (SelectedBaseStructure != null)
                 {
-                    _eventAggregator.GetEvent<StructureBuilderChangedEvent>().Publish(null);
+                    //_eventAggregator.GetEvent<StructureBuilderChangedEvent>().Publish(null);
                 }
             }
         }
@@ -58,7 +58,7 @@ namespace PlanScoreCard.ViewModels
             {
                 SetProperty(ref _structureMargin, value);
                 //OnStructureBuilderChanged(null);
-                _eventAggregator.GetEvent<StructureBuilderChangedEvent>().Publish(null);
+                //_eventAggregator.GetEvent<StructureBuilderChangedEvent>().Publish(null);
             }
         }
         public DelegateCommand<Window> CancelStructureCommand { get; private set; }
@@ -141,7 +141,7 @@ namespace PlanScoreCard.ViewModels
         public StructureBuilderViewModel(IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
-            _eventAggregator.GetEvent<StructureBuilderChangedEvent>().Subscribe(OnStructureBuilderChanged);
+            //_eventAggregator.GetEvent<StructureBuilderChangedEvent>().Subscribe(OnStructureBuilderChanged);
             _eventAggregator.GetEvent<SetPlanModelEvent>().Subscribe(SetPlanModel);
             CancelStructureCommand = new DelegateCommand<Window>(OnCancelStructure);
             //AddStructureCommand = new DelegateCommand<Window>(OnAddStructure, CanAddStructure); // THis is the original
@@ -222,7 +222,7 @@ namespace PlanScoreCard.ViewModels
             };
             //TODO make this a different event because planchanged event is used in other places.
             //_eventAggregator.GetEvent<PlanChangedEvent>().Publish(null);
-            _eventAggregator.GetEvent<AddStructureEvent>().Publish(structure);
+            //_eventAggregator.GetEvent<AddStructureEvent>().Publish(structure);
             obj.Close();
         }
 

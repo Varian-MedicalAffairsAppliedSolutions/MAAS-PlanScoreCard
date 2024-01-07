@@ -78,7 +78,7 @@ namespace PlanScoreCard.Models
             AsymmetricMarginCommand = new DelegateCommand(OnAsymmetricMargin, CanMargin);
             AddGroupStepCommand = new DelegateCommand(OnAddGroupStep, CanAddGroupStep);
             DeleteGroupStepCommand = new DelegateCommand(OnDeleteGroupStep);
-            _eventAggregator.GetEvent<SaveAsymmetricMarginEvent>().Subscribe(OnUpdateMargin);
+            //_eventAggregator.GetEvent<SaveAsymmetricMarginEvent>().Subscribe(OnUpdateMargin);
         }
 
         private void OnUpdateMargin(AsymmetricMarginViewModel obj)

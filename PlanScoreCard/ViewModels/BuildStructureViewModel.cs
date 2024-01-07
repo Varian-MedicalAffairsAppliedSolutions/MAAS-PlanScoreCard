@@ -163,7 +163,7 @@ namespace PlanScoreCard.ViewModels
             };
             //TODO make this a different event because planchanged event is used in other places.
             //_eventAggregator.GetEvent<PlanChangedEvent>().Publish(null);
-            _eventAggregator.GetEvent<AddStructureEvent>().Publish(structure);
+            //_eventAggregator.GetEvent<AddStructureEvent>().Publish(structure);
             window.Close();
         }
 

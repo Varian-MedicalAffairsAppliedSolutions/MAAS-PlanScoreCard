@@ -33,7 +33,7 @@ namespace PlanScoreCard.Models
                 }
                 if (SelectedOperation != null)
                 {
-                    _eventAggregator.GetEvent<StructureBuilderChangedEvent>().Publish(this);
+                    //_eventAggregator.GetEvent<StructureBuilderChangedEvent>().Publish(this);
                 }
             }
         }
@@ -48,7 +48,7 @@ namespace PlanScoreCard.Models
                 SetProperty(ref _selectedStructure, value);
                 if (SelectedOperation != null && SelectedStructure != null)
                 {
-                    _eventAggregator.GetEvent<StructureBuilderChangedEvent>().Publish(this);
+                    //_eventAggregator.GetEvent<StructureBuilderChangedEvent>().Publish(this);
                 }
                 IncreaseMarginCommand.RaiseCanExecuteChanged();
                 DecreaseMarginCommand.RaiseCanExecuteChanged();
@@ -105,7 +105,7 @@ namespace PlanScoreCard.Models
                 SetProperty(ref _innerMargin, value);
                 if (SelectedOperation.SelectedOperationEnum == StructureOperationEnum.RING)
                 {
-                    _eventAggregator.GetEvent<StructureBuilderChangedEvent>().Publish(this);
+                    //_eventAggregator.GetEvent<StructureBuilderChangedEvent>().Publish(this);
                 }
             }
         }
@@ -119,7 +119,7 @@ namespace PlanScoreCard.Models
                 SetProperty(ref _outerMargin, value);
                 if (SelectedOperation.SelectedOperationEnum == StructureOperationEnum.RING)
                 {
-                    _eventAggregator.GetEvent<StructureBuilderChangedEvent>().Publish(this);
+                    //_eventAggregator.GetEvent<StructureBuilderChangedEvent>().Publish(this);
                 }
             }
         }
@@ -133,7 +133,7 @@ namespace PlanScoreCard.Models
                 SetProperty(ref _structureMargin, value);
                 if (StructureMargin != 0)
                 {
-                    _eventAggregator.GetEvent<StructureBuilderChangedEvent>().Publish(this);
+                    //_eventAggregator.GetEvent<StructureBuilderChangedEvent>().Publish(this);
                 }
             }
         }

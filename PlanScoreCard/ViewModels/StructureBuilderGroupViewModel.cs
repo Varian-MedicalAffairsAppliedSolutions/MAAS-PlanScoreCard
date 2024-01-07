@@ -51,7 +51,7 @@ namespace PlanScoreCard.ViewModels
             set
             {
                 SetProperty(ref _structureMargin, value);
-                _eventAggregator.GetEvent<StructureBuilderChangedEvent>().Publish(null);
+                //_eventAggregator.GetEvent<StructureBuilderChangedEvent>().Publish(null);
             }
         }
         public DelegateCommand IncreaseMarginCommand { get; private set; }
@@ -83,7 +83,7 @@ namespace PlanScoreCard.ViewModels
             if (StructureOperations.Count() > 1 && obj != StructureOperations.First())
             {
                 StructureOperations.Remove(obj);
-                _eventAggregator.GetEvent<StructureBuilderChangedEvent>().Publish(null);
+                //_eventAggregator.GetEvent<StructureBuilderChangedEvent>().Publish(null);
             }
         }
 

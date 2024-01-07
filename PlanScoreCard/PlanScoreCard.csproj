@@ -237,6 +237,7 @@
     <Compile Include="Models\Internals\ScoreTemplateBuilder.cs" />
     <Compile Include="Models\Internals\ScoreTemplateModel.cs" />
     <Compile Include="Models\MetricTypeEnum.cs" />
+    <Compile Include="Models\ModelHelpers\SimpleStructureStepSource.cs" />
     <Compile Include="Models\ModelHelpers\StructureMatchWarningModel.cs" />
     <Compile Include="Models\OperationModel.cs" />
     <Compile Include="Models\PatientPlanModel.cs" />
