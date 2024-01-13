@@ -130,127 +130,15 @@ namespace PlanScoreCard.Services
             }
         }
 
-        private static SegmentVolume BuildStructureFromComment(PlanningItem plan, string comment, out string output)
+        internal static SegmentVolume BuildStructureFromComment(PlanningItem plan, string comment, out string output)
         {
             SegmentVolume segment = null;
             //parse this string.
-            List<StructureGrouping> groups = new List<StructureGrouping>();
+            //List<StructureGrouping> groups = new List<StructureGrouping>();
             //StructureGrouping group = new StructureGrouping(0, 0, String.Empty, 0, String.Empty);
             //groups.Add(group);
             //int comment_index = 0;
-            int depth_keep = 0;
-            int num_keep = 1;
-            int margin_keep = 0;
-            string operation_keep = String.Empty;
-            bool structure_starter = false;
-            bool checkGroupMargin = false;
-            bool checkStructureMargin = false;
-            bool outsideStructure = false;
-            bool outsideGroup = false;
-            bool checkStructureOperation = false;
-            bool checkGroupOperation = false;
-            //string structure_string = String.Empty;
-            int charCount = 0;
-            List<StructureGrouping> structureGroups = new List<StructureGrouping>();
-            foreach (var s in comment)
-            {
-                if (s == '{')
-                {
-                    depth_keep++;
-                    outsideGroup = false;
-                    if (comment.ElementAt(charCount + 1) != '{')
-                    {
-                        //new grouping becing created. 
-                        structureGroups.Add(new StructureGrouping(num_keep, depth_keep, String.Empty, 0, String.Empty));
-                        num_keep++;
-                    }
-                }
-                if (s == '}')
-                {
-                    outsideStructure = false;
-                    if (checkGroupMargin)
-                    {
-                        checkGroupMargin = false;
-                    }
-                    if (checkStructureMargin)
-                    {
-                        checkStructureMargin = false;
-                    }
-                    depth_keep--;
-                    if (comment.Length > charCount + 1 && comment.ElementAt(charCount + 1) != '}')
-                    {
-                        outsideGroup = true;
-                        //outsideStructure = false;
-                    }
-                }
-
-                if (checkStructureMargin && s == ' ')
-                {
-                    checkStructureMargin = false;
-                }
-                if (checkGroupMargin && s == ' ')
-                {
-                    checkGroupMargin = false;
-                }
-                if (checkStructureOperation && s == ' ')
-                {
-                    checkStructureOperation = false;
-                    outsideStructure = false;
-                }
-                if (checkGroupOperation && s == ' ')
-                {
-                    checkGroupOperation = false;
-                    outsideGroup = false;
-                }
-                if (s == '>')
-                {
-                    structure_starter = false;
-                    outsideStructure = true;
-                }
-                if (structure_starter)
-                {
-                    structureGroups.Last().steps.Last().structureId += s;
-                }
-                if (checkStructureMargin)
-                {
-                    structureGroups.Last().steps.Last().structureMargin += s.ToString();
-                }
-                if (checkGroupMargin)
-                {
-                    structureGroups.Last().groupMargin = Convert.ToInt16(structureGroups.Last().groupMargin.ToString() + s.ToString());
-                }
-                if (checkStructureOperation)
-                {
-                    structureGroups.Last().steps.Last().structureOperation += s;
-                }
-                if (checkGroupOperation)
-                {
-                    structureGroups.Last().groupOperation += s;
-                }
-                if (outsideStructure && s == '|')
-                {
-                    checkStructureMargin = true;
-                }
-                if (outsideGroup && s == '|')
-                {
-                    checkGroupMargin = true;
-                }
-                if (s == '<')
-                {
-                    structure_starter = true;
-                    structureGroups.Last().steps.Add(new StructureStep());
-                }
-                        
-                if (outsideGroup && s == ' ')
-                {
-                    checkGroupOperation = true;
-                }
-                if (outsideStructure && s == ' ')
-                {
-                    checkStructureOperation = true;
-                }
-                charCount++;
-            }
+            List<StructureGrouping> structureGroups = GetStructureGroupingFromComment(comment);
             int groupCount = 0;
             string groupOperationKeep = String.Empty;
             int groupNumKeep = 0;
@@ -282,7 +170,7 @@ namespace PlanScoreCard.Services
                         {
                             structure = MakeStructureHiRes(plan, structuresToDelete, structure);
                         }
-                        segmentStep = !String.IsNullOrEmpty(structureStep.structureMargin?.Trim()) 
+                        segmentStep = !String.IsNullOrEmpty(structureStep.structureMargin?.Trim())
                             ? structure.SegmentVolume.LargeMargin(structureStep.structureMargin)
                             : structure.SegmentVolume;
                     }
@@ -491,6 +379,125 @@ namespace PlanScoreCard.Services
             }
             output = "Segment generated";
             return segment;
+        }
+
+        internal static List<StructureGrouping> GetStructureGroupingFromComment(string comment)
+        {
+            int depth_keep = 0;
+            int num_keep = 1;
+            //int margin_keep = 0;
+            //string operation_keep = String.Empty;
+            bool structure_starter = false;
+            bool checkGroupMargin = false;
+            bool checkStructureMargin = false;
+            bool outsideStructure = false;
+            bool outsideGroup = false;
+            bool checkStructureOperation = false;
+            bool checkGroupOperation = false;
+            //string structure_string = String.Empty;
+            int charCount = 0;
+            List<StructureGrouping> structureGroups = new List<StructureGrouping>();
+            foreach (var s in comment)
+            {
+                if (s == '{')
+                {
+                    depth_keep++;
+                    outsideGroup = false;
+                    if (comment.ElementAt(charCount + 1) != '{')
+                    {
+                        //new grouping becing created. 
+                        structureGroups.Add(new StructureGrouping(num_keep, depth_keep, String.Empty, 0, String.Empty));
+                        num_keep++;
+                    }
+                }
+                if (s == '}')
+                {
+                    outsideStructure = false;
+                    if (checkGroupMargin)
+                    {
+                        checkGroupMargin = false;
+                    }
+                    if (checkStructureMargin)
+                    {
+                        checkStructureMargin = false;
+                    }
+                    depth_keep--;
+                    if (comment.Length > charCount + 1 && comment.ElementAt(charCount + 1) != '}')
+                    {
+                        outsideGroup = true;
+                        //outsideStructure = false;
+                    }
+                }
+
+                if (checkStructureMargin && s == ' ')
+                {
+                    checkStructureMargin = false;
+                }
+                if (checkGroupMargin && s == ' ')
+                {
+                    checkGroupMargin = false;
+                }
+                if (checkStructureOperation && s == ' ')
+                {
+                    checkStructureOperation = false;
+                    outsideStructure = false;
+                }
+                if (checkGroupOperation && s == ' ')
+                {
+                    checkGroupOperation = false;
+                    outsideGroup = false;
+                }
+                if (s == '>')
+                {
+                    structure_starter = false;
+                    outsideStructure = true;
+                }
+                if (structure_starter)
+                {
+                    structureGroups.Last().steps.Last().structureId += s;
+                }
+                if (checkStructureMargin)
+                {
+                    structureGroups.Last().steps.Last().structureMargin += s.ToString();
+                }
+                if (checkGroupMargin)
+                {
+                    structureGroups.Last().groupMargin = Convert.ToInt16(structureGroups.Last().groupMargin.ToString() + s.ToString());
+                }
+                if (checkStructureOperation)
+                {
+                    structureGroups.Last().steps.Last().structureOperation += s;
+                }
+                if (checkGroupOperation)
+                {
+                    structureGroups.Last().groupOperation += s;
+                }
+                if (outsideStructure && s == '|')
+                {
+                    checkStructureMargin = true;
+                }
+                if (outsideGroup && s == '|')
+                {
+                    checkGroupMargin = true;
+                }
+                if (s == '<')
+                {
+                    structure_starter = true;
+                    structureGroups.Last().steps.Add(new StructureStep());
+                }
+
+                if (outsideGroup && s == ' ')
+                {
+                    checkGroupOperation = true;
+                }
+                if (outsideStructure && s == ' ')
+                {
+                    checkStructureOperation = true;
+                }
+                charCount++;
+            }
+
+            return structureGroups;
         }
 
         private static Structure MakeStructureHiRes(PlanningItem plan, List<Structure> structuresToDelete, Structure structure)

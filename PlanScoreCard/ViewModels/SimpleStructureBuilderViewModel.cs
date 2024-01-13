@@ -1,6 +1,7 @@
 ﻿using PlanScoreCard.Events;
 using PlanScoreCard.Models;
 using PlanScoreCard.Models.ModelHelpers;
+using PlanScoreCard.Services;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -13,6 +14,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using static PlanScoreCard.Services.StructureGenerationService;
 
 namespace PlanScoreCard.ViewModels
 {
@@ -215,7 +217,102 @@ namespace PlanScoreCard.ViewModels
             SaveStructureCreationCommand = new DelegateCommand(OnSaveStructure);
             _eventAggregator.GetEvent<StructureBuilderChangedEvent>().Subscribe(OnStructureBuilderChanged);
             //add that very first step.
-            OnAddBase();
+            if (!String.IsNullOrEmpty(comment))
+            {
+                BuildStepsFromComment(comment);
+            }
+            else
+            {
+                OnAddBase();
+            }
+        }
+
+        private void BuildStepsFromComment(string comment)
+        {
+            //use the same service that interprets the comment to interpret this.
+            List<StructureGrouping> structureGroups = StructureGenerationService.GetStructureGroupingFromComment(comment);
+            int category = 0;
+            string operationSaver = String.Empty;
+            foreach (var group in structureGroups)//.OrderByDescending(x => x.groupDepth).ThenBy(x => x.groupNum))
+            {
+                if (category == 1)
+                {
+                    SelectedStructureOperation = operationSaver;
+                }
+                int stepCount = 0;
+                switch (category)
+                {
+                    case 0:
+                        stepCount = BaseSteps.Count;
+                        break;
+                    case 1:
+                        stepCount = TargetSteps.Count;
+                        break;
+                    case 2:
+                        stepCount = ComboSteps.Count;
+                        break;
+                }
+                //string operationKeep = String.Empty;
+                foreach (var structureStep in group.steps)
+                {
+                    string structureId = StructureModelByString(structureStep.structureId);
+                    SimpleStepModel groupStep = new SimpleStepModel(stepCount, _plan, (SimpleStructureStepSource)stepCount, _eventAggregator);
+
+                    groupStep.SelectedStructure = groupStep.Structures.FirstOrDefault(s => s.StructureId == structureId);
+                    if (!String.IsNullOrEmpty(structureStep.structureMargin))
+                    {
+                        groupStep.Margin = structureStep.structureMargin;
+                    }
+                    switch (category)
+                    {
+                        case 0:
+                            BaseSteps.Add(groupStep);
+                            break;
+                        case 1:
+                            TargetSteps.Add(groupStep);
+                            break;
+                        case 2:
+                            ComboSteps.Add(groupStep);
+                            break;
+                    }
+                }
+                operationSaver = group.groupOperation;
+                category++;
+            }
+        }
+
+        private string StructureModelByString(string structureId)
+        {
+            if (_plan.Structures.Any(x => x.StructureId == structureId))
+            {
+                return _plan.Structures.FirstOrDefault(x => x.StructureId == structureId).StructureId;
+            }
+            StructureDictionaryModel structureDictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower().Equals(structureId));
+
+            // This means that the template structure Id
+            if (structureDictionary != null)
+            {
+                // Get a collection of all acceptable Structures
+                List<string> acceptedStructures = new List<string>();
+                acceptedStructures.Add(structureDictionary.StructureID.ToLower());
+                if (structureDictionary.StructureSynonyms != null)
+                {
+                    acceptedStructures.AddRange(structureDictionary.StructureSynonyms.Select(s => s.ToLower()));
+                }
+
+                // Gets the Plan Structures
+                List<string> planStructrues = _plan.Structures.Select(s => s.StructureId.ToLower()).ToList();
+
+                // Finds any matches between the PlanStructures and All Accepted StructIDs
+                String structure = String.Empty;
+                string matchedStructureID = planStructrues.Intersect(acceptedStructures).FirstOrDefault();
+                if (matchedStructureID != null)
+                {
+                    return _plan.Structures.FirstOrDefault(s => s.StructureId.ToLower() == matchedStructureID.ToLower()).StructureId;
+                }
+
+            }
+            return String.Empty;
         }
 
         private void OnSaveStructure()
@@ -241,7 +338,7 @@ namespace PlanScoreCard.ViewModels
                     }
                     structureComment += $" {SelectedComboOperation} ";
                     structureComment += "{";
-                    foreach(var step in ComboSteps)
+                    foreach (var step in ComboSteps)
                     {
                         structureComment = AppendCommendToStep(structureComment, step, ComboSteps.ToList());
                     }

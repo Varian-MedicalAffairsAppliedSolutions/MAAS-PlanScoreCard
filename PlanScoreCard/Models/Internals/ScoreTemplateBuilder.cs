@@ -284,6 +284,7 @@ namespace PlanScoreCard.Models.Internals
                 if (scoreMetric.Structure != null)
                 {
                     scoreMetric.Structure.TemplateStructureId = template.Structure.TemplateStructureId;
+                    scoreMetric.Structure.StructureComment = template.Structure.StructureComment;
                 }
                 scoreMetric.MetricComment = template.MetricComment;
 

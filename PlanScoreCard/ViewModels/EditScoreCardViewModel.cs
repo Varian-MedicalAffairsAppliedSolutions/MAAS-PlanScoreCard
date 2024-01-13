@@ -748,7 +748,7 @@ namespace PlanScoreCard.ViewModels
             //moving the viewmodel from here in order to be able to pass the structure comment into the viewmodel and fill the view
             //Note: Currently not implemented. 
             SimpleStructureBuilderViewModel builderViewModel = new SimpleStructureBuilderViewModel(
-                SelectedStructure.StructureComment,//TODO: Check is this is the value you want to pass.
+                SelectedStructure?.StructureComment,//TODO: Check is this is the value you want to pass.
                 PlanModel,
                 EventAggregator);
             _builderView.DataContext = builderViewModel;
