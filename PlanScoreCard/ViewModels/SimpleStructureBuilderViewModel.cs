@@ -255,7 +255,7 @@ namespace PlanScoreCard.ViewModels
                 //string operationKeep = String.Empty;
                 foreach (var structureStep in group.steps)
                 {
-                    string structureId = StructureModelByString(structureStep.structureId);
+                    string structureId = StructureModelByString(_plan, structureStep.structureId);
                     SimpleStepModel groupStep = new SimpleStepModel(stepCount, _plan, (SimpleStructureStepSource)stepCount, _eventAggregator);
 
                     groupStep.SelectedStructure = groupStep.Structures.FirstOrDefault(s => s.StructureId == structureId);
@@ -281,39 +281,7 @@ namespace PlanScoreCard.ViewModels
             }
         }
 
-        private string StructureModelByString(string structureId)
-        {
-            if (_plan.Structures.Any(x => x.StructureId == structureId))
-            {
-                return _plan.Structures.FirstOrDefault(x => x.StructureId == structureId).StructureId;
-            }
-            StructureDictionaryModel structureDictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower().Equals(structureId));
-
-            // This means that the template structure Id
-            if (structureDictionary != null)
-            {
-                // Get a collection of all acceptable Structures
-                List<string> acceptedStructures = new List<string>();
-                acceptedStructures.Add(structureDictionary.StructureID.ToLower());
-                if (structureDictionary.StructureSynonyms != null)
-                {
-                    acceptedStructures.AddRange(structureDictionary.StructureSynonyms.Select(s => s.ToLower()));
-                }
-
-                // Gets the Plan Structures
-                List<string> planStructrues = _plan.Structures.Select(s => s.StructureId.ToLower()).ToList();
-
-                // Finds any matches between the PlanStructures and All Accepted StructIDs
-                String structure = String.Empty;
-                string matchedStructureID = planStructrues.Intersect(acceptedStructures).FirstOrDefault();
-                if (matchedStructureID != null)
-                {
-                    return _plan.Structures.FirstOrDefault(s => s.StructureId.ToLower() == matchedStructureID.ToLower()).StructureId;
-                }
-
-            }
-            return String.Empty;
-        }
+        
 
         private void OnSaveStructure()
         {

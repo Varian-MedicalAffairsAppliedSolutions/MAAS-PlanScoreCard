@@ -276,7 +276,8 @@ namespace PlanScoreCard.Models
                 {
                     StructureId = structure.Id,
                     StructureCode = structure.StructureCodeInfos.FirstOrDefault().Code,
-                    StructureComment = structure.Comment
+                    StructureComment = structure.Comment,
+                    IsContoured = !structure.IsEmpty
                 });
             }
         }

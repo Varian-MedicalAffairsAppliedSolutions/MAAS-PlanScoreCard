@@ -723,8 +723,8 @@ namespace PlanScoreCard.ViewModels
                 {
                     scoreMetric.Structures.Add(structure);
                 }
-                Structures.Add(structure);
-                Structures.OrderBy(s => s.StructureId);
+                //Structures.Add(structure);
+                //Structures.OrderBy(s => s.StructureId);
                 SelectedStructure = structure;
                 SelectedScoreMetric.Structure = structure;
             }

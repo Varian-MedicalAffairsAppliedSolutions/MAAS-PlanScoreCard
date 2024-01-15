@@ -499,7 +499,39 @@ namespace PlanScoreCard.Services
 
             return structureGroups;
         }
+        internal static string StructureModelByString(PlanModel plan, string structureId)
+        {
+            if (plan.Structures.Any(x => x.StructureId == structureId))
+            {
+                return plan.Structures.FirstOrDefault(x => x.StructureId == structureId).StructureId;
+            }
+            StructureDictionaryModel structureDictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower().Equals(structureId));
 
+            // This means that the template structure Id
+            if (structureDictionary != null)
+            {
+                // Get a collection of all acceptable Structures
+                List<string> acceptedStructures = new List<string>();
+                acceptedStructures.Add(structureDictionary.StructureID.ToLower());
+                if (structureDictionary.StructureSynonyms != null)
+                {
+                    acceptedStructures.AddRange(structureDictionary.StructureSynonyms.Select(s => s.ToLower()));
+                }
+
+                // Gets the Plan Structures
+                List<string> planStructrues = plan.Structures.Select(s => s.StructureId.ToLower()).ToList();
+
+                // Finds any matches between the PlanStructures and All Accepted StructIDs
+                String structure = String.Empty;
+                string matchedStructureID = planStructrues.Intersect(acceptedStructures).FirstOrDefault();
+                if (matchedStructureID != null)
+                {
+                    return plan.Structures.FirstOrDefault(s => s.StructureId.ToLower() == matchedStructureID.ToLower()).StructureId;
+                }
+
+            }
+            return String.Empty;
+        }
         private static Structure MakeStructureHiRes(PlanningItem plan, List<Structure> structuresToDelete, Structure structure)
         {
             bool bHiRes = structure.IsHighResolution;
@@ -753,6 +785,7 @@ namespace PlanScoreCard.Services
         public int InfMargin { get; set; }
         public int PostMargin { get; set; }
         public int AntMargin { get; set; }
+        public int SymmetricMargin { get; set; }
         public StructureMargin(string marginString)
         {
             if (!String.IsNullOrEmpty(marginString) && marginString.Contains("^"))
@@ -763,6 +796,10 @@ namespace PlanScoreCard.Services
                 InfMargin = Convert.ToInt16(marginString.Split('^').ElementAt(3));
                 PostMargin = Convert.ToInt16(marginString.Split('^').ElementAt(4));
                 AntMargin = Convert.ToInt16(marginString.Split('^').ElementAt(5));
+            }
+            else
+            {
+                SymmetricMargin = Convert.ToInt16(marginString);
             }
         }
         public void SubtractMaxMargin()
@@ -787,13 +824,13 @@ namespace PlanScoreCard.Services
             else
             {
                 margin = new StructureMargin(null);
-                margin.LeftMargin = Convert.ToInt16(base_margin.Trim());
+                margin.SymmetricMargin = Convert.ToInt16(base_margin.Trim());
             }
             int maxMargin = FindLargestMargin(margin);
             //symmetric margin
-            if (margin.RightMargin == 0)
-            {
-                if (margin.LeftMargin != 0)
+            //if (margin.RightMargin == 0)
+            //{
+                if (margin.SymmetricMargin != 0)
                 {
                     if (Math.Abs(maxMargin) < 50)
                     {
@@ -813,12 +850,9 @@ namespace PlanScoreCard.Services
                     }
                 }
 
-                else
-                {
-                    return base_segment;
-                }
-            }
-            else
+          
+            //}
+            if(margin.RightMargin !=0 || margin.LeftMargin !=0 || margin.SupMargin !=0 || margin.InfMargin !=0 || margin.AntMargin !=0 || margin.PostMargin!=0)
             {
                 if (maxMargin < 50)
                 {
@@ -852,6 +886,7 @@ namespace PlanScoreCard.Services
                     return result;
                 }
             }
+            return base_segment;
         }
 
         private static int FindLargestMargin(StructureMargin margin)
@@ -859,8 +894,8 @@ namespace PlanScoreCard.Services
             int maxMargin = Convert.ToInt16(Math.Max(margin.LeftMargin, margin.RightMargin));
             maxMargin = Convert.ToInt16(Math.Max(maxMargin, margin.SupMargin));
             maxMargin = Convert.ToInt16(Math.Max(maxMargin, margin.InfMargin));
-            maxMargin = Convert.ToInt16(Math.Max(margin.LeftMargin, margin.PostMargin));
-            maxMargin = Convert.ToInt16(Math.Max(margin.LeftMargin, margin.AntMargin));
+            maxMargin = Convert.ToInt16(Math.Max(maxMargin, margin.PostMargin));
+            maxMargin = Convert.ToInt16(Math.Max(maxMargin, margin.AntMargin));
             return maxMargin;
         }
 
