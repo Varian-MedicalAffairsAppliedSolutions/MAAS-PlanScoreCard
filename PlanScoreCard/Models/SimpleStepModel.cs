@@ -64,11 +64,16 @@ namespace PlanScoreCard.Models
 
         private void OnSaveAsymmetricMargin(AsymmetricMarginViewModel obj)
         {
-            if (obj.bSave)
+            //this method comes from an event which will run on all subscribers, crashing the application if called on the incorrect model.
+            if (obj.Source == Source && obj.StepId == StepId)
             {
-                Margin = $"{obj.LeftMargin}^{obj.RightMargin}^{obj.SupMargin}^{obj.InfMargin}^{obj.PostMargin}^{obj.AntMargin}";
+                if (obj.bSave)
+                {
+                    Margin = $"{obj.LeftMargin}^{obj.RightMargin}^{obj.SupMargin}^{obj.InfMargin}^{obj.PostMargin}^{obj.AntMargin}";
+                }
+                _asymmetricMarginView.Close();
+                _asymmetricMarginView = null;
             }
-            _asymmetricMarginView.Close();
         }
 
         private void AddStructures()
@@ -84,8 +89,10 @@ namespace PlanScoreCard.Models
             {
                 _asymmetricMarginView = new AsymmetricMarginView();
             }
-            _asymmetricMarginView.DataContext = new AsymmetricMarginViewModel(Margin, _eventAggregator);
-            _asymmetricMarginView.ShowDialog();
+                _asymmetricMarginView.DataContext = new AsymmetricMarginViewModel(Margin,Source, StepId, _eventAggregator);
+                _asymmetricMarginView.ShowDialog();
+            
+            
         }
     }
 }

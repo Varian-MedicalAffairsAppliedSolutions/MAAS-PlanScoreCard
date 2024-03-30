@@ -1,4 +1,5 @@
 ﻿using PlanScoreCard.Events.HelperWindows;
+using PlanScoreCard.Models.ModelHelpers;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -57,12 +58,16 @@ namespace PlanScoreCard.ViewModels.VMHelpers
 
         }
         public bool bSave { get; set; }
+        public SimpleStructureStepSource Source { get; set; }
+        public int StepId { get; set; }
         public DelegateCommand SaveMarginCommand { get; private set; }
         public DelegateCommand CancelMarginCommand { get; private set; }
-        public AsymmetricMarginViewModel(string currentMargin, IEventAggregator eventAggregator)
+        public AsymmetricMarginViewModel(string currentMargin, SimpleStructureStepSource source, int stepId, IEventAggregator eventAggregator)
         {
             InterpretMargin(currentMargin);
             _eventAggregator = eventAggregator;
+            Source = source;
+            StepId = stepId;
             SaveMarginCommand = new DelegateCommand(OnSaveMargin);
             CancelMarginCommand = new DelegateCommand(OnCancelMargin);
         }

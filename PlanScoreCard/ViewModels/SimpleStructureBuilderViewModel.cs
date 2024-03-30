@@ -198,8 +198,8 @@ namespace PlanScoreCard.ViewModels
             BaseSteps = new ObservableCollection<SimpleStepModel>();
             TargetSteps = new ObservableCollection<SimpleStepModel>();
             ComboSteps = new ObservableCollection<SimpleStepModel>();
-            StructureOperations = new ObservableCollection<string>() { "AND", "OR", "SUB" };
-            ComboOperations = new ObservableCollection<string>() { "AND", "OR", "SUB" };
+            StructureOperations = new ObservableCollection<string>() {String.Empty, "AND", "OR", "SUB" };
+            ComboOperations = new ObservableCollection<string>() { String.Empty, "AND", "OR", "SUB" };
             AddBaseCommand = new DelegateCommand(OnAddBase);
             BaseDownCommand = new DelegateCommand(OnBaseDown, CanBaseMove);
             BaseUpCommand = new DelegateCommand(OnBaseUp, CanBaseMove);
@@ -548,11 +548,11 @@ namespace PlanScoreCard.ViewModels
 
         private void OnTargetDelete()
         {
-            foreach (var step in TargetSteps.Where(bs => bs.StepId > SelectedBaseStep.StepId))
+            foreach (var step in TargetSteps.Where(bs => bs.StepId > SelectedTargetStep.StepId))
             {
                 step.StepId--;
             }
-            TargetSteps.Remove(SelectedBaseStep);
+            TargetSteps.Remove(SelectedTargetStep);
             bGrouped = false;
         }
 

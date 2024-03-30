@@ -8,7 +8,7 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-
+//Not Current used. 
 namespace PlanScoreCard.Models
 {
     public class BuildStructureGroupStepModel : BindableBase
@@ -96,7 +96,8 @@ namespace PlanScoreCard.Models
             {
                 _asymmetricMarginView = new AsymmetricMarginView();
             }
-            _asymmetricMarginView.DataContext = new AsymmetricMarginViewModel(StructureMargin, _eventAggregator);
+            //This Model isn't in use anymore. Code below won't work
+            //_asymmetricMarginView.DataContext = new AsymmetricMarginViewModel(StructureMargin, _eventAggregator);
             _asymmetricMarginView.ShowDialog();
         }
 

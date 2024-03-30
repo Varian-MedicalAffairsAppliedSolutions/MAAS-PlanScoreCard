@@ -163,6 +163,7 @@ namespace PlanScoreCard.ViewModels
                 MetricDownCommand.RaiseCanExecuteChanged();
                 ClearColorCommand.RaiseCanExecuteChanged();
                 AddPointCommand.RaiseCanExecuteChanged();
+                AddNewStructureCommand.RaiseCanExecuteChanged();
                 ShowScorePointModels(SelectedScoreMetric);
 
                 if (SelectedScoreMetric == null)
@@ -584,7 +585,7 @@ namespace PlanScoreCard.ViewModels
             ScorePlanCommand = new DelegateCommand(ScorePlan);
             SaveTemplateCommand = new DelegateCommand(SaveTemplate);
             OrderPointsByValueCommand = new DelegateCommand(OrderPointsByValue);
-            AddNewStructureCommand = new DelegateCommand(OnAddNewStructure);
+            AddNewStructureCommand = new DelegateCommand(OnAddNewStructure, CanDeleteMetric);
             OpenDictionaryEditorCommand = new DelegateCommand(OnOpenDictionaryEditor, CanOpenDictionaryEditor);
             UpdateTemplateIdCommand = new DelegateCommand(OnUpdateTemplateId);
             ClearColorCommand = new DelegateCommand(OnClearColor, CanClearColor);
@@ -727,6 +728,7 @@ namespace PlanScoreCard.ViewModels
                 //Structures.OrderBy(s => s.StructureId);
                 SelectedStructure = structure;
                 SelectedScoreMetric.Structure = structure;
+
             }
             _builderView.Close();
             //also add structures to each metric in case you want to change it.
