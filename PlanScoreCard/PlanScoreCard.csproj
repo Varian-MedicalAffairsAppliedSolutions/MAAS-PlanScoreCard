@@ -219,6 +219,7 @@
     <Compile Include="Events\StructureBuilder\SetStructureBuilderPlanEvent.cs" />
     <Compile Include="Events\StructureBuilder\UpdateGroupCommentEvent.cs" />
     <Compile Include="Events\StructureBuilder\UpdateStructureCommentEvent.cs" />
+    <Compile Include="Events\StructureGeneratedOnScoreEvent.cs" />
     <Compile Include="Events\UILaunchedEvent.cs" />
     <Compile Include="Events\UpdateMetricEditorEvent.cs" />
     <Compile Include="Events\UpdateScorePointGridEvent.cs" />

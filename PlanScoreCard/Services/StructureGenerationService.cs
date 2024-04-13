@@ -1,4 +1,6 @@
-﻿using PlanScoreCard.Models;
+﻿using PlanScoreCard.Events;
+using PlanScoreCard.Models;
+using Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -14,7 +16,7 @@ namespace PlanScoreCard.Services
     {
         //public static StructureDictionaryService StructureDictionaryService { get; private set; }
 
-        internal static Structure BuildStructureWithESAPI(Application app, string id, string comment, bool bStructureExists, PlanningItem plan)//, StructureDictionaryService structureDictionaryService)
+        internal static Structure BuildStructureWithESAPI(Application app, string id, string comment, bool bStructureExists, PlanningItem plan, IEventAggregator eventAggregator)//, StructureDictionaryService structureDictionaryService)
         {
             //StructureDictionaryService = structureDictionaryService;
             try
@@ -119,6 +121,9 @@ namespace PlanScoreCard.Services
                     {
                         app.SaveModifications();
                     }
+
+                    //post event to move structure to scorecard structurelist so they show in the editor. 
+                    eventAggregator.GetEvent<StructureGeneratedOnScoreEvent>().Publish(new Tuple<StructureSet, Structure>(plan.StructureSet, structure));
                     return structure;
                 }
                 return null;
@@ -830,29 +835,29 @@ namespace PlanScoreCard.Services
             //symmetric margin
             //if (margin.RightMargin == 0)
             //{
-                if (margin.SymmetricMargin != 0)
+            if (margin.SymmetricMargin != 0)
+            {
+                if (Math.Abs(maxMargin) < 50)
                 {
-                    if (Math.Abs(maxMargin) < 50)
-                    {
-                        return base_segment.Margin(margin.LeftMargin);
-                    }
-                    else
-                    {
-                        double mmLeft = margin.LeftMargin;
-                        SegmentVolume targetLeft = base_segment;
-                        while (mmLeft > 50)
-                        {
-                            mmLeft -= 50;
-                            targetLeft = targetLeft.Margin(50);
-                        }
-                        SegmentVolume result = targetLeft.Margin(mmLeft);
-                        return result;
-                    }
+                    return base_segment.Margin(margin.SymmetricMargin);
                 }
+                else
+                {
+                    double mmLeft = margin.SymmetricMargin;
+                    SegmentVolume targetLeft = base_segment;
+                    while (mmLeft > 50)
+                    {
+                        mmLeft -= 50;
+                        targetLeft = targetLeft.Margin(50);
+                    }
+                    SegmentVolume result = targetLeft.Margin(mmLeft);
+                    return result;
+                }
+            }
 
-          
+
             //}
-            if(margin.RightMargin !=0 || margin.LeftMargin !=0 || margin.SupMargin !=0 || margin.InfMargin !=0 || margin.AntMargin !=0 || margin.PostMargin!=0)
+            if (margin.RightMargin != 0 || margin.LeftMargin != 0 || margin.SupMargin != 0 || margin.InfMargin != 0 || margin.AntMargin != 0 || margin.PostMargin != 0)
             {
                 if (maxMargin < 50)
                 {
@@ -863,7 +868,7 @@ namespace PlanScoreCard.Services
                 {
                     SegmentVolume targetLeft = base_segment;
                     int largestMargin = maxMargin;
-                    while(largestMargin >= 50)
+                    while (largestMargin >= 50)
                     {
                         //largestMargin -= 50;
                         targetLeft = targetLeft.AsymmetricMargin(new VMS.TPS.Common.Model.Types.AxisAlignedMargins(VMS.TPS.Common.Model.Types.StructureMarginGeometry.Outer,

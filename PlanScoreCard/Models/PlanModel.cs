@@ -141,6 +141,9 @@ namespace PlanScoreCard.Models
             set { _doseUnit = value; }
         }
 
+        public string StructureSetId { get; private set; }
+        public string ImageId { get; private set; }
+
         private int _numberOfFractions;
 
         public int NumberOfFractions
@@ -261,6 +264,8 @@ namespace PlanScoreCard.Models
             DoseUnit = bPlanSum ? (plan as PlanSum).PlanSetups.FirstOrDefault().TotalDose.Unit : (plan as PlanSetup).TotalDose.Unit;
             //bPrimary = false;
             //bSelected = false;
+            StructureSetId = plan.StructureSet.Id;
+            ImageId = plan.StructureSet.Image.Id;
             PlanText = $"{CourseId}: {PlanId}";
         }
 

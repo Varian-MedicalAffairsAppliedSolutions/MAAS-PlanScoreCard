@@ -191,7 +191,7 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand ComboDeleteCommand { get; private set; }
         public DelegateCommand CancelStructureCreationCommand { get; private set; }
         public DelegateCommand SaveStructureCreationCommand { get; private set; }
-        public SimpleStructureBuilderViewModel(string comment, PlanModel plan, IEventAggregator eventAggregator)
+        public SimpleStructureBuilderViewModel(StructureModel structure, PlanModel plan, IEventAggregator eventAggregator)
         {
             _plan = plan;
             _eventAggregator = eventAggregator;
@@ -217,9 +217,13 @@ namespace PlanScoreCard.ViewModels
             SaveStructureCreationCommand = new DelegateCommand(OnSaveStructure);
             _eventAggregator.GetEvent<StructureBuilderChangedEvent>().Subscribe(OnStructureBuilderChanged);
             //add that very first step.
-            if (!String.IsNullOrEmpty(comment))
+            if (!String.IsNullOrEmpty(structure?.StructureId))
             {
-                BuildStepsFromComment(comment);
+                NewStructureId = structure.StructureId;
+            }
+            if (!String.IsNullOrEmpty(structure?.StructureComment))
+            {
+                BuildStepsFromComment(structure.StructureComment);
             }
             else
             {
@@ -353,6 +357,11 @@ namespace PlanScoreCard.ViewModels
             foreach (var step in BaseSteps)
             {
                 structureComment = AppendCommendToStep(structureComment, step, BaseSteps.ToList());
+            }
+            //sometimes the OR gets stuck on the end of the structure notes. Here we want to remove it.
+            if(structureComment.EndsWith(" OR "))
+            {
+                structureComment.Remove(structureComment.LastIndexOf(" OR "));
             }
             structureComment += "}";
             if (!String.IsNullOrEmpty(BaseMargin))

@@ -420,6 +420,7 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<ClosePatientSelectionEvent>().Subscribe(OnClosePatientSelection);
             EventAggregator.GetEvent<PlotUpdateEvent>().Subscribe(OnUpdatePlotFromPlugin);
             EventAggregator.GetEvent<ConfigurationCloseEvent>().Subscribe(OnCloseConfiguration);
+            EventAggregator.GetEvent<StructureGeneratedOnScoreEvent>().Subscribe(OnStructureGeneration);
             //EventAggregator.GetEvent<RemovePlanFromScoreEvent>().Subscribe(OnRemovePlanFromScore);
 
             MaxScore = 0;
@@ -704,6 +705,25 @@ namespace PlanScoreCard.ViewModels
             return ScoreCard != null && Plans.Any();
         }
 
+        private void OnStructureGeneration(Tuple<StructureSet,Structure> obj)
+        {
+            var structureSet = obj.Item1;
+            var structure = obj.Item2;
+            foreach(var plan in Plans)
+            {
+                if(plan.StructureSetId == structureSet.Id && plan.ImageId == structureSet.Image.Id)
+                {
+                    plan.Structures.Add(new StructureModel(EventAggregator)
+                    {
+                        StructureId = structure.Id,
+                        StructureCode = structure.StructureCodeInfos.FirstOrDefault().Code,
+                        StructureComment = structure.Comment,
+                        IsContoured = !structure.IsEmpty
+                    });
+                }
+            }
+        }
+
         private void OnPrintReport()
         {
             var fd = new FlowDocument() { FontSize = 12, FontFamily = new System.Windows.Media.FontFamily("Franklin Gothic") };
@@ -963,7 +983,7 @@ namespace PlanScoreCard.ViewModels
                 PlanScoreModel psm = null;
                 if (!PlanScores.Any(ps => ps.MetricId == metric_id))
                 {
-                    psm = new PlanScoreModel(Application);
+                    psm = new PlanScoreModel(Application, EventAggregator);
                 }
                 else//now that multiple patients are supported, it is possible that the metric already exists, but 
                 {

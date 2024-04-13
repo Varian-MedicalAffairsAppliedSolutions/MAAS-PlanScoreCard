@@ -253,7 +253,7 @@ namespace PlanScoreCard.Services
             PlanScores.Clear();
             foreach (var template in _templates)
             {
-                var psm = new PlanScoreModel(_app);
+                var psm = new PlanScoreModel(_app, _eventAggregator);
                 psm.BuildPlanScoreFromTemplate(new List<PlanningItem> { newPlan }, template, metricId, String.Empty, string.Empty, false, new List<ScoreValueModel>());
                 //false added at end because normalization service cannot build structures, they should have already been built by the scorecard being loaded.
                 metricId++;
