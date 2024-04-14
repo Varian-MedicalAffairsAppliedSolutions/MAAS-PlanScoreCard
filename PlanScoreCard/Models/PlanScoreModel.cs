@@ -1112,7 +1112,7 @@ namespace PlanScoreCard.Models
             }
             // SECOND: If exact match is not there, check to see if it is part of the Structure Dictionary
             //check templateId against structure id. 
-            StructureDictionaryModel structureDictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower().Equals(templateId.ToLower()));
+            StructureDictionaryModel structureDictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.Equals(templateId,StringComparison.OrdinalIgnoreCase));
 
             // This means there was no direct match to a key in the structure 
             /*if (structureDictionary == null)
@@ -1144,7 +1144,7 @@ namespace PlanScoreCard.Models
                 string matchedStructureID = planStructrues.Intersect(acceptedStructures).FirstOrDefault();
                 if (matchedStructureID != null)
                 {
-                    structure = plan.StructureSet.Structures.FirstOrDefault(s => s.Id.ToLower() == matchedStructureID.ToLower());
+                    structure = plan.StructureSet.Structures.FirstOrDefault(s => s.Id.Equals(matchedStructureID,StringComparison.OrdinalIgnoreCase));
                 }
 
                 if (structure != null && !structure.IsEmpty)

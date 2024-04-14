@@ -647,7 +647,8 @@ namespace PlanScoreCard.ViewModels
 
         private bool CanOpenDictionaryEditor()
         {
-            return SelectedStructure != null && !String.IsNullOrEmpty(SelectedStructure.StructureId) && !String.IsNullOrEmpty(SelectedStructure.TemplateStructureId);
+            //removed the need for template structure Id to use the dictionary. Not sure if that's needed, but testing an issue. 4.14. MCS
+            return SelectedStructure != null && !String.IsNullOrEmpty(SelectedStructure.StructureId);// && !String.IsNullOrEmpty(SelectedStructure.TemplateStructureId);
         }
 
         private void OnOpenDictionaryEditor()

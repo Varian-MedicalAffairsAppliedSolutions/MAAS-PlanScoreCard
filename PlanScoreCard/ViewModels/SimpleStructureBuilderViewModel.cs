@@ -256,6 +256,7 @@ namespace PlanScoreCard.ViewModels
                         stepCount = ComboSteps.Count;
                         break;
                 }
+              
                 //string operationKeep = String.Empty;
                 foreach (var structureStep in group.steps)
                 {
@@ -279,6 +280,10 @@ namespace PlanScoreCard.ViewModels
                             ComboSteps.Add(groupStep);
                             break;
                     }
+                }
+                if (ComboSteps.Count > 0)
+                {
+                    OnGroupSteps();
                 }
                 operationSaver = group.groupOperation;
                 category++;

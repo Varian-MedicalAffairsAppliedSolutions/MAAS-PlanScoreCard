@@ -599,7 +599,7 @@ namespace PlanScoreCard.Services
             {
                 return plan.StructureSet.Structures.FirstOrDefault(x => x.Id == id);
             }
-            StructureDictionaryModel structureDictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower().Equals(id));
+            StructureDictionaryModel structureDictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.Equals(id,StringComparison.OrdinalIgnoreCase));
 
             // This means that the template structure Id
             if (structureDictionary != null)
@@ -620,7 +620,7 @@ namespace PlanScoreCard.Services
                 string matchedStructureID = planStructrues.Intersect(acceptedStructures).FirstOrDefault();
                 if (matchedStructureID != null)
                 {
-                    return plan.StructureSet.Structures.FirstOrDefault(s => s.Id.ToLower() == matchedStructureID.ToLower());
+                    return plan.StructureSet.Structures.FirstOrDefault(s => s.Id.Equals(matchedStructureID,StringComparison.OrdinalIgnoreCase));
                 }
 
             }
