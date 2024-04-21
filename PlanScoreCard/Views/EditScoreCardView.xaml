@@ -17,6 +17,7 @@
             <converters:StructureToBoldConverter x:Key="structureBoldConverter"/>
             <converters:BoolVisibilityConverter x:Key="boolVisibilityConverter"/>
             <converters:NullToDoubleConverter x:Key="nullDoubleConverter"/>
+            <converters:MetricIdToRankConverter x:Key="localRankConverter"/>
         </ResourceDictionary>
     </metro:MetroWindow.Resources>
     <Grid>
@@ -168,7 +169,8 @@
                                 </Style>
                             </DataGrid.RowStyle>
                             <DataGrid.Columns>
-                                <metro:DataGridNumericUpDownColumn Header="Rank" Binding="{Binding Id, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=LostFocus}" FontWeight="Normal" FontSize="12"/>
+                                <metro:DataGridNumericUpDownColumn Header="Rank" Binding="{Binding Id, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=LostFocus}" 
+                                                                   FontWeight="Normal" FontSize="12"/>
                                 <DataGridTextColumn Header="Structure" Binding="{Binding Structure, Converter={StaticResource structureNameConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}"  FontSize="12" IsReadOnly="True">
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="TextBlock">
@@ -380,7 +382,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Button Content="Recalculate Score" Command="{Binding ScorePlanCommand}" Grid.Column="7" Margin="2" Height="30"/>
-            <Button Content="Save Template" Command="{Binding SaveTemplateCommand}" Grid.Column="8" Margin="2" Height="30"/>
+            <Button Content="Save Scorecard" Command="{Binding SaveTemplateCommand}" Grid.Column="8" Margin="2" Height="30"/>
         </Grid>
     </Grid>
 </metro:MetroWindow>

@@ -28,6 +28,7 @@
             <converters:BoolToColorConverter x:Key="localBoolToColorConverter"/>
             <converters:BoolToColorFlagConverter x:Key="localBoolToColorFlagConverter"/>
             <converters:PrimaryToColorConverter x:Key="localPrimaryColorConverter"/>
+            <converters:MetricIdToRankConverter x:Key="localRankConverter"/>
         </ResourceDictionary>
     </metro:MetroWindow.Resources>
     <Grid x:FieldModifier="public"  x:Name="TotalGrid">
@@ -207,15 +208,18 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <Button Content="(b)" Width="30" HorizontalAlignment="Left" Margin="5,2,5,2" Command="{Binding BormalizePlanCommand}"/>
-                            <Button Grid.Column="0" VerticalContentAlignment="Top" Margin="40,2,5,2" Command="{Binding NormalizePlanCommand}">
+                            <!--<Button Content="(b)" Width="30" HorizontalAlignment="Left" Margin="5,2,5,2" Command="{Binding BormalizePlanCommand}"/>-->
+                            <Button Grid.Column="0" VerticalContentAlignment="Top" Margin="5,2,5,2" Command="{Binding NormalizePlanCommand}">
                                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <Image Source="{icons:FontAwesomeImage Kind=CalculatorSolid}" Width="15" Height="15" VerticalAlignment="Bottom" Margin="3" Grid.Column="0"/>
                                     <Label Content="Norm" VerticalAlignment="Center" Height="25" FontSize="12" FontWeight="DemiBold" Grid.Column="1"/>
+                                    <Image Source="{icons:FontAwesomeImage Kind=UsersSolid}" Visibility="{Binding bBatchNorm, Converter={StaticResource localVisibilityConverter}}" Width="15" Height="15" VerticalAlignment="Bottom"  Margin="3" Grid.Column="2"/>
+                                    <Image Source="{icons:FontAwesomeImage Kind=UserSolid}" Visibility="{Binding bPrimaryNorm, Converter={StaticResource localVisibilityConverter}}" Width="15" Height="15" VerticalAlignment="Bottom"  Margin="3" Grid.Column="2"/>
                                 </Grid>
                             </Button>
 
@@ -314,7 +318,7 @@
                                                 </Grid.RowDefinitions>
                                                 <TextBlock TextDecorations="Underline">
                                                     <Run FontWeight="Bold" Text="Id: "/>
-                                                     <Run Text="{Binding MetricId}"/>
+                                                     <Run Text="{Binding MetricId, Converter={StaticResource localRankConverter}}"/>
                                                     <Run Text="Score Metric:" FontWeight="Bold"/>
                                                     <Run Text="{Binding MetricText}"/>
                                                 </TextBlock>
@@ -348,6 +352,9 @@
                                         </Button>
                                         <Button Command="{Binding OpenFlagCommand}" Height="30" Margin="2 0 0 0" Background="Red" Visibility="{Binding bFlag, Converter={StaticResource localVisibilityConverter}}" ToolTip="{Binding Flags}" VerticalAlignment="Top">
                                             <icons:FontAwesome Kind="TimesCircleSolid" />
+                                        </Button>
+                                        <Button Command="{Binding OpenInfoCommand}" Height="30" Margin="2,0,0,0" Background="Purple" Visibility="{Binding bInfo, Converter={StaticResource localVisibilityConverter}}" ToolTip="{Binding Infos}" VerticalAlignment="Top">
+                                            <icons:FontAwesome Kind="QuestionCircleSolid"/>
                                         </Button>
                                     </StackPanel>
                                     <Button Grid.Column="1" Width="40" Height="30" Margin="5" ToolTip="Open DVH Viewer" Command="{Binding OpenDVHViewCommand}" VerticalAlignment="Top">

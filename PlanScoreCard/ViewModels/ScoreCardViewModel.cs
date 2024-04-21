@@ -61,7 +61,7 @@ namespace PlanScoreCard.ViewModels
                 ExportScoreCardCommand.RaiseCanExecuteChanged();
                 PrintReportCommand.RaiseCanExecuteChanged();
                 NormalizePlanCommand.RaiseCanExecuteChanged();
-                BormalizePlanCommand.RaiseCanExecuteChanged();
+                //BormalizePlanCommand.RaiseCanExecuteChanged();
                 OpenDVHViewCommand.RaiseCanExecuteChanged();
             }
         }
@@ -305,7 +305,7 @@ namespace PlanScoreCard.ViewModels
                 ExportScoreCardCommand.RaiseCanExecuteChanged();
                 PrintReportCommand.RaiseCanExecuteChanged();
                 NormalizePlanCommand.RaiseCanExecuteChanged();
-                BormalizePlanCommand.RaiseCanExecuteChanged();
+               // BormalizePlanCommand.RaiseCanExecuteChanged();
                 OpenDVHViewCommand.RaiseCanExecuteChanged();
             }
         }
@@ -332,11 +332,12 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand ImportScoreCardCommand { get; set; }
         public DelegateCommand EditScoreCardCommand { get; set; }
         public DelegateCommand NormalizePlanCommand { get; set; }
-        public DelegateCommand BormalizePlanCommand { get; set; }
+       // public DelegateCommand BormalizePlanCommand { get; set; }
         public DelegateCommand ExportScoreCardCommand { get; set; }
         public DelegateCommand PrintReportCommand { get; private set; }
         public DelegateCommand OpenWarningCommand { get; private set; }
         public DelegateCommand OpenFlagCommand { get; private set; }
+        public DelegateCommand OpenInfoCommand { get; private set; }
         public DelegateCommand OpenPatientSelectionCommand { get; private set; }
         public DelegateCommand LoadPatientPlansCommand { get; private set; }
         public DelegateCommand OpenDVHViewCommand { get; private set; }
@@ -374,6 +375,14 @@ namespace PlanScoreCard.ViewModels
             get { return _bFlag; }
             set { SetProperty(ref _bFlag, value); }
         }
+        private bool _bInfo;
+
+        public bool bInfo
+        {
+            get { return _bInfo; }
+            set { SetProperty(ref _bInfo, value); }
+        }
+
         private string _warnings;
 
         public string Warnings
@@ -388,7 +397,28 @@ namespace PlanScoreCard.ViewModels
             get { return _flags; }
             set { SetProperty(ref _flags, value); }
         }
+        private string _infos;
 
+        public string Infos
+        {
+            get { return _infos; }
+            set { SetProperty(ref _infos, value); }
+        }
+
+        private bool _bBatchNorm;
+
+        public bool bBatchNorm
+        {
+            get { return _bBatchNorm; }
+            set { SetProperty(ref _bBatchNorm, value); }
+        }
+        private bool _bPrimaryNorm;
+
+        public bool bPrimaryNorm
+        {
+            get { return _bPrimaryNorm; }
+            set { SetProperty(ref _bPrimaryNorm, value); }
+        }
         public MessageView MessageView { get; set; }
         private PlanModel _localNormPlan { get; set; }
         // Constructor
@@ -437,12 +467,13 @@ namespace PlanScoreCard.ViewModels
             ScorePlanCommand = new DelegateCommand(ScorePlan);
             ImportScoreCardCommand = new DelegateCommand(ImportScoreCard);
             EditScoreCardCommand = new DelegateCommand(EditScoreCard);
-            NormalizePlanCommand = new DelegateCommand(NormalizePlan, CanNormalizePlan);
-            BormalizePlanCommand = new DelegateCommand(BormalizePlan, CanNormalizePlan);
+            NormalizePlanCommand = new DelegateCommand(CheckNormConfig, CanNormalizePlan);
+            //BormalizePlanCommand = new DelegateCommand(BormalizePlan, CanNormalizePlan);
             ExportScoreCardCommand = new DelegateCommand(ExportScoreCard, CanExportScorecard);
             PrintReportCommand = new DelegateCommand(OnPrintReport, CanPrintReport);
             OpenWarningCommand = new DelegateCommand(OnOpenWarning);
             OpenFlagCommand = new DelegateCommand(OnOpenFlag);
+            OpenInfoCommand = new DelegateCommand(OnOpenInfo);
             OpenPatientSelectionCommand = new DelegateCommand(OnOpenPatientSelector);
             LoadPatientPlansCommand = new DelegateCommand(OnLoadPatientPlans);
             OpenDVHViewCommand = new DelegateCommand(OnLoadDVHView, CanLoadDVHView);
@@ -450,7 +481,7 @@ namespace PlanScoreCard.ViewModels
             bRxScalingVisibility = true;
             _scoreValueCache = new List<ScoreValueModel>();//remember to clear when score editor is run, scorecard is scaled, or patient selection is run. 
             // Sets If no Plan is Passed In
-
+            UpdateBatchNorm();
             //if (Plan != null)
             //    OnPlanChanged(new List<PlanModel> { });
             if (plans.Any(p => p.bPrimary))
@@ -470,10 +501,24 @@ namespace PlanScoreCard.ViewModels
                 ConfigurationManagerService.AddOrUpdateAppSettings("WriteEnabled", obj.bStructureCreation.ToString().ToLower());
                 ConfigurationManagerService.AddOrUpdateAppSettings("AddStructures", obj.bSaveStructures.ToString().ToLower());
                 ConfigurationManagerService.AddOrUpdateAppSettings("NormCourse", obj.bNormCourse.ToString().ToLower());
+                ConfigurationManagerService.AddOrUpdateAppSettings("BatchNorm", obj.bBatchNorm.ToString().ToLower());
+                UpdateBatchNorm();
             }
             _configurationView.Close();
         }
-
+        private void UpdateBatchNorm()
+        {
+            if (ConfigurationManager.AppSettings["BatchNorm"] == "true")
+            {
+                bBatchNorm = true;
+                bPrimaryNorm = false;
+            }
+            else
+            {
+                bPrimaryNorm = true;
+                bBatchNorm = false;
+            }
+        }
         private void OnLaunchConfiguration()
         {
             _configurationView = new ConfigurationView();
@@ -486,16 +531,16 @@ namespace PlanScoreCard.ViewModels
             //PlanScores.Clear();
             //get planning item from object.
 
-            foreach (var planScore in obj) 
+            foreach (var planScore in obj)
             {
                 var currentPlanScore = PlanScores.FirstOrDefault(ps => ps.MetricId == planScore.MetricId);
-                foreach(var scoreValue in planScore.ScoreValues)//there should only ever be one scoreValue in this list because normalization plugin only works on one plan at at time.
+                foreach (var scoreValue in planScore.ScoreValues)//there should only ever be one scoreValue in this list because normalization plugin only works on one plan at at time.
                 {
                     //remove the old scoreValue
-                    if(currentPlanScore.ScoreValues.Any(sv=>sv.PlanId == scoreValue.PlanId && sv.CourseId == scoreValue.CourseId))
+                    if (currentPlanScore.ScoreValues.Any(sv => sv.PlanId == scoreValue.PlanId && sv.CourseId == scoreValue.CourseId))
                     {
                         currentPlanScore.ScoreValues.Remove(
-                            currentPlanScore.ScoreValues.FirstOrDefault(sv=>sv.PlanId == scoreValue.PlanId && sv.CourseId == scoreValue.CourseId));
+                            currentPlanScore.ScoreValues.FirstOrDefault(sv => sv.PlanId == scoreValue.PlanId && sv.CourseId == scoreValue.CourseId));
                     }
                     //get current planscore.
                     //add the new scorevalue
@@ -530,7 +575,7 @@ namespace PlanScoreCard.ViewModels
                 TabVM.CurrentTab = TabVM.Tabs.First();
             }
             Window.Show();
-           
+
 
         }
 
@@ -670,6 +715,20 @@ namespace PlanScoreCard.ViewModels
             MessageView.DataContext = new MessageViewModel("Scorecard Warnings", Warnings, EventAggregator);
             MessageView.ShowDialog();
         }
+        private void OnOpenInfo()
+        {
+            if(MessageView == null)
+            {
+                MessageView = new MessageView();
+            }
+            else
+            {
+                MessageView = null;
+                MessageView = new MessageView();
+            }
+            MessageView.DataContext = new MessageViewModel("ScoreCard Infos", Infos, EventAggregator);
+            MessageView.ShowDialog();
+        }
 
         private void OnPrimaryChanged(PlanModel obj)
         {
@@ -705,13 +764,13 @@ namespace PlanScoreCard.ViewModels
             return ScoreCard != null && Plans.Any();
         }
 
-        private void OnStructureGeneration(Tuple<StructureSet,Structure> obj)
+        private void OnStructureGeneration(Tuple<StructureSet, Structure> obj)
         {
             var structureSet = obj.Item1;
             var structure = obj.Item2;
-            foreach(var plan in Plans)
+            foreach (var plan in Plans)
             {
-                if(plan.StructureSetId == structureSet.Id && plan.ImageId == structureSet.Image.Id)
+                if (plan.StructureSetId == structureSet.Id && plan.ImageId == structureSet.Image.Id)
                 {
                     plan.Structures.Add(new StructureModel(EventAggregator)
                     {
@@ -839,20 +898,30 @@ namespace PlanScoreCard.ViewModels
         {
             return Plans.Any(x => x.bPrimary) && ScoreCard != null;
         }
-        private void BormalizePlan() 
+        private void BormalizePlan()
         {
             var plansToNorm = Plans.Where(pl => pl.bSelected).ToList();
-            foreach(var plan in plansToNorm)
+            foreach (var plan in plansToNorm)
             {
                 _localNormPlan = plan;
                 NormalizePlan();
             }
             _localNormPlan = null;
         }
-
+        private void CheckNormConfig()
+        {
+            if (bBatchNorm)
+            {
+                BormalizePlan();
+            }
+            else
+            {
+                NormalizePlan();
+            }
+        }
         private void NormalizePlan()
         {
-            if ((_localNormPlan!=null || Plans.Any(x => x.bPrimary)) && ScoreCard.ScoreMetrics.Count() > 0)
+            if ((_localNormPlan != null || Plans.Any(x => x.bPrimary)) && ScoreCard.ScoreMetrics.Count() > 0)
             {
                 PluginViewService pluginViewService = new PluginViewService(EventAggregator);
                 PluginViewModel pluginViewModel = new PluginViewModel(EventAggregator, pluginViewService);
@@ -863,7 +932,7 @@ namespace PlanScoreCard.ViewModels
                     _localNormPlan == null ? Plans.FirstOrDefault(x => x.bPrimary) : _localNormPlan,
                     ScoreCard.ScoreMetrics,
                     EventAggregator);//, 
-                    //StructureDictionaryService);
+                                     //StructureDictionaryService);
 
                 var newplan = normService.GetPlan();
                 Plans.Add(newplan);
@@ -918,9 +987,9 @@ namespace PlanScoreCard.ViewModels
             if (EditScoreCardView != null)
             {
                 InvalidateScores();
-                
+
                 if (EditScoreCardView.IsVisible)
-                { 
+                {
                     EditScoreCardView.Hide();
                     _scoreValueCache.Clear();
                 }
@@ -1045,12 +1114,20 @@ namespace PlanScoreCard.ViewModels
                         Warnings += $"Patient [{scoreBelowVariation.PatientId}]. Course [{scoreBelowVariation.CourseId}]. Plan [{scoreBelowVariation.PlanId}]. Metric {psm.MetricId + 1}. Structure {psm.StructureId}. -- {psm.MetricText} below variation\n";
                     }
                 }
-                if (psm.ScoreValues.Any(x => x.Score == 0))
+                if (psm.ScoreValues.Any(x => x.Score == 0 && x.Value>-1000))
                 {
                     bFlag = true;
                     foreach (var zeroScore in psm.ScoreValues.Where(x => x.Score == 0))
                     {
                         Flags += $"Patient [{zeroScore.PatientId}]. Course [{zeroScore.CourseId}]. Plan [{zeroScore.PlanId}]. Metric {psm.MetricId + 1}. Structure {psm.StructureId}. -- {psm.MetricText}. Score is 0.\n";
+                    }
+                }
+                if(psm.ScoreValues.Any(x=>x.Value == -1000))
+                {
+                    bInfo = true;
+                    foreach(var noMatch in psm.ScoreValues.Where(x=>x.Value == -1000))
+                    {
+                        Infos += $"Patient [{noMatch.PatientId}]. Course [{noMatch.CourseId}]. Plan [{noMatch.PlanId}]. Metric {psm.MetricId + 1}. Structure {psm.StructureId}. -- {psm.MetricText}. No match found for structure {psm.TemplateStructureId}.\n";
                     }
                 }
 

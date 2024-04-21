@@ -42,6 +42,13 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             get { return _bNormCourse; }
             set { SetProperty(ref _bNormCourse,value); }
         }
+        private bool _bBatchNorm;
+
+        public bool bBatchNorm
+        {
+            get { return _bBatchNorm; }
+            set { _bBatchNorm = value; }
+        }
 
         public bool bSave { get; set; }
         public DelegateCommand SaveCommand { get; private set; }
@@ -53,6 +60,8 @@ namespace PlanScoreCard.ViewModels.VMHelpers
             bStructureCreation = ConfigurationManager.AppSettings["WriteEnabled"] == "true";
             bSaveStructures = ConfigurationManager.AppSettings["AddStructures"] == "true";
             bNormCourse = ConfigurationManager.AppSettings["NormCourse"] == "true";
+            bBatchNorm = ConfigurationManager.AppSettings["BatchNorm"] == "true";
+
             SaveCommand = new DelegateCommand(OnSave);
             CancelCommand = new DelegateCommand(OnCancel);
         }

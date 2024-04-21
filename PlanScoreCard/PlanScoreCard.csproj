@@ -148,6 +148,7 @@
     <Compile Include="Converters\MaxScoreToHeaderConverter.cs" />
     <Compile Include="Converters\MetricEditorConverter.cs" />
     <Compile Include="Converters\MetricIdConverter.cs" />
+    <Compile Include="Converters\MetricIdToRankConverter.cs" />
     <Compile Include="Converters\NullStringToVisibilityConverter.cs" />
     <Compile Include="Converters\NullToDoubleConverter.cs" />
     <Compile Include="Converters\PrimaryForegroundConverter.cs" />

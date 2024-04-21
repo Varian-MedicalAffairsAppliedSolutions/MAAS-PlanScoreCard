@@ -15,6 +15,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -30,10 +31,12 @@
         <CheckBox IsChecked="{Binding bSaveStructures}" Grid.Row="3" Margin="5" Grid.Column="1"/>
         <TextBlock Text="Save to N-Opt Course" FontWeight="Bold" Grid.Row="4" Margin="5"/>
         <CheckBox IsChecked="{Binding bNormCourse}" Grid.Row="4" Margin="5" Grid.Column="1"/>
-        <Button Grid.Row="5" VerticalAlignment="Bottom" Margin="5" Width="40" Command="{Binding SaveCommand}">
+        <TextBlock Text="Batch normalize all selected plans" Grid.Row="5" Margin="5" FontWeight="Bold"/>
+        <CheckBox IsChecked="{Binding bBatchNorm}" Grid.Row="5" Margin="5" Grid.Column="1"/>
+        <Button Grid.Row="6" VerticalAlignment="Bottom" Margin="5" Width="40" Command="{Binding SaveCommand}">
             <icons:FontAwesome Kind="SaveRegular"/>
         </Button>
-        <Button Grid.Row="5" Grid.Column="1" VerticalAlignment="Bottom" Margin="5" Width="40" Command="{Binding CancelCommand}">
+        <Button Grid.Row="6" Grid.Column="1" VerticalAlignment="Bottom" Margin="5" Width="40" Command="{Binding CancelCommand}">
             <icons:FontAwesome Kind="TimesCircleSolid"/>
         </Button>
     </Grid>

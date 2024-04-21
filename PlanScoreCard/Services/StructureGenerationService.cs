@@ -510,7 +510,7 @@ namespace PlanScoreCard.Services
             {
                 return plan.Structures.FirstOrDefault(x => x.StructureId == structureId).StructureId;
             }
-            StructureDictionaryModel structureDictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.ToLower().Equals(structureId));
+            StructureDictionaryModel structureDictionary = StructureDictionaryService.StructureDictionary.FirstOrDefault(s => s.StructureID.Equals(structureId, StringComparison.OrdinalIgnoreCase));
 
             // This means that the template structure Id
             if (structureDictionary != null)
