@@ -51,7 +51,7 @@ namespace PlanScoreCard.Models
             get { return _bselected; }
             set
             {
-                if (!value && !bPrimary && bSelected && !_deselect)
+                /*if (!value && !bPrimary && bSelected && !_deselect)
                 {
                     bPrimary = true;
                     value = true;
@@ -60,11 +60,11 @@ namespace PlanScoreCard.Models
                 {
                     bPrimary = false;
                     value = false;
-                }
+                }*/
                 SetProperty(ref _bselected, value);
 
-                if (!bSelected && bPrimary)
-                    bSelected = true;
+                //if (!bSelected && bPrimary)
+                //    bSelected = true;
                 //if (bSelected && !bPrimary)
                 if (!bPrimary)
                 {
@@ -206,6 +206,7 @@ namespace PlanScoreCard.Models
         }
 
         public DelegateCommand DeselectCommand { get; private set; }
+        public DelegateCommand MakePrimaryCommand { get; private set; }
         public DelegateCommand ValidatePlanCommand { get; private set; }
         public PlanModel(PlanningItem plan, IEventAggregator eventAggregator)
         {
@@ -237,8 +238,17 @@ namespace PlanScoreCard.Models
             Structures = new ObservableCollection<StructureModel>();
             DeselectCommand = new DelegateCommand(OnDeselect);
             ValidatePlanCommand = new DelegateCommand(OnValidatePlan);
+            MakePrimaryCommand = new DelegateCommand(OnMakePrimary);
             GenerateStructures(plan);
             SetParameters(plan);
+        }
+
+        private void OnMakePrimary()
+        {
+            if (!this.bPrimary)
+            {
+                bPrimary = true;
+            }
         }
 
         private void OnValidatePlan()

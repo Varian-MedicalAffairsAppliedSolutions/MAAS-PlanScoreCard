@@ -155,6 +155,7 @@
                                                 <Setter Property="ContextMenu">
                                                     <Setter.Value>
                                                         <ContextMenu>
+                                                            <MenuItem Header="Primary" Command="{Binding MakePrimaryCommand}"/>
                                                             <MenuItem Header="Deselect" Command="{Binding DeselectCommand}"/>
                                                         </ContextMenu>
                                                     </Setter.Value>

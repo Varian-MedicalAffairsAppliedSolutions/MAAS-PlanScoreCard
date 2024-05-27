@@ -108,8 +108,6 @@ namespace PlanScoreCard.ViewModels
             {
                 SetProperty(ref _numberOfFractions, value);
                 SetRxMessage();
-
-
             }
         }
         private bool bDoseMatch;
@@ -305,34 +303,28 @@ namespace PlanScoreCard.ViewModels
                 ExportScoreCardCommand.RaiseCanExecuteChanged();
                 PrintReportCommand.RaiseCanExecuteChanged();
                 NormalizePlanCommand.RaiseCanExecuteChanged();
-               // BormalizePlanCommand.RaiseCanExecuteChanged();
+                // BormalizePlanCommand.RaiseCanExecuteChanged();
                 OpenDVHViewCommand.RaiseCanExecuteChanged();
             }
         }
 
         // Plan Scores
-        private ObservableCollection<PlanScoreModel> planScores;
-        public ObservableCollection<PlanScoreModel> PlanScores
-        {
-            get { return planScores; }
-            set { SetProperty(ref planScores, value); }
-        }
+        //private ObservableCollection<PlanScoreModel> planScores;
+        public ObservableCollection<PlanScoreModel> PlanScores { get; set; }
+
 
         // Plan Models
-        private ObservableCollection<PlanModel> plans;
-        public ObservableCollection<PlanModel> Plans
-        {
-            get { return plans; }
-            set { SetProperty(ref plans, value); }
-        }
+        //private ObservableCollection<PlanModel> plans;
+        public ObservableCollection<PlanModel> Plans { get; set; }
+
         private List<ScoreValueModel> _scoreValueCache { get; set; }
 
         // Delegate Commands
-        public DelegateCommand ScorePlanCommand { get; set; }
+        //public DelegateCommand ScorePlanCommand { get; set; }
         public DelegateCommand ImportScoreCardCommand { get; set; }
         public DelegateCommand EditScoreCardCommand { get; set; }
         public DelegateCommand NormalizePlanCommand { get; set; }
-       // public DelegateCommand BormalizePlanCommand { get; set; }
+        // public DelegateCommand BormalizePlanCommand { get; set; }
         public DelegateCommand ExportScoreCardCommand { get; set; }
         public DelegateCommand PrintReportCommand { get; private set; }
         public DelegateCommand OpenWarningCommand { get; private set; }
@@ -419,11 +411,14 @@ namespace PlanScoreCard.ViewModels
             get { return _bPrimaryNorm; }
             set { SetProperty(ref _bPrimaryNorm, value); }
         }
+        //sometimes we may need to block scoring (e.g. when performing batch normalization to score them all together at the end). 
+        private bool _blockScoring { get; set; }
         public MessageView MessageView { get; set; }
         private PlanModel _localNormPlan { get; set; }
         // Constructor
         public ScoreCardViewModel(Application app, List<PlanModel> plans, IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService)//, StructureDictionaryService structureDictionaryService)
         {
+            _blockScoring = false;
             // Set the Initial Variables Passed In
             ScoreCardTitle = ConfigurationManager.AppSettings["ValidForClinicalUse"] != "true" ?
                 "Plan ScoreCard **Not Validated for Clinical Use**" : "Plan ScoreCard";
@@ -448,7 +443,7 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<CloseMessageViewEvent>().Subscribe(OnCloseMessage);
             EventAggregator.GetEvent<UpdatePatientPlansEvent>().Subscribe(OnUpdatePatientPlans);
             EventAggregator.GetEvent<ClosePatientSelectionEvent>().Subscribe(OnClosePatientSelection);
-            EventAggregator.GetEvent<PlotUpdateEvent>().Subscribe(OnUpdatePlotFromPlugin);
+            //EventAggregator.GetEvent<PlotUpdateEvent>().Subscribe(OnUpdatePlotFromPlugin);
             EventAggregator.GetEvent<ConfigurationCloseEvent>().Subscribe(OnCloseConfiguration);
             EventAggregator.GetEvent<StructureGeneratedOnScoreEvent>().Subscribe(OnStructureGeneration);
             //EventAggregator.GetEvent<RemovePlanFromScoreEvent>().Subscribe(OnRemovePlanFromScore);
@@ -457,14 +452,15 @@ namespace PlanScoreCard.ViewModels
 
             // Initiate Collections
             PlanScores = new ObservableCollection<PlanScoreModel>();
-            BindingOperations.EnableCollectionSynchronization(PlanScores, this);
+            //removed -> Not sure if required as multiple threads should not be accessing this property - MCS - 5.27.24
+            //BindingOperations.EnableCollectionSynchronization(PlanScores, this);
             Plans = new ObservableCollection<PlanModel>();
             foreach (var planModel in plans)
             {
                 Plans.Add(planModel);
             }
             // Delegate Commands
-            ScorePlanCommand = new DelegateCommand(ScorePlan);
+            //ScorePlanCommand = new DelegateCommand(ScorePlan);
             ImportScoreCardCommand = new DelegateCommand(ImportScoreCard);
             EditScoreCardCommand = new DelegateCommand(EditScoreCard);
             NormalizePlanCommand = new DelegateCommand(CheckNormConfig, CanNormalizePlan);
@@ -525,17 +521,18 @@ namespace PlanScoreCard.ViewModels
             _configurationView.DataContext = new ConfigurationViewModel(EventAggregator);
             _configurationView.ShowDialog();
         }
-        private void OnUpdatePlotFromPlugin(List<PlanScoreModel> obj)
+
+        private void OnUpdatePlotFromPlugin(List<ScoreValueModel> obj)
         {
             //this method is only for plotting the data inside the current score metric items (like the plots on the right side).
             //PlanScores.Clear();
             //get planning item from object.
 
-            foreach (var planScore in obj)
+            foreach (var scoreValue in obj)
             {
-                var currentPlanScore = PlanScores.FirstOrDefault(ps => ps.MetricId == planScore.MetricId);
-                foreach (var scoreValue in planScore.ScoreValues)//there should only ever be one scoreValue in this list because normalization plugin only works on one plan at at time.
-                {
+                var currentPlanScore = PlanScores.FirstOrDefault(ps => ps.MetricId == scoreValue.MetricId);
+                //foreach (var scoreValue in planScore)//there should only ever be one scoreValue in this list because normalization plugin only works on one plan at at time.
+                //{
                     //remove the old scoreValue
                     if (currentPlanScore.ScoreValues.Any(sv => sv.PlanId == scoreValue.PlanId && sv.CourseId == scoreValue.CourseId))
                     {
@@ -548,7 +545,7 @@ namespace PlanScoreCard.ViewModels
                     //plot the new scorevalue positions
                     currentPlanScore.AddPointToPlotModel(currentPlanScore.MetricId, scoreValue);
                     //planScore.UpdateScorePlotModel();
-                }
+                //}
                 //PlanScores.Add(planScore);
             }
         }
@@ -567,7 +564,7 @@ namespace PlanScoreCard.ViewModels
             Window.Content = TabView;
             foreach (var patient in Plans.OrderByDescending(pl => pl.bPrimary).GroupBy(p => p.PatientId).Where(pa => pa.Any(pl => pl.bSelected)))
             {
-                List<PlanningItem> selectedPlans = GetPlansPlanModel(patient.Key);
+                List<PlanningItem> selectedPlans = GetPlansPlanModel(patient.Key, -1);//should add all plans for DVH, no -1 metric should return all plans. 
                 TabVM.AddMultipleDVH(ScoreCard, selectedPlans);//, StructureDictionaryService);
             }
             if (TabVM.Tabs.Any())
@@ -717,7 +714,7 @@ namespace PlanScoreCard.ViewModels
         }
         private void OnOpenInfo()
         {
-            if(MessageView == null)
+            if (MessageView == null)
             {
                 MessageView = new MessageView();
             }
@@ -750,7 +747,10 @@ namespace PlanScoreCard.ViewModels
                 //DosePerFraction = obj.DosePerFraction;
                 //NumberOfFractions = obj.NumberOfFractions;
             }
-            _scoreValueCache.Clear();
+            //instead of clearing _scoreValueCache, just remove the new primary and score that one first MCS - 5.25.24
+            _scoreValueCache.Remove(_scoreValueCache.FirstOrDefault(svc => svc.PatientId == Plan.PatientId
+                    && svc.CourseId == Plan.CourseId
+                    && svc.PlanId == Plan.PlanId));
             ScorePlan();
         }
 
@@ -901,12 +901,15 @@ namespace PlanScoreCard.ViewModels
         private void BormalizePlan()
         {
             var plansToNorm = Plans.Where(pl => pl.bSelected).ToList();
+            _blockScoring = true;
             foreach (var plan in plansToNorm)
             {
                 _localNormPlan = plan;
                 NormalizePlan();
             }
+            _blockScoring = false;
             _localNormPlan = null;
+            ScorePlan();
         }
         private void CheckNormConfig()
         {
@@ -923,6 +926,7 @@ namespace PlanScoreCard.ViewModels
         {
             if ((_localNormPlan != null || Plans.Any(x => x.bPrimary)) && ScoreCard.ScoreMetrics.Count() > 0)
             {
+                //PlanScores.Clear();
                 PluginViewService pluginViewService = new PluginViewService(EventAggregator);
                 PluginViewModel pluginViewModel = new PluginViewModel(EventAggregator, pluginViewService);
 
@@ -947,36 +951,14 @@ namespace PlanScoreCard.ViewModels
             // Set the PatientID
             PatientId = Plan.PatientId;
             _isWindowActive = true;
-            // Add the Plans
-            // Clear the Collection of Plans
-            //Plans.Clear();
 
-            // For each course, add all the Plans
-            //foreach (Course course in Patient.Courses)
-            //{
-            //    foreach (PlanSetup plan in course.PlanSetups.Where(x=>x.StructureSet!=null))
-            //        Plans.Add(new PlanModel(plan, EventAggregator));
-            //}
-            //if (Plan != null && Plan.StructureSet!=null)
-            //{
-            //    if (Plans.Any(x => x.PlanId == Plan.Id && x.CourseId == Course.Id))
-            //    {
-            //        Plans.FirstOrDefault(x => x.PlanId == Plan.Id && x.CourseId == Course.Id).bPrimary = true;
-            //    }
-            //    if(!String.IsNullOrEmpty(old_course) && !String.IsNullOrEmpty(old_plan) && Plans.Any(x=>x.PlanId == old_plan && x.CourseId == old_course))
-            //    {
-            //        Plans.FirstOrDefault(x => x.PlanId == Plan.Id && x.CourseId == Course.Id).bSelected = true;
-            //    }
-            //}
-
-            //Plans.First().bPrimary = true;
             ScorePlan();
         }
 
         // Score Plan
         private void ScorePlan()
         {
-            if (_isWindowActive && ScoreCard != null && Plans.Count() > 0 && Plans.Any(x => x.bSelected))
+            if (_isWindowActive && ScoreCard != null && Plans.Count() > 0 && Plans.Any(x => x.bSelected) && !_blockScoring)
                 ScorePlan(ScoreCard);
 
             ProgressViewService.Close();
@@ -986,12 +968,13 @@ namespace PlanScoreCard.ViewModels
         {
             if (EditScoreCardView != null)
             {
-                InvalidateScores();
+                //InvalidateScores();
 
                 if (EditScoreCardView.IsVisible)
                 {
                     EditScoreCardView.Hide();
-                    _scoreValueCache.Clear();
+                    //_scoreValueCache.Clear();
+                    InvalidateScores();
                 }
 
             }
@@ -1005,6 +988,7 @@ namespace PlanScoreCard.ViewModels
             ProgressViewService.SendToFront();
 
             // _eventAggregator.GetEvent<UpdateTemplatesEvent>().Publish(_currentTemplate);
+            //WE don't want to just clear the PlanScores each time, that is requiring an additional scoring need. 
             PlanScores.Clear();
             UpdateStructureProperties();
             // Get Collection of SelectedPlans
@@ -1018,6 +1002,8 @@ namespace PlanScoreCard.ViewModels
 
             // Initiate the MetricId Counter
             int metric_id = 0;
+            string primaryCourseId = Plans.FirstOrDefault(p => p.bPrimary).CourseId;
+            string primaryPlanId = Plans.FirstOrDefault(p => p.bPrimary).PlanId;
 
             // Loop through each Metric (ScoreTemplateModel)
             bWarning = false;
@@ -1058,18 +1044,49 @@ namespace PlanScoreCard.ViewModels
                 {
                     psm = PlanScores.FirstOrDefault(p => p.MetricId == metric_id);
                 }
-                psm.InputTemplate(template);
+                psm.InputTemplate(template, metric_id, true);
+                //set default planscores based on scorevalue cache. 
+                //currently in testing... It seems when a plan is delselected, it stays in the Plans list below (the property isn't actually updating).
+                //The scorevaluecache seems to be working, but since the psm.BuildPlanScoreFromTemplate isn't running the plots are getting removed.
+                //consider making the plotting a separate function that gets called afterward.
                 foreach (var patient in Plans.OrderByDescending(pl => pl.bPrimary).GroupBy(p => p.PatientId).Where(pa => pa.Any(pl => pl.bSelected)))
                 {
-                    List<PlanningItem> selectedPlans = GetPlansPlanModel(patient.Key);
+                    //patient here is all the patients that have ANY selected plan on that patient. 
+                    List<PlanningItem> selectedPlans = GetPlansPlanModel(patient.Key, metric_id);
                     // PlanScoreModel
+                    foreach (var plan in patient.Where(pa => pa.bSelected))
+                    {
+                        if (_scoreValueCache.Any(svc => svc.PatientId == plan.PatientId
+                         && svc.CourseId == plan.CourseId
+                         && svc.PlanId == plan.PlanId
+                         && svc.MetricId == psm.MetricId))
+                        {
+                            var svm = _scoreValueCache.FirstOrDefault(
+                                svc => svc.PatientId == plan.PatientId && svc.CourseId == plan.CourseId && svc.PlanId == plan.PlanId
+                                && svc.MetricId == psm.MetricId);
+                            psm.ScoreValues.Add(svm);
+                            psm.SetScorePlotModel(template, primaryCourseId, primaryPlanId, psm.DetermineScorePointDirection(template),
+                                plan.CourseId, plan.PlanId, svm);
 
+                        }
+                    }
                     //if (!Plans.Any(pl => pl.bPrimary))
                     //{
                     //check to see if the score has already been cached. If so, get the current score
 
                     //if not then recalculate the score.
-                    psm.BuildPlanScoreFromTemplate(selectedPlans, template, metric_id, Plans.FirstOrDefault(x => x.bPrimary).CourseId, Plans.FirstOrDefault(x => x.bPrimary).PlanId, true, _scoreValueCache);
+                    if (selectedPlans.Any())
+                    {
+                        psm.BuildPlanScoreFromTemplate(selectedPlans, template, metric_id, Plans.FirstOrDefault(x => x.bPrimary).CourseId, Plans.FirstOrDefault(x => x.bPrimary).PlanId, true);
+                        foreach (var scoreValue in psm.ScoreValues)
+                        {
+                            if (!_scoreValueCache.Any(svc => svc.PlanId == scoreValue.PlanId && svc.CourseId == scoreValue.CourseId
+                             && svc.PatientId == scoreValue.PatientId && svc.MetricId == scoreValue.MetricId))
+                            {
+                                _scoreValueCache.Add(scoreValue);
+                            }
+                        }
+                    }
                     //}
                     //else if (Plans.Any(pl => pl.bSelected))
                     //{
@@ -1089,6 +1106,8 @@ namespace PlanScoreCard.ViewModels
                     //save scorevalue in repository. 
                 }
                 psm.CheckOutsideBounds();
+                psm.UpdateScorePlotModel();
+                psm.GetScoreValueStats();
                 //moved the following 15 lines from the PlanScoreModel as it needs to work across multiple patients. 
                 //if there are different local structure matches in the score values, then you should show those under the plan
                 if (psm.ScoreValues.Select(sv => sv.StructureId).Distinct().Count() > 1)
@@ -1114,7 +1133,7 @@ namespace PlanScoreCard.ViewModels
                         Warnings += $"Patient [{scoreBelowVariation.PatientId}]. Course [{scoreBelowVariation.CourseId}]. Plan [{scoreBelowVariation.PlanId}]. Metric {psm.MetricId + 1}. Structure {psm.StructureId}. -- {psm.MetricText} below variation\n";
                     }
                 }
-                if (psm.ScoreValues.Any(x => x.Score == 0 && x.Value>-1000))
+                if (psm.ScoreValues.Any(x => x.Score == 0 && x.Value > -1000))
                 {
                     bFlag = true;
                     foreach (var zeroScore in psm.ScoreValues.Where(x => x.Score == 0))
@@ -1122,10 +1141,10 @@ namespace PlanScoreCard.ViewModels
                         Flags += $"Patient [{zeroScore.PatientId}]. Course [{zeroScore.CourseId}]. Plan [{zeroScore.PlanId}]. Metric {psm.MetricId + 1}. Structure {psm.StructureId}. -- {psm.MetricText}. Score is 0.\n";
                     }
                 }
-                if(psm.ScoreValues.Any(x=>x.Value == -1000))
+                if (psm.ScoreValues.Any(x => x.Value == -1000))
                 {
                     bInfo = true;
-                    foreach(var noMatch in psm.ScoreValues.Where(x=>x.Value == -1000))
+                    foreach (var noMatch in psm.ScoreValues.Where(x => x.Value == -1000))
                     {
                         Infos += $"Patient [{noMatch.PatientId}]. Course [{noMatch.CourseId}]. Plan [{noMatch.PlanId}]. Metric {psm.MetricId + 1}. Structure {psm.StructureId}. -- {psm.MetricText}. No match found for structure {psm.TemplateStructureId}.\n";
                     }
@@ -1134,6 +1153,27 @@ namespace PlanScoreCard.ViewModels
                 metric_id++;
             }
 
+            /*if (PlanScores.Any())
+            {
+                //_scoreValueCache.Clear();
+                foreach (var planScore in PlanScores)
+                {
+                    foreach (var scoreValue in planScore.ScoreValues)
+                    {
+                        var score = new ScoreValueModel();
+                        score.CourseId = scoreValue.CourseId;
+                        score.MetricId = scoreValue.MetricId;
+                        score.OutputUnit = scoreValue.OutputUnit;
+                        score.PatientId = scoreValue.PatientId;
+                        score.PlanId = scoreValue.PlanId;
+                        score.Score = scoreValue.Score;
+                        score.StructureId = scoreValue.StructureId;
+                        score.TemplateNumber = scoreValue.TemplateNumber;
+                        score.Value = scoreValue.Value;
+                        _scoreValueCache.Add(score);
+                    }
+                }
+            }*/
             //remove score points from metrics that didn't have the
             if (PlanScores.Any(x => x.ScoreValues.Count() > 0))
             {
@@ -1234,7 +1274,12 @@ namespace PlanScoreCard.ViewModels
             }
         }
 
-        private List<PlanningItem> GetPlansPlanModel(string patientId)
+        /// <summary>
+        /// Finds the plans for a given patient based on plans that are currently selected and not already scored. 
+        /// </summary>
+        /// <param name="patientId">Patient ID for existing plan.</param>
+        /// <returns></returns>
+        private List<PlanningItem> GetPlansPlanModel(string patientId, int metricId)
         {
             List<PlanningItem> planItems = new List<PlanningItem>();
             if (!patientId.Equals(_patientId))
@@ -1246,7 +1291,14 @@ namespace PlanScoreCard.ViewModels
             foreach (var planModel in Plans.Where(pl => pl.PatientId.Equals(_patientId)).Where(pl => pl.bSelected).OrderByDescending(pl => pl.bPrimary))
             {
                 //planModel.bPlanScoreValid = true;//make plan score visible.
-                planItems.Add(_patient.Courses.FirstOrDefault(c => c.Id.Equals(planModel.CourseId)).PlanSetups.FirstOrDefault(ps => ps.Id.Equals(planModel.PlanId)));
+                //only add plans that were not already scored. 
+                if (!_scoreValueCache.Any(svc => svc.PatientId == planModel.PatientId
+                 && svc.CourseId == planModel.CourseId
+                 && svc.PlanId == planModel.PlanId
+                 && svc.MetricId == metricId))
+                {
+                    planItems.Add(_patient.Courses.FirstOrDefault(c => c.Id.Equals(planModel.CourseId)).PlanSetups.FirstOrDefault(ps => ps.Id.Equals(planModel.PlanId)));
+                }
             }
             return planItems;
         }
@@ -1383,7 +1435,9 @@ namespace PlanScoreCard.ViewModels
 
         private void InvalidateScores()
         {
-            //_scoreValueCache.Clear();
+            //removed from here as its in an inner if statement that checks if the EditScoreCardView is visible 
+            _scoreValueCache.Clear();
+            PlanScores.Clear();
             foreach (var planModel in Plans)
             {
                 if (!planModel.bSelected)

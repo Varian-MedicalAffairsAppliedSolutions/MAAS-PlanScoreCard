@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace PlanScoreCard.Events.Plugins
 {
-    public class PlotUpdateEvent:PubSubEvent<List<PlanScoreModel>>
+    public class PlotUpdateEvent:PubSubEvent<List<ScoreValueModel>>
     {
     }
 }

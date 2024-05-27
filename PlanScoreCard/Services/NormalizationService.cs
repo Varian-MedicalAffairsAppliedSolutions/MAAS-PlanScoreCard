@@ -16,7 +16,7 @@ namespace PlanScoreCard.Services
 {
     public class NormalizationService
     {
-        public ObservableCollection<PlanScoreModel> PlanScores { get; private set; }
+        public ObservableCollection<ScoreValueModel> PlanScores { get; private set; }
         //private StructureDictionaryService StructureDictionaryService;
         private double _normTailPoint;
         private double _normTailValue;
@@ -39,7 +39,7 @@ namespace PlanScoreCard.Services
             _app = app;
             _app.ClosePatient();
             _patient = _app.OpenPatientById(plan.PatientId);
-            PlanScores = new ObservableCollection<PlanScoreModel>();
+            PlanScores = new ObservableCollection<ScoreValueModel>();
             _planModel = plan;
         }
 
@@ -254,12 +254,14 @@ namespace PlanScoreCard.Services
             foreach (var template in _templates)
             {
                 var psm = new PlanScoreModel(_app, _eventAggregator);
-                psm.BuildPlanScoreFromTemplate(new List<PlanningItem> { newPlan }, template, metricId, String.Empty, string.Empty, false, new List<ScoreValueModel>());
+                psm.BuildPlanScoreFromTemplate(new List<PlanningItem> { newPlan }, template, metricId, String.Empty, string.Empty, false, true);
                 //false added at end because normalization service cannot build structures, they should have already been built by the scorecard being loaded.
                 metricId++;
-                PlanScores.Add(psm);
+
+                PlanScores.Add(psm.ScoreValues.First());
+                
             }
-            var score = PlanScores.Sum(x => x.ScoreValues.First().Score);//.ScoreValues.Sum(x => x.Score);
+            var score = PlanScores.Sum(x => x.Score);//.ScoreValues.Sum(x => x.Score);
             //foreach (var metricScore in PlanScores)
             //{
             //    if (metricScore.ScoreValues.Count() != 0)
@@ -269,6 +271,8 @@ namespace PlanScoreCard.Services
             //}
             planScores.Add(new Tuple<double, double>(planNorm, score));
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\tScore at {planNorm:F3} = {Math.Round(score, 2)}");
+            //without the PlotUpdateEvent call below, memory allocation goes through the roof.
+            //garbage collector isn't called without this publish. 
             _eventAggregator.GetEvent<PlotUpdateEvent>().Publish(PlanScores.ToList());
             //_eventAggregator.GetEvent<PlotUpdateEvent>().Publish($"PlotPoint:<{newPlan.Id};{planNorm};{Math.Round(score, 2)}>");
         }

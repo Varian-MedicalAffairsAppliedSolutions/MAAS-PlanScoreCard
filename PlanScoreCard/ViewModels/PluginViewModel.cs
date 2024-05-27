@@ -179,7 +179,7 @@ namespace PlanScoreCard.ViewModels
         }
 
         List<PlotSeriesData> PlotSeries;
-        private void OnUpdatePlot(List<PlanScoreModel> obj)
+        private void OnUpdatePlot(List<ScoreValueModel> obj)
         {
             foreach (var score in obj)
             {
@@ -195,9 +195,9 @@ namespace PlanScoreCard.ViewModels
                 double iteration = PlotSeries.FirstOrDefault(x => x.Title == title).DataPoints.Count();
                 double value = -1;
                 //check to see the value of "plotNegative" in the config, but also check that the sum of all scorevalues is >0. 
-                if (ConfigurationManager.AppSettings["PlotNegative"] == "true" || obj.Sum(psm => psm.ScoreValues.First().Score) >= 0)
+                if (ConfigurationManager.AppSettings["PlotNegative"] == "true" || obj.Sum(psm => psm.Score) >= 0)
                 {
-                    value = obj.Sum(psm => psm.ScoreValues.First().Score);
+                    value = obj.Sum(psm => psm.Score);
                 }
                 PlotSeries.FirstOrDefault(x => x.Title == title).DataPoints.Add(
                            new Tuple<double, double>(iteration,
