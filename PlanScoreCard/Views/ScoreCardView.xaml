@@ -123,7 +123,7 @@
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Binding="{Binding CourseId , Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" FontWeight="Normal" FontSize="12" Width="65">
+                                    <DataGridTextColumn Binding="{Binding CourseId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" FontWeight="Normal" FontSize="12" Width="65">
                                         <DataGridTextColumn.HeaderTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="Course"/>
@@ -184,6 +184,18 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>-->
+                                    <DataGridTextColumn Binding="{Binding MU, Converter={StaticResource localScoreTextConverter}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" FontWeight="Normal" FontSize="12" Width="65">
+                                        <DataGridTextColumn.HeaderTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="MU"/>
+                                            </DataTemplate>
+                                        </DataGridTextColumn.HeaderTemplate>
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Center" />
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
                                     <DataGridTextColumn Binding="{Binding PlanScore, Converter={StaticResource localScoreTextConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontWeight="Normal" FontSize="12" Width="90" IsReadOnly="True">
                                         <DataGridTextColumn.HeaderTemplate>
                                             <DataTemplate>

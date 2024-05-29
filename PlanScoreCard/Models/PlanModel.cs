@@ -158,6 +158,13 @@ namespace PlanScoreCard.Models
             get { return _planText; }
             set { SetProperty(ref _planText, value); }
         }
+        private double _mu;
+
+        public double MU
+        {
+            get { return _mu; }
+            set { SetProperty(ref _mu,value); }
+        }
 
         public bool bPlanSum;
         private StructureMatchWarningModel _structureMatchIssue;
@@ -277,6 +284,21 @@ namespace PlanScoreCard.Models
             StructureSetId = plan.StructureSet.Id;
             ImageId = plan.StructureSet.Image.Id;
             PlanText = $"{CourseId}: {PlanId}";
+            if (plan is PlanSum)
+            {
+                var sum = plan as PlanSum;
+                double localMU = 0.0;
+                foreach (var planPart in sum.PlanSetups)
+                {
+                    localMU += planPart.Beams.Where(b => !Double.IsNaN(b.Meterset.Value)).Sum(b => b.Meterset.Value);
+                }
+                MU = localMU;
+            }
+            else if (plan is PlanSetup)
+            {
+                MU = (plan as PlanSetup).Beams.Where(b => !Double.IsNaN(b.Meterset.Value)).Sum(b => b.Meterset.Value);
+            }
+
         }
 
         /// <summary>
