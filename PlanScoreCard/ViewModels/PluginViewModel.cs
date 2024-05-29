@@ -181,8 +181,8 @@ namespace PlanScoreCard.ViewModels
         List<PlotSeriesData> PlotSeries;
         private void OnUpdatePlot(List<ScoreValueModel> obj)
         {
-            foreach (var score in obj)
-            {
+            //foreach (var score in obj)
+            //{
                 string title = "Total Score";
                 if (!PlotSeries.Any(x => x.Title == title))
                 {
@@ -203,7 +203,7 @@ namespace PlanScoreCard.ViewModels
                            new Tuple<double, double>(iteration,
                            value));
                 ResetPlotSeries(title, iteration, value);
-            }
+            //}
 
 
             /*if (obj.StartsWith("Series"))

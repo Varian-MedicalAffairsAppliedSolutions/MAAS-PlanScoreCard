@@ -298,6 +298,11 @@ namespace PlanScoreCard.Models
 
         public ObservableCollection<PlanScoreColorModel> Colors { get; private set; }
         public ScoreTemplateModel InternalTemplate { get; set; }
+        public PlanScoreModel(double dvhResolution)
+        {
+            ScoreValues = new ObservableCollection<ScoreValueModel>();
+            _dvhResolution = dvhResolution;
+        }
         public PlanScoreModel(VMS.TPS.Common.Model.API.Application app, IEventAggregator eventAggregator)//, StructureDictionaryService structureDictionaryService)
         {
             _app = app;

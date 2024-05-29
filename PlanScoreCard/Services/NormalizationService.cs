@@ -16,10 +16,11 @@ namespace PlanScoreCard.Services
 {
     public class NormalizationService
     {
-        public ObservableCollection<ScoreValueModel> PlanScores { get; private set; }
+        //public ObservableCollection<ScoreValueModel> PlanScores { get; private set; }
         //private StructureDictionaryService StructureDictionaryService;
         private double _normTailPoint;
         private double _normTailValue;
+        private double _dvhResolution;
         private PlanModel _planModel;
         private String _patientId;
         private List<ScoreTemplateModel> _templates;
@@ -33,13 +34,14 @@ namespace PlanScoreCard.Services
             //StructureDictionaryService = structureDictionaryService;
             _normTailPoint = Convert.ToDouble(ConfigurationManager.AppSettings["NormTailToleranceLimit"]);
             _normTailValue = Convert.ToDouble(ConfigurationManager.AppSettings["NormTailPenalty"]);
+            _dvhResolution = Convert.ToDouble(ConfigurationManager.AppSettings["DVHResolution"]);
             //_patient = patient;
             ProcessTails(templates);
             _eventAggregator = eventAggregator;
             _app = app;
             _app.ClosePatient();
             _patient = _app.OpenPatientById(plan.PatientId);
-            PlanScores = new ObservableCollection<ScoreValueModel>();
+            //PlanScores = new ObservableCollection<ScoreValueModel>();
             _planModel = plan;
         }
 
@@ -160,7 +162,6 @@ namespace PlanScoreCard.Services
 
         public PlanModel GetPlan()
         {
-
             var course = _patient.Courses.FirstOrDefault(x => x.Id == _planModel.CourseId);
             var plan = course.PlanSetups.FirstOrDefault(x => x.Id == _planModel.PlanId);
 
@@ -205,7 +206,7 @@ namespace PlanScoreCard.Services
             };
 
             _app.SaveModifications();
-            PlanScores.Clear();
+            //PlanScores.Clear();
             //_app.ClosePatient();
             //_app.Dispose();
             return newPlanModel;
@@ -250,18 +251,18 @@ namespace PlanScoreCard.Services
             newPlan.PlanNormalizationValue = planNorm;
             //var planScore = PlanScore.API.ScoreCardReader.ScorePlanFromTemplate(filename, new List<PlanningItem> { newPlan as PlanningItem });
             int metricId = 0;
-            PlanScores.Clear();
+            List<ScoreValueModel> localScores = new List<ScoreValueModel>();
             foreach (var template in _templates)
             {
-                var psm = new PlanScoreModel(_app, _eventAggregator);
+                var psm = new PlanScoreModel(_dvhResolution);
                 psm.BuildPlanScoreFromTemplate(new List<PlanningItem> { newPlan }, template, metricId, String.Empty, string.Empty, false, true);
                 //false added at end because normalization service cannot build structures, they should have already been built by the scorecard being loaded.
                 metricId++;
 
-                PlanScores.Add(psm.ScoreValues.First());
+                localScores.Add(psm.ScoreValues.First());
                 
             }
-            var score = PlanScores.Sum(x => x.Score);//.ScoreValues.Sum(x => x.Score);
+            var score = localScores.Sum(x => x.Score);//.ScoreValues.Sum(x => x.Score);
             //foreach (var metricScore in PlanScores)
             //{
             //    if (metricScore.ScoreValues.Count() != 0)
@@ -273,7 +274,7 @@ namespace PlanScoreCard.Services
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\tScore at {planNorm:F3} = {Math.Round(score, 2)}");
             //without the PlotUpdateEvent call below, memory allocation goes through the roof.
             //garbage collector isn't called without this publish. 
-            _eventAggregator.GetEvent<PlotUpdateEvent>().Publish(PlanScores.ToList());
+            _eventAggregator.GetEvent<PlotUpdateEvent>().Publish(localScores.ToList());
             //_eventAggregator.GetEvent<PlotUpdateEvent>().Publish($"PlotPoint:<{newPlan.Id};{planNorm};{Math.Round(score, 2)}>");
         }
     }
