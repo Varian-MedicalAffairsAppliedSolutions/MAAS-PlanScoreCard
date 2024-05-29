@@ -275,6 +275,7 @@ namespace PlanScoreCard.Services
             //without the PlotUpdateEvent call below, memory allocation goes through the roof.
             //garbage collector isn't called without this publish. 
             _eventAggregator.GetEvent<PlotUpdateEvent>().Publish(localScores.ToList());
+            System.GC.Collect();
             //_eventAggregator.GetEvent<PlotUpdateEvent>().Publish($"PlotPoint:<{newPlan.Id};{planNorm};{Math.Round(score, 2)}>");
         }
     }
