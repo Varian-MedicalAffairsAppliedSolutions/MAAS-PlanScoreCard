@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHubActions", "GitHubActi
 		.github\workflows\Update-EsapiHintPaths.ps1 = .github\workflows\Update-EsapiHintPaths.ps1
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScorecardVisualizer", "..\..\Projects\ScorecardVisualizer\ScorecardVisualizer\ScorecardVisualizer.csproj", "{DCDC8DD2-32FD-4007-BB88-5879E58AC86F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScorecardVisualizer", "ScorecardVisualizer\ScorecardVisualizer.csproj", "{DCDC8DD2-32FD-4007-BB88-5879E58AC86F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

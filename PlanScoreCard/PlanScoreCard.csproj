@@ -635,6 +635,10 @@
       <Project>{97D0A07D-BE05-4E07-A2D1-D53DB537A1BD}</Project>
       <Name>PluginInterface</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ScorecardVisualizer\ScorecardVisualizer.csproj">
+      <Project>{dcdc8dd2-32fd-4007-bb88-5879e58ac86f}</Project>
+      <Name>ScorecardVisualizer</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

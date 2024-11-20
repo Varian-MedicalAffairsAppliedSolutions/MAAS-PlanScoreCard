@@ -87,8 +87,10 @@ namespace PlanScoreCard
             _eventAggregator = eventAggregator;
             try
             {
+                // TEMP FOR DEBUG STARTUP
+                //string argsString = e.Args.First();
+                string argsString = "HSWB-SIB_00;Final;Hal";
 
-                string argsString = e.Args.First();
                 //var value = ConfigurationManager.AppSettings["EULAAgree"];
                 //configFile.AppSettings.Settings.Remove("EULAAgree");
                 //configFile.AppSettings.Settings["EULAAgree"].Value = "true";
@@ -147,7 +149,6 @@ namespace PlanScoreCard
                             {
                                 if (!String.IsNullOrWhiteSpace(argsString))
                                 {
-
                                     _patientId = argsString.Split(';').First().Trim('\"');
                                 }
                                 else
