@@ -101,6 +101,8 @@
                         <Button Command="{Binding CopyMetricCommand}" Content="{icons:FontAwesome Kind=CopySolid}" Width="30" Height="30" Grid.Column="2" ToolTip="Copy Score Metric"/>
                         <Button Command="{Binding AddNewStructureCommand}" Content="{icons:FontAwesome Kind=HammerSolid}" Grid.Column="4" Height="30"  HorizontalAlignment="Left" Width="28" Margin="2" ToolTip="Build new Structure"/>
 
+                        <Button Command="{Binding LaunchVisualizerCommand}" Content="{icons:FontAwesome Kind=ChartPieSolid}" Width="30" Height="30" Grid.Column="6" ToolTip="Launch Visualizer"/>
+
                         <Button Command="{Binding MetricUpCommand}" Content="{icons:FontAwesome Kind=CaretUpSolid}" Width="30" Height="30" Grid.Column="8"/>
                         <Button Command="{Binding MetricDownCommand}" Content="{icons:FontAwesome Kind=CaretDownSolid}" Width="30" Height="30" Grid.Column="9"/>
 

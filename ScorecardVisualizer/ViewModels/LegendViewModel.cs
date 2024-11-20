@@ -5,7 +5,7 @@ using System.Windows.Controls;
 
 namespace ScorecardVisualizer.ViewModels
 {
-    internal class LegendViewModel : ViewModelBase
+    public class LegendViewModel : ViewModelBase
     {
         public ObservableCollection<LegendItemViewModel> LegendItemViewModels { get; private set; }
 

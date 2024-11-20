@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace ScorecardVisualizer.ViewModels
 {
-    internal class MainViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase
     {
         #region Private Properties
         private ScorecardModel _scorecardModel;

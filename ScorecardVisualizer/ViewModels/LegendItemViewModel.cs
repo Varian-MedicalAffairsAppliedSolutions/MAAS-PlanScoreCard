@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 namespace ScorecardVisualizer.ViewModels
 {
-    internal class LegendItemViewModel : ViewModelBase
+    public class LegendItemViewModel : ViewModelBase
     {
         private StructurePlotInfo _structurePlotInfo;
 

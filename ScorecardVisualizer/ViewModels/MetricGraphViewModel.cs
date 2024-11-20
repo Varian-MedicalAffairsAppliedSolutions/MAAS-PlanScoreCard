@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace ScorecardVisualizer.ViewModels
 {
-    internal class MetricGraphViewModel : ViewModelBase
+    public class MetricGraphViewModel : ViewModelBase
     {
         public PlotModel Plot { get; set; }
 

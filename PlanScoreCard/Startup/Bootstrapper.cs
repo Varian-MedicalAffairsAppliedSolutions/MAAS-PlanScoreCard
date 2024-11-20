@@ -32,6 +32,7 @@ namespace PlanScoreCard.Startup
             container.RegisterType<PluginViewModel>().AsSelf();
             container.RegisterType<MainViewModel>().AsSelf();
             container.RegisterType<EditScoreCardViewModel>().AsSelf().SingleInstance();
+            container.RegisterType<ScorecardVisualizer.ViewModels.MainViewModel>().AsSelf().SingleInstance();
             container.RegisterType<EditDoseAtVolumeViewModel>().AsSelf().SingleInstance();
             container.RegisterType<EditVolumeAtDoseViewModel>().AsSelf().SingleInstance();
             container.RegisterType<EditDoseValueViewModel>().AsSelf().SingleInstance();
@@ -46,6 +47,7 @@ namespace PlanScoreCard.Startup
             // views
             container.RegisterType<PluginView>().AsSelf();
             container.RegisterType<EditScoreCardView>().AsSelf();
+            container.RegisterType<ScorecardVisualizer.Views.MainView>().AsSelf();
             container.RegisterType<EditDoseAtVolumeView>().AsSelf();
             container.RegisterType<EditVolumeAtDoseView>().AsSelf();
             container.RegisterType<EditDoseValueView>().AsSelf().SingleInstance();

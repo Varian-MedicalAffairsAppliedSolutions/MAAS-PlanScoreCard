@@ -41,6 +41,9 @@ namespace PlanScoreCard.ViewModels
         private ProgressViewService ProgressViewService;
         //private StructureDictionaryService StructureDictionaryService;
 
+        // Visualizer
+        private ScorecardVisualizer.Views.MainView VisualizerMainView;
+
         private object metricEdtiorControl;
 
         public object MetricEditorControl
@@ -164,6 +167,7 @@ namespace PlanScoreCard.ViewModels
                 ClearColorCommand.RaiseCanExecuteChanged();
                 AddPointCommand.RaiseCanExecuteChanged();
                 AddNewStructureCommand.RaiseCanExecuteChanged();
+                LaunchVisualizerCommand.RaiseCanExecuteChanged();
                 ShowScorePointModels(SelectedScoreMetric);
 
                 if (SelectedScoreMetric == null)
@@ -540,6 +544,7 @@ namespace PlanScoreCard.ViewModels
         public DelegateCommand SaveTemplateCommand { get; private set; }
         public DelegateCommand OrderPointsByValueCommand { get; private set; }
         public DelegateCommand AddNewStructureCommand { get; private set; }
+        public DelegateCommand LaunchVisualizerCommand { get; private set; }
         public DelegateCommand UpdateTemplateIdCommand { get; private set; }
         public DelegateCommand ClearColorCommand { get; private set; }
         public StructureDictionarySelectorView StructureSelectorView { get; private set; }
@@ -605,6 +610,7 @@ namespace PlanScoreCard.ViewModels
             SaveTemplateCommand = new DelegateCommand(SaveTemplate);
             OrderPointsByValueCommand = new DelegateCommand(OrderPointsByValue);
             AddNewStructureCommand = new DelegateCommand(OnAddNewStructure, CanDeleteMetric);
+            LaunchVisualizerCommand = new DelegateCommand(LaunchVisualizer);
             OpenDictionaryEditorCommand = new DelegateCommand(OnOpenDictionaryEditor, CanOpenDictionaryEditor);
             UpdateTemplateIdCommand = new DelegateCommand(OnUpdateTemplateId);
             ClearColorCommand = new DelegateCommand(OnClearColor, CanClearColor);
@@ -791,6 +797,30 @@ namespace PlanScoreCard.ViewModels
             //structureBuilderView.ShowDialog();
             //launch viewmodel.
             //FillStructures();
+        }
+
+        private void LaunchVisualizer()
+        {
+            // Show the Progress Bar
+            ProgressViewService.ShowProgress("Loading Scorecard", 100, true);
+
+            //ScoreCardModel scoreCard = new ScoreCardModel(TemplateName, TemplateSite, DosePerFraction, NumberOfFractions, ScoreCard?.ScoreMetrics);
+            //EditScoreCardView = ViewLauncherService.GetEditScoreCardView();
+
+            VisualizerMainView = ViewLauncherService.GetVisualizerView();
+
+            // Events
+            //EventAggregator.GetEvent<EditScoreCardSetPlanEvent>().Publish(Plan); // Push the SelectedPlan
+            //EventAggregator.GetEvent<LoadEditScoreCardViewEvent>().Publish(scoreCard); // Push the ScoreCardModel to the ViewModel
+            //EventAggregator.GetEvent<EditScoreCardSetUserEvent>().Publish(Application.CurrentUser); // Push the User
+
+            // Close the Progress Bar
+            ProgressViewService.Close();
+
+            //Show the View
+            //EditScoreCardView.ShowDialog();
+            //EditScoreCardView.Visibility = System.Windows.Visibility.Visible;
+            VisualizerMainView.Visibility = System.Windows.Visibility.Visible;
         }
 
         private void OrderPointsByValue()

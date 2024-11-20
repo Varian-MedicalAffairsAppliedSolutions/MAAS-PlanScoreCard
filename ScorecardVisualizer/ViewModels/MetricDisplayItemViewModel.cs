@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace ScorecardVisualizer.ViewModels
 {
-    internal class MetricDisplayItemViewModel
+    public class MetricDisplayItemViewModel
     {
         private StructurePlotInfo _structurePlotInfo;
 

@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace ScorecardVisualizer.Models
 {
-    internal class ScorecardModel
+    public class ScorecardModel
     {
         private InternalTemplateModel _internalTemplateModel;
         private string _selectedStructure;

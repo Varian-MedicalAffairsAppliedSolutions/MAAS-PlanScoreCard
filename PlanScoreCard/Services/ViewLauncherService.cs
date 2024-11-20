@@ -36,6 +36,10 @@ namespace PlanScoreCard.Services
             return GetView<PluginView>();
         }
 
+        public ScorecardVisualizer.Views.MainView GetVisualizerView()
+        {
+            return GetView<ScorecardVisualizer.Views.MainView>();
+        }
 
         /// <summary>
         /// Generate a home view

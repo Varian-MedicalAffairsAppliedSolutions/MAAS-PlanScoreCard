@@ -5,7 +5,7 @@ using System.Windows.Controls;
 
 namespace ScorecardVisualizer.ViewModels
 {
-    internal class MetricDisplayViewModel : ViewModelBase
+    public class MetricDisplayViewModel : ViewModelBase
     {
         public ObservableCollection<MetricDisplayItemViewModel> MetricDisplayItemViewModels { get; private set; }
 
