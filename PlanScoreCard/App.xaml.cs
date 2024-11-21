@@ -88,8 +88,7 @@ namespace PlanScoreCard
             try
             {
                 // TEMP FOR DEBUG STARTUP
-                //string argsString = e.Args.First();
-                string argsString = "HSWB-SIB_00;Final;Hal";
+                string argsString = e.Args.First();
 
                 //var value = ConfigurationManager.AppSettings["EULAAgree"];
                 //configFile.AppSettings.Settings.Remove("EULAAgree");
