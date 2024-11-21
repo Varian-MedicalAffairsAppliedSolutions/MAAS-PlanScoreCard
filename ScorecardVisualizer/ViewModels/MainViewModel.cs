@@ -18,7 +18,6 @@ namespace ScorecardVisualizer.ViewModels
 
         #region Commands
         public ICommand LaunchOpenScorecardPromptCommand { get; set; }
-
         public ICommand TestCommand { get; set; }
         #endregion
 
@@ -51,7 +50,6 @@ namespace ScorecardVisualizer.ViewModels
             _scorecardModel = new ScorecardModel();
 
             LaunchOpenScorecardPromptCommand = new LaunchOpenScorecardPromptCommand(_scorecardModel);
-            TestCommand = new TestCommand();
 
             LegendViewModel = new LegendViewModel();
             MetricDisplayViewModel = new MetricDisplayViewModel();
@@ -61,7 +59,6 @@ namespace ScorecardVisualizer.ViewModels
             Messenger.SelectStructure += Messenger_SelectStructure;
             Messenger.LaunchFromPlanScorecard += Messenger_LaunchFromPlanScorecard;
         }
-
         #endregion
 
         #region Messenger   
@@ -109,7 +106,6 @@ namespace ScorecardVisualizer.ViewModels
             OnPropertyChanged(nameof(IsLaunchedFromScorecard));
             Messenger_UpdateScorecard(null, null);
         }
-
         #endregion
     }
 }

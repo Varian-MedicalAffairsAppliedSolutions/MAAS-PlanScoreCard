@@ -11,7 +11,6 @@ namespace ScorecardVisualizer.Services
     {
         public static bool IsRead = false;
 
-
         public static List<StructureDictionaryModel> StructureDictionary = null;
 
         public static void ReadDictionaries()

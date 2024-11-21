@@ -126,7 +126,6 @@
     <Compile Include="Services\Commands\CommandBase.cs" />
     <Compile Include="Services\Commands\FocusOnStructureCommand.cs" />
     <Compile Include="Services\Commands\LaunchOpenScorecardPromptCommand.cs" />
-    <Compile Include="Services\Commands\TestCommand.cs" />
     <Compile Include="Services\Dictionaries.cs" />
     <Compile Include="Services\HelperClasses\BoolToColorConverter.cs" />
     <Compile Include="Services\HelperClasses\BorderSizeConverter.cs" />
@@ -189,10 +188,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Themes\CustomScrollBar.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Components\LegendItemView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

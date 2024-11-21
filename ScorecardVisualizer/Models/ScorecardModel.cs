@@ -12,27 +12,35 @@ namespace ScorecardVisualizer.Models
 {
     public class ScorecardModel
     {
+        #region Properties
         private InternalTemplateModel _internalTemplateModel;
+
         private string _selectedStructure;
-
-        public bool IsRead = false;
-
-        public string Creator => _internalTemplateModel.Creator;
-        public string DosePerFraction => $"{_internalTemplateModel.DosePerFraction} Gy";
-        public string NumberOfFractions => _internalTemplateModel.NumberOfFractions.ToString();
-        public string Site => _internalTemplateModel.Site;
-        public string ModelName => _internalTemplateModel.TemplateName;
-        public string TotalScore => StructurePlotInfos.Select(s => s.TotalPoints).Sum().ToString();
-
-        public ObservableCollection<StructurePlotInfo> StructurePlotInfos = new ObservableCollection<StructurePlotInfo>();
 
         private List<string> _structureIds => _internalTemplateModel.ScoreTemplates.Select(s => s.Structure.TemplateStructureId).Distinct().OrderBy(i => i).ToList();
 
+        public bool IsRead = false;
+
         public PlotModel Plot;
 
+        public ObservableCollection<StructurePlotInfo> StructurePlotInfos = new ObservableCollection<StructurePlotInfo>();
+
+        public string Creator => _internalTemplateModel.Creator;
+
+        public string DosePerFraction => $"{_internalTemplateModel.DosePerFraction} Gy";
+
+        public string NumberOfFractions => _internalTemplateModel.NumberOfFractions.ToString();
+
+        public string Site => _internalTemplateModel.Site;
+
+        public string ModelName => _internalTemplateModel.TemplateName;
+
+        public string TotalScore => StructurePlotInfos.Select(s => s.TotalPoints).Sum().ToString();
+
         public List<ScoreTemplateModel> SelectedStructureMetrics => _internalTemplateModel.ScoreTemplates.Where(s => s.Structure.TemplateStructureId == _selectedStructure).ToList();
+        #endregion
 
-
+        #region Constructors
         public ScorecardModel()
         {
 
@@ -45,7 +53,9 @@ namespace ScorecardVisualizer.Models
             LoadStructurePlotInfo();
             IsRead = true;
         }
+        #endregion
 
+        #region Methods
         private void LoadStructurePlotInfo()
         {
             StructurePlotInfos.Clear();
@@ -79,7 +89,6 @@ namespace ScorecardVisualizer.Models
         public StructurePlotInfo LoadPlotModel(string structureToExplode = "")
         {
             _selectedStructure = structureToExplode;
-            //OxyColor newColor = OxyColor.Parse("#F8F8FF"); 
 
             StructurePlotInfo selectedStructurePlotInfo = null;
 
@@ -102,7 +111,6 @@ namespace ScorecardVisualizer.Models
                 if (item.StructureId == structureToExplode)
                 {
                     item.IsSelected = true;
-                    //newColor = item.WindowColor;
                     selectedStructurePlotInfo = item;
                     series.Slices.Add(new PieSlice(item.StructureId, item.TotalPoints) { Fill = item.Color, IsExploded = true });
                     continue;
@@ -130,5 +138,6 @@ namespace ScorecardVisualizer.Models
             }
         }
 
+        #endregion
     }
 }

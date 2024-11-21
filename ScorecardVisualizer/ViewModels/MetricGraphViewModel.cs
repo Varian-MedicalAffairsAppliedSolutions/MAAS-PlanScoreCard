@@ -12,11 +12,8 @@ namespace ScorecardVisualizer.ViewModels
     {
         public PlotModel Plot { get; set; }
 
-
         public MetricGraphViewModel(ScoreTemplateModel scoreTemplateModel)
         {
-            //Name = scoreTemplateModel.ScorePoints.Count().ToString();
-
             string plotTitle, xAxisTitle, yAxisTitle;
 
             if (scoreTemplateModel.MetricType == "DoseAtVolume")

@@ -804,16 +804,9 @@ namespace PlanScoreCard.ViewModels
             // Show the Progress Bar
             ProgressViewService.ShowProgress("Loading Scorecard", 100, true);
 
-            //ScoreCardModel scoreCard = new ScoreCardModel(TemplateName, TemplateSite, DosePerFraction, NumberOfFractions, ScoreCard?.ScoreMetrics);
-            //EditScoreCardView = ViewLauncherService.GetEditScoreCardView();
-
             VisualizerMainView = ViewLauncherService.GetVisualizerView();
 
-            // Events
-            //EventAggregator.GetEvent<EditScoreCardSetPlanEvent>().Publish(Plan); // Push the SelectedPlan
-            //EventAggregator.GetEvent<LoadEditScoreCardViewEvent>().Publish(scoreCard); // Push the ScoreCardModel to the ViewModel
-            //EventAggregator.GetEvent<EditScoreCardSetUserEvent>().Publish(Application.CurrentUser); // Push the User
-
+            // Create internal template from scorecard
             InternalTemplateModel internalTemplateModel = new InternalTemplateModel
             {
                 ScoreTemplates = scoreCard.ScoreMetrics,
@@ -823,14 +816,13 @@ namespace PlanScoreCard.ViewModels
                 NumberOfFractions = scoreCard.NumberOfFractions
             };
 
+            // Serialize and pass to visualizer
             ScorecardVisualizer.Services.Messenger.SendLaunchFromPlanScorecard(new ScorecardVisualizer.Models.ScorecardModel(JsonConvert.SerializeObject(internalTemplateModel), TemplateAuthor));
 
             // Close the Progress Bar
             ProgressViewService.Close();
 
             //Show the View
-            //EditScoreCardView.ShowDialog();
-            //EditScoreCardView.Visibility = System.Windows.Visibility.Visible;
             VisualizerMainView.Visibility = System.Windows.Visibility.Visible;
         }
 
