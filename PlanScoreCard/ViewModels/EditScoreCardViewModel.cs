@@ -814,6 +814,17 @@ namespace PlanScoreCard.ViewModels
             //EventAggregator.GetEvent<LoadEditScoreCardViewEvent>().Publish(scoreCard); // Push the ScoreCardModel to the ViewModel
             //EventAggregator.GetEvent<EditScoreCardSetUserEvent>().Publish(Application.CurrentUser); // Push the User
 
+            InternalTemplateModel internalTemplateModel = new InternalTemplateModel
+            {
+                ScoreTemplates = scoreCard.ScoreMetrics,
+                TemplateName = scoreCard.Name,
+                Site = scoreCard.SiteGroup,
+                DosePerFraction = scoreCard.DosePerFraction,
+                NumberOfFractions = scoreCard.NumberOfFractions
+            };
+
+            ScorecardVisualizer.Services.Messenger.SendLaunchFromPlanScorecard(new ScorecardVisualizer.Models.ScorecardModel(JsonConvert.SerializeObject(internalTemplateModel), TemplateAuthor));
+
             // Close the Progress Bar
             ProgressViewService.Close();
 

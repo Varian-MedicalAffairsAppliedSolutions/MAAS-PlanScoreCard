@@ -208,6 +208,7 @@
                 Width="150"
                 Height="30"
                 Margin="20,0"
+                Visibility="{Binding IsLaunchedFromScorecard}"
                 Command="{Binding LaunchOpenScorecardPromptCommand}"
                 Content="Open Scorecard" />
 
@@ -216,6 +217,7 @@
                 Height="30"
                 Margin="20,0"
                 Content="Print Report"
+                Visibility="{Binding IsLaunchedFromScorecard}"
                 IsEnabled="False" />
         </StackPanel>
         <!--#endregion-->

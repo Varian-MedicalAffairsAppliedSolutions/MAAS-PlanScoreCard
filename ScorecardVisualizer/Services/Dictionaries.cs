@@ -9,11 +9,15 @@ namespace ScorecardVisualizer.Services
 {
     public static class Dictionaries
     {
+        public static bool IsRead = false;
+
+
         public static List<StructureDictionaryModel> StructureDictionary = null;
 
         public static void ReadDictionaries()
         {
             StructureDictionary = JsonConvert.DeserializeObject<List<StructureDictionaryModel>>(File.ReadAllText(ConfigurationManager.AppSettings["StructureDictionaryPath"]));
+            IsRead = true;
         }
 
         public static Dictionary<string, string> MetricPrefix = new Dictionary<string, string>()

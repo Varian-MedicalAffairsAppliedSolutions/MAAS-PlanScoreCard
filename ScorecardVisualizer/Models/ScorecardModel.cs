@@ -40,6 +40,14 @@ namespace ScorecardVisualizer.Models
 
         }
 
+        public ScorecardModel(string internalTemplateModelAsJson, string creator)
+        {
+            _internalTemplateModel = JsonConvert.DeserializeObject<InternalTemplateModel>(internalTemplateModelAsJson);
+            _internalTemplateModel.Creator = creator;
+            LoadStructurePlotInfo();
+            IsRead = true;
+        }
+
         private void LoadStructurePlotInfo()
         {
             StructurePlotInfos.Clear();

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using ScorecardVisualizer.ViewModels;
+using System.Windows;
 
 namespace ScorecardVisualizer.Views
 {
@@ -7,8 +8,17 @@ namespace ScorecardVisualizer.Views
     /// </summary>
     public partial class MainView : Window
     {
+        private MainViewModel MainViewModel;
+
         public MainView()
         {
+            InitializeComponent();
+        }
+
+        public MainView(MainViewModel mainViewModel)
+        {
+            MainViewModel = mainViewModel;
+            DataContext = MainViewModel;
             InitializeComponent();
         }
     }

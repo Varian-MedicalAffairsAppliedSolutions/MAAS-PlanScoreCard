@@ -34,11 +34,18 @@ namespace ScorecardVisualizer.ViewModels
         public ObservableCollection<MetricGraphViewModel> SelectedStructureMetricGraphs { get; set; }
         public LegendViewModel LegendViewModel { get; set; }
         public MetricDisplayViewModel MetricDisplayViewModel { get; set; }
+
+        public string IsLaunchedFromScorecard { get; set; }
         #endregion
 
         #region Constructors
         public MainViewModel()
         {
+            if (!Dictionaries.IsRead)
+                Dictionaries.ReadDictionaries();
+
+            IsLaunchedFromScorecard = "Visible";
+
             WindowBackground = OxyColor.Parse("#F8F8FF");
 
             _scorecardModel = new ScorecardModel();
@@ -52,7 +59,9 @@ namespace ScorecardVisualizer.ViewModels
             Messenger.UpdateScorecard += Messenger_UpdateScorecard;
             Messenger.UpdatePlot += Messenger_UpdatePlot;
             Messenger.SelectStructure += Messenger_SelectStructure;
+            Messenger.LaunchFromPlanScorecard += Messenger_LaunchFromPlanScorecard;
         }
+
         #endregion
 
         #region Messenger   
@@ -78,7 +87,6 @@ namespace ScorecardVisualizer.ViewModels
             OnPropertyChanged(nameof(Plot));
         }
 
-
         private void Messenger_SelectStructure(object sender, System.EventArgs e)
         {
             SelectedStructureMetricGraphs = new ObservableCollection<MetricGraphViewModel>(_scorecardModel.SelectedStructureMetrics.Select(s => new MetricGraphViewModel(s)));
@@ -92,6 +100,14 @@ namespace ScorecardVisualizer.ViewModels
 
             OnPropertyChanged(nameof(SelectedStructureMetricGraphs));
             OnPropertyChanged(nameof(WindowBackground));
+        }
+
+        private void Messenger_LaunchFromPlanScorecard(object sender, EventArgs e)
+        {
+            _scorecardModel = (ScorecardModel)sender;
+            IsLaunchedFromScorecard = "Hidden";
+            OnPropertyChanged(nameof(IsLaunchedFromScorecard));
+            Messenger_UpdateScorecard(null, null);
         }
 
         #endregion

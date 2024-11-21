@@ -9,6 +9,7 @@ namespace ScorecardVisualizer.Services
         public static event EventHandler UpdateScorecard;
         public static event EventHandler UpdatePlot;
         public static event EventHandler SelectStructure;
+        public static event EventHandler LaunchFromPlanScorecard;
 
         public static void SendUpdateScorecard()
         {
@@ -25,6 +26,11 @@ namespace ScorecardVisualizer.Services
             var parameters = new Tuple<StructurePlotInfo, ListView, ListView>(structurePlotInfo, metricListView, legendListView);
 
             SelectStructure?.Invoke(parameters, EventArgs.Empty);
+        }
+
+        public static void SendLaunchFromPlanScorecard(ScorecardModel scorecardModel)
+        {
+            LaunchFromPlanScorecard?.Invoke(scorecardModel, EventArgs.Empty);
         }
     }
 }
