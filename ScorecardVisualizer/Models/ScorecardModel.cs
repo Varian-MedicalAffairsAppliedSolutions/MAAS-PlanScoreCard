@@ -30,9 +30,7 @@ namespace ScorecardVisualizer.Models
 
         public PlotModel Plot;
 
-
         public List<ScoreTemplateModel> SelectedStructureMetrics => _internalTemplateModel.ScoreTemplates.Where(s => s.Structure.TemplateStructureId == _selectedStructure).ToList();
-
 
 
         public ScorecardModel()

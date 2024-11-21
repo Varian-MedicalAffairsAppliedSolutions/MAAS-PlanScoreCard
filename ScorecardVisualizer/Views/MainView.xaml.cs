@@ -1,4 +1,6 @@
-﻿using ScorecardVisualizer.ViewModels;
+﻿using ScorecardVisualizer.Services;
+using ScorecardVisualizer.ViewModels;
+using System.Web.UI.WebControls;
 using System.Windows;
 
 namespace ScorecardVisualizer.Views
@@ -8,18 +10,30 @@ namespace ScorecardVisualizer.Views
     /// </summary>
     public partial class MainView : Window
     {
+        private bool _fromScorecard;
         private MainViewModel MainViewModel;
 
-        public MainView()
+        public MainView(bool fromScorecard = true)
         {
+            _fromScorecard = fromScorecard;
+            if (_fromScorecard)
+            {
+                MainViewModel = new MainViewModel();
+                DataContext = MainViewModel;
+            }
+
             InitializeComponent();
         }
 
-        public MainView(MainViewModel mainViewModel)
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            MainViewModel = mainViewModel;
-            DataContext = MainViewModel;
-            InitializeComponent();
+            if (!_fromScorecard)
+                return;
+
+            Messenger.UpdateScorecard -= MainViewModel.Messenger_UpdateScorecard;
+            Messenger.UpdatePlot -= MainViewModel.Messenger_UpdatePlot;
+            Messenger.SelectStructure -= MainViewModel.Messenger_SelectStructure;
+            Messenger.LaunchFromPlanScorecard -= MainViewModel.Messenger_LaunchFromPlanScorecard;
         }
     }
 }

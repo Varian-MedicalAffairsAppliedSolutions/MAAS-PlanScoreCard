@@ -19,7 +19,7 @@ namespace ScorecardVisualizer
         {
             base.OnStartup(e);
 
-            MainWindow = new MainView()
+            MainWindow = new MainView(false)
             {
                 DataContext = new MainViewModel()
             };

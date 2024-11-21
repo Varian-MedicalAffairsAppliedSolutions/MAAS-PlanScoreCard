@@ -13,6 +13,7 @@
     Height="1000"
     Background="GhostWhite"
     ResizeMode="NoResize"
+    Closing="Window_Closing"
     WindowStartupLocation="CenterScreen"
     WindowStyle="ToolWindow"
     mc:Ignorable="d">

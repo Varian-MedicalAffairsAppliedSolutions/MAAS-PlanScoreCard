@@ -65,7 +65,7 @@ namespace ScorecardVisualizer.ViewModels
         #endregion
 
         #region Messenger   
-        private void Messenger_UpdateScorecard(object sender, System.EventArgs e)
+        internal void Messenger_UpdateScorecard(object sender, System.EventArgs e)
         {
             OnPropertyChanged(nameof(Author));
             OnPropertyChanged(nameof(DosePerFraction));
@@ -82,12 +82,12 @@ namespace ScorecardVisualizer.ViewModels
             MetricDisplayViewModel.Update(_scorecardModel);
         }
 
-        private void Messenger_UpdatePlot(object sender, System.EventArgs e)
+        internal void Messenger_UpdatePlot(object sender, System.EventArgs e)
         {
             OnPropertyChanged(nameof(Plot));
         }
 
-        private void Messenger_SelectStructure(object sender, System.EventArgs e)
+        internal void Messenger_SelectStructure(object sender, System.EventArgs e)
         {
             SelectedStructureMetricGraphs = new ObservableCollection<MetricGraphViewModel>(_scorecardModel.SelectedStructureMetrics.Select(s => new MetricGraphViewModel(s)));
 
@@ -102,7 +102,7 @@ namespace ScorecardVisualizer.ViewModels
             OnPropertyChanged(nameof(WindowBackground));
         }
 
-        private void Messenger_LaunchFromPlanScorecard(object sender, EventArgs e)
+        internal void Messenger_LaunchFromPlanScorecard(object sender, EventArgs e)
         {
             _scorecardModel = (ScorecardModel)sender;
             IsLaunchedFromScorecard = "Hidden";
