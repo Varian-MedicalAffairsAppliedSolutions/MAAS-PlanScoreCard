@@ -10,14 +10,14 @@
     xmlns:oxy="http://oxyplot.org/wpf"
     Title="Scorecard Visualizer"
     Width="1150"
-    Height="1000"
+    Height="900"
     Background="GhostWhite"
-    ResizeMode="NoResize"
+   
     Closing="Window_Closing"
     WindowStartupLocation="CenterScreen"
     WindowStyle="ToolWindow"
     mc:Ignorable="d">
-
+    <!--ResizeMode="NoResize"-->
     <!--#region Resources-->
     <Window.Resources>
         <helpers:OxyColorToBrushConverter x:Key="OxyColorToBrushConverter" />

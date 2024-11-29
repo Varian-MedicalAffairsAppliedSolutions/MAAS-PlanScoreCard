@@ -70,7 +70,7 @@
                                 <ColumnDefinition Width="40"/>
                             </Grid.ColumnDefinitions>
                             <TextBox Text="{Binding ScoreCardName}" IsReadOnly="True" Background="WhiteSmoke" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" />
-                            <Button Command="{Binding ImportScoreCardCommand}" ToolTip="Import ScoreCard" Content="{icons:FontAwesome Kind=DownloadSolid}" Grid.Column="1" Margin="5" Width="30"/>
+                            <Button Command="{Binding ImportScoreCardCommand}" ToolTip="Import ScoreCard" Content="{icons:FontAwesome Kind=FileImportSolid}" Grid.Column="1" Margin="5" Width="30"/>
                             <Button Command="{Binding EditScoreCardCommand}" ToolTip="Create/Edit ScoreCard" Content="{icons:FontAwesome Kind=EditSolid}" Grid.Column="2" Margin="5" Width="30"/>
                         </Grid>
                     </Grid>
@@ -135,7 +135,7 @@
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Binding="{Binding PlanId , Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" FontWeight="Normal" FontSize="12" Width="65">
+                                    <DataGridTextColumn Binding="{Binding PlanId , Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" FontWeight="Normal" FontSize="12" Width="120">
                                         <DataGridTextColumn.HeaderTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="Plan"/>

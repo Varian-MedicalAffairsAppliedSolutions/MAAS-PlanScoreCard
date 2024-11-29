@@ -1008,8 +1008,10 @@ namespace PlanScoreCard.ViewModels
             // Loop through each Metric (ScoreTemplateModel)
             bWarning = false;
             bFlag = false;
+            bInfo = false;
             Warnings = String.Empty;
             Flags = String.Empty;
+            Infos = String.Empty;
             if (scoreCard.ScoreMetrics.All(sm => sm.TemplateNumber == 0))
             {
                 int metricNum = 0;

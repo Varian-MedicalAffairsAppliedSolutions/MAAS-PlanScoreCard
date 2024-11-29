@@ -81,7 +81,7 @@
       <HintPath>..\packages\OxyPlot.Wpf.2.0.0\lib\net45\OxyPlot.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="PlanScoreCard.API">
-      <HintPath>..\packages\Scorecard API\15.6\PlanScoreCard.API.dll</HintPath>
+      <HintPath>..\..\PlanScoreCardAPI\PlanScoreCard.API\PlanScoreCard.API\bin\Debug\PlanScoreCard.API.dll</HintPath>
     </Reference>
     <Reference Include="ReachFramework" />
     <Reference Include="System" />
