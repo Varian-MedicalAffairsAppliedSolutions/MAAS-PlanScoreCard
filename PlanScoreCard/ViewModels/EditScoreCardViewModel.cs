@@ -17,10 +17,12 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,7 +32,7 @@ using VMS.TPS.Common.Model.API;
 
 namespace PlanScoreCard.ViewModels
 {
-    public class EditScoreCardViewModel : BindableBase
+    public class EditScoreCardViewModel : INotifyPropertyChanged
     {
         // Private Class Properties
         private User User;
@@ -51,7 +53,9 @@ namespace PlanScoreCard.ViewModels
             get { return metricEdtiorControl; }
             set
             {
-                SetProperty(ref metricEdtiorControl, value);
+                //SetProperty(ref metricEdtiorControl, value);
+                metricEdtiorControl = value;
+                NotifyPropertyChanged();
             }
         }
         #region visibilityBools
@@ -67,56 +71,96 @@ namespace PlanScoreCard.ViewModels
         public bool bCIView
         {
             get { return _bCIView; }
-            set { SetProperty(ref _bCIView, value); }
+            set 
+            {
+                //    SetProperty(ref _bCIView, value);
+                _bCIView = value;
+                NotifyPropertyChanged();
+            }
         }
         private bool _bDAtVView;
 
         public bool bDAtVView
         {
             get { return _bDAtVView; }
-            set { SetProperty(ref _bDAtVView, value); }
+            set 
+            { //SetProperty(ref _bDAtVView, value);
+                _bDAtVView = value;
+                NotifyPropertyChanged();
+
+            }
         }
         private bool _bDValueView;
 
         public bool bDValueView
         {
             get { return _bDValueView; }
-            set { SetProperty(ref _bDValueView, value); }
+            set 
+            {
+                //SetProperty(ref _bDValueView, value); 
+                _bDValueView = value;
+                NotifyPropertyChanged();
+            }
         }
         private bool _bHIView;
 
         public bool bHIView
         {
             get { return _bHIView; }
-            set { SetProperty(ref _bHIView, value); }
+            set 
+            {
+                //SetProperty(ref _bHIView, value); 
+                _bHIView = value;
+                NotifyPropertyChanged();
+            }
         }
         private bool _bVAtDView;
 
         public bool bVAtDView
         {
             get { return _bVAtDView; }
-            set { SetProperty(ref _bVAtDView, value); }
+            set 
+            {
+                //SetProperty(ref _bVAtDView, value); 
+                _bVAtDView = value;
+                NotifyPropertyChanged();
+            }
         }
         private bool _bIHIView;
 
         public bool bIHIView
         {
             get { return _bIHIView; }
-            set { SetProperty(ref _bIHIView, value); }
+            set 
+            {
+                //SetProperty(ref _bIHIView, value); 
+                _bIHIView = value;
+                NotifyPropertyChanged();
+            }
         }
         private bool _bMGIView;
 
         public bool bMGIView
         {
             get { return _bMGIView; }
-            set { SetProperty(ref _bMGIView, value); }
+            set 
+            {
+                //SetProperty(ref _bMGIView, value); 
+                _bMGIView = value;
+                NotifyPropertyChanged();
+            }
         }
         private bool _bDSVView;
 
         public bool bDSVView
         {
             get { return _bDSVView; }
-            set { SetProperty(ref _bDSVView, value); }
+            set 
+            {
+                //SetProperty(ref _bDSVView, value); 
+                _bDSVView = value;
+                NotifyPropertyChanged();
+            }
         }
 
 
@@ -132,7 +176,8 @@ namespace PlanScoreCard.ViewModels
             get { return scoreCard; }
             set
             {
-                SetProperty(ref scoreCard, value);
+                scoreCard = value;
+                //SetProperty(ref scoreCard, value);
 
                 TemplateName = scoreCard.Name;
                 SelectedTreatmentSite = scoreCard.SiteGroup;
@@ -148,7 +193,12 @@ namespace PlanScoreCard.ViewModels
         public ObservableCollection<ScoreMetricModel> ScoreMetrics
         {
             get { return scoreMetrics; }
-            set { SetProperty(ref scoreMetrics, value); }
+            set 
+            {
+                //    SetProperty(ref scoreMetrics, value); 
+                scoreMetrics = value;
+                NotifyPropertyChanged();
+            }
         }
 
         // Selected ScoreMetric
@@ -159,7 +209,9 @@ namespace PlanScoreCard.ViewModels
             get { return selectedMetric; }
             set
             {
-                SetProperty(ref selectedMetric, value);
+                //SetProperty(ref selectedMetric, value);
+                selectedMetric = value;
+                NotifyPropertyChanged();
                 DeleteMetricCommand.RaiseCanExecuteChanged();
                 CopyMetricCommand.RaiseCanExecuteChanged();
                 MetricUpCommand.RaiseCanExecuteChanged();
@@ -282,7 +334,9 @@ namespace PlanScoreCard.ViewModels
                 {
                     KeepDictionaryStructure(SelectedScoreMetric.Structure, value.StructureId);
                 }
-                SetProperty(ref selectedStructure, value);
+                //SetProperty(ref selectedStructure, value);
+                selectedStructure = value;
+                NotifyPropertyChanged();
                 OpenDictionaryEditorCommand.RaiseCanExecuteChanged();
                 //&& String.IsNullOrWhiteSpace(SelectedScoreMetric.Structure.StructureId)
 
@@ -394,7 +448,9 @@ namespace PlanScoreCard.ViewModels
             get { return metricPointModels; }
             set
             {
-                SetProperty(ref metricPointModels, value);
+                //SetProperty(ref metricPointModels, value);
+                metricPointModels = value;
+                NotifyPropertyChanged();
 
                 //if (metricPointModels.Count() > 0)
                 //    SelectedMetricPointModel = metricPointModels.First();
@@ -409,7 +465,10 @@ namespace PlanScoreCard.ViewModels
             get { return selectedMetricPointModel; }
             set
             {
-                SetProperty(ref selectedMetricPointModel, value);
+                //SetProperty(ref selectedMetricPointModel, value);
+                selectedMetricPointModel = value;
+                NotifyPropertyChanged();
+
                 DeletePointCommand.RaiseCanExecuteChanged();
                 PointUpCommand.RaiseCanExecuteChanged();
                 PointDownCommand.RaiseCanExecuteChanged();
@@ -426,7 +485,12 @@ namespace PlanScoreCard.ViewModels
         public string TemplateAuthor
         {
             get { return templateAuthor; }
-            set { SetProperty(ref templateAuthor, value); }
+            set 
+            {
+                //SetProperty(ref templateAuthor, value);
+                templateAuthor = value;
+                NotifyPropertyChanged();
+            }
         }
         private double _dosePerFraction;
 
@@ -435,7 +499,10 @@ namespace PlanScoreCard.ViewModels
             get { return _dosePerFraction; }
             set
             {
-                SetProperty(ref _dosePerFraction, value);
+                //SetProperty(ref _dosePerFraction, value);
+                _dosePerFraction = value;
+                NotifyPropertyChanged();
+
                 if (DosePerFraction != ScoreCard.DosePerFraction)
                 {
                     ScoreCard.DosePerFraction = DosePerFraction;
@@ -450,7 +517,10 @@ namespace PlanScoreCard.ViewModels
             get { return _numberOfFractions; }
             set
             {
-                SetProperty(ref _numberOfFractions, value);
+                //SetProperty(ref _numberOfFractions, value);
+                _numberOfFractions = value;
+                NotifyPropertyChanged();
+
                 if (NumberOfFractions != ScoreCard.NumberOfFractions)
                 {
                     ScoreCard.NumberOfFractions = NumberOfFractions;
@@ -465,7 +535,9 @@ namespace PlanScoreCard.ViewModels
             get { return _totalDose; }
             set
             {
-                SetProperty(ref _totalDose, value);
+                //SetProperty(ref _totalDose, value);
+                _totalDose = value;
+                NotifyPropertyChanged();
 
             }
         }
@@ -477,7 +549,13 @@ namespace PlanScoreCard.ViewModels
         public string TemplateName
         {
             get { return templateName; }
-            set { SetProperty(ref templateName, value); }
+            set 
+            {
+                //SetProperty(ref templateName, value); 
+                templateName = value;
+                NotifyPropertyChanged();
+
+            }
         }
 
         // Selected Treatment Site
@@ -487,7 +565,13 @@ namespace PlanScoreCard.ViewModels
         public string SelectedTreatmentSite
         {
             get { return selectedTreatmentSite; }
-            set { SetProperty(ref selectedTreatmentSite, value); }
+            set 
+            {
+                //SetProperty(ref selectedTreatmentSite, value); 
+                selectedTreatmentSite = value;
+                NotifyPropertyChanged();
+
+            }
         }
 
         private string _metricComment;
@@ -497,7 +581,8 @@ namespace PlanScoreCard.ViewModels
             get { return _metricComment; }
             set
             {
-                SetProperty(ref _metricComment, value);
+                //SetProperty(ref _metricComment, value);
+                _metricComment = value;
                 SelectedScoreMetric.MetricComment = MetricComment;
 
             }
@@ -510,12 +595,19 @@ namespace PlanScoreCard.ViewModels
         public ObservableCollection<string> TreatmentSites
         {
             get { return treatmentSites; }
-            set { SetProperty(ref treatmentSites, value); }
+            set 
+            {
+                //SetProperty(ref treatmentSites, value);
+                treatmentSites = value;
+                NotifyPropertyChanged();
+
+            }
         }
 
         // ScorePoint Plot
         private ViewResolvingPlotModel scoreMetricPlotModel;
         private SimpleStructureBuilderView _builderView;
+
 
         public ViewResolvingPlotModel ScoreMetricPlotModel
         {
@@ -523,7 +615,8 @@ namespace PlanScoreCard.ViewModels
 
             set
             {
-                SetProperty(ref scoreMetricPlotModel, value);
+                scoreMetricPlotModel = value;
+                //SetProperty(ref scoreMetricPlotModel, value);
 
                 if (SelectedScoreMetric != null)
                     SelectedScoreMetric.SetPlotProperties(SelectedScoreMetric.MetricType);
@@ -593,6 +686,7 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<UpdateScroreMetricsEvent>().Subscribe(UpdateMetrics);
             EventAggregator.GetEvent<YesEvent>().Subscribe(OnDictionaryYes);
             EventAggregator.GetEvent<NoEvent>().Subscribe(OnDictionaryNo);
+            EventAggregator.GetEvent<UpdateScoreMetricCollectionEvent>().Subscribe(OnUpdateScoreMetricCollection);
             //commented because structures should be matched automatically on selection without requirement of dictionary being selected.
             //EventAggregator.GetEvent<StructureDictionaryAddedEvent>().Subscribe(UpdateStructuresBasedOnDictionary);
 
@@ -624,7 +718,26 @@ namespace PlanScoreCard.ViewModels
             Bind();
         }
 
+        private void OnUpdateScoreMetricCollection(StructureModel structure)
+        {
+            if (SelectedScoreMetric != null && selectedMetric.Structure == structure)
+            {
+                //var localScoreMetrics = ScoreMetrics.ToList();
+                //int selectedMetric = SelectedScoreMetric.Id;
+                //ScoreMetrics.Clear();
+                //foreach (var metric in localScoreMetrics)
+                //{
+                //    ScoreMetrics.Add(metric);
+                //}
+                //SelectedScoreMetric = ScoreMetrics.FirstOrDefault(sm=>sm.Id == selectedMetric);
+                //see if simply calling INotifyPropertyChanged on the Structure property of the Selected Metric will work. 
+                //SetProperty(ref selectedMetric.Structure, structure);
+                //selectedMetric.UpdateStructure(structure);
+                //NotifyPropertyChanged("ScoreMetrics");
+                SelectedScoreMetric.UpdateStructure(structure);
 
+            }
+        }
 
         private bool CanClearColor()
         {
@@ -1105,7 +1218,7 @@ namespace PlanScoreCard.ViewModels
             metricModel.CanReorder = false;
             metricModel.Id = selectedIndex + 1;
             metricModel.CanReorder = true;
-
+            metricModel.Structure = new StructureModel(EventAggregator);
 
             ScoreMetrics.Insert(selectedIndex + 1, metricModel);
             ReRankMetrics();
@@ -1335,6 +1448,14 @@ namespace PlanScoreCard.ViewModels
             {
                 bCIView = bDAtVView = bDValueView = bHIView = bVAtDView = bDSVView = bMGIView = false;
                 bIHIView = true;
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 

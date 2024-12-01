@@ -4,7 +4,6 @@ using OxyPlot.Series;
 using PlanScoreCard.Events;
 using PlanScoreCard.Services;
 using Prism.Events;
-using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,7 +13,7 @@ using System.Runtime.CompilerServices;
 
 namespace PlanScoreCard.Models
 {
-    public class ScoreMetricModel : BindableBase, INotifyPropertyChanged
+    public class ScoreMetricModel : INotifyPropertyChanged
     {
         public bool IsLoaded { get; set; }
 
@@ -29,7 +28,8 @@ namespace PlanScoreCard.Models
             get { return metricType; }
             set
             {
-                SetProperty(ref metricType, value);
+               // SetProperty(ref metricType, value);
+               metricType = value;
                 EventAggregator.GetEvent<UpdateMetricEditorEvent>().Publish();
                 UpdateMetricText();
                 ScoreMetricPlotModel.Title = PlanScorePlottingServices.GetPlotTitle(metricType, this);
@@ -45,7 +45,8 @@ namespace PlanScoreCard.Models
             get { return metricText; }
             set
             {
-                SetProperty(ref metricText, value);
+                metricText = value;
+                //SetProperty(ref metricText, value);
                 NotifyPropertyChanged();
             }
         }
@@ -119,6 +120,7 @@ namespace PlanScoreCard.Models
             get { return _id; }
             set
             {
+
                 int oldValue = _id;
                 int newValue = value;
 
@@ -129,7 +131,8 @@ namespace PlanScoreCard.Models
                     EventAggregator.GetEvent<MetricRankChangedEvent>().Publish(rankChange);
                 }
 
-                SetProperty(ref _id, value);
+               // SetProperty(ref _id, value);
+               _id = value;
                 NotifyPropertyChanged();
             }
         }
@@ -170,13 +173,17 @@ namespace PlanScoreCard.Models
                 
                 
                 EventAggregator.GetEvent<MetricStructureChangedEvent>().Publish();
-                SetProperty(ref structure, value);
+                //SetProperty(ref structure, value);
 
                 //if(IsLoaded)
                 //    Structure.TemplateStructureId = value.StructureId;
-
+                structure = value;
                 NotifyPropertyChanged();
             }
+        }
+        public void UpdateStructure(StructureModel structureModel)
+        {
+            NotifyPropertyChanged("Structure");
         }
         private string _metricComment;
 
@@ -185,7 +192,8 @@ namespace PlanScoreCard.Models
             get { return _metricComment; }
             set
             {
-                SetProperty(ref _metricComment, value);
+                _metricComment = value;
+                //SetProperty(ref _metricComment, value);
             }
         }
 
@@ -199,7 +207,8 @@ namespace PlanScoreCard.Models
         {
             get { return scorePoints; }
             set { 
-                SetProperty(ref scorePoints, value);
+                //SetProperty(ref scorePoints, value);
+                scorePoints = value;
                 DetermineIssue();
             }
         }
@@ -213,7 +222,8 @@ namespace PlanScoreCard.Models
             get { return scoreMetricPlotModel; }
             set
             {
-                SetProperty(ref scoreMetricPlotModel, value);
+                scoreMetricPlotModel = value;
+                //SetProperty(ref scoreMetricPlotModel, value);
                 NotifyPropertyChanged();
             }
         }
@@ -226,7 +236,8 @@ namespace PlanScoreCard.Models
             get { return inputValue; }
             set
             {
-                SetProperty(ref inputValue, value);
+                //SetProperty(ref inputValue, value);
+                inputValue = value;
                 UpdateMetricText();
                 ScoreMetricPlotModel.Title = PlanScorePlottingServices.GetPlotTitle(metricType, this);
                 NotifyPropertyChanged();
@@ -240,7 +251,8 @@ namespace PlanScoreCard.Models
             get { return inputUnit; }
             set
             {
-                SetProperty(ref inputUnit, value);
+                inputUnit = value;  
+                //SetProperty(ref inputUnit, value);
                 UpdateMetricText();
                 ScoreMetricPlotModel.Title = PlanScorePlottingServices.GetPlotTitle(metricType, this);
                 NotifyPropertyChanged();
@@ -254,7 +266,8 @@ namespace PlanScoreCard.Models
             get { return outputUnit; }
             set
             {
-                SetProperty(ref outputUnit, value);
+                outputUnit = value;
+               // SetProperty(ref outputUnit, value);
                 UpdateMetricText();
                 ScoreMetricPlotModel.Title = PlanScorePlottingServices.GetPlotTitle(metricType, this);
                 NotifyPropertyChanged();
@@ -265,7 +278,10 @@ namespace PlanScoreCard.Models
         public bool bIssue
         {
             get { return _bIssue; }
-            set { SetProperty(ref _bIssue,value); }
+            set { 
+                _bIssue = value;
+                //SetProperty(ref _bIssue,value); 
+            }
         }
 
         public string HI_Hi { get; internal set; }

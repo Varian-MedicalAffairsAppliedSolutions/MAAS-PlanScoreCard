@@ -785,9 +785,72 @@ namespace PlanScoreCard.ViewModels
 
         private void OnPrintReport()
         {
-            var fd = new FlowDocument() { FontSize = 12, FontFamily = new System.Windows.Media.FontFamily("Franklin Gothic") };
+            var fd = new FlowDocument() { FontSize = 12, FontFamily = new System.Windows.Media.FontFamily("Calibri") };
             fd.Blocks.Add(new Paragraph(new Run($"Scorecard: {ScoreCard.Name} - {ScoreCard.SiteGroup}")) { TextAlignment = System.Windows.TextAlignment.Center });
-            fd.Blocks.Add(new Paragraph(new Run($"Summary: {ScoreTotalText}")));
+            fd.Blocks.Add(new Paragraph(new Run($"Summary: \n{ScoreTotalText}")));
+            var headerGrid = new System.Windows.Controls.Grid();
+            var h1 = new System.Windows.Controls.ColumnDefinition();
+            h1.Width = new System.Windows.GridLength(16.5, System.Windows.GridUnitType.Star);
+            var h2 = new System.Windows.Controls.ColumnDefinition();
+            h2.Width = new System.Windows.GridLength(5, System.Windows.GridUnitType.Star);
+            headerGrid.ColumnDefinitions.Add(h1);
+            headerGrid.ColumnDefinitions.Add(h2);
+            var innerHeader = new System.Windows.Controls.Grid();
+            var i1 = new System.Windows.Controls.ColumnDefinition();
+            i1.Width = new System.Windows.GridLength(2, System.Windows.GridUnitType.Star);
+            var i2 = new System.Windows.Controls.ColumnDefinition();
+            i2.Width = new System.Windows.GridLength(2, System.Windows.GridUnitType.Star);
+            var i3 = new System.Windows.Controls.ColumnDefinition();
+            i3.Width = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+            var i4 = new System.Windows.Controls.ColumnDefinition();
+            i4.Width = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+            var i5 = new System.Windows.Controls.ColumnDefinition();
+            i5.Width = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+            var i6 = new System.Windows.Controls.ColumnDefinition();
+            i6.Width = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+            innerHeader.ColumnDefinitions.Add(i1);
+            innerHeader.ColumnDefinitions.Add(i2);
+            innerHeader.ColumnDefinitions.Add(i3);
+            innerHeader.ColumnDefinitions.Add(i4);
+            innerHeader.ColumnDefinitions.Add(i5);
+            innerHeader.ColumnDefinitions.Add(i6);
+            System.Windows.Controls.TextBlock t1 = new System.Windows.Controls.TextBlock { FontWeight = System.Windows.FontWeights.Bold, Text = "Structure",
+            HorizontalAlignment = System.Windows.HorizontalAlignment.Center };
+            System.Windows.Controls.Grid.SetColumn(t1, 0);
+            System.Windows.Controls.TextBlock t2 = new System.Windows.Controls.TextBlock { FontWeight = System.Windows.FontWeights.Bold, Text = "Patient",
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Center
+            };
+            System.Windows.Controls.Grid.SetColumn(t2, 1);
+
+            System.Windows.Controls.TextBlock t3 = new System.Windows.Controls.TextBlock { FontWeight = System.Windows.FontWeights.Bold, Text = "Plan",
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Center
+            };
+            System.Windows.Controls.Grid.SetColumn(t3, 2);
+
+            System.Windows.Controls.TextBlock t4 = new System.Windows.Controls.TextBlock { FontWeight = System.Windows.FontWeights.Bold, Text = "Value",
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Center
+            };
+            System.Windows.Controls.Grid.SetColumn(t4, 3);
+
+            System.Windows.Controls.TextBlock t5 = new System.Windows.Controls.TextBlock { FontWeight = System.Windows.FontWeights.Bold, Text = "Score",
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Center
+            };
+            System.Windows.Controls.Grid.SetColumn(t5, 4);
+
+            System.Windows.Controls.TextBlock t6 = new System.Windows.Controls.TextBlock { FontWeight = System.Windows.FontWeights.Bold, Text = "Max",
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Center
+            };
+            System.Windows.Controls.Grid.SetColumn(t6, 5);
+            innerHeader.Children.Add(t1);
+            innerHeader.Children.Add(t2);
+            innerHeader.Children.Add(t3);
+            innerHeader.Children.Add(t4);
+            innerHeader.Children.Add(t5);
+            innerHeader.Children.Add(t6);
+            
+            //var r1 = new System.Windows.Controls.RowDefinition();
+            headerGrid.Children.Add(innerHeader);
+            fd.Blocks.Add(new BlockUIContainer(headerGrid));
             foreach (var score in PlanScores)
             {
                 if (!score.bPrintComment)
@@ -803,6 +866,7 @@ namespace PlanScoreCard.ViewModels
                 grid.ColumnDefinitions.Add(col1);
                 grid.ColumnDefinitions.Add(col2);
                 System.Windows.Controls.Grid.SetColumn(scv, 0);
+                //System.Windows.Controls.Grid.SetColumnSpan(scv, 2);
                 var innerGrid = new System.Windows.Controls.Grid();
                 var row1 = new System.Windows.Controls.RowDefinition();
                 row1.Height = new System.Windows.GridLength(3, System.Windows.GridUnitType.Star);

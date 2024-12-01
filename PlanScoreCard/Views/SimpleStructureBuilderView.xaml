@@ -39,8 +39,8 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel>
-                <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Text="Base Structure" FontSize="14"/>
-                <Button Command="{Binding AddBaseCommand}" Content="Add Base" Margin="5"/>
+                <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Text="Structure" FontSize="14"/>
+                <Button Command="{Binding AddBaseCommand}" Content="Add" Margin="5"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Bottom">
                 <Button Command="{Binding BaseDownCommand}" Width="40" Height="30" Margin="4">
@@ -92,8 +92,8 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel>
-                <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Text="Target Structure" FontSize="14"/>
-                <Button Command="{Binding AddTargetCommand}" Content="Add Target" Margin="5"/>
+                <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Text="Structure" FontSize="14"/>
+                <Button Command="{Binding AddTargetCommand}" Content="Add" Margin="5"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Bottom">
                 <Button Command="{Binding TargetDownCommand}" Width="40" Height="30" Margin="4">
@@ -168,8 +168,8 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel>
-                <TextBlock Text="Additional Structures" FontSize="14" HorizontalAlignment="Center" FontWeight="Bold"/>
-                <Button Command="{Binding AddComboCommand}" Content="Add Structure" Margin="5"/>
+                <TextBlock Text="Structures" FontSize="14" HorizontalAlignment="Center" FontWeight="Bold"/>
+                <Button Command="{Binding AddComboCommand}" Content="Add" Margin="5"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Bottom">
                 <Button Command="{Binding ComboDownCommand}" Width="40" Height="30" Margin="4">

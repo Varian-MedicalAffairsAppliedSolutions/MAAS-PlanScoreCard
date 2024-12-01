@@ -154,6 +154,7 @@
     <Compile Include="Converters\PrimaryForegroundConverter.cs" />
     <Compile Include="Converters\PrimaryToColorConverter.cs" />
     <Compile Include="Converters\ScoreToTextConverter.cs" />
+    <Compile Include="Converters\StructureColorConverter.cs" />
     <Compile Include="Converters\StructureToBoldConverter.cs" />
     <Compile Include="Converters\StructureToStructureDisplayNameConverter.cs" />
     <Compile Include="Events\AddScorePointEvent.cs" />
@@ -225,6 +226,7 @@
     <Compile Include="Events\UpdateMetricEditorEvent.cs" />
     <Compile Include="Events\UpdateScorePointGridEvent.cs" />
     <Compile Include="Events\UpdateScroreMetricsEvent.cs" />
+    <Compile Include="Events\UpdateScoreMetricCollectionEvent.cs" />
     <Compile Include="Events\VariationCheckedEvent.cs" />
     <Compile Include="Models\BuildStructureGroupModel.cs" />
     <Compile Include="Models\BuildStructureGroupStepModel.cs" />

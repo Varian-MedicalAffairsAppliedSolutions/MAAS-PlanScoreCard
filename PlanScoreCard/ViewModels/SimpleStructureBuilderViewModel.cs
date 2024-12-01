@@ -239,10 +239,10 @@ namespace PlanScoreCard.ViewModels
             string operationSaver = String.Empty;
             foreach (var group in structureGroups)//.OrderByDescending(x => x.groupDepth).ThenBy(x => x.groupNum))
             {
-                if (category == 1)
-                {
-                    SelectedStructureOperation = operationSaver;
-                }
+                //if (category == 1)
+                //{
+                //    SelectedStructureOperation = operationSaver;
+                //}
                 int stepCount = 0;
                 switch (category)
                 {
@@ -251,8 +251,10 @@ namespace PlanScoreCard.ViewModels
                         break;
                     case 1:
                         stepCount = TargetSteps.Count;
+                        SelectedStructureOperation = operationSaver;
                         break;
                     case 2:
+                        SelectedComboOperation = operationSaver;
                         stepCount = ComboSteps.Count;
                         break;
                 }

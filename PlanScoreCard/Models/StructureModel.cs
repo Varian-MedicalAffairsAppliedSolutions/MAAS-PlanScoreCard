@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PlanScoreCard.Events;
 using PlanScoreCard.Events.HelperWindows;
 using PlanScoreCard.Models.ModelHelpers;
 using PlanScoreCard.Services;
@@ -56,8 +57,17 @@ namespace PlanScoreCard.Models
             get { return templateStructureId; }
             set
             {
+                //if (!String.IsNullOrEmpty(TemplateStructureId) && !String.IsNullOrEmpty(StructureId) && TemplateStructureId != StructureId && _eventAggregator!=null)
+                //{
+                //all this event does is call a NotifyPropertyChanged for the SelectedScoreMetric in an attempt to update the text.
+               
+                //}
                 templateStructureId = value;
                 NotifyPropertyChanged();
+                if (_eventAggregator != null)
+                {
+                    _eventAggregator.GetEvent<UpdateScoreMetricCollectionEvent>().Publish(this);
+                }
             }
         }
 
