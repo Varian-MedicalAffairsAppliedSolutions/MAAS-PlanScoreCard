@@ -19,7 +19,7 @@ jobs:
     env:
       GITHUB_WORKSPACE_PACKAGES_PATH: ..\packages\ESAPI.15.6.0\lib\net45\
       PROJECT_NAME: PlanScoreCard
-      PROJECT_ROOT: ${{ github.workspace }}/PlanScoreCard
+      PROJECT_ROOT: ${{ github.workspace }}
       CSPROJ_FILE_NAME: PlanScoreCard.csproj
       SOLUTION_NAME: PlanScoreCard.sln
       BUILD_NUMBER: ${{ github.run_number }}
@@ -40,7 +40,7 @@ jobs:
       id: update_assembly_info
       run: |
         .\.github\workflows\Update-AssemblyInfo.ps1 `
-          -AssemblyInfoFilePath ${{ env.PROJECT_ROOT }}/Properties/AssemblyInfo.cs `
+          -AssemblyInfoFilePath ${{ env.PROJECT_ROOT }}/PlanScoreCard/Properties/AssemblyInfo.cs `
           -ExpirationDate "${{ github.event.inputs.dateInput }}" `
           -BuildNumber ${{ env.BUILD_NUMBER }} `
           -ProjectName ${{ env.PROJECT_NAME }}
@@ -51,10 +51,10 @@ jobs:
         nuget-version: latest
 
     - name: Download nuget packages
-      run: nuget install ${{ github.workspaces }}\ScorecardVisualizer\packages.config -OutputDirectory packages
+      run: nuget install ${{ env.PROJECT_ROOT }}/ScorecardVisualizer/packages.config -OutputDirectory packages
       
     - name: Download nuget packages
-      run: nuget install ${{ env.PROJECT_ROOT }}/packages.config -OutputDirectory packages
+      run: nuget install ${{ env.PROJECT_ROOT }}/PlanScoreCard/packages.config -OutputDirectory packages
         
     - name: Add VIC GitHub NuGet repository
       run: nuget source add `
@@ -70,7 +70,7 @@ jobs:
     - name: Update hint paths in the csproj file
       run: |
         .\.github\workflows\Update-EsapiHintPaths.ps1 `
-        -CsprojFilePath ${{ env.PROJECT_ROOT }} `
+        -CsprojFilePath ${{ env.PROJECT_ROOT }}/PlanScoreCard `
         -CsprojFileName ${{ env.CSPROJ_FILE_NAME }}
 
     - name: Build Visualizer
