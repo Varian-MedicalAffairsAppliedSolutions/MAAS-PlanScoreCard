@@ -91,7 +91,7 @@ jobs:
       run: |
         $normalizedFilePath = "${{ github.workspace }}\V15.6-${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}.zip" -replace '\\', '/'
         
-        Get-ChildItem -Path "${{ env.PROJECT_ROOT }}\bin\x64\Release\*" -Recurse |
+        Get-ChildItem -Path "${{ env.PROJECT_ROOT }}\PlanScoreCard\bin\x64\Release\*" -Recurse |
           Compress-Archive -DestinationPath $normalizedFilePath
         
         "NORMALIZED_FILE_PATH=$($normalizedFilePath)" >> $env:GITHUB_OUTPUT
