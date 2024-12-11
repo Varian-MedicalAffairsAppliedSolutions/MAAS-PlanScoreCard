@@ -19,8 +19,9 @@ jobs:
     env:
       GITHUB_WORKSPACE_PACKAGES_PATH: ..\packages\ESAPI.16.1.0\lib\net461\
       PROJECT_NAME: PlanScoreCard
-      PROJECT_ROOT: ${{ github.workspace }}/PlanScoreCard
+      PROJECT_ROOT: ${{ github.workspace }}
       CSPROJ_FILE_NAME: PlanScoreCard.csproj
+      VIS_FILE_NAME: ScorecardVisualizer.csproj
       SOLUTION_NAME: PlanScoreCard.sln
       BUILD_NUMBER: ${{ github.run_number }}
 
@@ -40,7 +41,7 @@ jobs:
       id: update_assembly_info
       run: |
         .\.github\workflows\Update-AssemblyInfo.ps1 `
-          -AssemblyInfoFilePath ${{ env.PROJECT_ROOT }}/Properties/AssemblyInfo.cs `
+          -AssemblyInfoFilePath ${{ env.PROJECT_ROOT }}/PlanScoreCard/Properties/AssemblyInfo.cs `
           -ExpirationDate "${{ github.event.inputs.dateInput }}" `
           -BuildNumber ${{ env.BUILD_NUMBER }} `
           -ProjectName ${{ env.PROJECT_NAME }}
@@ -56,9 +57,11 @@ jobs:
       uses: NuGet/setup-nuget@v1
       with:
         nuget-version: latest
-        
+
+    - name: Download nuget packages Visualizer
+      run: nuget install ${{ env.PROJECT_ROOT }}/ScorecardVisualizer/packages.config -OutputDirectory packages        
     - name: Download nuget packages
-      run: nuget install ${{ env.PROJECT_ROOT }}/packages.config -OutputDirectory packages
+      run: nuget install ${{ env.PROJECT_ROOT }}/PlanScoreCard/packages.config -OutputDirectory packages
         
     - name: Add VIC GitHub NuGet repository
       run: nuget source add `
@@ -71,10 +74,15 @@ jobs:
     - name: Download internal ESAPI nuget package
       run: nuget install ESAPI -Version 16.1.0 -OutputDirectory packages
 
+    - name: Update hint paths in the Scorecard Visualizer csproj file
+      run: |
+        .\.github\workflows\Update-EsapiHintPaths.ps1 `
+        -CsprojFilePath ${{ env.PROJECT_ROOT }}/ScorecardVisualizer `
+        -CsprojFileName ${{ env.VIS_FILE_NAME }}
     - name: Update hint paths in the csproj file
       run: |
         .\.github\workflows\Update-EsapiHintPaths.ps1 `
-        -CsprojFilePath ${{ env.PROJECT_ROOT }} `
+        -CsprojFilePath ${{ env.PROJECT_ROOT }}/PlanScoreCard `
         -CsprojFileName ${{ env.CSPROJ_FILE_NAME }}
         
     - name: Build Solution
@@ -85,7 +93,7 @@ jobs:
       run: |
         $normalizedFilePath = "${{ github.workspace }}\V16.1-${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}.zip" -replace '\\', '/'
         
-        Get-ChildItem -Path "${{ env.PROJECT_ROOT }}\bin\x64\Release\*" -Recurse |
+        Get-ChildItem -Path "${{ env.PROJECT_ROOT }}/PlanScoreCard\bin\x64\Release\*" -Recurse |
           Compress-Archive -DestinationPath $normalizedFilePath
         
         "NORMALIZED_FILE_PATH=$($normalizedFilePath)" >> $env:GITHUB_OUTPUT
