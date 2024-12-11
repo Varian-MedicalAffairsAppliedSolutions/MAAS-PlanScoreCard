@@ -21,6 +21,7 @@ jobs:
       PROJECT_NAME: PlanScoreCard
       PROJECT_ROOT: ${{ github.workspace }}
       CSPROJ_FILE_NAME: PlanScoreCard.csproj
+      VIS_FILE_NAME: ScorecardVisualizer.csproj
       SOLUTION_NAME: PlanScoreCard.sln
       BUILD_NUMBER: ${{ github.run_number }}
 
@@ -50,7 +51,7 @@ jobs:
       with:
         nuget-version: latest
 
-    - name: Download nuget packages
+    - name: Download nuget packages Visualizer
       run: nuget install ${{ env.PROJECT_ROOT }}/ScorecardVisualizer/packages.config -OutputDirectory packages
       
     - name: Download nuget packages
@@ -67,6 +68,12 @@ jobs:
     - name: Download internal ESAPI nuget package
       run: nuget install ESAPI -Version 15.6.0 -OutputDirectory packages
 
+    - name: Update hint paths in the Scorecard Visualizer csproj file
+      run: |
+        .\.github\workflows\Update-EsapiHintPaths.ps1 `
+        -CsprojFilePath ${{ env.PROJECT_ROOT }}/ScorecardVisualizer `
+        -CsprojFileName ${{ env.VIS_FILE_NAME }}
+        
     - name: Update hint paths in the csproj file
       run: |
         .\.github\workflows\Update-EsapiHintPaths.ps1 `
