@@ -49,7 +49,14 @@ jobs:
     - name: Update Target Framework Version to 4.6.1
       uses: Nambers/ReplaceStringInFile@v1.1
       with:
-        path: ${{ env.PROJECT_ROOT }}/${{ env.CSPROJ_FILE_NAME }}
+        path: ${{ env.PROJECT_ROOT }}/PlanScoreCard/${{ env.CSPROJ_FILE_NAME }}
+        oldString: "TargetFrameworkVersion>v[\\d\\.]+<"
+        newString: 'TargetFrameworkVersion>v4.6.1<'
+
+    - name: Update Visualizer Target Framework Version to 4.6.1
+      uses: Nambers/ReplaceStringInFile@v1.1
+      with:
+        path: ${{ env.PROJECT_ROOT }}/ScorecardVisualizer/ScorecardVisualizer.csproj
         oldString: "TargetFrameworkVersion>v[\\d\\.]+<"
         newString: 'TargetFrameworkVersion>v4.6.1<'
 
