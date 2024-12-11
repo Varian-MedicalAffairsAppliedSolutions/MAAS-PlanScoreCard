@@ -49,7 +49,10 @@ jobs:
       uses: NuGet/setup-nuget@v1
       with:
         nuget-version: latest
-        
+
+    - name: Download nuget packages
+      run: nuget install ${{ github.workspaces }}/ScorecardVisualizer/packages.config -OutputDirectory packages
+      
     - name: Download nuget packages
       run: nuget install ${{ env.PROJECT_ROOT }}/packages.config -OutputDirectory packages
         
@@ -71,7 +74,7 @@ jobs:
         -CsprojFileName ${{ env.CSPROJ_FILE_NAME }}
 
     - name: Build Visualizer
-      run: msbuild.exe ${{ env.SOLUTION_NAME }}\ScorecardVisualizer.csproj /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="x64" /p:configuration="Release"
+      run: msbuild.exe ${{ github.workspace }}/ScorecardVisualizer/ScorecardVisualizer.csproj /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="x64" /p:configuration="Release"
       
     - name: Build Solution
       run: msbuild.exe ${{ env.SOLUTION_NAME }} /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="x64" /p:configuration="Release"
