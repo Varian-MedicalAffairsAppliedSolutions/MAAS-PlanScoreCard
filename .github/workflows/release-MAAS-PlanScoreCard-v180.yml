@@ -19,8 +19,9 @@ jobs:
     env:
       GITHUB_WORKSPACE_PACKAGES_PATH: ..\packages\ESAPI.18.0.0.1\lib\net48\
       PROJECT_NAME: PlanScoreCard
-      PROJECT_ROOT: ${{ github.workspace }}/PlanScoreCard
+      PROJECT_ROOT: ${{ github.workspace }}
       CSPROJ_FILE_NAME: PlanScoreCard.csproj
+      VIS_FILE_NAME: ScorecardVisualizer.csproj
       SOLUTION_NAME: PlanScoreCard.sln
       BUILD_NUMBER: ${{ github.run_number }}
 
@@ -48,7 +49,14 @@ jobs:
     - name: Update Target Framework Version to 4.8
       uses: Nambers/ReplaceStringInFile@v1.1
       with:
-        path: ${{ env.PROJECT_ROOT }}/${{ env.CSPROJ_FILE_NAME }}
+        path: ${{ env.PROJECT_ROOT }}/PlanScoreCard/${{ env.CSPROJ_FILE_NAME }}
+        oldString: "TargetFrameworkVersion>v[\\d\\.]+<"
+        newString: 'TargetFrameworkVersion>v4.8<'
+
+    - name: Update Scorecard Visualizer Target Framework Version to 4.8
+      uses: Nambers/ReplaceStringInFile@v1.1
+      with:
+        path: ${{ env.PROJECT_ROOT }}/ScorecardVisualizer/ScorecardVisualizer.csproj
         oldString: "TargetFrameworkVersion>v[\\d\\.]+<"
         newString: 'TargetFrameworkVersion>v4.8<'
 
@@ -58,7 +66,10 @@ jobs:
         nuget-version: latest
         
     - name: Download nuget packages
-      run: nuget install ${{ env.PROJECT_ROOT }}/packages.config -OutputDirectory packages
+      run: nuget install ${{ env.PROJECT_ROOT }}/PlanScoreCard/packages.config -OutputDirectory packages
+      
+    - name: Download nuget packages scorecard visualizer
+      run: nuget install ${{ env.PROJECT_ROOT }}/ScorecardVisualizer/packages.config -OutputDirectory packages
         
     - name: Add VIC GitHub NuGet repository
       run: nuget source add `
@@ -74,8 +85,14 @@ jobs:
     - name: Update hint paths in the csproj file
       run: |
         .\.github\workflows\Update-EsapiHintPaths.ps1 `
-        -CsprojFilePath ${{ env.PROJECT_ROOT }} `
+        -CsprojFilePath ${{ env.PROJECT_ROOT }}/PlanScoreCard `
         -CsprojFileName ${{ env.CSPROJ_FILE_NAME }}
+
+    - name: Update hint paths in the visualizer csproj file
+      run: |
+        .\.github\workflows\Update-EsapiHintPaths.ps1 `
+        -CsprojFilePath ${{ env.PROJECT_ROOT }}/ScorecardVisualizer `
+        -CsprojFileName ${{ env.VIS_FILE_NAME }}
         
     - name: Build Solution
       run: msbuild.exe ${{ env.SOLUTION_NAME }} /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="x64" /p:configuration="Release"
@@ -85,7 +102,7 @@ jobs:
       run: |
         $normalizedFilePath = "${{ github.workspace }}\V18.0-${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}.zip" -replace '\\', '/'
         
-        Get-ChildItem -Path "${{ env.PROJECT_ROOT }}\bin\x64\Release\*" -Recurse |
+        Get-ChildItem -Path "${{ env.PROJECT_ROOT }}/PlanScoreCard\bin\x64\Release\*" -Recurse |
           Compress-Archive -DestinationPath $normalizedFilePath
         
         "NORMALIZED_FILE_PATH=$($normalizedFilePath)" >> $env:GITHUB_OUTPUT
