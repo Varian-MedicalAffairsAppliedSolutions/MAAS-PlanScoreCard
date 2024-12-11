@@ -80,9 +80,6 @@ jobs:
         -CsprojFilePath ${{ env.PROJECT_ROOT }}/PlanScoreCard `
         -CsprojFileName ${{ env.CSPROJ_FILE_NAME }}
 
-    - name: Build Visualizer
-      run: msbuild.exe ${{ github.workspace }}\ScorecardVisualizer\ScorecardVisualizer.csproj /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="x64" /p:configuration="Release"
-      
     - name: Build Solution
       run: msbuild.exe ${{ env.SOLUTION_NAME }} /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="x64" /p:configuration="Release"
 
