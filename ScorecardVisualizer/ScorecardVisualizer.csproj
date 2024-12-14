@@ -80,8 +80,8 @@
     <Reference Include="OxyPlot.Wpf, Version=2.0.0.0, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
       <HintPath>..\packages\OxyPlot.Wpf.2.0.0\lib\net45\OxyPlot.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="PlanScoreCard.API, Version=1.0.0.1, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\PlanScoreCard.API.1.0.0.1\lib\net452\PlanScoreCard.API.dll</HintPath>
+    <Reference Include="PlanScoreCard.API, Version=1.1.0.2, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\PlanScoreCard.API.1.1.0.2\lib\net452\PlanScoreCard.API.dll</HintPath>
     </Reference>
     <Reference Include="ReachFramework" />
     <Reference Include="System" />
