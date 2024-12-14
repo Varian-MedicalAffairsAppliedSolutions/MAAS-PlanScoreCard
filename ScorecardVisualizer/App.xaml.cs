@@ -2,7 +2,9 @@
 using ScorecardVisualizer.ViewModels;
 using ScorecardVisualizer.Views;
 using System.Windows;
+using vms = VMS.TPS.Common.Model.API;
 
+[assembly:vms.ESAPIScript(IsWriteable = true)]
 namespace ScorecardVisualizer
 {
     /// <summary>
