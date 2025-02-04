@@ -18,17 +18,61 @@ namespace VMS.TPS
         {
             try
             {
+                //Context validation checks
+                if (context.Patient == null)
+                {
+                    MessageBox.Show("Error: No plan is loaded. Please open a plan before running this script.",
+                                    "Patient Context Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                if (context.Course == null)
+                {
+                    MessageBox.Show("Error: No plan is loaded. Please open a plan before running this script.",
+                                    "Course Context Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                if (context.PlanSetup == null)
+                {
+                    MessageBox.Show("Error: No plan is loaded. Please open a plan before running this script.",
+                                    "Plan Context Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                //Prepare and launch application
                 string launcherPath = Path.GetDirectoryName(GetSourceFilePath());
                 //string esapiStandaloneExecutable = @"SubDirectory/PlanScoreCard.exe";
                 string esapiStandaloneExecutable = @"PlanScoreCard.exe";
-                string arguments = context.PlanSetup == null
-                                    ? string.Format("\"{0};{1};\"", context.Patient.Id, context.Course.Id)
-                                    : string.Format("\"{0};{1};{2}\"", context.Patient.Id, context.Course.Id, context.PlanSetup.Id);
-                Process.Start(Path.Combine(launcherPath, esapiStandaloneExecutable), arguments);
+                // Constructs the arguments for the executable
+                string arguments = string.Format("\"{0};{1};{2}\"",
+                    context.Patient.Id,
+                    context.Course.Id,
+                    context.PlanSetup.Id);
+
+                // Validates the executable path
+                string executablePath = Path.Combine(launcherPath, esapiStandaloneExecutable);
+                if (!File.Exists(executablePath))
+                {
+                    MessageBox.Show(string.Format("Error: The executable '{0}' was not found at '{1}'.", esapiStandaloneExecutable, launcherPath),
+                                    "Executable Not Found", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                // Starts the process
+                Process process = Process.Start(executablePath, arguments);
+                if (process == null)
+                {
+                    throw new ApplicationException("Failed to start the application process.");
+                }
             }
-            catch (Exception)
+            catch (ApplicationException appEx)
             {
-                MessageBox.Show("Failed to start application.");
+                MessageBox.Show(string.Format("Application Error: {0}", appEx.Message), "Application Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(string.Format("Unexpected Error: {0}", ex.Message), "Unexpected Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
