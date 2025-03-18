@@ -195,8 +195,11 @@ namespace PlanScoreCard.Services
                 {
                     //linearly interpolate. 
                     var pbefore = scorePoints.OrderBy(x => x.PointX).LastOrDefault(x => x.PointX <= value);
-                    var pafter = scorePoints.OrderBy(x => x.PointX).First(x => x.PointX >= value);
+                    var pafter = scorePoints.OrderBy(x => x.PointX).FirstOrDefault(x => x.PointX >= value);
+                    if (pbefore == null && pafter == null) { return 0; }
                     //cannot linear interpolate if values are the same. 
+                    if (pbefore == null) { return (double)pafter.Score; }
+                    if (pafter == null) { return (double)pbefore.Score; }
                     if (Math.Abs(pbefore.PointX - pafter.PointX) < 0.01)
                     {
                         return (double)pbefore.Score;
@@ -218,7 +221,10 @@ namespace PlanScoreCard.Services
                 {
                     //linearly interpolate. 
                     var pbefore = scorePoints.OrderBy(x => x.PointX).LastOrDefault(x => x.PointX <= value);
-                    var pafter = scorePoints.OrderBy(x => x.PointX).First(x => x.PointX >= value);
+                    var pafter = scorePoints.OrderBy(x => x.PointX).FirstOrDefault(x => x.PointX >= value);
+                    if(pbefore == null && pafter == null) { return 0; }
+                    if (pbefore == null) { return (double)pafter.Score; }
+                    if (pafter == null) { return (double)pbefore.Score; }
                     //cannot linear interpolate if values are the same. 
                     if (Math.Abs(pbefore.PointX - pafter.PointX) < 0.01)
                     {

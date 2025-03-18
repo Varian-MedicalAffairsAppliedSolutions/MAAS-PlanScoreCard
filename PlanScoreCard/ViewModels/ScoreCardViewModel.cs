@@ -533,18 +533,18 @@ namespace PlanScoreCard.ViewModels
                 var currentPlanScore = PlanScores.FirstOrDefault(ps => ps.MetricId == scoreValue.MetricId);
                 //foreach (var scoreValue in planScore)//there should only ever be one scoreValue in this list because normalization plugin only works on one plan at at time.
                 //{
-                    //remove the old scoreValue
-                    if (currentPlanScore.ScoreValues.Any(sv => sv.PlanId == scoreValue.PlanId && sv.CourseId == scoreValue.CourseId))
-                    {
-                        currentPlanScore.ScoreValues.Remove(
-                            currentPlanScore.ScoreValues.FirstOrDefault(sv => sv.PlanId == scoreValue.PlanId && sv.CourseId == scoreValue.CourseId));
-                    }
-                    //get current planscore.
-                    //add the new scorevalue
-                    currentPlanScore.ScoreValues.Add(scoreValue);
-                    //plot the new scorevalue positions
-                    currentPlanScore.AddPointToPlotModel(currentPlanScore.MetricId, scoreValue);
-                    //planScore.UpdateScorePlotModel();
+                //remove the old scoreValue
+                if (currentPlanScore.ScoreValues.Any(sv => sv.PlanId == scoreValue.PlanId && sv.CourseId == scoreValue.CourseId))
+                {
+                    currentPlanScore.ScoreValues.Remove(
+                        currentPlanScore.ScoreValues.FirstOrDefault(sv => sv.PlanId == scoreValue.PlanId && sv.CourseId == scoreValue.CourseId));
+                }
+                //get current planscore.
+                //add the new scorevalue
+                currentPlanScore.ScoreValues.Add(scoreValue);
+                //plot the new scorevalue positions
+                currentPlanScore.AddPointToPlotModel(currentPlanScore.MetricId, scoreValue);
+                //planScore.UpdateScorePlotModel();
                 //}
                 //PlanScores.Add(planScore);
             }
@@ -617,6 +617,28 @@ namespace PlanScoreCard.ViewModels
         private void OnUpdatePatientPlans(List<PatientPlanSearchModel> obj)
         {
             _patientId = String.Empty;
+            //here you should re-assign the primary if required.
+            if (Plans.Any(pl => pl.bPrimary))
+            {
+                var primaryPlan = Plans.First(pl => pl.bPrimary);
+                if (obj.Any(o => o.PatientId == primaryPlan.PatientId))
+                {
+                    var patientModel = obj.First(o => o.PatientId == primaryPlan.PatientId);
+                    if (patientModel.Plans.Any(pl => pl.CourseId == primaryPlan.CourseId && pl.PlanId == primaryPlan.PlanId))
+                    {
+                        var planModel = patientModel.Plans.First(pl => pl.CourseId == primaryPlan.CourseId && pl.PlanId == primaryPlan.PlanId);
+                        if (planModel.bSelected)
+                        {
+                            planModel.bPrimary = true;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                //you still need something to be primary.
+                obj.First(o => o.Plans.Any(pl => pl.bSelected)).Plans.First(pl => pl.bSelected).bPrimary = true;
+            }
             Plans.Clear();
             _scoreValueCache.Clear();
             foreach (var planSearchModel in obj)
@@ -814,30 +836,49 @@ namespace PlanScoreCard.ViewModels
             innerHeader.ColumnDefinitions.Add(i4);
             innerHeader.ColumnDefinitions.Add(i5);
             innerHeader.ColumnDefinitions.Add(i6);
-            System.Windows.Controls.TextBlock t1 = new System.Windows.Controls.TextBlock { FontWeight = System.Windows.FontWeights.Bold, Text = "Structure",
-            HorizontalAlignment = System.Windows.HorizontalAlignment.Center };
+            System.Windows.Controls.TextBlock t1 = new System.Windows.Controls.TextBlock
+            {
+                FontWeight = System.Windows.FontWeights.Bold,
+                Text = "Structure",
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Center
+            };
             System.Windows.Controls.Grid.SetColumn(t1, 0);
-            System.Windows.Controls.TextBlock t2 = new System.Windows.Controls.TextBlock { FontWeight = System.Windows.FontWeights.Bold, Text = "Patient",
+            System.Windows.Controls.TextBlock t2 = new System.Windows.Controls.TextBlock
+            {
+                FontWeight = System.Windows.FontWeights.Bold,
+                Text = "Patient",
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Center
             };
             System.Windows.Controls.Grid.SetColumn(t2, 1);
 
-            System.Windows.Controls.TextBlock t3 = new System.Windows.Controls.TextBlock { FontWeight = System.Windows.FontWeights.Bold, Text = "Plan",
+            System.Windows.Controls.TextBlock t3 = new System.Windows.Controls.TextBlock
+            {
+                FontWeight = System.Windows.FontWeights.Bold,
+                Text = "Plan",
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Center
             };
             System.Windows.Controls.Grid.SetColumn(t3, 2);
 
-            System.Windows.Controls.TextBlock t4 = new System.Windows.Controls.TextBlock { FontWeight = System.Windows.FontWeights.Bold, Text = "Value",
+            System.Windows.Controls.TextBlock t4 = new System.Windows.Controls.TextBlock
+            {
+                FontWeight = System.Windows.FontWeights.Bold,
+                Text = "Value",
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Center
             };
             System.Windows.Controls.Grid.SetColumn(t4, 3);
 
-            System.Windows.Controls.TextBlock t5 = new System.Windows.Controls.TextBlock { FontWeight = System.Windows.FontWeights.Bold, Text = "Score",
+            System.Windows.Controls.TextBlock t5 = new System.Windows.Controls.TextBlock
+            {
+                FontWeight = System.Windows.FontWeights.Bold,
+                Text = "Score",
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Center
             };
             System.Windows.Controls.Grid.SetColumn(t5, 4);
 
-            System.Windows.Controls.TextBlock t6 = new System.Windows.Controls.TextBlock { FontWeight = System.Windows.FontWeights.Bold, Text = "Max",
+            System.Windows.Controls.TextBlock t6 = new System.Windows.Controls.TextBlock
+            {
+                FontWeight = System.Windows.FontWeights.Bold,
+                Text = "Max",
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Center
             };
             System.Windows.Controls.Grid.SetColumn(t6, 5);
@@ -847,7 +888,7 @@ namespace PlanScoreCard.ViewModels
             innerHeader.Children.Add(t4);
             innerHeader.Children.Add(t5);
             innerHeader.Children.Add(t6);
-            
+
             //var r1 = new System.Windows.Controls.RowDefinition();
             headerGrid.Children.Add(innerHeader);
             fd.Blocks.Add(new BlockUIContainer(headerGrid));
