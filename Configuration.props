@@ -1,0 +1,41 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <Platforms>x64</Platforms>
+        <Nullable>enable</Nullable>
+        <UseWpf>true</UseWpf>
+        <LangVersion>8</LangVersion>
+        <PlatformTarget>x64</PlatformTarget>
+        <ImplicitUsings>false</ImplicitUsings>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <AssemblyVersion>3.3.0.1</AssemblyVersion>
+        <FileVersion>3.3.0.1</FileVersion>
+        <InformationalVersion>3.3.0.1</InformationalVersion>
+        <Copyright>Copyright © $([System.DateTime]::UtcNow.ToString(yyyy))</Copyright>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$(Configuration.StartsWith('Debug'))">
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <Optimize>true</Optimize>
+        <DebugType>pdbonly</DebugType>
+        <OutputPath>bin\Release\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+
+</Project>

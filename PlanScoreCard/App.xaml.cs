@@ -21,6 +21,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using VMS.TPS.Common.Model.API;
 
+[assembly: ESAPIScript(IsWriteable = true)]
+
 namespace PlanScoreCard
 {
     /// <summary>

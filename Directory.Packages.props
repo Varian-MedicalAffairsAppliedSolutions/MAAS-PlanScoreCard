@@ -1,0 +1,19 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageVersion Include="Autofac" Version="4.9.4"/>
+        <PackageVersion Include="MahApps.Metro.IconPacks.FontAwesome" Version="4.0.0" />
+        <PackageVersion Include="MahApps.Metro" Version="2.0.0" />
+        <PackageVersion Include="Newtonsoft.Json" Version="13.0.2" />
+        <PackageVersion Include="Newtonsoft.Json" Version="13.0.2"/>
+        <PackageVersion Include="OxyPlot.Wpf" Version="2.0.0" />
+        <PackageVersion Include="OxyPlot.Wpf" Version="2.0.0"/>
+        <PackageVersion Include="PlanScoreCard.API" Version="1.1.0.2" />
+        <PackageVersion Include="Prism.Core" Version="8.0.0.1909"/>
+    </ItemGroup>
+
+</Project>

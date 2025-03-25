@@ -17,6 +17,26 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHubActions", "GitHubActi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScorecardVisualizer", "ScorecardVisualizer\ScorecardVisualizer.csproj", "{DCDC8DD2-32FD-4007-BB88-5879E58AC86F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFolder", "SolutionFolder", "{67297A65-E184-4CF0-9198-78F681113419}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		Configuration.props = Configuration.props
+		Directory.Packages.props = Directory.Packages.props
+		license.txt = license.txt
+		EsapiReference.props = EsapiReference.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{57DF23D6-99F6-4C21-9C1F-43D3EC6EC857}"
+	ProjectSection(SolutionItems) = preProject
+		BasicInstallQuickStart.md = BasicInstallQuickStart.md
+		ChangeLog.md = ChangeLog.md
+		FAQ.md = FAQ.md
+		InstallGuidePart2IntoSystemScriptsDirectory.md = InstallGuidePart2IntoSystemScriptsDirectory.md
+		README.md = README.md
+		Troubleshooting.md = Troubleshooting.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,5 +67,8 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {77640BBF-DAB3-4CF4-8E2E-07BCC97F50F8}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{57DF23D6-99F6-4C21-9C1F-43D3EC6EC857} = {67297A65-E184-4CF0-9198-78F681113419}
 	EndGlobalSection
 EndGlobal
