@@ -112,8 +112,9 @@ namespace PlanScoreCard
                 DateTime endDate = DateTime.Now;
                 var configUpdate = GetUpdatedConfigFile();
                 var eulaValue = skipAgree?"true":configUpdate.AppSettings.Settings["EulaAgree"].Value;
-                var asmCa = typeof(StartupCore).Assembly.CustomAttributes.FirstOrDefault(ca => ca.AttributeType == typeof(AssemblyExpirationDate));
                 var bNoExpire = File.Exists(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "NOEXPIRE"));       
+                var asmCa = typeof(StartupCore).Assembly.CustomAttributes.FirstOrDefault(ca => ca.AttributeType == typeof(AssemblyExpirationDate));
+                var assemblyExpirationDate = new AssemblyExpirationDate(asmCa?.ConstructorArguments.FirstOrDefault().Value as string).ExpirationDate;
                 /*
                 Caleb's fix for datetime culture: should work regardless of local datetime culture settings
                 
@@ -130,7 +131,7 @@ namespace PlanScoreCard
                 // Uncomment this section to accept the change, you won't need the DateTime.TryParse below (line 129)
                 */
                 
-                if (configUpdate != null && DateTime.TryParse(asmCa.ConstructorArguments.FirstOrDefault().Value as string, provider, DateTimeStyles.None, out endDate) && eulaValue == "true")
+                if (configUpdate != null && DateTime.TryParse(assemblyExpirationDate, provider, DateTimeStyles.None, out endDate) && eulaValue == "true")
                 {
                     if (DateTime.Now <= endDate|| bNoExpire)
                     {
