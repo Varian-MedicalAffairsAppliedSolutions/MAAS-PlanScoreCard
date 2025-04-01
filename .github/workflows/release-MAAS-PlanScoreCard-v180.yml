@@ -51,7 +51,7 @@ jobs:
           -ExpirationDate "${{ github.event.inputs.dateInput }}" `
           -BuildNumber ${{ env.BUILD_NUMBER }} `
           -ProjectName ${{ env.PROJECT_NAME }}
-          
+
     - name: Update Target Framework Version to 4.8
       uses: Nambers/ReplaceStringInFile@v1.1
       with:
@@ -73,7 +73,7 @@ jobs:
         
     - name: Download nuget packages
       run: nuget install ${{ env.PROJECT_ROOT }}/PlanScoreCard/packages.config -OutputDirectory packages
-      
+
     - name: Download nuget packages scorecard visualizer
       run: nuget install ${{ env.PROJECT_ROOT }}/ScorecardVisualizer/packages.config -OutputDirectory packages
         
@@ -112,7 +112,7 @@ jobs:
           Compress-Archive -DestinationPath $normalizedFilePath
         
         "NORMALIZED_FILE_PATH=$($normalizedFilePath)" >> $env:GITHUB_OUTPUT
- 
+
     - name: Create Release
       uses: softprops/action-gh-release@v2.0.9
       with:

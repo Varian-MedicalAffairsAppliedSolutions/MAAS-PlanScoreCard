@@ -7,10 +7,10 @@
     public class AssemblyExpirationDate : Attribute
     {
         /// <summary>
-        /// ExparationDate. 
+        /// ExpirationDate. 
         /// The format is always 'mm/dd/yyyy'
         /// </summary>
-        string ExparationDate { get; set; }
+        public string ExpirationDate { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the AssemblyExpirationDate class.
@@ -21,6 +21,11 @@
         /// Initializes a new instance of the AssemblyExpirationDate class.
         /// </summary>
         /// <param name="expDate">Exparation date, expected format is 'mm/dd/yyyy'</param>
-        public AssemblyExpirationDate(string expDate) { ExparationDate = expDate; }
+        public AssemblyExpirationDate(string? expDate)
+        {
+            ExpirationDate = string.IsNullOrWhiteSpace(expDate) || expDate == "#{AssemblyExpirationDate}#"
+                ? DateTime.Now.AddDays(1).ToString("MM/dd/yyyy")
+                : expDate!;
+        }
     }
 }

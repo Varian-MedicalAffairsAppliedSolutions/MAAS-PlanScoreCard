@@ -1,0 +1,103 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Release MAAS-PlanScoreCard
+
+on: 
+  workflow_dispatch:
+    inputs:
+      dateInput:
+        description: 'Expiration Date'
+        required: true
+        default: '4/1/2026'
+      version:
+        type: 'choice'
+        description: 'Eclipse Version'
+        required: true
+        default: '18.0'
+        options:
+          - '15.6'
+          - '16.1'
+          - '17.0'
+          - '18.0'
+
+jobs:
+  build:
+    runs-on: windows-2019
+    env:
+      PROJECT_NAME: PlanScoreCard
+      PROJECT_ROOT: ${{ github.workspace }}
+
+    steps:
+      - name: Get Current Date
+        id: currentDate
+        uses: Kaven-Universe/github-action-current-date-time@v1
+        with:
+          format: "MM/DD/YYYY"
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Use .NET 8.x
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Navigate to Workspace
+        run: cd $GITHUB_WORKSPACE
+
+      - name: Update Build Info (Expiration Date, Version Number, Hint Paths, Target Framework Versions)
+        id: update_build_info
+        run: |
+          .\.github\workflows\Update-BuildInfo.ps1 `
+            -ExpirationDate "${{ github.event.inputs.dateInput }}" `
+            -EclipseVersion "${{ github.event.inputs.version }}" `
+            -BuildNumber "${{ github.run_number }}"
+
+      - name: Setup NuGet.exe for use with actions
+        uses: NuGet/setup-nuget@v1
+        with:
+          nuget-version: latest
+
+      - name: Add VIC GitHub NuGet repository
+        run: nuget source add `
+            -Name github `
+            -Source "https://nuget.pkg.github.com/Varian-MedicalAffairsAppliedSolutions/index.json" `
+            -UserName pszentiv `
+            -Password ${{ secrets.ESAPI_READ_TOKEN }} `
+            -StorePasswordInClearText
+      
+      - name: Download internal ESAPI nuget package
+        run: nuget install ESAPI -Version ${{ steps.update_build_info.outputs.ESAPI_VERSION }} -OutputDirectory packages
+
+      - name: Build Solution
+        run: dotnet build --configuration Release
+
+      - name: Zip
+        id: zip_release
+        run: |
+          $normalizedFilePath = "${{ github.workspace }}\V${{ github.event.inputs.version }}-${{ steps.update_build_info.outputs.RELEASE_FILE_NAME }}.zip" -replace '\\', '/'
+          
+          Get-ChildItem -Path "${{ env.PROJECT_ROOT }}/PlanScoreCard\bin\x64\Release\*" -Recurse |
+            Compress-Archive -DestinationPath $normalizedFilePath
+          
+          "NORMALIZED_FILE_PATH=$($normalizedFilePath)" >> $env:GITHUB_OUTPUT
+
+      # TODO: Add this back if everything works
+      # - name: Create Release
+      #   uses: softprops/action-gh-release@v2.0.9
+      #   with:
+      #     name: V${{ github.event.inputs.version }}-${{ steps.update_build_info.outputs.RELEASE_NAME }}
+      #     tag_name: V${{ github.event.inputs.version }}-${{ steps.update_build_info.outputs.RELEASE_NAME }}
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     draft: false
+      #     prerelease: false
+      #     body: |
+      #       This is an official release of the **`${{ env.PROJECT_NAME }}`** project.
+      #       Supported Eclipse version: `v${{ github.event.inputs.version }}`.
+      #       The generated dll is valid until `${{ github.event.inputs.dateInput }}`, and generated on `${{ steps.currentDate.outputs.time }}`.
+      #     files: ${{ steps.zip_release.outputs.NORMALIZED_FILE_PATH }}

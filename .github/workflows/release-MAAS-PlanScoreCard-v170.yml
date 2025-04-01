@@ -70,11 +70,11 @@ jobs:
       uses: NuGet/setup-nuget@v1
       with:
         nuget-version: latest
-        
+
     - name: Download nuget packages
       run: nuget install ${{ env.PROJECT_ROOT }}/PlanScoreCard/packages.config -OutputDirectory packages
 
-    - name: Download nuget packages scorecard Visualizer
+    - name: Download nuget packages scorecard visualizer
       run: nuget install ${{ env.PROJECT_ROOT }}/ScorecardVisualizer/packages.config -OutputDirectory packages
         
     - name: Add VIC GitHub NuGet repository
@@ -98,11 +98,11 @@ jobs:
       run: |
         .\.github\workflows\Update-EsapiHintPaths.ps1 `
         -CsprojFilePath ${{ env.PROJECT_ROOT }}/ScorecardVisualizer `
-        -CsprojFileName ScorecardVisualizer.csproj
+        -CsprojFileName ${{ env.VIS_FILE_NAME }}
         
     - name: Build Solution
       run: msbuild.exe ${{ env.SOLUTION_NAME }} /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="x64" /p:configuration="Release"
-      
+
     - name: Zip
       id: zip_release
       run: |

@@ -5,6 +5,8 @@ using System.Windows;
 using vms = VMS.TPS.Common.Model.API;
 
 [assembly:vms.ESAPIScript(IsWriteable = true)]
+[assembly: ThemeInfo(ResourceDictionaryLocation.None, ResourceDictionaryLocation.SourceAssembly)]
+
 namespace ScorecardVisualizer
 {
     /// <summary>
