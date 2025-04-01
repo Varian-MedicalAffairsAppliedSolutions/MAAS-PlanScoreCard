@@ -22,6 +22,7 @@ using System.Windows;
 using VMS.TPS.Common.Model.API;
 
 [assembly: ESAPIScript(IsWriteable = true)]
+[assembly: ThemeInfo(ResourceDictionaryLocation.None, ResourceDictionaryLocation.SourceAssembly)]
 
 namespace PlanScoreCard
 {
