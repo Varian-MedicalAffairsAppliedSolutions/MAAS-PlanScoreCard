@@ -163,7 +163,21 @@ namespace PlanScoreCard.Models
         public double MU
         {
             get { return _mu; }
-            set { SetProperty(ref _mu,value); }
+            set { SetProperty(ref _mu, value); }
+        }
+        private bool _bProton;
+
+        public bool BProton
+        {
+            get { return _bProton; }
+            set { _bProton = value; }
+        }
+        private string _muText;
+
+        public string MUText
+        {
+            get { return _muText; }
+            set { SetProperty(ref _muText, value); }
         }
 
         public bool bPlanSum;
@@ -227,6 +241,7 @@ namespace PlanScoreCard.Models
             //Dose per Fraction is always in Gy
             if (plan is PlanSetup)
             {
+
                 //Plan = plan as PlanSetup;
                 if ((plan as PlanSetup).TotalDose.Unit == VMS.TPS.Common.Model.Types.DoseValue.DoseUnit.cGy)
                 {
@@ -284,21 +299,78 @@ namespace PlanScoreCard.Models
             StructureSetId = plan.StructureSet.Id;
             ImageId = plan.StructureSet.Image.Id;
             PlanText = $"{CourseId}: {PlanId}";
-            if (plan is PlanSum)
-            {
-                var sum = plan as PlanSum;
-                double localMU = 0.0;
-                foreach (var planPart in sum.PlanSetups)
-                {
-                    localMU += planPart.Beams.Where(b => !Double.IsNaN(b.Meterset.Value)).Sum(b => b.Meterset.Value);
-                }
-                MU = localMU;
-            }
-            else if (plan is PlanSetup)
-            {
-                MU = (plan as PlanSetup).Beams.Where(b => !Double.IsNaN(b.Meterset.Value)).Sum(b => b.Meterset.Value);
-            }
+            //check if plan is proton plan.
 
+            if (plan is IonPlanSetup)
+            {
+                IonPlanSetup ionPlan = plan as IonPlanSetup;
+                BProton = true;
+                MUText = "Minimum Plan Spot MU";
+                double spotMU = 100000;
+                List<double> spotMUs = new List<double>();
+                foreach (var ionBeam in ionPlan.IonBeams)
+                {
+                    double muPerWeight = ionBeam.Meterset.Value / ionBeam.IonControlPoints.Last().MetersetWeight;
+                    foreach (var cp in ionBeam.IonControlPoints)
+                    {
+                        if (cp.RawSpotList.Count() > 0)
+                        {
+                            //read spot list if it isn't empty. 
+                            foreach (var spot in cp.RawSpotList.Where(sp=>sp.Weight>0))
+                            {
+                                //spotLocX.Add(spot.Position.x);
+                                //spotLocY.Add(spot.Position.y);
+                                spotMUs.Add(spot.Weight * muPerWeight);
+
+                            }
+                            //spotCounts.Add(cp.RawSpotList.Count());
+                            //spotsInBeam += spot_counts.Last();
+                            //var localSpotWeight = cp.FinalSpotList.Where(s=>s.Weight>0.001).Min(s => s.Weight);
+
+                            //var localSpotMU = totalBeamMU * localSpotWeight / ionPlan.NumberOfFractions.Value;
+                            //if (localSpotMU < spotMU)
+                            //{
+                            //    spotMU = localSpotMU;
+                            //}
+                        }
+                        else
+                        {
+                            if (cp.FinalSpotList.Count() > 0)
+                            {
+                               foreach(var spot in cp.FinalSpotList.Where(sp=>sp.Weight>0))
+                                {
+                                    spotMUs.Add(spot.Weight * muPerWeight);
+                                }
+                            }
+                        }
+                        
+                    }
+                }
+                if (spotMUs.Count > 0)
+                {
+                    var min10 = spotMUs.OrderBy(sp=>sp).Take(10).ToList();
+                    MU = spotMUs.Min();
+                }
+            }
+            else
+            {
+
+                if (plan is PlanSum)
+                {
+                    var sum = plan as PlanSum;
+                    double localMU = 0.0;
+                    foreach (var planPart in sum.PlanSetups)
+                    {
+                        localMU += planPart.Beams.Where(b => !Double.IsNaN(b.Meterset.Value)).Sum(b => b.Meterset.Value);
+                    }
+                    MU = localMU;
+                }
+                else if (plan is PlanSetup)
+                {
+                    MU = (plan as PlanSetup).Beams.Where(b => !Double.IsNaN(b.Meterset.Value)).Sum(b => b.Meterset.Value);
+                }
+                MUText = "Total Plan MU";
+            }
         }
 
         /// <summary>
@@ -314,7 +386,8 @@ namespace PlanScoreCard.Models
                     StructureId = structure.Id,
                     StructureCode = structure.StructureCodeInfos.FirstOrDefault().Code,
                     StructureComment = structure.Comment,
-                    IsContoured = !structure.IsEmpty
+                    IsContoured = !structure.IsEmpty,
+                    Volume = structure.Volume
                 });
             }
         }
@@ -327,19 +400,19 @@ namespace PlanScoreCard.Models
                 //if (!localTemplateIds.Any(lti => lti.Item1.Equals(structure.TemplateStructureId, StringComparison.OrdinalIgnoreCase) &&
                 // lti.Item2.Equals(structure.StructureId, StringComparison.OrdinalIgnoreCase)))
                 //{
-                    var localTemplateStructure = new StructureModel(_eventAggregator)
-                    {
-                        StructureId = structure.StructureId,
-                        StructureCode = structure.StructureCode,
-                        StructureComment = structure.StructureComment,
-                        TemplateStructureInt = tId,
-                        MatchedStructure = structure.MatchedStructure,
-                        TemplateStructureId = structure.TemplateStructureId
-                    };
-                    tId++;
-                    
+                var localTemplateStructure = new StructureModel(_eventAggregator)
+                {
+                    StructureId = structure.StructureId,
+                    StructureCode = structure.StructureCode,
+                    StructureComment = structure.StructureComment,
+                    TemplateStructureInt = tId,
+                    MatchedStructure = structure.MatchedStructure,
+                    TemplateStructureId = structure.TemplateStructureId
+                };
+                tId++;
+
                 localTemplateStructure.EvaluateStructureMatch(Structures.ToList());
-                if(localTemplateIds.Any(lti => lti.Item1.Equals(structure.TemplateStructureId, StringComparison.OrdinalIgnoreCase)
+                if (localTemplateIds.Any(lti => lti.Item1.Equals(structure.TemplateStructureId, StringComparison.OrdinalIgnoreCase)
                 && lti.Item2.Equals(structure.StructureId)))
                 {
                     localTemplateStructure.bMakeVisibleInPatientSearch = false;
