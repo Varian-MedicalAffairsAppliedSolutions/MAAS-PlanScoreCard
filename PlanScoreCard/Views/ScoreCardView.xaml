@@ -378,7 +378,13 @@
                                         </Button>
                                     </Grid>
                                 </Expander.Header>
-                                <TextBlock Text="{Binding ScoreTotalText}" Foreground="{Binding bFlag, Converter={StaticResource localBoolToColorFlagConverter}}" Margin="2"/>
+                                <ItemsControl ItemsSource="{Binding ScoreTotals}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding ScoreTotalText}" Foreground="{Binding ScoreTotalFlag,Converter={StaticResource localBoolToColorFlagConverter}}"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
                                 
                             <!--</ScrollViewer>-->
                             </Expander>

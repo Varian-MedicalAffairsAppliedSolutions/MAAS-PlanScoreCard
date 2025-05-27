@@ -263,6 +263,7 @@
     <Compile Include="Models\ScoreCardModel.cs" />
     <Compile Include="Models\ScoreMetricModel.cs" />
     <Compile Include="Models\ScorePointModel.cs" />
+    <Compile Include="Models\ScoreTotalTextModel.cs" />
     <Compile Include="Models\ScoreValueModel.cs" />
     <Compile Include="Models\SimpleStepModel.cs" />
     <Compile Include="Models\StructureDictionaryModel.cs" />

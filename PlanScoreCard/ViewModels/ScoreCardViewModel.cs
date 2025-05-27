@@ -257,13 +257,13 @@ namespace PlanScoreCard.ViewModels
 
         // Full Properties
 
-        private string scoreTotalText;
-        public string ScoreTotalText
-        {
-            get { return scoreTotalText; }
-            set { SetProperty(ref scoreTotalText, value); }
-        }
-
+        //private string scoreTotalText;
+        //public string ScoreTotalText
+        //{
+        //    get { return scoreTotalText; }
+        //    set { SetProperty(ref scoreTotalText, value); }
+        //}
+        public ObservableCollection<ScoreTotalTextModel> ScoreTotals { get; set; }
         // Patient ID
         private string patientId;
 
@@ -452,6 +452,7 @@ namespace PlanScoreCard.ViewModels
 
             // Initiate Collections
             PlanScores = new ObservableCollection<PlanScoreModel>();
+            ScoreTotals = new ObservableCollection<ScoreTotalTextModel>();
             //removed -> Not sure if required as multiple threads should not be accessing this property - MCS - 5.27.24
             //BindingOperations.EnableCollectionSynchronization(PlanScores, this);
             Plans = new ObservableCollection<PlanModel>();
@@ -682,6 +683,10 @@ namespace PlanScoreCard.ViewModels
                 patientSelectionView.Close();
                 patientSelectionView = null;
             }
+            if (!Plans.Any(pl => pl.bPrimary))
+            {
+                Plans.First(pl => pl.bSelected).bPrimary = true;
+            }
             if (isSaved)
             {
                 StructureDictionaryService.ReadStructureDictionary();
@@ -810,7 +815,7 @@ namespace PlanScoreCard.ViewModels
         {
             var fd = new FlowDocument() { FontSize = 12, FontFamily = new System.Windows.Media.FontFamily("Calibri") };
             fd.Blocks.Add(new Paragraph(new Run($"Scorecard: {ScoreCard.Name} - {ScoreCard.SiteGroup}")) { TextAlignment = System.Windows.TextAlignment.Center });
-            fd.Blocks.Add(new Paragraph(new Run($"Summary: \n{ScoreTotalText}")));
+            fd.Blocks.Add(new Paragraph(new Run($"Summary: \n{String.Join("\n", ScoreTotals.Select(st => st.ScoreTotalText))}")));
             var headerGrid = new System.Windows.Controls.Grid();
             var h1 = new System.Windows.Controls.ColumnDefinition();
             h1.Width = new System.Windows.GridLength(16.5, System.Windows.GridUnitType.Star);
@@ -1285,8 +1290,9 @@ namespace PlanScoreCard.ViewModels
             //remove score points from metrics that didn't have the
             if (PlanScores.Any(x => x.ScoreValues.Count() > 0))
             {
+                ScoreTotals.Clear();
                 var planScores = PlanScores.Where(x => x.ScoreValues.First().Value > -999);
-                ScoreTotalText = $"Plan Scores: ";
+                ScoreTotals.Add(new ScoreTotalTextModel { ScoreTotalText = $"Plan Scores: " });
                 if (planScores.Count() != 0)
                 {
                     foreach (var pc in planScores.FirstOrDefault().ScoreValues.Select(x => new { patientId = x.PatientId, planId = x.PlanId, courseId = x.CourseId }))
@@ -1296,7 +1302,13 @@ namespace PlanScoreCard.ViewModels
                         string pid = pc.planId;
 
                         double planTotal = planScores.Sum(x => x.ScoreValues.FirstOrDefault(y => y.PlanId == pc.planId && y.CourseId == pc.courseId && y.PatientId == pc.patientId).Score);
-                        ScoreTotalText += $"\t{patid}: [{cid}] {pid}: {planTotal:F2}/{planScores.Sum(x => x.ScoreMax):F2} ({planTotal / planScores.Sum(x => x.ScoreMax) * 100.0:F2}%)\n\t";
+                        ScoreTotals.Add(
+                            new ScoreTotalTextModel
+                            {
+
+                                ScoreTotalText = $"\t{patid}: [{cid}] {pid}: {planTotal:F2}/{planScores.Sum(x => x.ScoreMax):F2} ({planTotal / planScores.Sum(x => x.ScoreMax) * 100.0:F2}%)",
+                                ScoreTotalFlag = planScores.Any(ps => ps.ScoreValues.FirstOrDefault(sv => sv.PlanId == pid && sv.CourseId == cid && sv.PatientId == patid).Score == 0)
+                            });
 
                         PlanModel plan = Plans.FirstOrDefault(p => p.PlanId == pid && p.CourseId == cid && p.PatientId == patid);
 
