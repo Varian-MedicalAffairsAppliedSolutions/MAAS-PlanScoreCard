@@ -11,11 +11,11 @@ on:
       dateInput:
         description: 'Expiration Date'
         required: true
-        default: '4/1/2025'
+        default: '1/1/2026'
 
 jobs:
   build:
-    runs-on: windows-2019
+    runs-on: windows-latest
     env:
       GITHUB_WORKSPACE_PACKAGES_PATH: ..\packages\ESAPI.17.0.0\lib\net48\
       PROJECT_NAME: PlanScoreCard
