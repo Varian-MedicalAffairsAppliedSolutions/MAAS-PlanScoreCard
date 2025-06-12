@@ -1,8 +1,3 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 name: Release for v15.6
 
 on: 
@@ -11,11 +6,11 @@ on:
       dateInput:
         description: 'Expiration Date'
         required: true
-        default: '1/1/2026'
+        default: '12/31/2025'
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2022
     env:
       GITHUB_WORKSPACE_PACKAGES_PATH: ..\packages\ESAPI.15.6.0\lib\net45\
       PROJECT_NAME: PlanScoreCard
@@ -57,10 +52,10 @@ jobs:
       with:
         nuget-version: latest
 
-    - name: Download nuget packages Visualizer
+    - name: Download nuget packages Visualizer for ScorecardVisualizer
       run: nuget install ${{ env.PROJECT_ROOT }}/ScorecardVisualizer/packages.config -OutputDirectory packages
       
-    - name: Download nuget packages
+    - name: Download nuget packages for PlanScoreCard
       run: nuget install ${{ env.PROJECT_ROOT }}/PlanScoreCard/packages.config -OutputDirectory packages
         
     - name: Add VIC GitHub NuGet repository
@@ -80,7 +75,7 @@ jobs:
         -CsprojFilePath ${{ env.PROJECT_ROOT }}/ScorecardVisualizer `
         -CsprojFileName ${{ env.VIS_FILE_NAME }}
         
-    - name: Update hint paths in the csproj file
+    - name: Update hint paths in the PlanScoreCard csproj file
       run: |
         .\.github\workflows\Update-EsapiHintPaths.ps1 `
         -CsprojFilePath ${{ env.PROJECT_ROOT }}/PlanScoreCard `
