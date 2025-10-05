@@ -25,7 +25,20 @@ namespace PlanScoreCard.Startup
             container.RegisterInstance<User>(user);
             container.RegisterInstance<Application>(app);
             container.RegisterInstance<List<PlanModel>>(plans);
+            container.RegisterInstance<IEventAggregator>(eventAggregator);
+            RegisterCommon(container);
+            return container.Build();
 
+        }
+        public IContainer Bootstrap(IEventAggregator
+            eventAggregator) {
+            var container = new ContainerBuilder();
+            container.RegisterInstance<IEventAggregator>(eventAggregator);
+            RegisterCommon(container);
+            return container.Build();
+        }
+        private void RegisterCommon(ContainerBuilder container)
+        {
             //view models
             container.RegisterType<NavigationViewModel>().AsSelf();
             container.RegisterType<PlanScoreViewModel>().AsSelf();
@@ -65,7 +78,6 @@ namespace PlanScoreCard.Startup
 
 
             //events
-            container.RegisterInstance<IEventAggregator>(eventAggregator);
             container.RegisterType<CancelEvent>().AsSelf();
 
             // services
@@ -74,8 +86,7 @@ namespace PlanScoreCard.Startup
             container.RegisterType<ProgressViewService>().AsSelf().SingleInstance();
             //container.RegisterType<StructureDictionaryService>().SingleInstance();
 
-
-            return container.Build();
+        
         }
     }
 }

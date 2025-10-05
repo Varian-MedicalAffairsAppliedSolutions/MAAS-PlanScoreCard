@@ -415,24 +415,84 @@ namespace PlanScoreCard.ViewModels
         private bool _blockScoring { get; set; }
         public MessageView MessageView { get; set; }
         private PlanModel _localNormPlan { get; set; }
+
+
+        private bool _bDICOM;
+
+        public bool bDICOM
+        {
+            get { return _bDICOM; }
+            set { SetProperty(ref _bDICOM, value); }
+        }
+
+        public CoronaDVH.Geometry.ImageGrid CTDicom { get; private set; }
+        public CoronaDVH.Dicom.DoseGrid DoseDicom { get; private set; }
+        public List<CoronaDVH.Dicom.RTStructure> StructureDicom { get; private set; }
+
         // Constructor
         public ScoreCardViewModel(Application app, List<PlanModel> plans, IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService)//, StructureDictionaryService structureDictionaryService)
         {
             _blockScoring = false;
             // Set the Initial Variables Passed In
-            ScoreCardTitle = ConfigurationManager.AppSettings["ValidForClinicalUse"] != "true" ?
-                "Plan ScoreCard **Not Validated for Clinical Use**" : "Plan ScoreCard";
+           
             Application = app;
             //Patient = patient;
             //Course = course;
             //Plan = plan;
+            SetInitialValues(eventAggregator, viewLauncherService, progressViewService);
+            //StructureDictionaryService = structureDictionaryService;
+
+            SetEvents();
+
+           
+            //removed -> Not sure if required as multiple threads should not be accessing this property - MCS - 5.27.24
+            //BindingOperations.EnableCollectionSynchronization(PlanScores, this);
+            
+            foreach (var planModel in plans)
+            {
+                Plans.Add(planModel);
+            }
+            SetCommands();
+            // Sets If no Plan is Passed In
+            UpdateBatchNorm();
+            //if (Plan != null)
+            //    OnPlanChanged(new List<PlanModel> { });
+            if (plans.Any(p => p.bPrimary))
+            {
+                OnPlanChanged(Plans.ToList());
+            }
+            InitializeClass();
+            //I moved this down here so that the scoreplan doesn't run until after the plans have already been setup (the event aggregator was running on every plan).
+            EventAggregator.GetEvent<PlanChangedEvent>().Subscribe(OnPlanChanged);
+        }
+        public ScoreCardViewModel(IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService)
+        {
+            bDICOM = true;
+            SetInitialValues(eventAggregator, viewLauncherService, progressViewService);
+            SetEvents();
+            SetCommands();
+        }
+        private void SetInitialValues(IEventAggregator eventAggregator, ViewLauncherService viewLauncherService, ProgressViewService progressViewService)
+        {
+            ScoreCardTitle = ConfigurationManager.AppSettings["ValidForClinicalUse"] != "true" ?
+               "Plan ScoreCard **Not Validated for Clinical Use**" : "Plan ScoreCard";
             EventAggregator = eventAggregator;
 
             // Initiate Services
             ViewLauncherService = viewLauncherService;
             ProgressViewService = progressViewService;
-            //StructureDictionaryService = structureDictionaryService;
 
+            MaxScore = 0;
+
+            // Initiate Collections
+            PlanScores = new ObservableCollection<PlanScoreModel>();
+            ScoreTotals = new ObservableCollection<ScoreTotalTextModel>();
+            bRxScalingVisibility = true;
+            _scoreValueCache = new List<ScoreValueModel>();//remember to clear when score editor is run, scorecard is scaled, or patient selection is run. 
+            Plans = new ObservableCollection<PlanModel>();
+        }
+        private void SetEvents()
+        {
             // Need to change this event to take in a ScoreCardModel as the payload
             //EventAggregator.GetEvent<ScorePlanEvent>().Subscribe(OnScorePlan);
             EventAggregator.GetEvent<PluginVisibilityEvent>().Subscribe(OnPluginVisible);
@@ -447,19 +507,9 @@ namespace PlanScoreCard.ViewModels
             EventAggregator.GetEvent<ConfigurationCloseEvent>().Subscribe(OnCloseConfiguration);
             EventAggregator.GetEvent<StructureGeneratedOnScoreEvent>().Subscribe(OnStructureGeneration);
             //EventAggregator.GetEvent<RemovePlanFromScoreEvent>().Subscribe(OnRemovePlanFromScore);
-
-            MaxScore = 0;
-
-            // Initiate Collections
-            PlanScores = new ObservableCollection<PlanScoreModel>();
-            ScoreTotals = new ObservableCollection<ScoreTotalTextModel>();
-            //removed -> Not sure if required as multiple threads should not be accessing this property - MCS - 5.27.24
-            //BindingOperations.EnableCollectionSynchronization(PlanScores, this);
-            Plans = new ObservableCollection<PlanModel>();
-            foreach (var planModel in plans)
-            {
-                Plans.Add(planModel);
-            }
+        }
+        private void SetCommands()
+        {
             // Delegate Commands
             //ScorePlanCommand = new DelegateCommand(ScorePlan);
             ImportScoreCardCommand = new DelegateCommand(ImportScoreCard);
@@ -475,21 +525,7 @@ namespace PlanScoreCard.ViewModels
             LoadPatientPlansCommand = new DelegateCommand(OnLoadPatientPlans);
             OpenDVHViewCommand = new DelegateCommand(OnLoadDVHView, CanLoadDVHView);
             LaunchConfigurationCommand = new DelegateCommand(OnLaunchConfiguration);
-            bRxScalingVisibility = true;
-            _scoreValueCache = new List<ScoreValueModel>();//remember to clear when score editor is run, scorecard is scaled, or patient selection is run. 
-            // Sets If no Plan is Passed In
-            UpdateBatchNorm();
-            //if (Plan != null)
-            //    OnPlanChanged(new List<PlanModel> { });
-            if (plans.Any(p => p.bPrimary))
-            {
-                OnPlanChanged(Plans.ToList());
-            }
-            InitializeClass();
-            //I moved this down here so that the scoreplan doesn't run until after the plans have already been setup (the event aggregator was running on every plan).
-            EventAggregator.GetEvent<PlanChangedEvent>().Subscribe(OnPlanChanged);
         }
-
         private void OnCloseConfiguration(ConfigurationViewModel obj)
         {
             if (obj.bSave)
@@ -698,10 +734,46 @@ namespace PlanScoreCard.ViewModels
         private void OnOpenPatientSelector()
         {
             _isWindowActive = false;
-            patientSelectionView = new PatientSelectionView();
-            patientSelectionView.DataContext = new PatientSelectionViewModel(EventAggregator, Application, Plans.ToList(), ScoreCard);
+            if (bDICOM)
+            {
+                //open file dialog to select directory for DICOM images.
+               
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.Filter = "DICOM Files (*.dcm)|*.dcm";
+                ofd.Title = "Open directory for DICOM files - Simply select one file in the directory.";
+                if(ofd.ShowDialog() == true)
+                {
+                    var casePath = Path.GetDirectoryName(ofd.FileName);
+                    var rootFiles = Directory.GetFiles(casePath, "*.dcm");
 
-            patientSelectionView.ShowDialog();
+                    //Load CT
+                    var ctFiles = rootFiles
+                        .Where(f => Path.GetFileName(f).StartsWith("CT")).ToArray();
+                    var ct = CoronaDVH.Geometry.ImageGrid.FromFiles(ctFiles);
+
+                    //Load Dose
+                    var doseFile = rootFiles.FirstOrDefault(f => Path.GetFileName(f).StartsWith("RD"));
+                    var dose = CoronaDVH.Dicom.DoseToGrid.FromFile(doseFile);
+
+                    //Load Structures
+                    var structureFile = rootFiles.FirstOrDefault(f => Path.GetFileName(f).StartsWith("RS"));
+                    var structures = CoronaDVH.Dicom.StructureSet.FromFile(structureFile);
+                    if (ct != null && dose!=null && structures!=null)
+                    {
+                        CTDicom = ct;
+                        DoseDicom = dose;
+                        StructureDicom = structures;
+                        Plans.Add(new PlanModel(ct, dose, structures, EventAggregator));
+                    } 
+                }
+            }
+            else
+            {
+                patientSelectionView = new PatientSelectionView();
+                patientSelectionView.DataContext = new PatientSelectionViewModel(EventAggregator, Application, Plans.ToList(), ScoreCard);
+
+                patientSelectionView.ShowDialog();
+            }
         }
 
         private void OnCloseMessage()
@@ -1007,6 +1079,10 @@ namespace PlanScoreCard.ViewModels
 
         private bool CanNormalizePlan()
         {
+            if (Plans == null)
+            {
+                return false;
+            }
             return Plans.Any(x => x.bPrimary) && ScoreCard != null;
         }
         private void BormalizePlan()
@@ -1113,6 +1189,8 @@ namespace PlanScoreCard.ViewModels
 
             // Initiate the MetricId Counter
             int metric_id = 0;
+            //10/5/2025 update MCS - updated to set default primary plan (from DICOM). 
+            if (!Plans.Any(p => p.bPrimary)) { Plans.First().bPrimary = true; }
             string primaryCourseId = Plans.FirstOrDefault(p => p.bPrimary).CourseId;
             string primaryPlanId = Plans.FirstOrDefault(p => p.bPrimary).PlanId;
 
@@ -1148,6 +1226,8 @@ namespace PlanScoreCard.ViewModels
                     Plans.FirstOrDefault(pl => pl.bSelected).bPrimary = true;
                     Plans.FirstOrDefault(pl => pl.bSelected)._deselect = false;
                 }
+                //FOR DICOM. Start here. The plan Score Model should have an additional constructor that doesn't require the Application object. 
+                //Line below on GetPlansPlanModel is failing (1247 currently). maybe leave psm and instead start diverging from there. 
                 PlanScoreModel psm = null;
                 if (!PlanScores.Any(ps => ps.MetricId == metric_id))
                 {

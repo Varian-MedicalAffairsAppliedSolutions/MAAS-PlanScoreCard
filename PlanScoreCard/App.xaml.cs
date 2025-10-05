@@ -153,7 +153,7 @@ namespace PlanScoreCard
             try
             {
                 // TEMP FOR DEBUG STARTUP
-                string argsString = e.Args.First();
+                string argsString = e.Args.Length>0?e.Args.First():String.Empty;
 
                 //var value = ConfigurationManager.AppSettings["EULAAgree"];
                 //configFile.AppSettings.Settings.Remove("EULAAgree");
@@ -331,63 +331,77 @@ namespace PlanScoreCard
                                 }
                             }
                         }
-                        using (_app = VMS.TPS.Common.Model.API.Application.CreateApplication())
+                        if (ConfigurationManager.AppSettings["NoESAPI"].ToLower() == "true")
                         {
-                            if (!String.IsNullOrWhiteSpace(argsString))
-                            {
-                                _patientId = argsString.Split(';').First().Trim('\"');
-                            }
-                            else
-                            {
-                                MessageBox.Show("Patient not specified at application start.");
-                                App.Current.Shutdown();
-                                return;
-
-                            }
-                            if (argsString.Split(';').Count() > 1)
-                            {
-                                _courseId = argsString.Split(';').ElementAt(1).TrimEnd('\"');
-                            }
-                            if (argsString.Split(';').Count() > 2)
-                            {
-                                _planId = argsString.Split(';').ElementAt(2).TrimEnd('\"');
-                            }
-                            if (String.IsNullOrWhiteSpace(_patientId) || String.IsNullOrWhiteSpace(_courseId))
-                            {
-                                MessageBox.Show("Patient and/or Course not specified at application start. Please open a patient and course.");
-                                App.Current.Shutdown();
-                                return;
-                            }
-                            _patient = _app.OpenPatientById(_patientId);
-
-
-
-                            if (!String.IsNullOrWhiteSpace(_courseId))
-                            {
-                                _course = _patient.Courses.FirstOrDefault(x => x.Id == _courseId);
-                            }
-                            if (!String.IsNullOrEmpty(_planId))
-                            {
-                                _plan = _course.PlanSetups.FirstOrDefault(x => x.Id == _planId);
-                            }
-                            //now only loading first initial plan and then making a button to load all plans. 
-                            plans = new List<PlanModel>();
-                            if (_plan.StructureSet != null)
-                            {
-                                //plans.Add(new PlanModel(_plan,eventAggregator));
-                                var localPlan = new PlanModel(_plan, eventAggregator);
-                                localPlan.bPrimary = true;
-                                plans.Add(localPlan);
-                            }
-
                             var bootstrap = new Bootstrapper();
-                            var container = bootstrap.Bootstrap(plans, _app.CurrentUser, _app, eventAggregator);
+                            var container = bootstrap.Bootstrap(eventAggregator);
                             StructureDictionaryService.ReadStructureDictionary();
                             view = container.Resolve<ScoreCardView>();
                             eventAggregator.GetEvent<UILaunchedEvent>().Publish();
                             view.ShowDialog();
-                            _app.ClosePatient();
+
                             System.Windows.Application.Current.Shutdown();
+                        }
+                        else
+                        {
+                            using (_app = VMS.TPS.Common.Model.API.Application.CreateApplication())
+                            {
+                                if (!String.IsNullOrWhiteSpace(argsString))
+                                {
+                                    _patientId = argsString.Split(';').First().Trim('\"');
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Patient not specified at application start.");
+                                    App.Current.Shutdown();
+                                    return;
+
+                                }
+                                if (argsString.Split(';').Count() > 1)
+                                {
+                                    _courseId = argsString.Split(';').ElementAt(1).TrimEnd('\"');
+                                }
+                                if (argsString.Split(';').Count() > 2)
+                                {
+                                    _planId = argsString.Split(';').ElementAt(2).TrimEnd('\"');
+                                }
+                                if (String.IsNullOrWhiteSpace(_patientId) || String.IsNullOrWhiteSpace(_courseId))
+                                {
+                                    MessageBox.Show("Patient and/or Course not specified at application start. Please open a patient and course.");
+                                    App.Current.Shutdown();
+                                    return;
+                                }
+                                _patient = _app.OpenPatientById(_patientId);
+
+
+
+                                if (!String.IsNullOrWhiteSpace(_courseId))
+                                {
+                                    _course = _patient.Courses.FirstOrDefault(x => x.Id == _courseId);
+                                }
+                                if (!String.IsNullOrEmpty(_planId))
+                                {
+                                    _plan = _course.PlanSetups.FirstOrDefault(x => x.Id == _planId);
+                                }
+                                //now only loading first initial plan and then making a button to load all plans. 
+                                plans = new List<PlanModel>();
+                                if (_plan.StructureSet != null)
+                                {
+                                    //plans.Add(new PlanModel(_plan,eventAggregator));
+                                    var localPlan = new PlanModel(_plan, eventAggregator);
+                                    localPlan.bPrimary = true;
+                                    plans.Add(localPlan);
+                                }
+
+                                var bootstrap = new Bootstrapper();
+                                var container = bootstrap.Bootstrap(plans, _app.CurrentUser, _app, eventAggregator);
+                                StructureDictionaryService.ReadStructureDictionary();
+                                view = container.Resolve<ScoreCardView>();
+                                eventAggregator.GetEvent<UILaunchedEvent>().Publish();
+                                view.ShowDialog();
+                                _app.ClosePatient();
+                                System.Windows.Application.Current.Shutdown();
+                            }
                         }
                     }
                     else

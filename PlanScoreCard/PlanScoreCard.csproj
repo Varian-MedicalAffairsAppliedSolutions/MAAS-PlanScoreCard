@@ -15,6 +15,8 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -39,6 +41,9 @@
   <PropertyGroup>
     <ApplicationIcon>IcoFile.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
   <!--   <PropertyGroup>
     <ReferencePath>C:\Program Files (x86)\Varian\RTM\16.1\esapi\API</ReferencePath>
     <ReferencePath>C:\Program Files (x86)\Varian\RTM\15.6\esapi\API</ReferencePath>
@@ -49,6 +54,9 @@
     </Reference>
     <Reference Include="ControlzEx, Version=4.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.4.4.0\lib\net45\ControlzEx.dll</HintPath>
+    </Reference>
+    <Reference Include="Dicom.Core, Version=4.0.8.0, Culture=neutral, PublicKeyToken=3a13f649e28eb09a, processorArchitecture=MSIL">
+      <HintPath>..\packages\fo-dicom.Desktop.4.0.8\lib\net45\Dicom.Core.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.2.4.5\lib\net452\MahApps.Metro.dll</HintPath>
@@ -80,6 +88,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Printing" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
@@ -250,6 +259,51 @@
     <Compile Include="Models\StructureOperationModel.cs" />
     <Compile Include="Properties\AssemblyExpirationDate.cs" />
     <Compile Include="Services\ConfigurationManagerService.cs" />
+    <Compile Include="Services\Corona\Dicom\DicomToGrid.cs" />
+    <Compile Include="Services\Corona\Dicom\DoseGrid.cs" />
+    <Compile Include="Services\Corona\Dicom\DoseToGrid.cs" />
+    <Compile Include="Services\Corona\Dicom\ISliceContours.cs" />
+    <Compile Include="Services\Corona\Dicom\RTStructure.cs" />
+    <Compile Include="Services\Corona\Dicom\SeriesInfo.cs" />
+    <Compile Include="Services\Corona\Dicom\StructureMask.cs" />
+    <Compile Include="Services\Corona\Dicom\StructureSet.cs" />
+    <Compile Include="Services\Corona\Geometry\DenseGrid3f.cs" />
+    <Compile Include="Services\Corona\Geometry\DenseGrid3T.cs" />
+    <Compile Include="Services\Corona\Geometry\ImageGrid.cs" />
+    <Compile Include="Services\Corona\Geometry\OrientedByteGrid.cs" />
+    <Compile Include="Services\Corona\Geometry\OrientedGrid3f.cs" />
+    <Compile Include="Services\Corona\Geometry\OrientedGridBase.cs" />
+    <Compile Include="Services\Corona\Geometry\OrientedVolumeGrid.cs" />
+    <Compile Include="Services\Corona\GMath\AxisAlignedBox2d.cs" />
+    <Compile Include="Services\Corona\GMath\AxisAlignedBox3f.cs" />
+    <Compile Include="Services\Corona\GMath\AxisAlignedBox3i.cs" />
+    <Compile Include="Services\Corona\GMath\Frame3f.cs" />
+    <Compile Include="Services\Corona\GMath\Index3i.cs" />
+    <Compile Include="Services\Corona\GMath\IndexUtil.cs" />
+    <Compile Include="Services\Corona\GMath\Intersector1.cs" />
+    <Compile Include="Services\Corona\GMath\Interval1d.cs" />
+    <Compile Include="Services\Corona\GMath\IntrLine2Line2.cs" />
+    <Compile Include="Services\Corona\GMath\IntrSegment2Segment2.cs" />
+    <Compile Include="Services\Corona\GMath\Line2d.cs" />
+    <Compile Include="Services\Corona\GMath\MathUtil.cs" />
+    <Compile Include="Services\Corona\GMath\Matrix3f.cs" />
+    <Compile Include="Services\Corona\GMath\PolyLine2d.cs" />
+    <Compile Include="Services\Corona\GMath\Quaternionf.cs" />
+    <Compile Include="Services\Corona\GMath\RgbaColor.cs" />
+    <Compile Include="Services\Corona\GMath\Segment2d.cs" />
+    <Compile Include="Services\Corona\GMath\Vector2d.cs" />
+    <Compile Include="Services\Corona\GMath\Vector3f.cs" />
+    <Compile Include="Services\Corona\GMath\Vector3i.cs" />
+    <Compile Include="Services\Corona\Helpers\DvhAggregator.cs" />
+    <Compile Include="Services\Corona\Helpers\EnumerableExtensions.cs" />
+    <Compile Include="Services\Corona\Helpers\GridIO.cs" />
+    <Compile Include="Services\Corona\Helpers\PolyFill.cs" />
+    <Compile Include="Services\Corona\Helpers\SearchDirection.cs" />
+    <Compile Include="Services\Corona\Helpers\ServiceLocator.cs" />
+    <Compile Include="Services\Corona\Models\Dose.cs" />
+    <Compile Include="Services\Corona\Models\DvhData.cs" />
+    <Compile Include="Services\Corona\Models\DvhPoint.cs" />
+    <Compile Include="Services\Corona\Models\Volume.cs" />
     <Compile Include="Services\NormalizationService.cs" />
     <Compile Include="Services\PatientSelectService.cs" />
     <Compile Include="Services\PlanScoreCalculationServices.cs" />
@@ -633,4 +687,11 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.NETFramework.ReferenceAssemblies.net461.1.0.3\build\Microsoft.NETFramework.ReferenceAssemblies.net461.targets" Condition="'$(TargetFramework)' == 'net461' or Exists('..\packages\Microsoft.NETFramework.ReferenceAssemblies.net461.1.0.3\build\Microsoft.NETFramework.ReferenceAssemblies.net461.targets')" />
+  <Import Project="..\packages\fo-dicom.Desktop.4.0.8\build\net45\fo-dicom.Desktop.targets" Condition="Exists('..\packages\fo-dicom.Desktop.4.0.8\build\net45\fo-dicom.Desktop.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\fo-dicom.Desktop.4.0.8\build\net45\fo-dicom.Desktop.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\fo-dicom.Desktop.4.0.8\build\net45\fo-dicom.Desktop.targets'))" />
+  </Target>
 </Project>

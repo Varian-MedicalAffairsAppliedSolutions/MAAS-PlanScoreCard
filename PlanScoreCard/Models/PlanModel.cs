@@ -258,13 +258,28 @@ namespace PlanScoreCard.Models
             //DoseUnit = (plan is PlanSetup) ? (plan as PlanSetup).TotalDose.UnitAsString : String.Empty;
             _eventAggregator = eventAggregator;
             Structures = new ObservableCollection<StructureModel>();
-            DeselectCommand = new DelegateCommand(OnDeselect);
-            ValidatePlanCommand = new DelegateCommand(OnValidatePlan);
-            MakePrimaryCommand = new DelegateCommand(OnMakePrimary);
+            SetCommands();
             GenerateStructures(plan);
             SetParameters(plan);
         }
+        public PlanModel(CoronaDVH.Geometry.ImageGrid ct, CoronaDVH.Dicom.DoseGrid dose, List<CoronaDVH.Dicom.RTStructure> structures, IEventAggregator eventAggregator)
+        {
+            TemplateStructures = new ObservableCollection<StructureModel>();
+            DosePerFraction = dose.PrescriptionDoseGy == null ? 0.0 : dose.PrescriptionDoseGy.Value;
+            Structures = new ObservableCollection<StructureModel>();
+            _eventAggregator = eventAggregator;
+            Structures = new ObservableCollection<StructureModel>();
+            SetCommands();
+            GenerateStructures(structures);
+            SetParameters(ct,structures,dose);
+        }
+        private void SetCommands()
+        {
+            DeselectCommand = new DelegateCommand(OnDeselect);
 
+            ValidatePlanCommand = new DelegateCommand(OnValidatePlan);
+            MakePrimaryCommand = new DelegateCommand(OnMakePrimary);
+        }
         private void OnMakePrimary()
         {
             if (!this.bPrimary)
@@ -316,7 +331,7 @@ namespace PlanScoreCard.Models
                         if (cp.RawSpotList.Count() > 0)
                         {
                             //read spot list if it isn't empty. 
-                            foreach (var spot in cp.RawSpotList.Where(sp=>sp.Weight>0))
+                            foreach (var spot in cp.RawSpotList.Where(sp => sp.Weight > 0))
                             {
                                 //spotLocX.Add(spot.Position.x);
                                 //spotLocY.Add(spot.Position.y);
@@ -337,18 +352,18 @@ namespace PlanScoreCard.Models
                         {
                             if (cp.FinalSpotList.Count() > 0)
                             {
-                               foreach(var spot in cp.FinalSpotList.Where(sp=>sp.Weight>0))
+                                foreach (var spot in cp.FinalSpotList.Where(sp => sp.Weight > 0))
                                 {
                                     spotMUs.Add(spot.Weight * muPerWeight);
                                 }
                             }
                         }
-                        
+
                     }
                 }
                 if (spotMUs.Count > 0)
                 {
-                    var min10 = spotMUs.OrderBy(sp=>sp).Take(10).ToList();
+                    var min10 = spotMUs.OrderBy(sp => sp).Take(10).ToList();
                     MU = spotMUs.Min();
                 }
             }
@@ -372,7 +387,12 @@ namespace PlanScoreCard.Models
                 MUText = "Total Plan MU";
             }
         }
-
+        private void SetParameters(CoronaDVH.Geometry.ImageGrid ct, List<CoronaDVH.Dicom.RTStructure> structures, CoronaDVH.Dicom.DoseGrid dose)
+        {
+            PlanId = dose.PlanUID;
+            DoseUnit = DoseValue.DoseUnit.Gy;
+            PlanText = PlanId;
+        }
         /// <summary>
         /// Add structures to plan.
         /// </summary>
@@ -388,6 +408,17 @@ namespace PlanScoreCard.Models
                     StructureComment = structure.Comment,
                     IsContoured = !structure.IsEmpty,
                     Volume = structure.Volume
+                });
+            }
+        }
+        private void GenerateStructures(List<CoronaDVH.Dicom.RTStructure> structures)
+        {
+            foreach (var structure in structures.Where(st => st.DicomType != "SUPPORT" && st.DicomType != "MARKER"))
+            {
+                Structures.Add(new StructureModel(_eventAggregator)
+                {
+                    StructureId = structure.StructureId,
+                    IsContoured = structure.Contours.Any(),
                 });
             }
         }
