@@ -35,7 +35,7 @@ namespace PlanScoreCard.ViewModels
     public class EditScoreCardViewModel : INotifyPropertyChanged
     {
         // Private Class Properties
-        private User User;
+        //private User User;
         private PlanModel PlanModel;
         private IEventAggregator EventAggregator;
 
@@ -1277,10 +1277,10 @@ namespace PlanScoreCard.ViewModels
             }
         }
 
-        private void SetUser(User user)
+        private void SetUser()
         {
-            User = user;
-            TemplateAuthor = User.Id;
+            //User = "Unknown";
+            TemplateAuthor = "Unknown";
         }
 
         private void ReRankMetrics(Dictionary<int, int> rankChange = null)

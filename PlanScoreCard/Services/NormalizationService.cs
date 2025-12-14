@@ -197,7 +197,7 @@ namespace PlanScoreCard.Services
             var _newPlan = _newCourse.CopyPlanSetup(plan);
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\n* New Plan Generated * \n - CourseID : {_newCourse.Id} \n - PlanID : { _newPlan.Id}\n");
 
-            TestNormalization(_newPlan);
+            //TestNormalization(_newPlan);
 
             var newPlanModel = new PlanModel(_newPlan, _eventAggregator)
             {
@@ -212,7 +212,7 @@ namespace PlanScoreCard.Services
             return newPlanModel;
         }
 
-        private void TestNormalization(PlanSetup newPlan)
+        /*private void TestNormalization(PlanSetup newPlan)
         {
             List<Tuple<double, double>> planScores = new List<Tuple<double, double>>();
             double initial_norm = newPlan.PlanNormalizationValue;
@@ -243,9 +243,9 @@ namespace PlanScoreCard.Services
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\n\tMax Score {maxScore:F3} \n\nScoreCard Normalization: {maxNorm}");
             _eventAggregator.GetEvent<ConsoleUpdateEvent>().Publish($"\n * Activate Plan * \nCourseID: {newPlan.Course}; \nPlanID: {newPlan}");
             newPlan.PlanNormalizationValue = maxNorm;
-        }
+        }*/
 
-        private void ScorePlanAtNormValue(PlanSetup newPlan, List<Tuple<double, double>> planScores, double initial_norm, double i)
+        /*private void ScorePlanAtNormValue(PlanSetup newPlan, List<Tuple<double, double>> planScores, double initial_norm, double i)
         {
             double planNorm = initial_norm + i;
             newPlan.PlanNormalizationValue = planNorm;
@@ -277,6 +277,6 @@ namespace PlanScoreCard.Services
             _eventAggregator.GetEvent<PlotUpdateEvent>().Publish(localScores.ToList());
             System.GC.Collect();
             //_eventAggregator.GetEvent<PlotUpdateEvent>().Publish($"PlotPoint:<{newPlan.Id};{planNorm};{Math.Round(score, 2)}>");
-        }
+        }*/
     }
 }

@@ -1,4 +1,7 @@
-﻿using OxyPlot;
+﻿using CoronaDVH.Dicom;
+using CoronaDVH.Helpers;
+using CoronaDVH.Models;
+using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using PlanScoreCard.Models.Internals;
@@ -22,9 +25,13 @@ namespace PlanScoreCard.Models
 {
     public class PlanScoreModel : BindableBase
     {
-        private VMS.TPS.Common.Model.API.Application _app;
+        //private VMS.TPS.Common.Model.API.Application _app;
         private IEventAggregator _eventAggregator;
         private double _dvhResolution;
+
+        public DoseGrid LocalDose { get; private set; }
+        public List<RTStructure> LocalStructures { get; private set; }
+
         //private StructureDictionaryService StructureDictionaryService;
 
 
@@ -303,11 +310,13 @@ namespace PlanScoreCard.Models
             ScoreValues = new ObservableCollection<ScoreValueModel>();
             _dvhResolution = dvhResolution;
         }
-        public PlanScoreModel(VMS.TPS.Common.Model.API.Application app, IEventAggregator eventAggregator)//, StructureDictionaryService structureDictionaryService)
+        public PlanScoreModel(IEventAggregator eventAggregator, DoseGrid dose, List<RTStructure> structures)//, StructureDictionaryService structureDictionaryService)
         {
-            _app = app;
+            //_app = app;
             _eventAggregator = eventAggregator;
             _dvhResolution = Convert.ToDouble(ConfigurationManager.AppSettings["DVHResolution"]);
+            LocalDose = dose;
+            LocalStructures = structures;
             ScoreValues = new ObservableCollection<ScoreValueModel>();
             //removed as scoreValues is not being modified by another thread. - MCS - 5.27.24
             //BindingOperations.EnableCollectionSynchronization(ScoreValues, this);
@@ -334,7 +343,7 @@ namespace PlanScoreCard.Models
                 SetInitialPlotParameters(template);
             }
         }
-        public void BuildPlanScoreFromTemplate(List<PlanningItem> plans, ScoreTemplateModel template, int metricId, string primaryCourseId, string primaryPlanId, bool canBuildStructure, bool blockPlotting=false)
+        public void BuildPlanScoreFromTemplate(ScoreTemplateModel template, int metricId, bool canBuildStructure, bool blockPlotting = false)
         {
             ScoreMax = template.ScorePoints.Count() == 0 ? -1000 : template.ScorePoints.Max(x => x.Score);
             string id = template.Structure?.StructureId;
@@ -366,10 +375,11 @@ namespace PlanScoreCard.Models
             //This is done in the initialization method as well, so it is redundant here. Could remove later - 5.25.24 - MCS
             MetricId = metricId;
             MetricComment = template.MetricComment;
-
-            foreach (var plan in plans)
-            {
-                if (template.PlanModelOverrides != null &&
+            //No need to loop through plans.
+            //foreach (var plan in plans)
+            //{
+            //No plan overrides (DICOM)
+            /*    if (template.PlanModelOverrides != null &&
                     template.PlanModelOverrides.Any(pmo => pmo.CourseId.Equals((plan as PlanSetup).Course.Id)
                         && pmo.PlanId.Equals(plan.Id)
                         && pmo.PatientId.Equals((plan as PlanSetup).Course.Patient.Id)
@@ -383,349 +393,408 @@ namespace PlanScoreCard.Models
                     && pmo.PatientId.Equals((plan as PlanSetup).Course.Patient.Id)
                     && pmo.TemplateMetricId.Equals(template.TemplateNumber)
                     && !String.IsNullOrEmpty(pmo.MatchedStructureId)).MatchedStructureId;
-                }
-                // The id and the code are from the template Structure
-                Structure structure = String.IsNullOrEmpty(id) && String.IsNullOrEmpty(templateId) ? null : GetStructureFromTemplate(matchId, id, templateId, code, auto, comment, plan, canBuildStructure);
-                //this was removed 10.13.23. Plan model overrides (matchedId) should not override the structureId because then it gets applied to all structures.
-                //if (structure != null)
-                //{
-                //    template.Structure.StructureId = structure.Id;
-                //}
+                }*/
+            // The id and the code are from the template Structure
+            //Structure structure = String.IsNullOrEmpty(id) && String.IsNullOrEmpty(templateId) ? null : GetStructureFromTemplate(matchId, id, templateId, code, auto, comment, plan, canBuildStructure);
+            var structure = LocalStructures.FirstOrDefault(st => st.StructureId == id);
+            //if structure not found on ID check template id. 
+            if (structure == null)
+            {
+                structure = LocalStructures.FirstOrDefault(st => st.StructureId == templateId);
+            }
+            //this was removed 10.13.23. Plan model overrides (matchedId) should not override the structureId because then it gets applied to all structures.
+            //if (structure != null)
+            //{
+            //    template.Structure.StructureId = structure.Id;
+            //}
 
-                StructureId = structure == null || bFromLocal ? " - " : structure.Id;
-                StructureComment = structure == null ? " - " : comment;
-                TemplateStructureId = templateId;
-                //score value cache management will take place in the ScoreCardViewModel now. 
-                //check to see if scorevalues cache has, then just add to scorevalue for this plan, if not re-calculate it.
-                //if (localScoreValueCache.Any(sv => sv.PatientId.Equals((plan as PlanSetup).Course.Patient.Id)
-                //    && sv.CourseId.Equals((plan as PlanSetup).Course.Id)
-                //    && sv.PlanId.Equals((plan as PlanSetup).Id)
-                //    && sv.StructureId.Equals(String.IsNullOrEmpty(matchId)? StructureId : matchId)
-                //    && sv.TemplateNumber == template.TemplateNumber))
-                //{
-                //    var scoreValue = localScoreValueCache.First(sv => sv.PatientId.Equals((plan as PlanSetup).Course.Patient.Id)
-                //    && sv.CourseId.Equals((plan as PlanSetup).Course.Id)
-                //    && sv.PlanId.Equals((plan as PlanSetup).Id)
-                //    && sv.StructureId.Equals(String.IsNullOrEmpty(matchId) ? StructureId : matchId)
-                //    && sv.TemplateNumber == template.TemplateNumber);
-                //    SetScoreValue(template, primaryCourseId, primaryPlanId, (plan as PlanSetup).Course.Id, plan.Id, scoreValue);
-                //    ScoreValues.Add(scoreValue);
-                //}
-                //else
-                //{
-                ScoreValueModel scoreValue = new ScoreValueModel();
-                //scoreValue.bVisible = true;
-                scoreValue.OutputUnit = template.OutputUnit;
-                scoreValue.PlanId = plan.Id;
-                scoreValue.MetricId = MetricId;
-                if (plan is PlanSetup)
+            StructureId = structure == null || bFromLocal ? " - " : structure.StructureId;//property update 'StructureId'
+            StructureComment = structure == null ? " - " : comment;
+            TemplateStructureId = templateId;
+            //score value cache management will take place in the ScoreCardViewModel now. 
+            //check to see if scorevalues cache has, then just add to scorevalue for this plan, if not re-calculate it.
+            //if (localScoreValueCache.Any(sv => sv.PatientId.Equals((plan as PlanSetup).Course.Patient.Id)
+            //    && sv.CourseId.Equals((plan as PlanSetup).Course.Id)
+            //    && sv.PlanId.Equals((plan as PlanSetup).Id)
+            //    && sv.StructureId.Equals(String.IsNullOrEmpty(matchId)? StructureId : matchId)
+            //    && sv.TemplateNumber == template.TemplateNumber))
+            //{
+            //    var scoreValue = localScoreValueCache.First(sv => sv.PatientId.Equals((plan as PlanSetup).Course.Patient.Id)
+            //    && sv.CourseId.Equals((plan as PlanSetup).Course.Id)
+            //    && sv.PlanId.Equals((plan as PlanSetup).Id)
+            //    && sv.StructureId.Equals(String.IsNullOrEmpty(matchId) ? StructureId : matchId)
+            //    && sv.TemplateNumber == template.TemplateNumber);
+            //    SetScoreValue(template, primaryCourseId, primaryPlanId, (plan as PlanSetup).Course.Id, plan.Id, scoreValue);
+            //    ScoreValues.Add(scoreValue);
+            //}
+            //else
+            //{
+            ScoreValueModel scoreValue = new ScoreValueModel();
+            //scoreValue.bVisible = true;
+            scoreValue.OutputUnit = template.OutputUnit;
+            scoreValue.PlanId = LocalDose.PlanUID;
+            scoreValue.MetricId = MetricId;
+            /*if (plan is PlanSetup)
+            {
+                scoreValue.CourseId = (plan as PlanSetup).Course.Id;
+                scoreValue.PatientId = (plan as PlanSetup).Course.Patient.Id;
+            }
+            else if (plan is PlanSum)
+            {
+                scoreValue.CourseId = (plan as PlanSum).Course.Id;
+                scoreValue.PatientId = (plan as PlanSum).Course.Patient.Id;
+            }*/
+            scoreValue.CourseId = "-";
+            scoreValue.PatientId = "-";
+            // Set the Visibility of tyhe TemplateStructureId
+            //moved this outside the foreach loop. 
+            //if (id!=null && id.Equals(TemplateStructureId) && !bFromLocal)
+            //    TemplateStructureVisibility = Visibility.Hidden;
+            /*if (bFromLocal)
+            {
+                if (!String.IsNullOrEmpty(matchId))
                 {
-                    scoreValue.CourseId = (plan as PlanSetup).Course.Id;
-                    scoreValue.PatientId = (plan as PlanSetup).Course.Patient.Id;
-                }
-                else if (plan is PlanSum)
-                {
-                    scoreValue.CourseId = (plan as PlanSum).Course.Id;
-                    scoreValue.PatientId = (plan as PlanSum).Course.Patient.Id;
-                }
-
-                // Set the Visibility of tyhe TemplateStructureId
-                //moved this outside the foreach loop. 
-                //if (id!=null && id.Equals(TemplateStructureId) && !bFromLocal)
-                //    TemplateStructureVisibility = Visibility.Hidden;
-                if (bFromLocal)
-                {
-                    if (!String.IsNullOrEmpty(matchId))
-                    {
-                        scoreValue.StructureId = matchId;
-                    }
-                    else
-                    {
-                        scoreValue.StructureId = StructureId;
-                    }
+                    scoreValue.StructureId = matchId;
                 }
                 else
                 {
                     scoreValue.StructureId = StructureId;
                 }
-                if (structure != null && plan.Dose != null && !structure.IsEmpty)
+            }
+            else
+            {
+                scoreValue.StructureId = StructureId;
+            }*/
+            scoreValue.StructureId = StructureId;
+            if (structure != null && LocalDose != null)// && !structure.IsEmpty)
+            {
+                if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.DoseAtVolume)
                 {
-                    if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.DoseAtVolume)
+                    //DVH is in Gy. FYI
+                    var dvh = DvhAggregator.Aggregate(LocalDose, StructureMask.FromContours(structure, LocalDose));/*plan.GetDVHCumulativeData(structure,
+                        template.OutputUnit.Contains("%") ? DoseValuePresentation.Relative : DoseValuePresentation.Absolute,
+                        template.InputUnit.Contains("%") ? VolumePresentation.Relative : VolumePresentation.AbsoluteCm3,
+                        _dvhResolution);*/
+                    if (dvh != null)
                     {
-                        var dvh = plan.GetDVHCumulativeData(structure,
-                            template.OutputUnit.Contains("%") ? DoseValuePresentation.Relative : DoseValuePresentation.Absolute,
-                            template.InputUnit.Contains("%") ? VolumePresentation.Relative : VolumePresentation.AbsoluteCm3,
-                            _dvhResolution);
-                        if (dvh != null)
+                        if (Math.Abs(template.InputValue - 100.0) < 0.001) { scoreValue.Value = dvh.MinDose * 100.0; }
+                        else if (Math.Abs(template.InputValue - 0.0) < 0.001) { scoreValue.Value = dvh.MaxDose * 100.0; }
+                        else
                         {
-                            if (Math.Abs(template.InputValue - 100.0) < 0.001) { scoreValue.Value = dvh.MinDose.Dose; }
-                            else if (Math.Abs(template.InputValue - 0.0) < 0.001) { scoreValue.Value = dvh.MaxDose.Dose; }
+                            scoreValue.Value = dvh.GetDoseAtVolume((float)template.InputValue) * 100.0;
+                            /*if (dvh.CurveData.Any(x => x.Volume <= template.InputValue + 0.001))
+                            {
+                                scoreValue.Value = dvh.CurveData.FirstOrDefault(x => x.Volume <= template.InputValue + 0.001).DoseValue.Dose;
+                            }
                             else
                             {
-                                if (dvh.CurveData.Any(x => x.Volume <= template.InputValue + 0.001))
-                                {
-                                    scoreValue.Value = dvh.CurveData.FirstOrDefault(x => x.Volume <= template.InputValue + 0.001).DoseValue.Dose;
-                                }
-                                else
-                                {
-                                    scoreValue.Value = dvh.MaxDose.Dose;
-                                }
-                            }
-                            if (template.OutputUnit != dvh.MaxDose.UnitAsString)
-                            {
-                                if (template.OutputUnit == "Gy") { scoreValue.Value = scoreValue.Value / 100.0; }
-                                else { scoreValue.Value = scoreValue.Value * 100.0; }
-                            }
+                                scoreValue.Value = dvh.MaxDose.Dose;
+                            }*/
+                        }
+                        if (template.OutputUnit != "cGy")
+                        {
+                            if (template.OutputUnit == "Gy") { scoreValue.Value = scoreValue.Value / 100.0; }
+                            else { scoreValue.Value = scoreValue.Value * 100.0; }
                         }
                     }
-                    else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.VolumeAtDose)
+                }
+                else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.VolumeAtDose)
+                {
+                    var dvh = DvhAggregator.Aggregate(LocalDose, StructureMask.FromContours(structure, LocalDose)); //PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, structure, _dvhResolution);
+                    double localInputValue = template.InputValue;
+                    if (template.InputUnit == "cGy")
                     {
-                        DVHData dvh = PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, structure, _dvhResolution);
-                        if (template.InputUnit != dvh.MaxDose.UnitAsString)
+                        localInputValue = localInputValue / 100;
+                    }
+                    /*   if (template.InputUnit == "Gy")
+                       {
+                           scoreValue.Value = dvh.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue * 100.0).Volume;
+                       }
+                       else
+                       {
+                           scoreValue.Value = dvh.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue / 100.0).Volume;
+                       }
+                   }
+                    else
+                    {
+                        scoreValue.Value = dvh.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue).Volume;
+                    }*/
+                    scoreValue.Value = dvh.GetVolumeAtDose((float)localInputValue);
+
+                }
+                else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.VolumeOfRegret)
+                {
+                    var body = LocalStructures.FirstOrDefault(st => st.DicomType == "EXTERNAL");// plan.StructureSet.Structures.SingleOrDefault(x => x.DicomType == "EXTERNAL");
+                    if (body == null)
+                    {
+                        System.Windows.MessageBox.Show("No Single Body Structure Found");
+                        scoreValue.Value = ScoreMax = scoreValue.Score = -1000;
+                        return;
+                    }
+                    var dvh_body = DvhAggregator.Aggregate(LocalDose, StructureMask.FromContours(body, LocalDose)); //PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, body, _dvhResolution);
+                    var dvh = DvhAggregator.Aggregate(LocalDose, StructureMask.FromContours(structure, LocalDose)); //PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, structure, _dvhResolution);
+                    double localInputValue = template.InputValue; if (template.InputUnit == "cGy")
+                    {
+                        localInputValue = localInputValue / 100;
+                    }
+                    var body_vol = dvh_body.GetVolumeAtDose((float)localInputValue);
+                    var target_vol = dvh.GetVolumeAtDose((float)localInputValue);
+                    /*if (template.InputUnit != dvh.MaxDose.UnitAsString)
+                    {
+                        if (template.InputUnit == "Gy")
                         {
-                            if (template.InputUnit == "Gy")
-                            {
-                                scoreValue.Value = dvh.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue * 100.0).Volume;
-                            }
-                            else
-                            {
-                                scoreValue.Value = dvh.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue / 100.0).Volume;
-                            }
+                            var body_vol = dvh_body.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue * 100).Volume;
+                            var target_vol = dvh.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue * 100.0).Volume;
+                            scoreValue.Value = body_vol - target_vol;
                         }
                         else
                         {
-                            scoreValue.Value = dvh.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue).Volume;
-                        }
-                    }
-                    else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.VolumeOfRegret)
-                    {
-                        var body = plan.StructureSet.Structures.SingleOrDefault(x => x.DicomType == "EXTERNAL");
-                        if (body == null)
-                        {
-                            System.Windows.MessageBox.Show("No Single Body Structure Found");
-                            scoreValue.Value = ScoreMax = scoreValue.Score = -1000;
-                            return;
-                        }
-                        var dvh_body = PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, body, _dvhResolution);
-                        var dvh = PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, structure, _dvhResolution);
-                        if (template.InputUnit != dvh.MaxDose.UnitAsString)
-                        {
-                            if (template.InputUnit == "Gy")
-                            {
-                                var body_vol = dvh_body.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue * 100).Volume;
-                                var target_vol = dvh.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue * 100.0).Volume;
-                                scoreValue.Value = body_vol - target_vol;
-                            }
-                            else
-                            {
-                                var body_vol = dvh_body.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue / 100.0).Volume;
-                                var target_vol = dvh.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue / 100.0).Volume;
-                                scoreValue.Value = body_vol - target_vol;
-                            }
-                        }
-                        else
-                        {
-                            var body_vol = dvh_body.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue).Volume;
-                            var target_vol = dvh.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue).Volume;
+                            var body_vol = dvh_body.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue / 100.0).Volume;
+                            var target_vol = dvh.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue / 100.0).Volume;
                             scoreValue.Value = body_vol - target_vol;
                         }
                     }
-                    else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.ConformationNumber)
+                    else
                     {
-                        //conformation number is (volume at given dose)^2/(total volume @ dose * total target volume)
-                        var body = plan.StructureSet.Structures.SingleOrDefault(x => x.DicomType == "EXTERNAL");
-                        if (body == null)
-                        {
-                            System.Windows.MessageBox.Show("No Single Body Structure Found");
-                            scoreValue.Value = ScoreMax = scoreValue.Score = -1000; return;
-                        }
-                        template.OutputUnit = "cc";
-                        var dvh_body = PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, body, _dvhResolution);
-                        var dvh = PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, structure, _dvhResolution);
-                        var body_vol = 0.0;
-                        var target_vol = 0.0;
-                        PlanScoreCalculationServices.GetVolumesFromDVH(template, dvh_body, dvh, out body_vol, out target_vol);
-                        if (body_vol == 0 || dvh.CurveData.Max(cd => cd.Volume) == 0 || target_vol == 0)
-                        {
-                            scoreValue.Value = -1000;
-                        }
-                        else
-                        {
-                            scoreValue.Value = Math.Pow(target_vol, 2) / (body_vol * dvh.CurveData.Max(x => x.Volume));
-                        }
-                        template.OutputUnit = String.Empty;
-
+                        var body_vol = dvh_body.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue).Volume;
+                        var target_vol = dvh.CurveData.LastOrDefault(x => x.DoseValue.Dose <= template.InputValue).Volume;
+                        scoreValue.Value = body_vol - target_vol;
+                    }*/
+                }
+                else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.ConformationNumber)
+                {
+                    //conformation number is (volume at given dose)^2/(total volume @ dose * total target volume)
+                    var body = LocalStructures.FirstOrDefault(st => st.DicomType == "EXTERNAL");// plan.StructureSet.Structures.SingleOrDefault(x => x.DicomType == "EXTERNAL");
+                    if (body == null)
+                    {
+                        System.Windows.MessageBox.Show("No Single Body Structure Found");
+                        scoreValue.Value = ScoreMax = scoreValue.Score = -1000; return;
                     }
-                    else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.HomogeneityIndex)
+                    template.OutputUnit = "cc";
+                    var dvh_body = DvhAggregator.Aggregate(LocalDose, StructureMask.FromContours(body, LocalDose)); //PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, body, _dvhResolution);
+                    var dvh = DvhAggregator.Aggregate(LocalDose, StructureMask.FromContours(structure, LocalDose)); //PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, structure, _dvhResolution);
+                    double localInputValue = template.InputValue;
+                    if (template.InputUnit == "cGy")
                     {
-                        if (plan is PlanSetup)
-                        {
-                            var dTarget = template.HI_Target;
-                            if (template.HI_Target != 0.0 && template.HI_TargetUnit != "%")
-                            {
-                                if (template.HI_TargetUnit != (plan as PlanSetup).TotalDose.UnitAsString)
-                                {
-                                    if ((plan as PlanSetup).TotalDose.UnitAsString.Contains('c'))
-                                    {
-                                        //this means templat is in Gy and dose in in cGy
-                                        dTarget = template.HI_Target * 100.0;
-                                    }
-                                    else
-                                    {
-                                        //plan is in Gy and template is in cgy. 
-                                        dTarget = template.HI_Target / 100.0;
-                                    }
-                                }
-                                else
-                                {
-                                    dTarget = template.HI_Target;
-                                }
-                            }
-                            var dvh = template.HI_TargetUnit == "%" ?
-                                plan.GetDVHCumulativeData(structure, DoseValuePresentation.Relative, VolumePresentation.Relative, _dvhResolution)
-                                : plan.GetDVHCumulativeData(structure, DoseValuePresentation.Absolute,
-                                VolumePresentation.Relative, _dvhResolution);
-                            if (dvh == null) { scoreValue.Value = ScoreMax = scoreValue.Score = -1000; return; }
-                            var h_val = template.HI_HiValue;// * dTarget / 100.0;
-                            var l_val = template.HI_LowValue;// * dTarget / 100.0;
-
-                            var dHi = dvh.CurveData.FirstOrDefault(x => x.Volume <= h_val).DoseValue.Dose;
-                            var dLo = dvh.CurveData.FirstOrDefault(x => x.Volume <= l_val).DoseValue.Dose;
-                            //the target dose level has already been converted to the system's dose unit and therefore dHi and dLo do not need to be converted.
-                            //if (template.HI_TargetUnit != (plan as PlanSetup).TotalDose.UnitAsString)
-                            //{
-                            //    if ((plan as PlanSetup).TotalDose.UnitAsString.Contains('c'))
-                            //    {
-                            //        dHi = dHi* 100.0;
-                            //        dLo = dLo* 100.0;
-                            //    }
-                            //    else
-                            //    {
-                            //        dHi= dHi / 100.0;
-                            //        dLo = dLo / 100.0;
-                            //    }
-                            //}
-                            scoreValue.Value = template.OutputUnit == "%" ? (dHi - dLo) / (dTarget - (plan as PlanSetup).TotalDose.Dose) : (dHi - dLo) / dTarget;
-                        }
-                        else
-                        {
-                            //HI not yet supported for plansums.
-                            scoreValue.Value = -1000;
-                        }
+                        localInputValue = localInputValue / 100;
                     }
-                    else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.ConformityIndex)
+                    //convert to cc
+                    var body_vol = dvh_body.GetVolumeAtDose((float)localInputValue) * dvh_body.Volume;
+                    var target_vol = dvh.GetVolumeAtDose((float)localInputValue) * dvh.Volume;
+                    //var body_vol = 0.0;
+                    //var target_vol = 0.0;
+                    //PlanScoreCalculationServices.GetVolumesFromDVH(template, dvh_body, dvh, out body_vol, out target_vol);
+                    if (body_vol == 0 || target_vol == 0) //|| dvh.CurveData.Max(cd => cd.Volume) == 0 || target_vol == 0)
                     {
-                        var body = plan.StructureSet.Structures.SingleOrDefault(x => x.DicomType == "EXTERNAL");
-                        if (body == null)
-                        {
-                            System.Windows.MessageBox.Show("No single body structure found.");
-                            scoreValue.Value = ScoreMax = scoreValue.Score = -1000; return;
-                        }
-                        //goahead and make the DVH absolute volume for conformity index (not saved in template). 
-                        template.OutputUnit = "cc";
-                        var dvh_body = PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, body, _dvhResolution);
-                        var dvh = PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, structure, _dvhResolution);
-                        var body_vol = 0.0;
-                        var target_vol = 0.0;
-                        PlanScoreCalculationServices.GetVolumesFromDVH(template, dvh_body, dvh, out body_vol, out target_vol);
-                        scoreValue.Value = body_vol / structure.Volume;
-                        template.OutputUnit = String.Empty;
-
-                    }
-                    else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.InhomogeneityIndex)
-                    {
-                        var dvh = plan.GetDVHCumulativeData(structure, DoseValuePresentation.Absolute,
-                            VolumePresentation.Relative, _dvhResolution);
-                        if (dvh == null) { scoreValue.Value = ScoreMax = scoreValue.Score = -1000; return; }
-                        scoreValue.Value = (dvh.MaxDose.Dose - dvh.MinDose.Dose) / dvh.MeanDose.Dose;
-                    }
-                    else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.ModifiedGradientIndex)
-                    {
-                        //plan.DoseValuePresentation = DoseValuePresentation.Absolute;
-                        //var doseUnit = plan.Dose.DoseMax3D.UnitAsString;
-                        var dhi = template.HI_HiValue;
-                        var dlo = template.HI_LowValue;
-                        var unit = template.InputUnit;
-                        var dvh = plan.GetDVHCumulativeData(structure,
-                            unit.Contains("%") ? DoseValuePresentation.Relative : DoseValuePresentation.Absolute,
-                            VolumePresentation.AbsoluteCm3,
-                            _dvhResolution);
-                        if (dvh == null) { scoreValue.Value = ScoreMax = scoreValue.Score = -1000; return; }
-                        var doseUnit = dvh.MaxDose.UnitAsString;
-                        if (unit != doseUnit)
-                        {
-                            if (unit.StartsWith("c"))
-                            {
-                                //unit is cGy and system unit is in Gy.
-                                dhi = dhi / 100.0;
-                                dlo = dlo / 100.0;
-                            }
-                            else
-                            {
-                                //unit is in Gy and system unit is in cGy
-                                dhi = dhi * 100.0;
-                                dlo = dlo * 100.0;
-                            }
-                        }
-                        var vDLo = dvh.CurveData.FirstOrDefault(x => x.DoseValue.Dose >= dlo).Volume;
-                        var vDHi = dvh.CurveData.FirstOrDefault(x => x.DoseValue.Dose >= dhi).Volume;
-                        scoreValue.Value = vDLo / vDHi;
-                    }
-                    else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.DoseAtSubVolume)
-                    {
-                        var specVolume = template.InputValue;
-                        var structureVolume = structure.Volume;
-                        var unit = template.OutputUnit;
-                        var dvh = plan.GetDVHCumulativeData(structure,
-                            unit.Contains("%") ? DoseValuePresentation.Relative : DoseValuePresentation.Absolute,
-                            VolumePresentation.AbsoluteCm3, _dvhResolution);
-                        if (dvh == null) { scoreValue.Value = ScoreMax = scoreValue.Score = -1000; return; }
-                        var doseValue = dvh.CurveData.FirstOrDefault(x => x.Volume <= structureVolume - specVolume).DoseValue;
-                        var doseUnit = doseValue.UnitAsString;
-                        scoreValue.Value = doseValue.Dose;
-                        if (unit != doseUnit)
-                        {
-                            if (unit.StartsWith("c"))
-                            {
-                                //unit is in cGy and dvh is in Gy
-                                scoreValue.Value = doseValue.Dose * 100.0;
-                            }
-                            else
-                            {
-                                scoreValue.Value = doseValue.Dose / 100.0;
-                            }
-                        }
-
+                        scoreValue.Value = -1000;
                     }
                     else
                     {
-                        if (String.IsNullOrEmpty(template.OutputUnit))
+                        scoreValue.Value = Math.Pow(target_vol, 2) / (body_vol * dvh.Volume);
+                    }
+                    template.OutputUnit = String.Empty;
+
+                }
+                else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.HomogeneityIndex)
+                {
+                    //if (plan is PlanSetup)
+                    //{
+                    var dTarget = template.HI_Target;
+                    //double localInputValue = template.HI_Target;
+
+                    if (template.HI_Target != 0.0 && template.HI_TargetUnit != "%")
+                    {
+                        if (template.InputUnit == "cGy")
                         {
-                            MessageBox.Show($"No output unit for metric {template.MetricType} on {template.Structure.StructureId}");
-                            scoreValue.Value = -1000;
+                            dTarget = dTarget / 100;
+                        }
+                        /*if (template.HI_TargetUnit != (plan as PlanSetup).TotalDose.UnitAsString)
+                        {
+                            if ((plan as PlanSetup).TotalDose.UnitAsString.Contains('c'))
+                            {
+                                //this means templat is in Gy and dose in in cGy
+                                dTarget = template.HI_Target * 100.0;
+                            }
+                            else
+                            {
+                                //plan is in Gy and template is in cgy. 
+                                dTarget = template.HI_Target / 100.0;
+                            }
                         }
                         else
                         {
-                            var dvh = plan.GetDVHCumulativeData(structure,
-                                template.OutputUnit.Contains("%") ? DoseValuePresentation.Relative : DoseValuePresentation.Absolute,
-                                VolumePresentation.Relative,
-                                _dvhResolution);
-                            if (template.MetricType.Contains("Min"))
+                            dTarget = template.HI_Target;
+                        }*/
+                    }
+                    if (template.HI_TargetUnit == "%")
+                    {
+
+                        MessageBox.Show("Cannot currently support relative doses");
+                        scoreValue.Value = -1000;
+                        return;
+                    }
+                    var dvh = DvhAggregator.Aggregate(LocalDose, StructureMask.FromContours(structure, LocalDose)); /*template.HI_TargetUnit == "%" ?
+                            plan.GetDVHCumulativeData(structure, DoseValuePresentation.Relative, VolumePresentation.Relative, _dvhResolution)
+                            : plan.GetDVHCumulativeData(structure, DoseValuePresentation.Absolute,
+                            VolumePresentation.Relative, _dvhResolution);*/
+                    if (dvh == null) { scoreValue.Value = ScoreMax = scoreValue.Score = -1000; return; }
+                    var h_val = template.HI_HiValue;// * dTarget / 100.0;
+                    var l_val = template.HI_LowValue;// * dTarget / 100.0;
+
+                    var dHi = dvh.GetDoseAtVolume((float)h_val);// dvh.CurveData.FirstOrDefault(x => x.Volume <= h_val).DoseValue.Dose;
+                    var dLo = dvh.GetDoseAtVolume((float)l_val);// dvh.CurveData.FirstOrDefault(x => x.Volume <= l_val).DoseValue.Dose;
+                                                                //the target dose level has already been converted to the system's dose unit and therefore dHi and dLo do not need to be converted.
+                                                                //if (template.HI_TargetUnit != (plan as PlanSetup).TotalDose.UnitAsString)
+                                                                //{
+                                                                //    if ((plan as PlanSetup).TotalDose.UnitAsString.Contains('c'))
+                                                                //    {
+                                                                //        dHi = dHi* 100.0;
+                                                                //        dLo = dLo* 100.0;
+                                                                //    }
+                                                                //    else
+                                                                //    {
+                                                                //        dHi= dHi / 100.0;
+                                                                //        dLo = dLo / 100.0;
+                                                                //    }
+                                                                //}
+                    scoreValue.Value = (dHi - dLo) / dTarget;// template.OutputUnit == "%" ? (dHi - dLo) / (dTarget - (plan as PlanSetup).TotalDose.Dose) : (dHi - dLo) / dTarget;
+                    //}
+                    /*else
+                    {
+                        //HI not yet supported for plansums.
+                        scoreValue.Value = -1000;
+                    }*/
+                }
+                else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.ConformityIndex)
+                {
+                    var body = LocalStructures.FirstOrDefault(st => st.DicomType == "EXTERNAL");// plan.StructureSet.Structures.SingleOrDefault(x => x.DicomType == "EXTERNAL");
+                    if (body == null)
+                    {
+                        System.Windows.MessageBox.Show("No single body structure found.");
+                        scoreValue.Value = ScoreMax = scoreValue.Score = -1000; return;
+                    }
+                    //goahead and make the DVH absolute volume for conformity index (not saved in template). 
+                    template.OutputUnit = "cc";
+                    var dvh_body = DvhAggregator.Aggregate(LocalDose, StructureMask.FromContours(body, LocalDose)); //PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, body, _dvhResolution);
+                    var dvh = DvhAggregator.Aggregate(LocalDose, StructureMask.FromContours(structure, LocalDose)); //PlanScoreCalculationServices.GetDVHForVolumeType(plan, template, structure, _dvhResolution);
+                    double localInputValue = template.InputValue;
+                    if (template.InputUnit == "cGy")
+                    {
+                        localInputValue = localInputValue / 100;
+                    }
+                    var body_vol = dvh_body.GetVolumeAtDose((float)localInputValue);
+                    var target_vol = dvh.GetVolumeAtDose((float)localInputValue);
+                    //PlanScoreCalculationServices.GetVolumesFromDVH(template, dvh_body, dvh, out body_vol, out target_vol);
+                    scoreValue.Value = body_vol / dvh.Volume;
+                    template.OutputUnit = String.Empty;
+
+                }
+                else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.InhomogeneityIndex)
+                {
+                    var dvh = DvhAggregator.Aggregate(LocalDose, StructureMask.FromContours(structure, LocalDose)); //plan.GetDVHCumulativeData(structure, DoseValuePresentation.Absolute,
+                    //VolumePresentation.Relative, _dvhResolution);
+                    if (dvh == null) { scoreValue.Value = ScoreMax = scoreValue.Score = -1000; return; }
+                    scoreValue.Value = (dvh.MaxDose - dvh.MinDose) / dvh.MeanDose;
+                }
+                else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.ModifiedGradientIndex)
+                {
+                    //plan.DoseValuePresentation = DoseValuePresentation.Absolute;
+                    //var doseUnit = plan.Dose.DoseMax3D.UnitAsString;
+                    var dhi = template.HI_HiValue;
+                    var dlo = template.HI_LowValue;
+                    var unit = template.InputUnit;
+                    if (unit.Contains("%"))
+                    {
+                        MessageBox.Show("Dose in % not supported for DICOM");
+                        scoreValue.Value = -1000;
+                        return;
+                    }
+                    var dvh = DvhAggregator.Aggregate(LocalDose, StructureMask.FromContours(structure, LocalDose)); /*plan.GetDVHCumulativeData(structure,
+                    unit.Contains("%") ? DoseValuePresentation.Relative : DoseValuePresentation.Absolute,
+                        VolumePresentation.AbsoluteCm3,
+                        _dvhResolution);*/
+                    if (dvh == null) { scoreValue.Value = ScoreMax = scoreValue.Score = -1000; return; }
+                    var doseUnit = "Gy";
+                    if (unit != doseUnit)
+                    {
+                        if (unit.StartsWith("c"))
+                        {
+                            //unit is cGy and system unit is in Gy.
+                            dhi = dhi / 100.0;
+                            dlo = dlo / 100.0;
+                        }
+                        else
+                        {
+                            //unit is in Gy and system unit is in cGy
+                            dhi = dhi * 100.0;
+                            dlo = dlo * 100.0;
+                        }
+                    }
+                    var vDLo = dvh.GetVolumeAtDose((float)dlo) * dvh.Volume;// dvh.CurveData.FirstOrDefault(x => x.DoseValue.Dose >= dlo).Volume;
+                    var vDHi = dvh.GetVolumeAtDose((float)dhi) * dvh.Volume;// dvh.CurveData.FirstOrDefault(x => x.DoseValue.Dose >= dhi).Volume;
+                    scoreValue.Value = vDLo / vDHi;
+                }
+                else if ((MetricTypeEnum)Enum.Parse(typeof(MetricTypeEnum), template.MetricType) == MetricTypeEnum.DoseAtSubVolume)
+                {
+                    MessageBox.Show("Dose at Sub Volume is work in progress");
+                    /* var specVolume = template.InputValue;
+                     var structureVolume = structure.Volume;
+                     var unit = template.OutputUnit;
+                     var dvh = plan.GetDVHCumulativeData(structure,
+                         unit.Contains("%") ? DoseValuePresentation.Relative : DoseValuePresentation.Absolute,
+                         VolumePresentation.AbsoluteCm3, _dvhResolution);
+                     if (dvh == null) { scoreValue.Value = ScoreMax = scoreValue.Score = -1000; return; }
+                     var doseValue = dvh.CurveData.FirstOrDefault(x => x.Volume <= structureVolume - specVolume).DoseValue;
+                     var doseUnit = doseValue.UnitAsString;
+                     scoreValue.Value = doseValue.Dose;
+                     if (unit != doseUnit)
+                     {
+                         if (unit.StartsWith("c"))
+                         {
+                             //unit is in cGy and dvh is in Gy
+                             scoreValue.Value = doseValue.Dose * 100.0;
+                         }
+                         else
+                         {
+                             scoreValue.Value = doseValue.Dose / 100.0;
+                         }
+                     }*/
+
+                }
+                else
+                {
+                    if (String.IsNullOrEmpty(template.OutputUnit))
+                    {
+                        MessageBox.Show($"No output unit for metric {template.MetricType} on {template.Structure.StructureId}");
+                        scoreValue.Value = -1000;
+                    }
+                    else
+                    {
+                        var dvh = DvhAggregator.Aggregate(LocalDose, StructureMask.FromContours(structure, LocalDose)); /*plan.GetDVHCumulativeData(structure,
+                            template.OutputUnit.Contains("%") ? DoseValuePresentation.Relative : DoseValuePresentation.Absolute,
+                            VolumePresentation.Relative,
+                            _dvhResolution);*/
+                        if (template.MetricType.Contains("Min"))
+                        {
+                            scoreValue.Value = dvh.MinDose;
+                        }
+                        else if (template.MetricType.Contains("Max"))
+                        {
+                            scoreValue.Value = dvh.MaxDose;
+                        }
+                        else if (template.MetricType.Contains("Mean"))
+                        {
+                            scoreValue.Value = dvh.MeanDose;
+                            if (template.OutputUnit != "Gy")
                             {
-                                scoreValue.Value = dvh.MinDose.Dose;
-                            }
-                            else if (template.MetricType.Contains("Max"))
-                            {
-                                scoreValue.Value = dvh.MaxDose.Dose;
-                            }
-                            else if (template.MetricType.Contains("Mean"))
-                            {
-                                scoreValue.Value = dvh.MeanDose.Dose;
-                            }
-                            if (template.OutputUnit != dvh.MaxDose.UnitAsString)
-                            {
-                                if (template.OutputUnit == "Gy") { scoreValue.Value = scoreValue.Value / 100.0; }
-                                else { scoreValue.Value = scoreValue.Value * 100.0; }
+                                if (template.OutputUnit == "cGy") { scoreValue.Value = scoreValue.Value * 100.0; }
+                                else
+                                {
+                                    //must be % which is not supported since we don't have Rx dose.
+                                    MessageBox.Show("Cannot support % units at this time");
+                                    scoreValue.Value = -1000;
+                                }
+                                //else { scoreValue.Value = scoreValue.Value * 100.0; }
                             }
                         }
                     }
@@ -735,20 +804,21 @@ namespace PlanScoreCard.Models
                     }
                     else { scoreValue.Score = -1000; }
                 }
-                else
-                {
-                    scoreValue.Score = 0.0;
-                    scoreValue.Value = -1000;
-                }
-                if (!blockPlotting)
-                {
-                    SetScorePlotModel(template, primaryCourseId, primaryPlanId, increasing, (plan as PlanSetup).Course.Id, plan.Id, scoreValue);
-                }
-                scoreValue.TemplateNumber = template.TemplateNumber;
-                ScoreValues.Add(scoreValue);
-                // localScoreValueCache.Add(scoreValue);
-                //}
             }
+            else
+            {
+                scoreValue.Score = 0.0;
+                scoreValue.Value = -1000;
+            }
+            if (!blockPlotting)
+            {
+                SetScorePlotModel(template, increasing, scoreValue);
+            }
+            scoreValue.TemplateNumber = template.TemplateNumber;
+            ScoreValues.Add(scoreValue);
+            // localScoreValueCache.Add(scoreValue);
+            //}
+            //}
 
             GetTemplateStructureVisibility();
             //CheckOutsideBounds();
@@ -782,7 +852,7 @@ namespace PlanScoreCard.Models
             return increasing;
         }
 
-        public void SetScorePlotModel(ScoreTemplateModel template, string primaryCourseId, string primaryPlanId, bool increasing, string currentCourseId, string currentPlanId, ScoreValueModel scoreValue)
+        public void SetScorePlotModel(ScoreTemplateModel template, bool increasing, ScoreValueModel scoreValue)
         {
             if (scoreValue.Value != -1000 && template.ScorePoints.Count() > 0)
             {
@@ -790,7 +860,7 @@ namespace PlanScoreCard.Models
                 //this one sets marker color.
                 //this method is changed to only show the marker.
                 bool checkCourse = false;
-                if (!String.IsNullOrEmpty(primaryPlanId) && !String.IsNullOrEmpty(primaryCourseId))
+                /*if (!String.IsNullOrEmpty(primaryPlanId) && !String.IsNullOrEmpty(primaryCourseId))
                 {
                     checkCourse = primaryCourseId == currentCourseId;
                     //if (plan is PlanSum)
@@ -801,17 +871,17 @@ namespace PlanScoreCard.Models
                     //{
                     //    checkCourse = (plan as PlanSetup).Course.Id == primaryCourseId;
                     //}
-                }
+                }*/
                 var ScorePointSeries = new LineSeries
                 {
                     //Color = ScorePlotModel.Series.Any(x => !String.IsNullOrWhiteSpace(x.Title) && x.Title.Contains("Marker")) ? OxyColors.Black : PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template),
                     //Color = plan.Id == primaryPlanId && checkCourse ? PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template) : OxyColors.Black,
-                    Color = currentPlanId == primaryPlanId && checkCourse ? PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template) : OxyColors.Black,
+                    Color = PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template), //currentPlanId == primaryPlanId && checkCourse ? PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template) : OxyColors.Black,
                     MarkerType = MarkerType.Plus,
-                    MarkerStroke = currentPlanId == primaryPlanId && checkCourse ? PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template) : OxyColors.Black,
+                    MarkerStroke = PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template),//currentPlanId == primaryPlanId && checkCourse ? PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template) : OxyColors.Black,
                     //MarkerStroke = ScorePlotModel.Series.Any(x => !String.IsNullOrWhiteSpace(x.Title) && x.Title.Contains("Marker")) ? OxyColors.Black : PlanScorePlottingServices.GetColorFromMetric(scoreValue.Score, template),
                     //MarkerSize = ScorePlotModel.Series.Any(x => !String.IsNullOrWhiteSpace(x.Title) && x.Title.Contains("Marker")) ? 6 : 12,
-                    MarkerSize = currentPlanId == primaryPlanId && checkCourse ? 12 : 6,
+                    MarkerSize = 12,//currentPlanId == primaryPlanId && checkCourse ? 12 : 6,
                     Title = "Marker"
                 };
                 //add to the plot
@@ -845,7 +915,7 @@ namespace PlanScoreCard.Models
                         FontSize = 4;
                         break;
                 }
-                if (template.ScorePoints.Count() > 0 && Colors.Count() == 0 && currentPlanId == primaryPlanId)
+                if (template.ScorePoints.Count() > 0 && Colors.Count() == 0)
                 {
                     foreach (var score in template.ScorePoints)
                     {
@@ -1049,11 +1119,11 @@ namespace PlanScoreCard.Models
                 //LocalStructureMatch = matchedId;
 
                 var structure = plan.StructureSet.Structures.FirstOrDefault(st => st.Id.Equals(matchedId));
-                if (structure != null && !structure.IsEmpty)
-                {
-                    return structure;
-                }
-                else if (structure.IsEmpty && autoGenerate && writeable && canBuildStructure)
+                //if (structure != null && !structure.IsEmpty)
+                //{
+                return structure;
+                //}
+                /*else if (structure.IsEmpty && autoGenerate && writeable && canBuildStructure)
                 {
                     var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan, _eventAggregator);//, StructureDictionaryService);
                     return new_structure;
@@ -1061,7 +1131,7 @@ namespace PlanScoreCard.Models
                 else
                 {
                     return structure;
-                }
+                }*/
             }
             // Check for structure existence
             if (plan.StructureSet.Structures.Any(x => x.Id.Equals(id, StringComparison.OrdinalIgnoreCase)))
@@ -1069,11 +1139,11 @@ namespace PlanScoreCard.Models
 
                 var structure = plan.StructureSet.Structures.FirstOrDefault(x => x.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
 
-                if (structure != null && !structure.IsEmpty)
-                {
-                    return structure;
-                }
-                else if (structure.IsEmpty && autoGenerate && writeable && canBuildStructure)//generate structure if empty.
+                //if (structure != null && !structure.IsEmpty)
+                //{
+                return structure;
+                //}
+                /*else if (structure.IsEmpty && autoGenerate && writeable && canBuildStructure)//generate structure if empty.
                 {
                     var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan, _eventAggregator);//, StructureDictionaryService);
                     return new_structure;
@@ -1082,7 +1152,7 @@ namespace PlanScoreCard.Models
                 {
                     //what do do with an empty structure.
                     return structure;
-                }
+                }*/
 
             }//If no structure found, try to find structure based on code.
             //next check for structure on templateID.
@@ -1091,12 +1161,12 @@ namespace PlanScoreCard.Models
                 bFromTemplate = true;
                 var structure = plan.StructureSet.Structures.FirstOrDefault(x => x.Id.Equals(templateId, StringComparison.OrdinalIgnoreCase));
 
-                if (structure != null && !structure.IsEmpty)
-                {
+                //if (structure != null && !structure.IsEmpty)
+                //{
 
-                    return structure;
-                }
-                else if (structure.IsEmpty && autoGenerate && writeable && canBuildStructure)//generate structure if empty.
+                return structure;
+                //}
+                /*else if (structure.IsEmpty && autoGenerate && writeable && canBuildStructure)//generate structure if empty.
                 {
                     var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan, _eventAggregator);//, StructureDictionaryService);
                     return new_structure;
@@ -1105,7 +1175,7 @@ namespace PlanScoreCard.Models
                 {
                     //what do do with an empty structure.
                     return structure;
-                }
+                }*/
 
             }
             // SECOND: If exact match is not there, check to see if it is part of the Structure Dictionary
@@ -1140,12 +1210,12 @@ namespace PlanScoreCard.Models
                 // Finds any matches between the PlanStructures and All Accepted StructIDs
                 Structure structure = null;
                 string matchedStructureID = planStructrues.Intersect(acceptedStructures).FirstOrDefault();
-                if (matchedStructureID != null)
-                {
-                    structure = plan.StructureSet.Structures.FirstOrDefault(s => s.Id.Equals(matchedStructureID, StringComparison.OrdinalIgnoreCase));
-                }
+                //if (matchedStructureID != null)
+                //{
+                structure = plan.StructureSet.Structures.FirstOrDefault(s => s.Id.Equals(matchedStructureID, StringComparison.OrdinalIgnoreCase));
+                //}
 
-                if (structure != null && !structure.IsEmpty)
+                /*if (structure != null && !structure.IsEmpty)
                 {
                     return structure;
                 }
@@ -1153,7 +1223,7 @@ namespace PlanScoreCard.Models
                 {
                     var new_structure = StructureGenerationService.BuildStructureWithESAPI(_app, structure.Id, comment, true, plan, _eventAggregator);//, StructureDictionaryService);
                     return new_structure;
-                }
+                }*/
             }
 
             // See if you can find it based on just stucture Code
@@ -1166,11 +1236,11 @@ namespace PlanScoreCard.Models
             }
 
             // If no match, create it. 
-            if (autoGenerate && writeable && !String.IsNullOrEmpty(comment) && canBuildStructure)
+            /*if (autoGenerate && writeable && !String.IsNullOrEmpty(comment) && canBuildStructure)
             {
                 var structure = StructureGenerationService.BuildStructureWithESAPI(_app, id, comment, false, plan, _eventAggregator);//, StructureDictionaryService);
                 return structure;
-            }
+            }*/
 
             //if (plan.StructureSet.Structures.Where(x => x.StructureCodeInfos.Any()).Any(y => y.StructureCodeInfos.FirstOrDefault().Code == code) && !autoGenerate)
             //{

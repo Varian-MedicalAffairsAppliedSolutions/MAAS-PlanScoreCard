@@ -381,7 +381,7 @@ namespace PlanScoreCard.ViewModels
 
             EditScoreCardView editScoreCardView = ViewLauncher.GetEditScoreCardView();
             _eventAggregator.GetEvent<EditScoreCardSetPlanEvent>().Publish(SelectedPlan); // Push the SelectedPlan
-            _eventAggregator.GetEvent<EditScoreCardSetUserEvent>().Publish(_user); // Push the User
+            _eventAggregator.GetEvent<EditScoreCardSetUserEvent>().Publish(); // Push the User
             _eventAggregator.GetEvent<LoadEditScoreCardViewEvent>().Publish(scoreCard); // Push the ScoreCardModel to the ViewModel
 
             editScoreCardView.ShowDialog();

@@ -8,7 +8,7 @@ using VMS.TPS.Common.Model.API;
 
 namespace PlanScoreCard.Events
 {
-    public class EditScoreCardSetUserEvent : PubSubEvent<User>
+    public class EditScoreCardSetUserEvent : PubSubEvent
     {
     }
 }

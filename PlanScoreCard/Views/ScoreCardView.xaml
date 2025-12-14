@@ -100,7 +100,7 @@
                             <Button Content="{icons:FontAwesome Kind=UserPlusSolid}" ToolTip="Open Patient selection" Grid.Column="1" Margin="5" Width="30"
                                     Command="{Binding OpenPatientSelectionCommand}"/>
                             <Button Content="{icons:FontAwesome Kind=FolderOpenRegular}" ToolTip="Open all courses and plans" Grid.Column="2"
-                                    Margin="5" Width="30" Command="{Binding LoadPatientPlansCommand}"/>
+                                    Margin="5" Width="30" Command="{Binding LoadPatientPlansCommand}" Visibility="Hidden"/>
 
                         </Grid>
 
