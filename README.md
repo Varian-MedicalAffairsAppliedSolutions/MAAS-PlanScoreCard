@@ -113,7 +113,7 @@ c)	Purple – Structure missing
 ### DVH View
 ![image](https://user-images.githubusercontent.com/78000769/229590966-85f77072-5f55-4d25-89d6-4934557ea475.png)
 
-### Installation Guide: [Quick-Start](../master/BasicInstallQuickStart.md)
+### Installation Guide: [Quick-Start](https://github.com/Varian-MedicalAffairsAppliedSolutions/MAAS-PlanScoreCard/blob/main/BasicInstallQuickStart.md)
 
 ### Installation Guide Part2: [Move PlanScoreCard to system scripts directory, copy and edit launcher (optional)](../master/InstallGuidePart2IntoSystemScriptsDirectory.md)
 
